@@ -1,11 +1,25 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import UserRoutes from './routes/UserRoutes';
+import VendorRoutes from './routes/VendorRoutes';
+import AdminRoutes from './routes/AdminRoutes';
+import NotFound from './components/auth/Page404';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-red-500 text-white gap-4">
-      <h1 className="text-yellow-300 underline text-4xl">Tailwind Test 🔥</h1>
-      <p className="text-green-300 text-xl">Tailwind is working! 🚀</p>
-    </div>
-  );
+    <>
+      <Router>
+        <Routes>
+          <Route path="/user/*" element={<UserRoutes />} />
+          <Route path="/vendor/*" element={<VendorRoutes />} />
+          <Route path="/admin/*" element={<AdminRoutes />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+      <Toaster richColors closeButton/>
+    </>
+  )
 }
 
-export default App;
+export default App
