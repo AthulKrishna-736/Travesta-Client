@@ -64,6 +64,8 @@ const SignupPage: React.FC = () => {
                 isOpen={isOtpModalOpen}
                 onClose={() => setOtpModalOpen(false)}
                 onSubmit={handleOtpSubmit}
+                userId={userId}
+                role={role}
             />
         </div>
     );

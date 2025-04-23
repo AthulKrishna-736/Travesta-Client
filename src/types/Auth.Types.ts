@@ -23,6 +23,8 @@ export interface OtpModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (otp: string) => void;
+    userId: string
+    role: "user" | "vendor"
 }
 
 export interface ForgotPassProps {
@@ -33,5 +35,4 @@ export interface ResetPassModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (newPassword: string) => void;
-  }
-  
+}

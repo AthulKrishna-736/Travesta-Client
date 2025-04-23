@@ -17,13 +17,7 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4">
-            <div className="w-full max-w-2xl">
-                <Login role={role} onSubmit={handleLogin} />
-            </div>
-        </div>
-    );
+    return <Login role={role} onSubmit={handleLogin} />;
 }
 
 export default LoginPage

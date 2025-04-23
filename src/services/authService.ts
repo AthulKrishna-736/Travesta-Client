@@ -29,6 +29,20 @@ export const verifyOtp = async (data: { userId: string; otp: string; purpose: "s
     return response.data;
 };
 
+export const forgotPass = async (data: { email: string }, role: string) => {
+    const endpoint = getEndpoint(role);
+    const response = await axiosInstance.post(`${endpoint}/auth/forgot-password`, data)
+    return response.data
+}
+
+export const resendOtp = async (data: { userId: string }, role: string) => {
+    const endpoint = getEndpoint(role)
+    const response = await axiosInstance.post(`${endpoint}/auth/resendOtp`, data)
+    return response.data
+}
+
+// export const resetPassword = async(data: any, role: string)
+
 export const logout = async () => {
     const response = await axiosInstance.post(`/auth/logout`);
     return response.data;

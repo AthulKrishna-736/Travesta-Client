@@ -1,9 +1,26 @@
+import { resendOtp } from '@/services/authService';
 import { OtpModalProps } from '@/types/Auth.Types';
-import React, { useState } from 'react';
+import { showError, showSuccess } from '@/utils/customToast';
+import React, { useState, useEffect } from 'react';
 
-const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit }) => {
+const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role }) => {
     const [otpValues, setOtpValues] = useState(Array(6).fill(''));
     const [otpError, setOtpError] = useState<string | null>(null);
+    const [timer, setTimer] = useState(60);
+    const [canResend, setCanResend] = useState(false);
+
+    useEffect(() => {
+        let countdown: NodeJS.Timeout;
+        if (isOpen && timer > 0) {
+            countdown = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        } else if (timer === 0) {
+            setCanResend(true);
+        }
+
+        return () => clearInterval(countdown);
+    }, [isOpen, timer]);
 
     const handleChange = (index: number, value: string) => {
         if (!/^\d?$/.test(value)) return;
@@ -12,7 +29,6 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit }) => {
         updatedOtp[index] = value;
         setOtpValues(updatedOtp);
 
-        // Auto-focus next input
         const nextInput = document.getElementById(`otp-${index + 1}`);
         if (value && nextInput) {
             (nextInput as HTMLInputElement).focus();
@@ -21,7 +37,6 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit }) => {
 
     const validateOtp = () => {
         const otp = otpValues.join('');
-        // OTP validation: It should be 6 digits
         if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
             setOtpError('OTP must be exactly 6 digits.');
             return false;
@@ -37,12 +52,28 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit }) => {
         }
     };
 
+    const handleResend = async () => {
+        try {
+            const response = await resendOtp({ userId }, role);
+            if (response.success) {
+                showSuccess(response.message || "OTP resent successfully!");
+                setTimer(60);
+                setCanResend(false);
+                setOtpValues(Array(6).fill(''));
+            } else {
+                showError(response.message || "Failed to resend OTP");
+            }
+        } catch (error: any) {
+            console.error("Resend OTP Error:", error);
+            showError(error.response.data.error || "Error while resending OTP");
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm relative">
-                {/* Close Button */}
                 <button
                     onClick={onClose}
                     className="absolute right-4 top-4 text-gray-500 hover:text-red-500"
@@ -51,9 +82,10 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit }) => {
                 </button>
 
                 <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Enter OTP</h2>
-                <p className="text-center text-sm text-gray-600 mb-6">We’ve sent a 6-digit OTP to your email/phone.</p>
+                <p className="text-center text-sm text-gray-600 mb-4">
+                    We’ve sent a 6-digit OTP to your email/phone.
+                </p>
 
-                {/* OTP Inputs */}
                 <div className="flex justify-center gap-2 mb-6">
                     {otpValues.map((digit, index) => (
                         <input
@@ -68,16 +100,27 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit }) => {
                     ))}
                 </div>
 
-                {/* OTP Error */}
                 {otpError && <p className="text-red-500 text-center mb-4">{otpError}</p>}
 
-                {/* Submit Button */}
                 <button
                     onClick={handleSubmit}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium"
                 >
                     Verify OTP
                 </button>
+
+                <div className="mt-4 text-center text-sm text-gray-600">
+                    {canResend ? (
+                        <button
+                            onClick={handleResend}
+                            className="text-blue-600 hover:underline font-medium"
+                        >
+                            Resend OTP
+                        </button>
+                    ) : (
+                        <span>Resend OTP in {timer} sec</span>
+                    )}
+                </div>
             </div>
         </div>
     );
