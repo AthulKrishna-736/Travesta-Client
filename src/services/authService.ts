@@ -1,3 +1,4 @@
+import { LoginFormProps, LoginFormValues, OtpFormValues, SignUpFormValues } from "@/types/Auth.Types";
 import { axiosInstance } from "./axiosInstance";
 
 enum ENDPOINTS {
@@ -11,19 +12,19 @@ const getEndpoint = (role: string): string => {
     return ENDPOINTS[lowerRole] || "/user";
 };
 
-export const login = async (data: any, role: string) => {
+export const login = async (data: LoginFormValues, role: string) => {
     const endpoint = getEndpoint(role);
     const response = await axiosInstance.post(`${endpoint}/auth/login`, data);
     return response.data;
 };
 
-export const register = async (data: any, role: string) => {
+export const register = async (data: SignUpFormValues, role: string) => {
     const endpoint = getEndpoint(role);
     const response = await axiosInstance.post(`${endpoint}/auth/signup`, data);
     return response.data;
 };
 
-export const verifyOtp = async (data: { userId: string; otp: string; purpose: "signup" | "reset" }, role: string) => {
+export const verifyOtp = async (data: OtpFormValues, role: string) => {
     const endpoint = getEndpoint(role);
     const response = await axiosInstance.post(`${endpoint}/auth/verifyOtp`, data);
     return response.data;

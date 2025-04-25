@@ -1,23 +1,13 @@
 import React from 'react'
-import { login } from '@/services/authService';
-import { showError, showSuccess } from '@/utils/customToast';
 import Login from '@/components/auth/Login';
+import { useLogin } from '@/hooks/auth/useLogin';
 
 const LoginPage: React.FC = () => {
     const role = "user";
 
-    const handleLogin = async (values: { email: string; password: string }) => {
-        try {
-            const response = await login(values, role);
-            console.log("User data: ", response);
-            showSuccess('Login successful!')
-        } catch (error: any) {
-            showError(error.response.data.error)
-            console.log('error in login: ', error)
-        }
-    };
+    const { mutate: loginUser, isPending } = useLogin(role)
 
-    return <Login role={role} onSubmit={handleLogin} />;
+    return <Login role={role} onSubmit={loginUser} isLoading={isPending}/>;
 }
 
 export default LoginPage

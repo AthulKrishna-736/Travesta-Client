@@ -6,9 +6,9 @@ import { LoginFormProps } from '@/types/Auth.Types';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-const Login: React.FC<LoginFormProps> = ({ role, onSubmit }) => {
+const Login: React.FC<LoginFormProps> = ({ role, onSubmit, isLoading }) => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
@@ -86,8 +86,9 @@ const Login: React.FC<LoginFormProps> = ({ role, onSubmit }) => {
                                     </button>
                                 </div>
 
-                                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-                                    Login
+                                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
+                                    {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
+                                    {isLoading ? 'Logging in...' : 'Login'}
                                 </Button>
 
                                 <div className="text-center text-sm text-gray-600">

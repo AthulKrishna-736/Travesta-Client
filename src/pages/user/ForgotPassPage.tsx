@@ -7,7 +7,7 @@ import ResetPassModal from '@/components/auth/ResetPass';
 
 const ForgotPassPage: React.FC = () => {
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false); // 👈 NEW
+  const [showResetModal, setShowResetModal] = useState(false); 
   const [userId, setUserId] = useState<string>('');
   const role = 'user';
 
