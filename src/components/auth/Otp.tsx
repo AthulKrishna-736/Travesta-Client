@@ -1,9 +1,9 @@
-import { resendOtp } from '@/services/authService';
+import { useResendOtp } from '@/hooks/auth/useResendOtp';
 import { OtpModalProps } from '@/types/Auth.Types';
-import { showError, showSuccess } from '@/utils/customToast';
+import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
-const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role }) => {
+const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading }) => {
     const [otpValues, setOtpValues] = useState(Array(6).fill(''));
     const [otpError, setOtpError] = useState<string | null>(null);
     const [timer, setTimer] = useState(60);
@@ -22,6 +22,7 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, 
         return () => clearInterval(countdown);
     }, [isOpen, timer]);
 
+    //track on change values of input filed
     const handleChange = (index: number, value: string) => {
         if (!/^\d?$/.test(value)) return;
 
@@ -34,6 +35,34 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, 
             (nextInput as HTMLInputElement).focus();
         }
     };
+
+    //track keyboard event of input filed
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key == 'Backspace') {
+            if (otpValues[index] == '') {
+                const prevInput = document.getElementById(`otp-${index - 1}`);
+                if (prevInput) {
+                    (prevInput as HTMLInputElement).focus()
+                }
+            } else {
+                const updatedOtp = [...otpValues];
+                updatedOtp[index] = '';
+                setOtpValues(updatedOtp)
+            }
+        }
+    }
+
+    //paste clipboard for copy and paste to input filed
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+        e.preventDefault()
+        const paste = e.clipboardData.getData('text').trim()
+        if (/^\d{6}$/.test(paste)) {
+            setOtpValues(paste.split(''));
+            setOtpError(null)
+        } else {
+            setOtpError("Pasted OTP must be exactly 6 digits.");
+        }
+    }
 
     const validateOtp = () => {
         const otp = otpValues.join('');
@@ -52,22 +81,12 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, 
         }
     };
 
-    const handleResend = async () => {
-        try {
-            const response = await resendOtp({ userId }, role);
-            if (response.success) {
-                showSuccess(response.message || "OTP resent successfully!");
-                setTimer(60);
-                setCanResend(false);
-                setOtpValues(Array(6).fill(''));
-            } else {
-                showError(response.message || "Failed to resend OTP");
-            }
-        } catch (error: any) {
-            console.error("Resend OTP Error:", error);
-            showError(error.response.data.error || "Error while resending OTP");
-        }
-    };
+
+    const { mutate: resendOtpFn, isPending: isResending } = useResendOtp(role, () => {
+        setTimer(60);
+        setCanResend(false)
+        setOtpValues(Array(6).fill(''))
+    })
 
     if (!isOpen) return null;
 
@@ -95,6 +114,8 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, 
                             maxLength={1}
                             value={digit}
                             onChange={(e) => handleChange(index, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(index, e)}
+                            onPaste={(e) => handlePaste(e)}
                             className="w-10 h-12 text-center border border-gray-300 rounded-md text-lg focus:outline-none focus:border-blue-500"
                         />
                     ))}
@@ -105,21 +126,24 @@ const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, 
                 <button
                     onClick={handleSubmit}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium"
+                    disabled={isLoading}
                 >
-                    Verify OTP
+                    {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
+                    {isLoading ? 'Verifying...' : 'Verify Otp'}
                 </button>
 
                 <div className="mt-4 text-center text-sm text-gray-600">
-                    {canResend ? (
-                        <button
-                            onClick={handleResend}
-                            className="text-blue-600 hover:underline font-medium"
-                        >
-                            Resend OTP
-                        </button>
-                    ) : (
-                        <span>Resend OTP in {timer} sec</span>
-                    )}
+                    <button
+                        onClick={() => resendOtpFn({ userId })}
+                        disabled={!canResend || isResending}
+                        className={`text-blue-600 hover:underline font-medium ${(!canResend || isResending) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                        {isResending
+                            ? 'Resending...'
+                            : canResend
+                                ? 'Resend OTP'
+                                : `Resend OTP in ${timer} sec`}
+                    </button>
                 </div>
             </div>
         </div>

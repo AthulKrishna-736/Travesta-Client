@@ -1,5 +1,7 @@
+export type TRoles = 'user' | 'vendor' | 'admin'
+
 export interface LoginFormProps {
-    role: "user" | "vendor" | "admin"
+    role: TRoles
     onSubmit: (data: { email: string; password: string }) => void
     isLoading: boolean
 }
@@ -21,7 +23,7 @@ export type SignUpFormValues = {
 }
 
 export interface SignUpFormProps {
-    role: "user" | "vendor"
+    role: Exclude<TRoles, 'admin'>
     onSubmit: (values: SignUpFormValues) => void;
     isLoading: boolean
 }
@@ -37,7 +39,7 @@ export interface OtpModalProps {
     onClose: () => void;
     onSubmit: (otp: string) => void;
     userId: string
-    role: "user" | "vendor"
+    role: Exclude<TRoles, 'admin'>
     isLoading: boolean
 }
 
@@ -49,4 +51,8 @@ export interface ResetPassModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (newPassword: string) => void;
+}
+
+export type ResentOtpValues = {
+    userId: string
 }

@@ -4,10 +4,11 @@ import { showError, showSuccess } from '@/utils/customToast';
 import ForgotPass from '@/components/auth/ForgotPass';
 import OtpModal from '@/components/auth/Otp';
 import ResetPassModal from '@/components/auth/ResetPass';
+import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
 
 const ForgotPassPage: React.FC = () => {
   const [showOtpModal, setShowOtpModal] = useState(false);
-  const [showResetModal, setShowResetModal] = useState(false); 
+  const [showResetModal, setShowResetModal] = useState(false);
   const [userId, setUserId] = useState<string>('');
   const role = 'user';
 
@@ -25,16 +26,14 @@ const ForgotPassPage: React.FC = () => {
     }
   };
 
+  const { mutate: verifyOtpFn, isPending } = useOtpVerify(role, () => {
+    setShowOtpModal(false);
+    setShowResetModal(true);
+  })
+
   // Step 2: Verify OTP
   const handleOtpSubmit = async (otp: string) => {
-    try {
-      const response = await verifyOtp({ userId, otp, purpose: 'reset' }, role);
-      showSuccess('OTP verified. Proceed to reset password.');
-      setShowOtpModal(false);
-      setShowResetModal(true);
-    } catch (err) {
-      showError('Invalid OTP. Please try again.');
-    }
+    verifyOtpFn({ userId, otp, purpose: 'reset' });
   };
 
   // Step 3: Handle Password Reset
@@ -60,6 +59,7 @@ const ForgotPassPage: React.FC = () => {
         onSubmit={handleOtpSubmit}
         userId={userId}
         role={role}
+        isLoading={isPending}
       />
 
       <ResetPassModal

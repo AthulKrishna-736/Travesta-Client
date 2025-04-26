@@ -1,4 +1,4 @@
-import { LoginFormProps, LoginFormValues, OtpFormValues, SignUpFormValues } from "@/types/Auth.Types";
+import { LoginFormProps, LoginFormValues, OtpFormValues, ResentOtpValues, SignUpFormValues } from "@/types/Auth.Types";
 import { axiosInstance } from "./axiosInstance";
 
 enum ENDPOINTS {
@@ -36,7 +36,7 @@ export const forgotPass = async (data: { email: string }, role: string) => {
     return response.data
 }
 
-export const resendOtp = async (data: { userId: string }, role: string) => {
+export const resendOtp = async (data: ResentOtpValues, role: string) => {
     const endpoint = getEndpoint(role)
     const response = await axiosInstance.post(`${endpoint}/auth/resendOtp`, data)
     return response.data
