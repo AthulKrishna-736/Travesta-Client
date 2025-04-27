@@ -6,15 +6,17 @@ import { useMutation } from "@tanstack/react-query";
 export const useResetPass = (role: string, onSuccessCallback: () => void) => {
     return useMutation({
         mutationFn: (values: TResetPassValues) => resetPassword(values, role),
-        onSuccess: (data) => {
-            if (data.success) {
-                showSuccess(data.message);
+        onSuccess: (res) => {
+            console.log('res on resetpass: ',res)
+            if (res.success) {
+                showSuccess(res.message);
                 onSuccessCallback()
             } else {
-                showError(data.message || 'Something went wrong')
+                showError(res.message || 'Something went wrong')
             }
         },
         onError: (error: any) => {
+            console.log('error logging: ', error)
             showError(error.response?.data?.message || 'Something went wrong')
         }
     })

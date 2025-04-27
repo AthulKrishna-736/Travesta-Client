@@ -44,7 +44,7 @@ export const resendOtp = async (data: TResentOtpValues, role: string) => {
 
 export const resetPassword = async (data: TResetPassValues, role: string) => {
     const endpoint = getEndpoint(role)
-    const response = await axiosInstance.post(`${endpoint}/auth/reset-password`, data)
+    const response = await axiosInstance.patch(`${endpoint}/auth/reset-password`, data)
     return response.data
 }
 

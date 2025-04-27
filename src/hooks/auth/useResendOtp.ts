@@ -6,15 +6,17 @@ import { useMutation } from "@tanstack/react-query";
 export const useResendOtp = (role: string, onSuccessCallback: () => void) => {
     return useMutation({
         mutationFn: (values: TResentOtpValues) => resendOtp(values, role),
-        onSuccess: (data) => {
-            if (data.success) {
-                showSuccess(data.message || 'Otp resend successfully!');
+        onSuccess: (res) => {
+            console.log('res on resentotp: ', res)
+            if (res.success) {
+                showSuccess(res.message || 'Otp resend successfully!');
                 onSuccessCallback()
             } else {
-                showError(data.message || 'Something went wrong')
+                showError(res.message || 'Something went wrong')
             }
         },
         onError: (error: any) => {
+            console.log('error logging: ', error)
             showError(error?.response?.data?.message || 'Something went wrong')
         }
     })

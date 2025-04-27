@@ -2,6 +2,8 @@ import { useResendOtp } from '@/hooks/auth/useResendOtp';
 import { IOtpModalProps } from '@/types/Auth.Types';
 import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading }) => {
     const [otpValues, setOtpValues] = useState(Array(6).fill(''));
@@ -93,10 +95,7 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm relative">
-                <button
-                    onClick={onClose}
-                    className="absolute right-4 top-4 text-gray-500 hover:text-red-500"
-                >
+                <button onClick={onClose} className="absolute right-4 top-4 text-gray-500 hover:text-red-500 text-2xl">
                     ×
                 </button>
 
@@ -107,7 +106,7 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
 
                 <div className="flex justify-center gap-2 mb-6">
                     {otpValues.map((digit, index) => (
-                        <input
+                        <Input
                             key={index}
                             id={`otp-${index}`}
                             type="text"
@@ -123,14 +122,15 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
 
                 {otpError && <p className="text-red-500 text-center mb-4">{otpError}</p>}
 
-                <button
+                <Button
+                    type="button"
                     onClick={handleSubmit}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium"
                     disabled={isLoading}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-medium flex items-center justify-center gap-2"
                 >
-                    {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
-                    {isLoading ? 'Verifying...' : 'Verify Otp'}
-                </button>
+                    {isLoading && <Loader2 className="animate-spin w-4 h-4" />}
+                    {isLoading ? 'Verifying...' : 'Verify OTP'}
+                </Button>
 
                 <div className="mt-4 text-center text-sm text-gray-600">
                     <button

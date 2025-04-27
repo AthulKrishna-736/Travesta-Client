@@ -45,12 +45,14 @@ export interface IOtpModalProps {
 
 export interface IForgotPassProps {
     onSubmit: (email: string) => void;
+    isLoading: boolean
 }
 
 export interface IResetPassModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (newPassword: string) => void;
+    isLoading: boolean
 }
 
 export type TResentOtpValues = {

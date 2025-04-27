@@ -36,7 +36,6 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                         } as TSignUpFormValues}
                         validationSchema={signupValidationSchema}
                         onSubmit={(values) => {
-                            console.log('data: ', values)
                             onSubmit({ ...values, role });
                         }}
                     >

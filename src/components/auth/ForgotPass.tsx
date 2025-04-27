@@ -7,7 +7,7 @@ import { IForgotPassProps } from '@/types/Auth.Types';
 import { forgotPasswordValidationSchema } from '@/utils/validations/authValidation';
 import { Loader2 } from 'lucide-react';
 
-const ForgotPass: React.FC<IForgotPassProps> = ({ onSubmit }) => {
+const ForgotPass: React.FC<IForgotPassProps> = ({ onSubmit, isLoading }) => {
     return (
         <div className="w-full max-w-md mx-auto p-8 rounded-2xl bg-white shadow space-y-6">
             <h2 className="text-2xl font-bold text-center text-blue-600">Forgot Password</h2>
@@ -22,7 +22,7 @@ const ForgotPass: React.FC<IForgotPassProps> = ({ onSubmit }) => {
                     onSubmit(values.email);
                 }}
             >
-                {({ isSubmitting }) => (
+                {() => (
                     <Form className="space-y-6">
                         <div>
                             <Label htmlFor="email">Email</Label>
@@ -40,9 +40,9 @@ const ForgotPass: React.FC<IForgotPassProps> = ({ onSubmit }) => {
                             <ErrorMessage name="email" component="p" className="text-red-500 text-sm text-center mt-1" />
                         </div>
 
-                        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
-                            {isSubmitting && <Loader2 className='animate-spin w-4 h-4' />}
-                            {isSubmitting ? 'Sending OTP...' : 'Send OTP'}
+                        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
+                            {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
+                            {isLoading ? 'Sending OTP...' : 'Send OTP'}
                         </Button>
                     </Form>
                 )}

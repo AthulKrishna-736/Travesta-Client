@@ -6,15 +6,21 @@ import { TOtpFormValues } from "@/types/Auth.Types";
 export const useOtpVerify = (role: string, onSuccessCallback: (data: any) => void) => {
     return useMutation({
         mutationFn: (values: TOtpFormValues) => verifyOtp(values, role),
-        onSuccess: (data) => {
-            if (data.success) {
-                showSuccess(data.message)
-                onSuccessCallback(data)
+        onSuccess: (res) => {
+            console.log('res on verifyotp: ', res)
+            if (res.success) {
+                showSuccess(res.message)
+                if (res.data?.email) {
+                    onSuccessCallback(res.data?.email)
+                } else {
+                    showError('Email not found after Otp verification');
+                }
             } else {
-                showError(data.message || 'Something went wrong')
+                showError(res.message || 'Something went wrong')
             }
         },
         onError: (error: any) => {
+            console.log('error logging: ', error)
             showError(error?.response?.data?.message || 'Something went wrong')
         }
     })

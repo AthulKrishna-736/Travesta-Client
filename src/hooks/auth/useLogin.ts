@@ -12,12 +12,13 @@ export const useLogin = (role: string) => {
 
     return useMutation<any, any, TLoginFormValues>({
         mutationFn: (values) => login(values, role),
-        onSuccess: (data) => {
-            console.log('Login success:', data)
-            dispatch(setUser(data))
-            showSuccess(data.message || 'Login successful')
+        onSuccess: (res) => {
+            console.log('Login success:', res)
+            dispatch(setUser(res))
+            showSuccess(res.message || 'Login successful')
         },
         onError: (error: any) => {
+            console.log('error logging: ', error)
             showError(error?.response?.data?.message || 'Something went wrong')
         }
     })
