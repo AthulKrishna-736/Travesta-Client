@@ -1,21 +1,21 @@
 import { verifyOtp } from "@/services/authService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
-import { OtpFormValues } from "@/types/Auth.Types";
+import { TOtpFormValues } from "@/types/Auth.Types";
 
-export const useOtpVerify = (role: string, onSuccessCallback: () => void) => {
+export const useOtpVerify = (role: string, onSuccessCallback: (data: any) => void) => {
     return useMutation({
-        mutationFn: (values: OtpFormValues) => verifyOtp(values, role),
+        mutationFn: (values: TOtpFormValues) => verifyOtp(values, role),
         onSuccess: (data) => {
             if (data.success) {
                 showSuccess(data.message)
-                onSuccessCallback()
+                onSuccessCallback(data)
             } else {
-                showError(data.message || 'OTP verification failed')
+                showError(data.message || 'Something went wrong')
             }
         },
         onError: (error: any) => {
-            showError(error?.response?.data?.message)
+            showError(error?.response?.data?.message || 'Something went wrong')
         }
     })
 }

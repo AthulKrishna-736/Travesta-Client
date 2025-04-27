@@ -1,17 +1,17 @@
 export type TRoles = 'user' | 'vendor' | 'admin'
 
-export interface LoginFormProps {
+export interface ILoginFormProps {
     role: TRoles
     onSubmit: (data: { email: string; password: string }) => void
     isLoading: boolean
 }
 
-export type LoginFormValues = {
+export type TLoginFormValues = {
     email: string,
     password: string,
 }
 
-export type SignUpFormValues = {
+export type TSignUpFormValues = {
     firstName: string;
     lastName: string;
     email: string;
@@ -22,19 +22,19 @@ export type SignUpFormValues = {
     subscriptionType: string;
 }
 
-export interface SignUpFormProps {
+export interface ISignUpFormProps {
     role: Exclude<TRoles, 'admin'>
-    onSubmit: (values: SignUpFormValues) => void;
+    onSubmit: (values: TSignUpFormValues) => void;
     isLoading: boolean
 }
 
-export type OtpFormValues = {
+export type TOtpFormValues = {
     otp: string, 
     userId: string,
     purpose: 'signup' | 'reset'
 }
 
-export interface OtpModalProps {
+export interface IOtpModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (otp: string) => void;
@@ -43,16 +43,25 @@ export interface OtpModalProps {
     isLoading: boolean
 }
 
-export interface ForgotPassProps {
+export interface IForgotPassProps {
     onSubmit: (email: string) => void;
 }
 
-export interface ResetPassModalProps {
+export interface IResetPassModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: (newPassword: string) => void;
 }
 
-export type ResentOtpValues = {
+export type TResentOtpValues = {
     userId: string
+}
+
+export type TForgotPassValues = {
+    email: string
+}
+
+export type TResetPassValues = {
+    email: string,
+    password: string,
 }

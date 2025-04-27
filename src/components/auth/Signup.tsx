@@ -5,10 +5,10 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { SignUpFormProps, SignUpFormValues } from '@/types/Auth.Types';
+import { ISignUpFormProps, TSignUpFormValues } from '@/types/Auth.Types';
 import { useNavigate } from 'react-router-dom';
 
-const SignUp: React.FC<SignUpFormProps> = ({ role, onSubmit, isLoading }) => {
+const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ const SignUp: React.FC<SignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                             password: '',
                             confirmPassword: '',
                             subscriptionType: 'basic'
-                        } as SignUpFormValues}
+                        } as TSignUpFormValues}
                         validationSchema={signupValidationSchema}
                         onSubmit={(values) => {
                             console.log('data: ', values)

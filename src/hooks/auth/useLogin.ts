@@ -4,13 +4,13 @@ import { showError, showSuccess } from '@/utils/customToast';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { setUser } from '@/store/slices/authSlice';
-import { LoginFormValues } from '@/types/Auth.Types';
+import { TLoginFormValues } from '@/types/Auth.Types';
 
 
 export const useLogin = (role: string) => {
     const dispatch = useDispatch<AppDispatch>();
 
-    return useMutation<any, any, LoginFormValues>({
+    return useMutation<any, any, TLoginFormValues>({
         mutationFn: (values) => login(values, role),
         onSuccess: (data) => {
             console.log('Login success:', data)
@@ -18,7 +18,7 @@ export const useLogin = (role: string) => {
             showSuccess(data.message || 'Login successful')
         },
         onError: (error: any) => {
-            showError(error?.response?.data?.message || 'Login failed')
+            showError(error?.response?.data?.message || 'Something went wrong')
         }
     })
 }

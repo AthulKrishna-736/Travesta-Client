@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { loginValidationSchema } from '@/utils/validations/authValidation';
-import { LoginFormProps } from '@/types/Auth.Types';
+import { ILoginFormProps } from '@/types/Auth.Types';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-const Login: React.FC<LoginFormProps> = ({ role, onSubmit, isLoading }) => {
+const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 

@@ -60,12 +60,11 @@ export const forgotPasswordValidationSchema = Yup.object().shape({
 export const resetPasswordValidationSchema = Yup.object().shape({
     password: Yup.string()
         .required('Password is required')
-        .min(8, 'Password must be at least 8 characters long')
-        .matches(/[A-Z]/, 'At least one uppercase letter required (A-Z)')
-        .matches(/[a-z]/, 'At least one lowercase letter required (a-z)')
-        .matches(/[0-9]/, 'At least one number required (0-9)')
-        .matches(/[@$!%*?&]/, 'At least one special character required (@$!%*?&)'),
-
+        .min(6, 'Password must be at least 6 characters long')
+        .matches(/[A-Z]/, "Must include an uppercase letter")
+        .matches(/[a-z]/, "Must include a lowercase letter")
+        .matches(/\d/, "Must include a number")
+        .matches(/[!@#$%^&*]/, "Must include a special character"),
     confirmPassword: Yup.string()
         .oneOf([Yup.ref('password')], 'Passwords must match')
         .required('Confirm Password is required'),

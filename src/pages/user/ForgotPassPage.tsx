@@ -1,52 +1,50 @@
 import React, { useState } from 'react';
-import { forgotPass, verifyOtp } from '@/services/authService';
-import { showError, showSuccess } from '@/utils/customToast';
 import ForgotPass from '@/components/auth/ForgotPass';
 import OtpModal from '@/components/auth/Otp';
 import ResetPassModal from '@/components/auth/ResetPass';
 import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
+import { useForgotPass } from '@/hooks/auth/useForgotPass';
+import { useResetPass } from '@/hooks/auth/useResetPass';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassPage: React.FC = () => {
+  const navigate = useNavigate()
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [userId, setUserId] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const role = 'user';
 
-  // Step 1: Send OTP
-  const handleSendOtp = async (emailInput: string) => {
-    try {
-      const response = await forgotPass({ email: emailInput }, role);
-      if (response.success) {
-        setUserId(response.data);
-        setShowOtpModal(true);
-        showSuccess(response.message);
-      }
-    } catch (error: any) {
-      showError(error.response.data.error);
-    }
-  };
 
-  const { mutate: verifyOtpFn, isPending } = useOtpVerify(role, () => {
-    setShowOtpModal(false);
-    setShowResetModal(true);
+  //step 1 send email
+  const { mutate: forgotPassFn } = useForgotPass(role, (userId: string) => {
+    setUserId(userId);
+    setShowOtpModal(true);
   })
 
-  // Step 2: Verify OTP
+  const handleSendOtp = (email: string) => {
+    forgotPassFn({ email })
+  };
+
+  //step 2 verify otp
+  const { mutate: verifyOtpFn, isPending } = useOtpVerify(role, (email: string) => {
+    setShowOtpModal(false);
+    setShowResetModal(true);
+    setEmail(email)
+  })
+
   const handleOtpSubmit = async (otp: string) => {
     verifyOtpFn({ userId, otp, purpose: 'reset' });
   };
 
-  // Step 3: Handle Password Reset
-  const handleResetPassword = async (newPassword: string) => {
-    try {
-      const response = await resetPassword({ userId, password: newPassword }, role);
-      if (response.success) {
-        showSuccess('Password reset successful! You can now login.');
-        setShowResetModal(false);
-      }
-    } catch (err) {
-      showError('Failed to reset password. Please try again.');
-    }
+  //step 3 reset password
+
+  const { mutate: resetPassFn } = useResetPass(role, () => {
+    setShowResetModal(false)
+    navigate('/user/login')
+  })
+  const handleResetPassword = async (password: string) => {
+    resetPassFn({ email, password })
   };
 
   return (

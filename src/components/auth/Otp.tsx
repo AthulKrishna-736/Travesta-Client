@@ -1,9 +1,9 @@
 import { useResendOtp } from '@/hooks/auth/useResendOtp';
-import { OtpModalProps } from '@/types/Auth.Types';
+import { IOtpModalProps } from '@/types/Auth.Types';
 import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
-const OtpModal: React.FC<OtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading }) => {
+const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading }) => {
     const [otpValues, setOtpValues] = useState(Array(6).fill(''));
     const [otpError, setOtpError] = useState<string | null>(null);
     const [timer, setTimer] = useState(60);
