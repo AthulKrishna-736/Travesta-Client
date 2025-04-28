@@ -29,7 +29,7 @@ export interface ISignUpFormProps {
 }
 
 export type TOtpFormValues = {
-    otp: string, 
+    otp: string,
     userId: string,
     purpose: 'signup' | 'reset'
 }
@@ -66,4 +66,13 @@ export type TForgotPassValues = {
 export type TResetPassValues = {
     email: string,
     password: string,
+}
+
+export type TGoogleLoginValues = {
+    credential: string,
+    role: Exclude<TRoles, 'admin'>
+}
+
+export interface IGoogleLoginProps {
+    role: Exclude<TRoles, 'admin'>
 }

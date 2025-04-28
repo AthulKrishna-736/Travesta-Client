@@ -10,8 +10,8 @@ import { TLoginFormValues } from '@/types/Auth.Types';
 export const useLogin = (role: string) => {
     const dispatch = useDispatch<AppDispatch>();
 
-    return useMutation<any, any, TLoginFormValues>({
-        mutationFn: (values) => login(values, role),
+    return useMutation({
+        mutationFn: (values: TLoginFormValues) => login(values, role),
         onSuccess: (res) => {
             console.log('Login success:', res)
             dispatch(setUser(res))

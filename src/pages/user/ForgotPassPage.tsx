@@ -6,6 +6,7 @@ import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
 import { useForgotPass } from '@/hooks/auth/useForgotPass';
 import { useResetPass } from '@/hooks/auth/useResetPass';
 import { useNavigate } from 'react-router-dom';
+import { TRoles } from '@/types/Auth.Types';
 
 const ForgotPassPage: React.FC = () => {
   const navigate = useNavigate()
@@ -13,11 +14,11 @@ const ForgotPassPage: React.FC = () => {
   const [showResetModal, setShowResetModal] = useState(false);
   const [userId, setUserId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const role = 'user';
+  const role: Exclude<TRoles, 'admin'> = "user";
 
 
   //step 1 send email
-  const { mutate: forgotPassFn , isPending: isLoadingForgot} = useForgotPass(role, (userId: string) => {
+  const { mutate: forgotPassFn, isPending: isLoadingForgot } = useForgotPass(role, (userId: string) => {
     setUserId(userId);
     setShowOtpModal(true);
   })
@@ -39,7 +40,7 @@ const ForgotPassPage: React.FC = () => {
 
   //step 3 reset password
 
-  const { mutate: resetPassFn , isPending: isLoadingReset} = useResetPass(role, () => {
+  const { mutate: resetPassFn, isPending: isLoadingReset } = useResetPass(role, () => {
     setShowResetModal(false)
     navigate('/user/login')
   })
@@ -49,7 +50,7 @@ const ForgotPassPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4">
-      <ForgotPass onSubmit={handleSendOtp} isLoading={isLoadingForgot}/>
+      <ForgotPass onSubmit={handleSendOtp} isLoading={isLoadingForgot} />
 
       <OtpModal
         isOpen={showOtpModal}

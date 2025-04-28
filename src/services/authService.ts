@@ -1,4 +1,4 @@
-import { TForgotPassValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TSignUpFormValues } from "@/types/Auth.Types";
+import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TSignUpFormValues } from "@/types/Auth.Types";
 import { axiosInstance } from "./axiosInstance";
 
 enum ENDPOINTS {
@@ -17,6 +17,12 @@ export const login = async (data: TLoginFormValues, role: string) => {
     const response = await axiosInstance.post(`${endpoint}/auth/login`, data);
     return response.data;
 };
+
+export const googleLogin = async (data: TGoogleLoginValues, role: string) => {
+    const endpoint = getEndpoint(role)
+    const response = await axiosInstance.post(`${endpoint}/auth/google-login`, data);
+    return response.data
+}
 
 export const register = async (data: TSignUpFormValues, role: string) => {
     const endpoint = getEndpoint(role);

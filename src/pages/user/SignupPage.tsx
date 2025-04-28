@@ -4,12 +4,13 @@ import OtpModal from '@/components/auth/Otp';
 import { useNavigate } from 'react-router-dom';
 import { useSignup } from '@/hooks/auth/useSignup';
 import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
+import { TRoles } from '@/types/Auth.Types';
 
 const SignupPage: React.FC = () => {
     const [isOtpModalOpen, setOtpModalOpen] = useState(false);
     const navigate = useNavigate();
     const [userId, setUserId] = useState<string>('');
-    const role = "user";
+    const role: Exclude<TRoles, 'admin'> = "user";
 
     const { mutate: signupUser, isPending: isSignupLoading } = useSignup(role, (userId) => {
         setUserId(userId)

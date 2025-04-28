@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { loginValidationSchema } from '@/utils/validations/authValidation';
-import { ILoginFormProps } from '@/types/Auth.Types';
+import { ILoginFormProps, TRoles } from '@/types/Auth.Types';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { GoogleLoginButton } from './GoogleLogin';
 
 const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -90,6 +91,14 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
                                     {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
                                     {isLoading ? 'Logging in...' : 'Login'}
                                 </Button>
+
+                                <div className="flex items-center my-4">
+                                    <div className="flex-grow h-px bg-gray-300"></div>
+                                    <span className="px-4 text-gray-500 text-sm">OR</span>
+                                    <div className="flex-grow h-px bg-gray-300"></div>
+                                </div>
+
+                                <GoogleLoginButton role={role as Exclude<TRoles, 'admin'>} />
 
                                 <div className="text-center text-sm text-gray-600">
                                     Don’t have an account?{' '}
