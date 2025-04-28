@@ -4,12 +4,7 @@ export const loginValidationSchema = Yup.object().shape({
     email: Yup.string()
         .required("Email is required")
         .email("Must be a valid email address")
-        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format")
-        .matches(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/,
-            "Only standard emails allowed (no emojis or weird symbols)"
-        ),
-
+        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
     password: Yup.string()
         .required("Password is required")
         .min(8, "Password must be at least 8 characters long")

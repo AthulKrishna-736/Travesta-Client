@@ -19,7 +19,7 @@ const SignupPage: React.FC = () => {
 
     const { mutate: verifyOtp, isPending: isOtploading } = useOtpVerify(role, () => {
         setOtpModalOpen(false)
-        navigate('/user/login');
+        navigate(`/${role}/login`);
     })
 
     const handleOtpSubmit = (otp: string) => {
