@@ -12,15 +12,14 @@ import {
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { Hotel, Search, Menu, Bell, LogOutIcon } from "lucide-react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useLogout } from '@/hooks/auth/useLogout';
 
 const Header = () => {
-    const navigate = useNavigate();
+    const { mutate: logoutUserFn } = useLogout('user')
 
     const handleLogout = () => {
-        // Logic to handle user logout (if any), for example, clearing authentication tokens
-        // Redirect to login page
-        navigate('/user/login');
+        logoutUserFn()
     };
 
     return (

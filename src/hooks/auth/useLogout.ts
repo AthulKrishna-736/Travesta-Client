@@ -1,6 +1,7 @@
 import { logout } from "@/services/authService";
 import { logoutAdmin } from "@/store/slices/adminSlice";
 import { logoutUser } from "@/store/slices/authSlice";
+import { logoutVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch } from "@/store/store";
 import { TRoles } from "@/types/Auth.Types";
 import { showError, showSuccess } from "@/utils/customToast";
@@ -20,6 +21,8 @@ export const useLogout = (role: TRoles) => {
             if (res.success) {
                 if (role === 'admin') {
                     dispatch(logoutAdmin())
+                } else if (role === 'vendor') {
+                    dispatch(logoutVendor())
                 } else {
                     dispatch(logoutUser())
                 }

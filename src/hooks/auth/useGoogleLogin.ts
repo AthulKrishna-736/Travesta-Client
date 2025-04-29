@@ -1,12 +1,15 @@
 import { googleLogin } from "@/services/authService";
 import { setUser } from "@/store/slices/authSlice";
+import { setVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch } from "@/store/store";
 import { TGoogleLoginValues } from "@/types/Auth.Types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const useGoogleLogin = (role: string) => {
+    const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>();
 
     return useMutation({
@@ -14,7 +17,13 @@ export const useGoogleLogin = (role: string) => {
         onSuccess: (res) => {
             console.log('res on googleLogin: ', res)
             if (res.success) {
-                dispatch(setUser(res.data))
+                if (role === 'user') {
+                    dispatch(setUser(res.data))
+                    navigate('/user/home')
+                } else {
+                    dispatch(setVendor(res.data))
+                    navigate('/vendor/home')
+                }
                 showSuccess(res.message)
             } else {
                 showError(res.message || 'Something went wrong')

@@ -7,6 +7,7 @@ import { setUser } from '@/store/slices/authSlice';
 import { TLoginFormValues } from '@/types/Auth.Types';
 import { useNavigate } from 'react-router-dom';
 import { setAdmin } from '@/store/slices/adminSlice';
+import { setVendor } from '@/store/slices/vendorSlice';
 
 
 export const useLogin = (role: string) => {
@@ -20,6 +21,9 @@ export const useLogin = (role: string) => {
             if (role === 'admin') {
                 dispatch(setAdmin(res.data))
                 navigate(`/${role}/dashboard`)
+            } else if (role === 'vendor') {
+                dispatch(setVendor(res.data))
+                navigate(`/${role}/home`)
             } else {
                 dispatch(setUser(res.data))
                 navigate(`/${role}/home`)

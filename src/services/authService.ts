@@ -56,6 +56,6 @@ export const resetPassword = async (data: TResetPassValues, role: string) => {
 
 export const logout = async (role: TRoles) => {
     const endpoint = getEndpoint(role)
-    const response = await axiosInstance.post(`${endpoint}/auth/logout`, role);
+    const response = await axiosInstance.post(`${endpoint}/auth/logout`);
     return response.data;
 };
