@@ -6,7 +6,7 @@ import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
 import { useForgotPass } from '@/hooks/auth/useForgotPass';
 import { useResetPass } from '@/hooks/auth/useResetPass';
 import { useNavigate } from 'react-router-dom';
-import { TRoles } from '@/types/Auth.Types';
+import { TRoles } from '@/types/auth.types';
 
 const VendorForgotPassPage: React.FC = () => {
   const navigate = useNavigate()

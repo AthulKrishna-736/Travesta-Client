@@ -1,27 +1,16 @@
-import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AdminSidebar } from "./AdminSidebar"
 import { useLogout } from "@/hooks/auth/useLogout"
+import React from "react"
+import { AdminLayoutProps } from "@/types/component.types"
 
 
-interface AdminLayoutProps {
-  children: ReactNode
-}
+export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
-export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { mutate: logout } = useLogout('admin')
-
-  const handleLogout = () => {
-    logout()
-  }
 
   return (
     <SidebarProvider>
@@ -47,7 +36,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

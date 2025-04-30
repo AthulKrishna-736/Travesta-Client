@@ -1,6 +1,6 @@
 import React from "react";
 import { GoogleLogin } from '@react-oauth/google';
-import { IGoogleLoginProps } from "@/types/Auth.Types";
+import { IGoogleLoginProps } from "@/types/auth.types";
 import { useGoogleLogin } from "@/hooks/auth/useGoogleLogin";
 
 export const GoogleLoginButton: React.FC<IGoogleLoginProps> = ({ role })=> {

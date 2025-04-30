@@ -1,20 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { Calendar, CalendarCheck, DollarSign, Layers, LayoutDashboard, Settings, Tag, Users } from "lucide-react"
+import { Calendar, CalendarCheck, DollarSign, Layers, LayoutDashboard, Tag, Users } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarRail,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 
@@ -24,13 +12,12 @@ export function AdminSidebar() {
     const navigate = useNavigate();
     const pathname = location.pathname
 
-    // Define navigation items
     const mainNavItems = [
         {
             title: "Overview",
             icon: LayoutDashboard,
             href: "/admin/dashboard",
-            isActive: pathname === "/admin",
+            isActive: pathname === "/admin/dashboard",
         },
         {
             title: "Users & Vendors",
@@ -109,21 +96,6 @@ export function AdminSidebar() {
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Settings</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <a href="/admin/settings">
-                                        <Settings className="h-4 w-4" />
-                                        <span>Settings</span>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

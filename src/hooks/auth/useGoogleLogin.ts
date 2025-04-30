@@ -2,7 +2,7 @@ import { googleLogin } from "@/services/authService";
 import { setUser } from "@/store/slices/authSlice";
 import { setVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch } from "@/store/store";
-import { TGoogleLoginValues } from "@/types/Auth.Types";
+import { TGoogleLoginValues } from "@/types/auth.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";

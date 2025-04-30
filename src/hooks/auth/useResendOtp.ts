@@ -1,5 +1,5 @@
 import { resendOtp } from "@/services/authService";
-import { TResentOtpValues } from "@/types/Auth.Types";
+import { TResentOtpValues } from "@/types/auth.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 
