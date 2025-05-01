@@ -7,7 +7,7 @@ export interface AdminLayoutProps {
 export type Action = {
     label: string
     onClick: (rowData: any) => void
-    variant?: "default" | "outline" | "ghost" | "link"
+    variant?: "default" | "outline" | "ghost" | "link" | "destructive"
 }
 
 export interface DataTableProps {

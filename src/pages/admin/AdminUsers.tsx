@@ -1,7 +1,11 @@
 import { AdminLayout } from "@/components/admin/layout/AdminLayout"
-import UsersTable from "@/components/common/Table"
+import UserTable from "@/components/admin/UserTable"
+import { useGetAllUsers } from "@/hooks/admin/useGetAllUsers"
 
 const AdminUsers = () => {
+
+    const { data: users = [], isLoading } = useGetAllUsers()
+
     return (
         <AdminLayout>
             <div className="space-y-6">
@@ -13,7 +17,7 @@ const AdminUsers = () => {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <UsersTable /> 
+                    <UserTable users={users} loading={isLoading} /> 
                 </div>
             </div>
         </AdminLayout>

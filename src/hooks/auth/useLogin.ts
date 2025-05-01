@@ -15,7 +15,10 @@ export const useLogin = (role: string) => {
     const navigate = useNavigate()
 
     return useMutation({
-        mutationFn: (values: TLoginFormValues) => login(values, role),
+        mutationFn: (values: TLoginFormValues) => {
+            const payload = { ...values, role }
+            return login(payload, role);
+        },
         onSuccess: (res) => {
             console.log('Login success:', res)
             if (role === 'admin') {
