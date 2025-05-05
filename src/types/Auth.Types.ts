@@ -41,6 +41,7 @@ export interface IOtpModalProps {
     userId: string
     role: Exclude<TRoles, 'admin'>
     isLoading: boolean
+    purpose: 'signup' | 'reset'
 }
 
 export interface IForgotPassProps {

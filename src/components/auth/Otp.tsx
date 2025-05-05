@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
-const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading }) => {
+const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading, purpose }) => {
     const [otpValues, setOtpValues] = useState(Array(6).fill(''));
     const [otpError, setOtpError] = useState<string | null>(null);
     const [timer, setTimer] = useState(60);
@@ -84,7 +84,7 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
     };
 
 
-    const { mutate: resendOtpFn, isPending: isResending } = useResendOtp(role, () => {
+    const { mutate: resendOtpFn, isPending: isResending } = useResendOtp(role, purpose, () => {
         setTimer(60);
         setCanResend(false)
         setOtpValues(Array(6).fill(''))

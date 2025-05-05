@@ -59,6 +59,7 @@ const ForgotPassPage: React.FC = () => {
         userId={userId}
         role={role}
         isLoading={isLoadingVerify}
+        purpose='reset'
       />
 
       <ResetPassModal

@@ -36,6 +36,7 @@ const SignupPage: React.FC = () => {
                 userId={userId}
                 role={role}
                 isLoading={isOtploading}
+                purpose='signup'
             />
         </>
     );
