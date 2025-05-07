@@ -1,7 +1,5 @@
-
-
 export type User = {
-    _id: string
+    id: string
     name: string
     email: string
     isBlocked: boolean
@@ -11,3 +9,5 @@ export interface UserTableProps {
     users: User[]
     loading: boolean
 }
+
+export type TSubscriptionType = 'basic' | 'medium' | 'vip'; 
