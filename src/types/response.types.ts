@@ -26,3 +26,9 @@ interface UserType {
     createdAt: Date
     updatedAt: Date
 }
+
+export interface CustomErrorResponse {
+    message: string;
+    statusCode?: number;
+    success?: boolean;
+}
