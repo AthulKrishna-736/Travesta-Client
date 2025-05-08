@@ -40,11 +40,15 @@ axiosInstance.interceptors.response.use(
             if (isUserRoute) {
                 showError(errorMsg.message)
                 store.dispatch(logoutUser());
-                window.location.href = '/user/login'
+                setTimeout(() => {
+                    window.location.href = '/user/login'
+                }, 1000)
             } else if (isVendorRoute) {
                 showError(errorMsg.message)
                 store.dispatch(logoutVendor())
-                window.location.href = '/vendor/login'
+                setTimeout(() => {
+                    window.location.href = '/vendor/login'
+                }, 1000)
             }
         }
 

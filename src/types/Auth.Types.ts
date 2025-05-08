@@ -77,3 +77,9 @@ export type TGoogleLoginValues = {
 export interface IGoogleLoginProps {
     role: Exclude<TRoles, 'admin'>
 }
+
+export type TUpdateVendorReqValues = {
+    vendorId: string
+    isVerified: boolean
+    reason: string
+}

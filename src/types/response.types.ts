@@ -21,6 +21,7 @@ interface UserType {
     phone: number
     isBlocked: boolean
     wishlist: string[]
+    isVerified: boolean
     role: TRoles
     subscriptionType: TSubscriptionType
     createdAt: Date
@@ -31,4 +32,9 @@ export interface CustomErrorResponse {
     message: string;
     statusCode?: number;
     success?: boolean;
+}
+
+export type GetVendorsResponse = {
+    data: UserType[],
+    meta: Pagination
 }

@@ -22,3 +22,14 @@ export interface PaginationProps {
     totalPages: number
     onPageChange: (page: number) => void
 }
+
+export interface ConfirmationModalProps {
+    open: boolean
+    title: string
+    description?: string
+    showInput?: boolean
+    inputValue?: string
+    onInputChange?: (val: string) => void
+    onConfirm: () => void
+    onCancel: () => void
+}

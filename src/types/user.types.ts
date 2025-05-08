@@ -11,3 +11,15 @@ export interface UserTableProps {
 }
 
 export type TSubscriptionType = 'basic' | 'medium' | 'vip'; 
+
+export type Vendor = {
+  id: string
+  name: string
+  email: string
+  isVerified: boolean
+}
+
+export interface VendorRequestTableProps {
+  vendors: Vendor[]
+  loading: boolean
+}
