@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+import { UpdateUser } from "./user.types";
+import { UserType } from "./response.types";
 
 export interface AdminLayoutProps {
     children: ReactNode
@@ -32,4 +34,19 @@ export interface ConfirmationModalProps {
     onInputChange?: (val: string) => void
     onConfirm: () => void
     onCancel: () => void
+}
+
+
+export interface KycDocumentsProps {
+    userId: string;
+    onUpdate: (payload: { userId: string; files: File[] }) => void;
+}
+
+export interface ProfileSectionProps {
+    user: UpdateUser;
+    onUpdate: (updatedUser: UpdateUser) => void;
+}
+
+export interface WishlistProps {
+    user: UserType
 }

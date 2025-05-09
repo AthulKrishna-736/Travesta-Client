@@ -10,13 +10,23 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
     return (
         <Table>
             <TableHeader>
-                <TableRow>
+                <TableRow className="bg-gray-100">
                     {columns.map((col) => (
-                        <TableHead key={col.key}>{col.label}</TableHead>
+                        <TableHead
+                            key={col.key}
+                            className="text-sm font-semibold text-gray-700 border-b border-gray-300 px-4 py-2"
+                        >
+                            {col.label}
+                        </TableHead>
                     ))}
-                    {actions.length > 0 && <TableHead>Actions</TableHead>}
+                    {actions.length > 0 && (
+                        <TableHead className="text-sm font-semibold text-gray-700 border-b border-gray-300 px-4 py-2">
+                            Actions
+                        </TableHead>
+                    )}
                 </TableRow>
             </TableHeader>
+
             <TableBody>
                 {data.map((row, rowIndex) => (
                     <TableRow key={rowIndex}>
@@ -32,11 +42,11 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
                                 {actions.map((action, i) => (
                                     <Button
                                         key={i}
-                                        variant={action.variant || 'default'} 
+                                        variant={action.variant || 'default'}
                                         onClick={() => action.onClick(row)}
                                         className="px-3"
                                     >
-                                        {action.label} 
+                                        {action.label}
                                     </Button>
                                 ))}
                             </TableCell>

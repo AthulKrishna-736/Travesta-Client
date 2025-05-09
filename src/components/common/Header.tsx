@@ -83,17 +83,19 @@ const Header = () => {
                         </div>
                         <Bell className="h-5 w-5" />
                     </Button>
-                    <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <Link to="/user/profile">
+                        <Avatar className="cursor-pointer">
+                            <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                    </Link>
                     <Button size="icon" variant="outline" className="md:hidden">
                         <Menu className="h-5 w-5" />
                     </Button>
 
                     {/* Logout Button */}
                     <Button variant="outline" size="sm" onClick={handleLogout}>
-                        <LogOutIcon/>
+                        <LogOutIcon />
                     </Button>
                 </div>
             </div>

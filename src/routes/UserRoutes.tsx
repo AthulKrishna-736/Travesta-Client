@@ -1,3 +1,4 @@
+import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
 import UserHomePage from '@/pages/user/UserHomePage'
 import UserLoginPage from '@/pages/user/UserLoginPage'
@@ -15,19 +16,28 @@ const UserRoutes: React.FC = () => {
           <UserLoginPage />
         </ProtectGuest>
       } />
+
       <Route path='signup' element={
         <ProtectGuest>
           <UserSignupPage />
         </ProtectGuest>
       } />
+
       <Route path='forgot-password' element={
         <ProtectGuest>
           <UserForgotPassPage />
         </ProtectGuest>
       } />
+
       <Route path='home' element={
         <ProtectedUser>
           <UserHomePage />
+        </ProtectedUser>
+      } />
+
+      <Route path='profile' element={
+        <ProtectedUser>
+          <UserDashboard />
         </ProtectedUser>
       } />
     </Routes>

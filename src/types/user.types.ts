@@ -1,16 +1,16 @@
 export type User = {
-    id: string
-    name: string
-    email: string
-    isBlocked: boolean
-  }
-  
-export interface UserTableProps {
-    users: User[]
-    loading: boolean
+  id: string
+  name: string
+  email: string
+  isBlocked: boolean
 }
 
-export type TSubscriptionType = 'basic' | 'medium' | 'vip'; 
+export interface UserTableProps {
+  users: User[]
+  loading: boolean
+}
+
+export type TSubscriptionType = 'basic' | 'medium' | 'vip';
 
 export type Vendor = {
   id: string
@@ -22,4 +22,17 @@ export type Vendor = {
 export interface VendorRequestTableProps {
   vendors: Vendor[]
   loading: boolean
+}
+
+export type UpdateUser = {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: number
+}
+
+export interface WishlistItem {
+  id: string;
+  image: string;
 }
