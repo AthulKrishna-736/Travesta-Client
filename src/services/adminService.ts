@@ -3,8 +3,8 @@ import { axiosInstance } from "./axiosInstance";
 import { TUpdateVendorReqValues } from "@/types/auth.types";
 
 
-export const getAllUsers = async (page = 1, limit = 10, role: string): Promise<GetAllUsersResponse> => {
-    const response = await axiosInstance.get(`/admin/users`, { params: { page, limit, role } });
+export const getAllUsers = async (page = 1, limit = 10, role: string, search?: string): Promise<GetAllUsersResponse> => {
+    const response = await axiosInstance.get(`/admin/users`, { params: { page, limit, role, search } });
     return response.data
 };
 
@@ -13,8 +13,8 @@ export const toggleBlockUser = async (userId: string) => {
     return response.data;
 };
 
-export const getVendors = async (page = 1, limit = 10): Promise<GetVendorsResponse> => {
-    const response = await axiosInstance.get(`/admin/vendor-requests`, { params: { page, limit } })
+export const getVendors = async (page = 1, limit = 10, search?: string): Promise<GetVendorsResponse> => {
+    const response = await axiosInstance.get(`/admin/vendor-requests`, { params: { page, limit, search } })
     return response.data
 }
 

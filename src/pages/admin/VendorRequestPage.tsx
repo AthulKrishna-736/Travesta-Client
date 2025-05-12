@@ -1,14 +1,25 @@
 import { AdminLayout } from '@/components/admin/layout/AdminLayout'
 import VendorTable from '@/components/admin/VendorTable';
 import Pagination from '@/components/common/Pagination';
+import { Input } from '@/components/ui/input';
 import { useGetVendors } from '@/hooks/admin/useGetVendor';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const VendorRequestPage: React.FC = () => {
     const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [debouncedValue, SetDebouncedValue] = useState<string>('');
     const limit = 10;
 
-    const { data, isLoading } = useGetVendors(page, limit)
+    useEffect(() => {
+        const searchInput = setTimeout(() => {
+            SetDebouncedValue(searchTerm)
+        }, 1500)
+
+        return () => clearTimeout(searchInput)
+    }, [searchTerm])
+
+    const { data, isLoading } = useGetVendors(page, limit, debouncedValue)
 
     const vendors = data?.data ?? []
     const meta = data?.meta
@@ -22,7 +33,13 @@ const VendorRequestPage: React.FC = () => {
                         Here is the list of all vendor requests awaiting approval or review.
                     </p>
                 </div>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto space-y-4">
+                    <Input
+                        type="text"
+                        placeholder={`Search vendors...`}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        value={searchTerm}
+                    />
                     <VendorTable vendors={vendors} loading={isLoading} page={page} limit={limit} />
                 </div>
 
