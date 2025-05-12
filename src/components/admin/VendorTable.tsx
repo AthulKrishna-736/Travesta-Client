@@ -4,12 +4,15 @@ import { VendorRequestTableProps } from '@/types/user.types'
 import { useVendorVerify } from '@/hooks/admin/useVendorVerify'
 import ConfirmationModal from '../common/ConfirmationModa'
 
-const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading }) => {
+const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<any>(null);
     const [rejectReason, setRejectReason] = useState('');
 
-    const { mutate: updateVendorReq } = useVendorVerify()
+    const { mutate: updateVendorReq, isPending } = useVendorVerify(page, limit, () => {
+        setIsModalOpen(false);
+        setRejectReason('')
+    })
 
     const openRejectModal = (vendor: any) => {
         setSelectedVendor(vendor);
@@ -22,10 +25,13 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading }) =>
                 vendorId: selectedVendor.id,
                 isVerified: false,
                 reason: rejectReason
-            });
+            }, {
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setRejectReason('');
+                }
+            })
         }
-        setIsModalOpen(false);
-        setRejectReason('');
     };
 
     const handleRejectCancel = () => {
@@ -79,6 +85,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading }) =>
                 onInputChange={setRejectReason}
                 onConfirm={handleRejectConfirm}
                 onCancel={handleRejectCancel}
+                isLoading={isPending}
             />
         </>
     )

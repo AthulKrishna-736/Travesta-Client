@@ -1,3 +1,5 @@
+import { TRoles } from "./auth.types"
+
 export type User = {
   id: string
   name: string
@@ -8,6 +10,9 @@ export type User = {
 export interface UserTableProps {
   users: User[]
   loading: boolean
+  page: number
+  limit: number
+  role: TRoles
 }
 
 export type TSubscriptionType = 'basic' | 'medium' | 'vip';
@@ -22,6 +27,8 @@ export type Vendor = {
 export interface VendorRequestTableProps {
   vendors: Vendor[]
   loading: boolean
+  page: number
+  limit: number
 }
 
 export type UpdateUser = {

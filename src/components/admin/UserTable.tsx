@@ -4,8 +4,8 @@ import DataTable from "../common/Table"
 import { User, UserTableProps } from "@/types/user.types"
 
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
-    const { mutate: toggleBlock, isPending } = useBlockUser()
+const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role }) => {
+    const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role)
 
     const columns = [
         { key: "name", label: "Name" },

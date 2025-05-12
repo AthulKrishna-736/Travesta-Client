@@ -23,7 +23,7 @@ const VendorRequestPage: React.FC = () => {
                     </p>
                 </div>
                 <div className="overflow-x-auto">
-                    <VendorTable vendors={vendors} loading={isLoading} />
+                    <VendorTable vendors={vendors} loading={isLoading} page={page} limit={limit} />
                 </div>
 
                 {meta && meta.totalPages > 0 && (

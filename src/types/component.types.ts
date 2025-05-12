@@ -34,6 +34,7 @@ export interface ConfirmationModalProps {
     onInputChange?: (val: string) => void
     onConfirm: () => void
     onCancel: () => void
+    isLoading: boolean
 }
 
 

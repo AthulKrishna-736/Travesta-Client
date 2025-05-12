@@ -23,6 +23,7 @@ export interface UserType {
     wishlist: WishlistItem[]
     isVerified: boolean
     role: TRoles
+    verificationReason?: string
     subscriptionType: TSubscriptionType
     createdAt: Date
     updatedAt: Date

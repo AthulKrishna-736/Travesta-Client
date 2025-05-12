@@ -7,7 +7,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, CalendarDays, Users, MapPin } from "lucide-react";
-import { format } from "date-fns";
 import { cn } from '@/lib/utils';
 import { showError, showSuccess } from '@/utils/customToast';
 
@@ -72,7 +71,7 @@ const SearchForm = () => {
                                     )}
                                 >
                                     <CalendarDays className="mr-2 h-4 w-4" />
-                                    {checkInDate ? format(checkInDate, "PP") : "Select date"}
+                                    {/* {checkInDate ? format(checkInDate, "PP") : "Select date"} */}
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
@@ -81,7 +80,7 @@ const SearchForm = () => {
                                     selected={checkInDate}
                                     onSelect={setCheckInDate}
                                     initialFocus
-                                    disabled={(date) => date < new Date()}
+                                    // disabled={(date) => date < new Date()}
                                     className="p-3 pointer-events-auto"
                                 />
                             </PopoverContent>
@@ -101,7 +100,7 @@ const SearchForm = () => {
                                     )}
                                 >
                                     <CalendarDays className="mr-2 h-4 w-4" />
-                                    {checkOutDate ? format(checkOutDate, "PP") : "Select date"}
+                                    {/* {checkOutDate ? format(checkOutDate, "PP") : "Select date"} */}
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0" align="start">
@@ -110,7 +109,7 @@ const SearchForm = () => {
                                     selected={checkOutDate}
                                     onSelect={setCheckOutDate}
                                     initialFocus
-                                    disabled={(date) => (checkInDate ? date < new Date() || date < checkInDate : date < new Date())}
+                                    // disabled={(date) => (checkInDate ? date < new Date() || date < checkInDate : date < new Date())}
 
                                     className="p-3 pointer-events-auto"
                                 />

@@ -13,7 +13,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     inputValue = '',
     onInputChange,
     onConfirm,
-    onCancel
+    onCancel,
+    isLoading
 }) => {
     return (
         <Dialog open={open} onOpenChange={onCancel}>
@@ -43,6 +44,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                     <Button
                         className="bg-black text-white hover:bg-gray-900"
                         onClick={onConfirm}
+                        disabled={isLoading}
                     >
                         Confirm
                     </Button>

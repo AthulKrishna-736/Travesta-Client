@@ -39,7 +39,7 @@ const AdminUsers = () => {
                 </ToggleGroup>
 
                 <div className="overflow-x-auto">
-                    <UserTable users={users} loading={isLoading} />
+                    <UserTable users={users} loading={isLoading} page={page} limit={limit} role={role} />
                 </div>
 
                 {meta && meta.totalPages > 0 && (
