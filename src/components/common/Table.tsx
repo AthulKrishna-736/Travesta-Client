@@ -44,7 +44,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
                                         key={i}
                                         variant={action.variant || 'default'}
                                         onClick={() => action.onClick(row)}
-                                        className="px-3"
+                                        className={`px-3 ${action.className || ''}`}
                                     >
                                         {action.label}
                                     </Button>

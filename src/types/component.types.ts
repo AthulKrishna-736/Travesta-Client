@@ -10,6 +10,7 @@ export type Action = {
     label: string
     onClick: (rowData: any) => void
     variant?: "default" | "outline" | "ghost" | "link" | "destructive"
+    className?: string
 }
 
 export interface DataTableProps {
@@ -50,4 +51,11 @@ export interface ProfileSectionProps {
 
 export interface WishlistProps {
     user: UserType
+}
+
+export interface ShowDetailModalProps {
+    open: boolean
+    title: string
+    data: UserType
+    onCancel: () => void
 }

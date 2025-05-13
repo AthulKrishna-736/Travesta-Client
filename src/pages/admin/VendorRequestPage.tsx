@@ -8,12 +8,12 @@ import React, { useEffect, useState } from 'react'
 const VendorRequestPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [debouncedValue, SetDebouncedValue] = useState<string>('');
+    const [debouncedValue, setDebouncedValue] = useState<string>('');
     const limit = 10;
 
     useEffect(() => {
         const searchInput = setTimeout(() => {
-            SetDebouncedValue(searchTerm)
+            setDebouncedValue(searchTerm)
         }, 1500)
 
         return () => clearTimeout(searchInput)
@@ -40,7 +40,7 @@ const VendorRequestPage: React.FC = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         value={searchTerm}
                     />
-                    <VendorTable vendors={vendors} loading={isLoading} page={page} limit={limit} />
+                    <VendorTable vendors={vendors} loading={isLoading} page={page} limit={limit} search={searchTerm}/>
                 </div>
 
                 {meta && meta.totalPages > 0 && (

@@ -24,6 +24,7 @@ export interface UserType {
     isVerified: boolean
     role: TRoles
     verificationReason?: string
+    kycDocuments?: []
     subscriptionType: TSubscriptionType
     createdAt: Date
     updatedAt: Date

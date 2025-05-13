@@ -29,6 +29,7 @@ export interface VendorRequestTableProps {
   loading: boolean
   page: number
   limit: number
+  search: string
 }
 
 export type UpdateUser = {

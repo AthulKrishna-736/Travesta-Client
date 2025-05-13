@@ -3,13 +3,15 @@ import DataTable from '../common/Table'
 import { VendorRequestTableProps } from '@/types/user.types'
 import { useVendorVerify } from '@/hooks/admin/useVendorVerify'
 import ConfirmationModal from '../common/ConfirmationModa'
+import ShowDetailsModal from '../common/ShowDetailsModal'
 
-const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit }) => {
+const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit, search }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<any>(null);
     const [rejectReason, setRejectReason] = useState('');
+    const [vendorModalOpen, setVendorModalOpen] = useState(false);
 
-    const { mutate: updateVendorReq, isPending } = useVendorVerify(page, limit, () => {
+    const { mutate: updateVendorReq, isPending } = useVendorVerify(page, limit, search,() => {
         setIsModalOpen(false);
         setRejectReason('')
     })
@@ -34,6 +36,16 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         }
     };
 
+    const openVendorDetailModal = (vendor: any) => {
+        setSelectedVendor(vendor)
+        setVendorModalOpen(true)
+    }
+
+    const handleDetailModalClose = () => {
+        setVendorModalOpen(false)
+        setSelectedVendor('')
+    }
+
     const handleRejectCancel = () => {
         setIsModalOpen(false);
         setRejectReason('');
@@ -51,6 +63,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Accept',
             variant: 'ghost' as const,
+            className: 'text-green-600 border-green-600 hover:bg-green-50',
             onClick: (row: any) => {
                 updateVendorReq({
                     vendorId: row.id,
@@ -62,8 +75,17 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Reject',
             variant: 'ghost' as const,
+            className: 'text-red-600 border-red-600 hover:bg-red-50',
             onClick: (row: any) => {
                 openRejectModal(row);
+            }
+        },
+        {
+            label: 'Details',
+            variant: 'ghost' as const,
+            className: 'bg-gray-800 text-white hover:bg-white hover:border',
+            onClick: (row: any) => {
+                openVendorDetailModal(row)
             }
         }
     ]
@@ -86,6 +108,12 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
                 onConfirm={handleRejectConfirm}
                 onCancel={handleRejectCancel}
                 isLoading={isPending}
+            />
+            <ShowDetailsModal
+                open={vendorModalOpen}
+                title='Vendor Details'
+                data={selectedVendor}
+                onCancel={handleDetailModalClose}
             />
         </>
     )
