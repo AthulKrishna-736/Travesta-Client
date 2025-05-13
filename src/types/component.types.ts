@@ -46,7 +46,7 @@ export interface KycDocumentsProps {
 
 export interface ProfileSectionProps {
     user: UpdateUser;
-    onUpdate: (updatedUser: UpdateUser) => void;
+    onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified'>) => void;
 }
 
 export interface WishlistProps {
@@ -59,3 +59,4 @@ export interface ShowDetailModalProps {
     data: UserType
     onCancel: () => void
 }
+export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified'>;

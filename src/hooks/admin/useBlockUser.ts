@@ -1,5 +1,5 @@
 import { toggleBlockUser } from "@/services/adminService";
-import { TRoles } from "@/types/auth.types";
+import { TRoles } from "@/types/Auth.Types";
 import { GetAllUsersResponse } from "@/types/response.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

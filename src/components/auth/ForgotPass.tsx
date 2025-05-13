@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
-import { IForgotPassProps } from '@/types/auth.types';
+import { IForgotPassProps } from '@/types/Auth.Types';
 import { forgotPasswordValidationSchema } from '@/utils/validations/authValidation';
 import { Loader2 } from 'lucide-react';
 

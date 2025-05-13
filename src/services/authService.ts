@@ -1,4 +1,4 @@
-import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TRoles, TSignUpFormValues } from "@/types/auth.types";
+import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TRoles, TSignUpFormValues } from "@/types/Auth.Types";
 import { axiosInstance } from "./axiosInstance";
 
 enum ENDPOINTS {

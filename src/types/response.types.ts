@@ -1,4 +1,4 @@
-import { TRoles } from "./auth.types";
+import { TRoles } from "./Auth.Types";
 import { TSubscriptionType, WishlistItem } from "./user.types";
 
 export type GetAllUsersResponse = {
@@ -15,7 +15,8 @@ type Pagination = {
 
 export interface UserType {
     id: string
-    name: string
+    firstName: string
+    lastName: string
     email: string
     isGoogle: boolean
     phone: number

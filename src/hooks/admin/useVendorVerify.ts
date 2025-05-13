@@ -1,5 +1,5 @@
 import { updateVendorVerify } from "@/services/adminService";
-import { TUpdateVendorReqValues } from "@/types/auth.types";
+import { TUpdateVendorReqValues } from "@/types/Auth.Types";
 import { GetVendorsResponse } from "@/types/response.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

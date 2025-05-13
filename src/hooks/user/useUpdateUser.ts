@@ -1,16 +1,20 @@
-import { register } from "@/services/authService";
-import { TSignUpFormValues } from "@/types/Auth.Types";
+import { updateUser } from "@/services/userService";
+import { setUser } from "@/store/slices/authSlice";
+import { UpdateUser } from "@/types/user.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
 
-export const useSignup = (role: string, onSuccessCallback: (userId: string) => void) => {
+
+export const useUpdateUser = () => {
+    const dispatch = useDispatch()
+
     return useMutation({
-        mutationFn: (values: TSignUpFormValues) => register(values, role),
+        mutationFn: (values: { data: Omit<UpdateUser, 'isVerified'> }) => updateUser(values.data),
         onSuccess: (res) => {
-            console.log('data on response: ', res)
-            if (res.success && res.data?.userId) {
+            if (res.success) {
                 showSuccess(res.message)
-                onSuccessCallback(res.data?.userId)
+                dispatch(setUser(res.data))
             } else {
                 showError(res.message || 'Something went wrong')
             }
@@ -20,4 +24,5 @@ export const useSignup = (role: string, onSuccessCallback: (userId: string) => v
             showError(error?.response?.data?.message || 'Something went wrong')
         }
     })
+
 }

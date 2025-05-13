@@ -1,8 +1,9 @@
-import { TRoles } from "./auth.types"
+import { TRoles } from "./Auth.Types"
 
 export type User = {
   id: string
-  name: string
+  firstName: string
+  lastName: string
   email: string
   isBlocked: boolean
 }
@@ -19,7 +20,8 @@ export type TSubscriptionType = 'basic' | 'medium' | 'vip';
 
 export type Vendor = {
   id: string
-  name: string
+  firstName: string
+  lastName: string
   email: string
   isVerified: boolean
 }
@@ -38,6 +40,7 @@ export type UpdateUser = {
   lastName: string
   email: string
   phone: number
+  isVerified: boolean
 }
 
 export interface WishlistItem {

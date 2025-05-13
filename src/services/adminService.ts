@@ -1,6 +1,6 @@
 import { GetAllUsersResponse, GetVendorsResponse } from "@/types/response.types";
 import { axiosInstance } from "./axiosInstance";
-import { TUpdateVendorReqValues } from "@/types/auth.types";
+import { TUpdateVendorReqValues } from "@/types/Auth.Types";
 
 
 export const getAllUsers = async (page = 1, limit = 10, role: string, search?: string): Promise<GetAllUsersResponse> => {

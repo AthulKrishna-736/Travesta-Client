@@ -1,7 +1,7 @@
 import React from 'react'
 import Login from '@/components/auth/Login';
 import { useLogin } from '@/hooks/auth/useLogin';
-import { TRoles } from '@/types/auth.types';
+import { TRoles } from '@/types/Auth.Types';
 
 const LoginPage: React.FC = () => {
     const role: Exclude<TRoles, 'admin'> = "user";

@@ -6,18 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Edit, X } from "lucide-react";
 import { showSuccess } from "@/utils/customToast";
-import { ProfileSectionProps } from "@/types/component.types";
-import { UpdateUser } from "@/types/user.types";
+import { ProfileSectionProps, UpdateUserFormValues } from "@/types/component.types";
 import { validationSchema } from "@/utils/validations/commonValidation";
 
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
 
-    const handleSave = (values: UpdateUser) => {
+    const handleSave = (values: UpdateUserFormValues) => {
         const updatedUser = {
             ...values,
-            phone: Number(values.phone),
+            phone: values.phone,
         };
         onUpdate(updatedUser);
         setIsEditing(false);
@@ -26,9 +25,17 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
 
     return (
         <Card className="animate-fade-in">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>Personal Information</CardTitle>
-                {!isEditing ? (
+            <CardHeader className="flex items-center justify-between pb-2">
+                <div className="flex items-center gap-3">
+                    <CardTitle>Personal Information</CardTitle>
+                    <span
+                        className={`text-xs px-2 py-1 rounded-full ${user.isVerified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                    >
+                        {user.isVerified ? 'Verified' : 'Unverified'}
+                    </span>
+                </div>
+
+                {!isEditing && (
                     <Button
                         variant="ghost"
                         size="sm"
@@ -38,10 +45,11 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Edit</span>
                     </Button>
-                ) : null}
+                )}
             </CardHeader>
+
             <CardContent>
-                <Formik
+                <Formik<UpdateUserFormValues>
                     initialValues={{
                         firstName: user.firstName,
                         lastName: user.lastName,
@@ -109,27 +117,9 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
                                 {/* Email */}
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
-                                    {isEditing ? (
-                                        <>
-                                            <Input
-                                                id="email"
-                                                name="email"
-                                                type="email"
-                                                value={values.email}
-                                                onChange={handleChange}
-                                                className="h-9"
-                                            />
-                                            <ErrorMessage
-                                                name="email"
-                                                component="div"
-                                                className="text-sm text-red-500"
-                                            />
-                                        </>
-                                    ) : (
-                                        <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
-                                            {user.email}
-                                        </div>
-                                    )}
+                                    <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
+                                        {user.email}
+                                    </div>
                                 </div>
 
                                 {/* Phone */}
