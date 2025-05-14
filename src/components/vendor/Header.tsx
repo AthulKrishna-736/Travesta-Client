@@ -10,6 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
     toggleSidebar: () => void;
@@ -17,6 +18,7 @@ interface HeaderProps {
 }
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
+    const navigate = useNavigate()
     return (
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 fixed top-0 w-full z-10">
             <div className="flex items-center">
@@ -56,14 +58,8 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                     <DropdownMenuContent align="end" className="w-56">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate('/vendor/profile')}>
                             Profile
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            Settings
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            Help & Support
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>

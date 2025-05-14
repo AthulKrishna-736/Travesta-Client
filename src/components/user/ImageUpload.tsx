@@ -1,19 +1,24 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, X } from "lucide-react";
-import { showError, showSuccess } from "@/utils/customToast";
+import { showError } from "@/utils/customToast";
+import { ImageUploadProps } from "@/types/component.types";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-const defaultUser = {
-    name: "John Doe",
-    profileImage: "https://via.placeholder.com/150",
-};
-
-export const ImageUpload: React.FC = () => {
-    const [user, setUser] = useState(defaultUser);
+export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected }) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const data = useSelector((state: RootState) => state.auth.user);
+
+    useEffect(() => {
+        console.log('data: ', data)
+        if (data?.profileImage) {
+            setPreviewImage(data?.profileImage);
+        }
+    }, [data?.profileImage]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -34,23 +39,14 @@ export const ImageUpload: React.FC = () => {
             setPreviewImage(reader.result as string);
         };
         reader.readAsDataURL(file);
-    };
 
-    const handleUpload = () => {
-        if (!previewImage) return;
-        setLoading(true);
-
-        setTimeout(() => {
-            setUser({ ...user, profileImage: previewImage });
-            setPreviewImage(null);
-            setLoading(false);
-            showSuccess("Profile image updated.");
-        }, 1000);
+        onImageSelected(file);
     };
 
     const cancelPreview = () => {
         setPreviewImage(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
+        onImageSelected(null);
     };
 
     return (
@@ -62,7 +58,7 @@ export const ImageUpload: React.FC = () => {
                 <div className="relative mb-4">
                     <div className="h-32 w-32 overflow-hidden rounded-full border-2 border-primary">
                         <img
-                            src={previewImage || user.profileImage}
+                            src={previewImage || 'https://via.placeholder.com/150'}
                             alt="Profile"
                             className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
                         />
@@ -80,30 +76,22 @@ export const ImageUpload: React.FC = () => {
                     )}
                 </div>
 
-                <div className="mt-2 flex flex-col items-center space-y-4">
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        accept="image/jpeg,image/png,image/webp"
-                        onChange={handleFileChange}
-                        className="hidden"
-                        id="profile-upload"
-                    />
-                    <Button
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full"
-                    >
-                        <Upload className="mr-2 h-4 w-4" />
-                        Choose New Image
-                    </Button>
-
-                    {previewImage && (
-                        <Button onClick={handleUpload} disabled={loading} className="w-full">
-                            {loading ? "Uploading..." : "Save New Image"}
-                        </Button>
-                    )}
-                </div>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="profile-upload"
+                />
+                <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Choose New Image
+                </Button>
             </CardContent>
         </Card>
     );

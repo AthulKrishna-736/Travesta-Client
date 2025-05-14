@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Edit, X } from "lucide-react";
-import { showSuccess } from "@/utils/customToast";
 import { ProfileSectionProps, UpdateUserFormValues } from "@/types/component.types";
 import { validationSchema } from "@/utils/validations/commonValidation";
 
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
+
+    const [initialValues, setInitialValues] = useState<UpdateUserFormValues>({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        id: user.id,
+    });
+
+    useEffect(() => {
+        setInitialValues({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            id: user.id,
+        });
+    }, [user]);
 
     const handleSave = (values: UpdateUserFormValues) => {
         const updatedUser = {
@@ -20,7 +37,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
         };
         onUpdate(updatedUser);
         setIsEditing(false);
-        showSuccess("Your profile information has been updated successfully");
     };
 
     return (
@@ -50,13 +66,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
 
             <CardContent>
                 <Formik<UpdateUserFormValues>
-                    initialValues={{
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email,
-                        phone: user.phone,
-                        id: user.id,
-                    }}
+                    initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSave}
                     enableReinitialize

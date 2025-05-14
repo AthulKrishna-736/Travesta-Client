@@ -60,3 +60,7 @@ export interface ShowDetailModalProps {
     onCancel: () => void
 }
 export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified'>;
+
+export type ImageUploadProps = {
+    onImageSelected: (file: File | null) => void;
+};

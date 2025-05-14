@@ -1,6 +1,7 @@
 import VendorDashboard from '@/pages/vendor/VendorDash'
 import VendorForgotPassPage from '@/pages/vendor/VendorForgotPassPage'
 import VendorLoginPage from '@/pages/vendor/VendorLoginPage'
+import VendorProfile from '@/pages/vendor/VendorProfile'
 import VendorSignupPage from '@/pages/vendor/VendorSignupPage'
 import ProtectGuestVendor from '@/ProtectRoutes/GuestVendor'
 import ProtectVendor from '@/ProtectRoutes/ProtectVendor'
@@ -15,21 +16,31 @@ const VendorRoutes: React.FC = () => {
                     <VendorLoginPage />
                 </ProtectGuestVendor>
             } />
+
             <Route path='signup' element={
                 <ProtectGuestVendor>
                     <VendorSignupPage />
                 </ProtectGuestVendor>
             } />
+
             <Route path='forgot-password' element={
                 <ProtectGuestVendor>
                     <VendorForgotPassPage />
                 </ProtectGuestVendor>
             } />
+
             <Route path='home' element={
                 <ProtectVendor>
                     <VendorDashboard />
                 </ProtectVendor>
             } />
+
+            <Route path='profile' element={
+                <ProtectVendor>
+                    <VendorProfile />
+                </ProtectVendor>
+            }
+            />
 
         </Routes>
     )

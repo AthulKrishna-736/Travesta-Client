@@ -1,8 +1,9 @@
-import { UpdateUser } from "@/types/user.types"
 import { axiosInstance } from "./axiosInstance"
 
 
-export const updateUser = async (data: Omit<UpdateUser, 'isVerified'>) => {
-    const response = await axiosInstance.patch(`/user/profile`, data)
-    return response.data
-}
+export const updateUser = async (formData: FormData) => {
+    const response = await axiosInstance.patch(`/users/profile`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+    });
+    return response.data;
+};
