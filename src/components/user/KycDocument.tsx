@@ -1,24 +1,38 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
-import { showError, showSuccess } from "@/utils/customToast";
-import { KycDocumentsProps } from "@/types/component.types";
+import { RootState } from "@/store/store";
+import { showError } from "@/utils/customToast";
+import { useKycUpload } from "@/hooks/vendor/useKycUpload";
 
-export const KycDocuments: React.FC<KycDocumentsProps> = ({ userId, onUpdate }) => {
+export const KycDocuments = () => {
     const [frontFile, setFrontFile] = useState<File | null>(null);
     const [backFile, setBackFile] = useState<File | null>(null);
-    const [uploading, setUploading] = useState(false);
+
+    const frontInputRef = useRef<HTMLInputElement>(null);
+    const backInputRef = useRef<HTMLInputElement>(null);
+
+    const { mutate: uploadKyc, isPending } = useKycUpload();
+
+    const vendor = useSelector((state: RootState) => state.vendor.vendor);
+    const frontImage = vendor?.kycDocuments?.[0];
+    const backImage = vendor?.kycDocuments?.[1];
+
+    const bothAlreadyUploaded = Boolean(frontImage && backImage);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, side: "front" | "back") => {
+        if (bothAlreadyUploaded) return;
+
         const file = e.target.files?.[0];
         if (!file) return;
 
         if (!file.type.match(/^image\/(jpeg|jpg|png|webp)$/)) {
-            showError("Please upload a JPG, PNG, or WebP image");
+            showError("Only JPG, PNG or WebP images allowed.");
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            showError("Image size should be less than 5MB");
+            showError("Image must be less than 5MB");
             return;
         }
 
@@ -26,87 +40,85 @@ export const KycDocuments: React.FC<KycDocumentsProps> = ({ userId, onUpdate }) 
         else setBackFile(file);
     };
 
-    const uploadDocuments = async () => {
+    const uploadDocuments = () => {
         if (!frontFile || !backFile) {
-            showError("Please upload both front and back images of your ID");
+            showError("Please upload both images");
             return;
         }
 
-        setUploading(true);
+        const formData = new FormData();
+        formData.append("front", frontFile);
+        formData.append("back", backFile);
 
-        try {
-            const formData = new FormData();
-            formData.append("front", frontFile);
-            formData.append("back", backFile);
-            formData.append("userId", userId);
+        uploadKyc({ data: formData });
+        setFrontFile(null);
+        setBackFile(null);
+    };
 
-            const response = await fetch("/api/kyc/upload", {
-                method: "POST",
-                body: formData,
-            });
+    const renderImageBox = (
+        uploadedFile: File | null,
+        storedUrl: string | undefined,
+        onClick: () => void,
+        label: string
+    ) => {
+        const preview = uploadedFile
+            ? URL.createObjectURL(uploadedFile)
+            : storedUrl
+                ? storedUrl
+                : null;
 
-            if (!response.ok) {
-                showError("Upload failed");
-            }
-
-            // const result = await response.json();
-
-            // Trigger onUpdate with files and userId
-            onUpdate({ userId, files: [frontFile, backFile] });
-
-            showSuccess("Your ID verification has been submitted and is pending review");
-            setFrontFile(null);
-            setBackFile(null);
-        } catch (err) {
-            showError("An error occurred while uploading your documents.");
-        } finally {
-            setUploading(false);
-        }
+        return (
+            <div
+                className={`border border-dashed border-gray-300 rounded-lg w-full aspect-square flex items-center justify-center cursor-pointer ${bothAlreadyUploaded ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50"
+                    }`}
+                onClick={() => {
+                    if (!bothAlreadyUploaded) onClick();
+                }}
+            >
+                {preview ? (
+                    <img src={preview} alt={label} className="object-cover w-full h-full rounded-lg" />
+                ) : (
+                    <span className="text-sm text-gray-500">{label}</span>
+                )}
+            </div>
+        );
     };
 
     return (
-        <div className="card">
-            <div className="card-header">
-                <h2 className="text-lg">Identity Verification</h2>
-                <p className="text-sm text-gray-500">Upload images of the front and back of your government-issued ID.</p>
-            </div>
-            <div className="card-content">
-                <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-3">
-                        <label className="block text-sm">Front Side of ID</label>
-                        <input
-                            type="file"
-                            accept="image/jpeg,image/png,image/webp"
-                            onChange={(e) => handleFileChange(e, "front")}
-                            className="w-full"
-                        />
-                    </div>
+        <div className="card max-w-md mx-auto p-4 space-y-4">
+            <h2 className="text-lg font-semibold text-center">Identity Verification</h2>
+            <p className="text-sm text-gray-500 text-center">Upload front and back images of your ID</p>
 
-                    <div className="space-y-3">
-                        <label className="block text-sm">Back Side of ID</label>
-                        <input
-                            type="file"
-                            accept="image/jpeg,image/png,image/webp"
-                            onChange={(e) => handleFileChange(e, "back")}
-                            className="w-full"
-                        />
-                    </div>
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+                {renderImageBox(frontFile, frontImage, () => frontInputRef.current?.click(), "Front Side")}
+                {renderImageBox(backFile, backImage, () => backInputRef.current?.click(), "Back Side")}
+            </div>
 
-                <div className="pt-4">
-                    <Button
-                        type="button"
-                        className="w-full"
-                        onClick={uploadDocuments}
-                        disabled={uploading || !frontFile || !backFile}
-                    >
-                        {uploading ? "Uploading..." : "Submit ID Verification"}
-                    </Button>
-                </div>
-            </div>
-            <div className="card-footer text-center text-xs text-gray-500">
-                Your ID information is encrypted and securely stored according to our privacy policy.
-            </div>
+            <input
+                ref={frontInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => handleFileChange(e, "front")}
+                disabled={bothAlreadyUploaded}
+            />
+            <input
+                ref={backInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => handleFileChange(e, "back")}
+                disabled={bothAlreadyUploaded}
+            />
+
+            <Button
+                type="button"
+                className="w-full"
+                onClick={uploadDocuments}
+                disabled={isPending || !frontFile || !backFile || bothAlreadyUploaded}
+            >
+                {isPending ? "Uploading..." : bothAlreadyUploaded ? "Already Uploaded" : "Submit ID Verification"}
+            </Button>
         </div>
     );
 };

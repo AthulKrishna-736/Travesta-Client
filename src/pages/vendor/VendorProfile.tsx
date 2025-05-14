@@ -5,9 +5,9 @@ import ProfileSection from "@/components/user/ProfileSection";
 import { UpdateUser } from "@/types/user.types";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { useUpdateUser } from "@/hooks/user/useUpdateUser";
 import { KycDocuments } from "@/components/user/KycDocument";
 import Header from "@/components/vendor/Header";
+import { useUpdateVendor } from "@/hooks/vendor/useUpdateVendor";
 
 const VendorProfile: React.FC = () => {
     const user = useSelector((state: RootState) => state.vendor.vendor);
@@ -17,7 +17,7 @@ const VendorProfile: React.FC = () => {
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
-    const { mutate: updateUser } = useUpdateUser()
+    const { mutate: updateVendor } = useUpdateVendor()
 
     const handleProfileUpdate = (userData: Omit<UpdateUser, 'isVerified'>) => {
         const formData = new FormData()
@@ -33,17 +33,12 @@ const VendorProfile: React.FC = () => {
         if (selectedImageFile) {
             formData.append('image', selectedImageFile);
         }
-        updateUser({ data: formData })
+        updateVendor({ data: formData })
     };
-
-    const handleKycUpdate = () => {
-
-    }
 
     return (
         <div className="min-h-screen flex flex-col">
             <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-
             <main className="flex-grow bg-background px-4 py-6">
                 <div className="mx-auto max-w-6xl">
                     <h1 className="mb-6 text-3xl font-bold">Vendor Dashboard</h1>
@@ -66,7 +61,7 @@ const VendorProfile: React.FC = () => {
                         </TabsContent>
 
                         <TabsContent value="documents">
-                            <KycDocuments userId={user.id} onUpdate={handleKycUpdate} />
+                            <KycDocuments />
                         </TabsContent>
                     </Tabs>
                 </div>

@@ -52,7 +52,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
     };
 
     const columns = [
-        { key: "name", label: "Name" },
+        { key: "firstName", label: "Name" },
         { key: "email", label: "Email" },
         { key: "role", label: "Role" },
         { key: "verificationReason", label: "reason" },

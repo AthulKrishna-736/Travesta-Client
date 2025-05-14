@@ -8,7 +8,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role
     const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role)
 
     const columns = [
-        { key: "name", label: "Name" },
+        { key: "firstName", label: "Name" },
         { key: "email", label: "Email" },
         { key: "role", label: "Role" },
         { key: "isBlocked", label: "Blocked" },

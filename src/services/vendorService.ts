@@ -7,3 +7,10 @@ export const updateVendor = async (formData: FormData) => {
     });
     return response.data;
 };
+
+export const uplodKyc = async (formData: FormData) => {
+    const response = await axiosInstance.patch('/vendor/kyc', formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+    })
+    return response.data
+}
