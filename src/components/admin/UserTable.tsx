@@ -23,12 +23,16 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role
     ]
 
     return (
-        <DataTable
-            columns={columns}
-            data={users}
-            actions={actions}
-            loading={loading || isPending}
-        />
+        <>
+            <DataTable
+                columns={columns}
+                data={users}
+                actions={actions}
+                loading={loading || isPending}
+            />
+
+            
+        </>
     )
 }
 

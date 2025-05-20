@@ -65,3 +65,10 @@ export type ImageUploadProps = {
     onImageSelected: (file: File | null) => void;
     role: 'vendor' | 'user'
 };
+
+export interface CreateHotelModalProps {
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (data: any) => void;
+    isLoading: boolean
+}

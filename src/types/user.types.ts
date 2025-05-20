@@ -44,6 +44,20 @@ export type UpdateUser = {
 }
 
 export interface WishlistItem {
-  id: string;
-  image: string;
+  id: string
+  image: string
+}
+
+
+export interface IHotel {
+  name: string
+  description: string
+  address: string
+  state: string
+  city: string
+  tags: string
+  amenities: string
+  services: string
+  geoLocation?: number[]
+  imageFile: FileList
 }

@@ -1,3 +1,4 @@
+import { IHotel } from "@/types/user.types";
 import { axiosInstance } from "./axiosInstance"
 
 export const getVendor = async () => {
@@ -17,4 +18,11 @@ export const uplodKyc = async (formData: FormData) => {
         headers: { "Content-Type": "multipart/form-data" }
     })
     return response.data
+}
+
+export const createHotel = async (formData: IHotel) => {
+    const response = await axiosInstance.post('/vendor/hotels', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return response.data;
 }

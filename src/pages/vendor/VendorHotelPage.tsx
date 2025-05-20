@@ -3,6 +3,8 @@ import Sidebar from '@/components/vendor/Sidebar';
 import React, { useState } from 'react';
 import CreateHotelModal from '@/components/vendor/CreateHotelModal';
 import HotelTable from '@/components/vendor/HotelList';
+import { IHotel } from '@/types/user.types';
+import { UseCreateHotel } from '@/hooks/vendor/useCreateHotel';
 
 const VendorHotelsPage: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -20,7 +22,11 @@ const VendorHotelsPage: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const handleCreateHotel = async () => {
+    const { mutate: createHotelfn, isPending } = UseCreateHotel()
+
+    const handleCreateHotel = async (hotelData: IHotel) => {
+        console.log('hote data before submit', hotelData)
+        createHotelfn(hotelData)
     };
 
 
@@ -59,6 +65,7 @@ const VendorHotelsPage: React.FC = () => {
                     open={isModalOpen}
                     onClose={handleModalClose}
                     onSubmit={handleCreateHotel}
+                    isLoading={isPending}
                 />
             )}
 
