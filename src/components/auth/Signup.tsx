@@ -137,7 +137,7 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                     Already have an account?{' '}
                                     <button
                                         type="button"
-                                        onClick={() => navigate('/user/login')}
+                                        onClick={() => navigate(`/${role}/login`)}
                                         className="text-blue-600 hover:underline font-medium"
                                     >
                                         Log in

@@ -6,11 +6,11 @@ import { useSignup } from '@/hooks/auth/useSignup';
 import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
 import { TRoles } from '@/types/Auth.Types';
 
-const SignupPage: React.FC = () => {
+const VendorSignupPage: React.FC = () => {
     const [isOtpModalOpen, setOtpModalOpen] = useState(false);
     const navigate = useNavigate();
     const [userId, setUserId] = useState<string>('');
-    const role: Exclude<TRoles, 'admin'> = "user";
+    const role: Exclude<TRoles, 'admin'> = "vendor";
 
     const { mutate: signupUser, isPending: isSignupLoading } = useSignup(role, (userId) => {
         setUserId(userId)
@@ -19,7 +19,7 @@ const SignupPage: React.FC = () => {
 
     const { mutate: verifyOtp, isPending: isOtploading } = useOtpVerify(role, () => {
         setOtpModalOpen(false)
-        navigate('/user/login');
+        navigate(`/${role}/login`);
     })
 
     const handleOtpSubmit = (otp: string) => {
@@ -36,9 +36,10 @@ const SignupPage: React.FC = () => {
                 userId={userId}
                 role={role}
                 isLoading={isOtploading}
+                purpose='signup'
             />
         </>
     );
 };
 
-export default SignupPage;
+export default VendorSignupPage;

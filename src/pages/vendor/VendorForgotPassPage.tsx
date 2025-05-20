@@ -8,13 +8,13 @@ import { useResetPass } from '@/hooks/auth/useResetPass';
 import { useNavigate } from 'react-router-dom';
 import { TRoles } from '@/types/Auth.Types';
 
-const ForgotPassPage: React.FC = () => {
+const VendorForgotPassPage: React.FC = () => {
   const navigate = useNavigate()
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
   const [userId, setUserId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const role: Exclude<TRoles, 'admin'> = "user";
+  const role: Exclude<TRoles, 'admin'> = "vendor";
 
 
   //step 1 send email
@@ -42,7 +42,7 @@ const ForgotPassPage: React.FC = () => {
 
   const { mutate: resetPassFn, isPending: isLoadingReset } = useResetPass(role, () => {
     setShowResetModal(false)
-    navigate('/user/login')
+    navigate(`/${role}/login`)
   })
   const handleResetPassword = async (password: string) => {
     resetPassFn({ email, password })
@@ -59,6 +59,7 @@ const ForgotPassPage: React.FC = () => {
         userId={userId}
         role={role}
         isLoading={isLoadingVerify}
+        purpose='reset'
       />
 
       <ResetPassModal
@@ -71,4 +72,4 @@ const ForgotPassPage: React.FC = () => {
   );
 };
 
-export default ForgotPassPage;
+export default VendorForgotPassPage;

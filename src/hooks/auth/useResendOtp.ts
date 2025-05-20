@@ -3,9 +3,12 @@ import { TResentOtpValues } from "@/types/Auth.Types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 
-export const useResendOtp = (role: string, onSuccessCallback: () => void) => {
+export const useResendOtp = (role: string, purpose: 'signup' | 'reset', onSuccessCallback: () => void) => {
     return useMutation({
-        mutationFn: (values: TResentOtpValues) => resendOtp(values, role),
+        mutationFn: (values: TResentOtpValues) => {
+            const payload = { ...values, purpose }
+            return resendOtp(payload, role)
+        },
         onSuccess: (res) => {
             console.log('res on resentotp: ', res)
             if (res.success) {

@@ -1,4 +1,4 @@
-import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TSignUpFormValues } from "@/types/Auth.Types";
+import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TRoles, TSignUpFormValues } from "@/types/Auth.Types";
 import { axiosInstance } from "./axiosInstance";
 
 enum ENDPOINTS {
@@ -54,7 +54,8 @@ export const resetPassword = async (data: TResetPassValues, role: string) => {
     return response.data
 }
 
-export const logout = async () => {
-    const response = await axiosInstance.post(`/auth/logout`);
+export const logout = async (role: TRoles) => {
+    const endpoint = getEndpoint(role)
+    const response = await axiosInstance.post(`${endpoint}/auth/logout`);
     return response.data;
 };

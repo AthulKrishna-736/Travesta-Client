@@ -77,39 +77,45 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
                                     <ErrorMessage name="password" component="p" className="text-red-500 text-sm mt-1" />
                                 </div>
 
-                                <div className="text-right text-sm">
-                                    <button
-                                        type="button"
-                                        className="text-blue-600 hover:underline"
-                                        onClick={() => navigate('/user/forgot-password')}
-                                    >
-                                        Forgot Password?
-                                    </button>
-                                </div>
+                                {role !== 'admin' && (
+                                    <div className="text-right text-sm">
+                                        <button
+                                            type="button"
+                                            className="text-blue-600 hover:underline"
+                                            onClick={() => navigate(`/${role}/forgot-password`)}
+                                        >
+                                            Forgot Password?
+                                        </button>
+                                    </div>
+                                )}
 
                                 <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
                                     {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
                                     {isLoading ? 'Logging in...' : 'Login'}
                                 </Button>
 
-                                <div className="flex items-center my-4">
-                                    <div className="flex-grow h-px bg-gray-300"></div>
-                                    <span className="px-4 text-gray-500 text-sm">OR</span>
-                                    <div className="flex-grow h-px bg-gray-300"></div>
-                                </div>
+                                {role !== 'admin' && (
+                                    <>
+                                        <div className="flex items-center my-4">
+                                            <div className="flex-grow h-px bg-gray-300"></div>
+                                            <span className="px-4 text-gray-500 text-sm">OR</span>
+                                            <div className="flex-grow h-px bg-gray-300"></div>
+                                        </div>
 
-                                <GoogleLoginButton role={role as Exclude<TRoles, 'admin'>} />
+                                        <GoogleLoginButton role={role as Exclude<TRoles, 'admin'>} />
 
-                                <div className="text-center text-sm text-gray-600">
-                                    Don’t have an account?{' '}
-                                    <button
-                                        type="button"
-                                        className="text-blue-600 hover:underline font-medium"
-                                        onClick={() => navigate('/user/signup')}
-                                    >
-                                        Sign up
-                                    </button>
-                                </div>
+                                        <div className="text-center text-sm text-gray-600">
+                                            Don’t have an account?{' '}
+                                            <button
+                                                type="button"
+                                                className="text-blue-600 hover:underline font-medium"
+                                                onClick={() => navigate(`/${role}/signup`)}
+                                            >
+                                                Sign up
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </Form>
                         )}
                     </Formik>

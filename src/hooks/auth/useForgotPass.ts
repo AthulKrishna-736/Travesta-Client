@@ -5,7 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useForgotPass = (role: string, onSuccessCallback: (userId: string) => void) => {
     return useMutation({
-        mutationFn: (values: TForgotPassValues) => forgotPass(values, role),
+        mutationFn: (values: TForgotPassValues) => {
+            const payload = {
+                ...values,
+                role
+            }
+            return forgotPass(payload, role)
+        },
         onSuccess: (res) => {
             console.log('res on forgot pass: ', res)
             if (res.success) {

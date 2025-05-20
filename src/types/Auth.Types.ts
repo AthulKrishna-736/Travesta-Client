@@ -41,6 +41,7 @@ export interface IOtpModalProps {
     userId: string
     role: Exclude<TRoles, 'admin'>
     isLoading: boolean
+    purpose: 'signup' | 'reset'
 }
 
 export interface IForgotPassProps {
@@ -75,4 +76,10 @@ export type TGoogleLoginValues = {
 
 export interface IGoogleLoginProps {
     role: Exclude<TRoles, 'admin'>
+}
+
+export type TUpdateVendorReqValues = {
+    vendorId: string
+    isVerified: boolean
+    reason: string
 }
