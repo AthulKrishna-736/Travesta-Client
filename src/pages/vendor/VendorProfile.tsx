@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { KycDocuments } from "@/components/user/KycDocument";
 import Header from "@/components/vendor/Header";
 import { useUpdateVendor } from "@/hooks/vendor/useUpdateVendor";
+import Sidebar from "@/components/vendor/Sidebar";
 
 const VendorProfile: React.FC = () => {
     const user = useSelector((state: RootState) => state.vendor.vendor);
@@ -39,7 +40,8 @@ const VendorProfile: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-            <main className="flex-grow bg-background px-4 py-6">
+            <Sidebar isOpen={sidebarOpen} />
+            <main className={`flex-grow bg-background px-4 py-6 ${sidebarOpen ? 'sm:ml-64': 'ml-14'}`}>
                 <div className="mx-auto max-w-6xl">
                     <h1 className="mb-6 text-3xl font-bold">Vendor Dashboard</h1>
 
@@ -52,7 +54,7 @@ const VendorProfile: React.FC = () => {
                         <TabsContent value="profile" className="space-y-6">
                             <div className="grid gap-6 lg:grid-cols-3">
                                 <div className="lg:col-span-1">
-                                    <ImageUpload onImageSelected={setSelectedImageFile} />
+                                    <ImageUpload onImageSelected={setSelectedImageFile} role="vendor" />
                                 </div>
                                 <div className="lg:col-span-2">
                                     <ProfileSection user={user} onUpdate={handleProfileUpdate} />

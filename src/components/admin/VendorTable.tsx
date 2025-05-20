@@ -11,7 +11,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
     const [rejectReason, setRejectReason] = useState('');
     const [vendorModalOpen, setVendorModalOpen] = useState(false);
 
-    const { mutate: updateVendorReq, isPending } = useVendorVerify(page, limit, search,() => {
+    const { mutate: updateVendorReq, isPending } = useVendorVerify(page, limit, search, () => {
         setIsModalOpen(false);
         setRejectReason('')
     })

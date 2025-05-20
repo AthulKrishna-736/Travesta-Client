@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
+import { useLogout } from '@/hooks/auth/useLogout';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 interface HeaderProps {
     toggleSidebar: () => void;
@@ -19,6 +22,13 @@ interface HeaderProps {
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
     const navigate = useNavigate()
+    const profileImage = useSelector((state: RootState) => state.vendor.vendor.profileImage)
+
+    const { mutate: logoutVendor } = useLogout('vendor')
+
+    const handleLogout = () => {
+        logoutVendor()
+    }
     return (
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 fixed top-0 w-full z-10">
             <div className="flex items-center">
@@ -45,7 +55,7 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                                <AvatarImage src="https://github.com/shadcn.png" />
+                                <AvatarImage src={profileImage} />
                                 <AvatarFallback>VH</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col items-start text-sm">
@@ -62,7 +72,7 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                             Profile
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout}>
                             Log out
                         </DropdownMenuItem>
                     </DropdownMenuContent>

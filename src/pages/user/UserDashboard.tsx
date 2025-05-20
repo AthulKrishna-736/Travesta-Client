@@ -31,10 +31,6 @@ const UserDashboard: React.FC = () => {
         updateUser({ data: formData })
     };
 
-    // const handleKycUpdate = (payload: { userId: string; files: File[] }) => {
-    //     console.log("KYC submitted for:", payload.userId);
-    // };
-
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
@@ -53,7 +49,7 @@ const UserDashboard: React.FC = () => {
                         <TabsContent value="profile" className="space-y-6">
                             <div className="grid gap-6 lg:grid-cols-3">
                                 <div className="lg:col-span-1">
-                                    <ImageUpload onImageSelected={setSelectedImageFile} />
+                                    <ImageUpload onImageSelected={setSelectedImageFile} role="user"/>
                                 </div>
                                 <div className="lg:col-span-2">
                                     <ProfileSection user={user} onUpdate={handleProfileUpdate} />
@@ -61,11 +57,7 @@ const UserDashboard: React.FC = () => {
                             </div>
                         </TabsContent>
 
-                        {/* <TabsContent value="documents">
-                            <KycDocuments userId={user.id} onUpdate={handleKycUpdate} />
-                        </TabsContent>
-
-                        <TabsContent value="wishlist">
+                        {/* <TabsContent value="wishlist">
                             <Wishlist user={user} />
                         </TabsContent> */}
                     </Tabs>

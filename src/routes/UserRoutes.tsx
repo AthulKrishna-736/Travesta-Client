@@ -1,3 +1,4 @@
+import UserHotelPage from '@/pages/user/HotelPage'
 import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
 import UserHomePage from '@/pages/user/UserHomePage'
@@ -40,6 +41,13 @@ const UserRoutes: React.FC = () => {
           <UserDashboard />
         </ProtectedUser>
       } />
+
+      <Route path='/hotels' element={
+        <ProtectedUser>
+          <UserHotelPage />
+        </ProtectedUser>
+      }
+      />
     </Routes>
   )
 }

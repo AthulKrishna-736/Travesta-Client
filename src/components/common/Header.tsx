@@ -14,9 +14,12 @@ import { cn } from "@/lib/utils";
 import { Hotel, Search, Menu, Bell, LogOutIcon } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { useLogout } from '@/hooks/auth/useLogout';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 const Header = () => {
     const { mutate: logoutUserFn } = useLogout('user')
+    const profileImage = useSelector((state: RootState) => state.auth.user.profileImage)
 
     const handleLogout = () => {
         logoutUserFn()
@@ -46,16 +49,16 @@ const Header = () => {
                             <NavigationMenuTrigger>Hotels</NavigationMenuTrigger>
                             <NavigationMenuContent>
                                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                                    <ListItem title="Featured Hotels" href="#" Icon={Hotel}>
+                                    <ListItem title="Featured Hotels" href="/user/hotels" Icon={Hotel}>
                                         Exclusive deals on our top-rated hotel partners
                                     </ListItem>
-                                    <ListItem title="Last Minute Deals" href="#" Icon={Search}>
+                                    <ListItem title="Last Minute Deals" href="/user/hotels" Icon={Search}>
                                         Great savings on last-minute bookings
                                     </ListItem>
-                                    <ListItem title="Luxury Stays" href="#" Icon={Hotel}>
+                                    <ListItem title="Luxury Stays" href="/user/hotels" Icon={Hotel}>
                                         Premium accommodations for a memorable experience
                                     </ListItem>
-                                    <ListItem title="Budget Options" href="#" Icon={Hotel}>
+                                    <ListItem title="Budget Options" href="/user/hotels" Icon={Hotel}>
                                         Comfortable stays that won't break the bank
                                     </ListItem>
                                 </ul>
@@ -85,7 +88,7 @@ const Header = () => {
                     </Button>
                     <Link to="/user/profile">
                         <Avatar className="cursor-pointer">
-                            <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+                            <AvatarImage src={profileImage} alt="User" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </Link>

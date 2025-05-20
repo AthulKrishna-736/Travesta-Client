@@ -7,11 +7,13 @@ import { ImageUploadProps } from "@/types/component.types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected }) => {
+export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, role }) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const data = useSelector((state: RootState) => state.auth.user);
+    const data = useSelector((state: RootState) =>
+        role === "user" ? state.auth.user : state.vendor.vendor
+    );
 
     useEffect(() => {
         console.log('data: ', data)

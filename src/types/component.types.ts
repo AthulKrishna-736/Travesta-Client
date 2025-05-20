@@ -63,4 +63,5 @@ export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified'>;
 
 export type ImageUploadProps = {
     onImageSelected: (file: File | null) => void;
+    role: 'vendor' | 'user'
 };

@@ -6,7 +6,6 @@ import {
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLogout } from '@/hooks/auth/useLogout';
 
 interface SidebarProps {
@@ -14,8 +13,8 @@ interface SidebarProps {
 }
 
 const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Properties', path: '/dashboard/properties', icon: Building },
+    { name: 'Dashboard', path: '/vendor/dashboard', icon: LayoutDashboard },
+    { name: 'Hotels', path: '/vendor/hotels', icon: Building },
     { name: 'Bookings', path: '/dashboard/bookings', icon: Calendar, badge: '5' },
     { name: 'Analytics', path: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Reviews', path: '/dashboard/reviews', icon: Star, badge: '3' },
@@ -28,7 +27,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
 
     const { mutate: logoutVendor } = useLogout('vendor')
 
-    const handleLogout = ()=>{
+    const handleLogout = () => {
         logoutVendor()
     }
 
@@ -40,23 +39,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
             )}
         >
             <div className={cn("flex flex-col h-full", !isOpen && "sm:items-center")}>
-                {isOpen && (
-                    <div className="p-4">
-                        <div className="flex items-center space-x-3">
-                            <Avatar>
-                                <AvatarImage src="https://github.com/shadcn.png" />
-                                <AvatarFallback>CR</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <p className="font-medium text-sm">Coastal Resort</p>
-                                <p className="text-xs text-muted-foreground">Premium Partner</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 <Separator />
-
                 <nav className="flex-1 p-2">
                     <ul className="space-y-1">
                         {navItems.map((item) => (
