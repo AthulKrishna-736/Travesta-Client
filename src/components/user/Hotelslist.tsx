@@ -2,10 +2,11 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star, MapPin, CheckCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface HotelCardProps {
     hotel: {
-        _id: string;
+        id: string;
         name: string;
         description: string;
         images: string[];
@@ -20,10 +21,13 @@ interface HotelCardProps {
 }
 
 const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
-    const { name, description, images, rating, city, state, address, tags, amenities, services } = hotel;
+    const navigate = useNavigate();
+
+
+    const { name, description, images, rating, city, state, tags, amenities, services } = hotel;
 
     return (
-        <Card className="shadow-md hover:shadow-lg transition duration-300 rounded-2xl overflow-hidden">
+        <Card className="shadow-md hover:shadow-lg transition duration-300 rounded-2xl overflow-hidden" onClick={() => navigate(`/user/hotels/${hotel.id as string}`)}>
             {/* Image Section */}
             <div className="h-48 w-full overflow-hidden">
                 <img

@@ -2,6 +2,7 @@ import UserHotelPage from '@/pages/user/HotelPage'
 import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
 import UserHomePage from '@/pages/user/UserHomePage'
+import UserHotelDetailPage from '@/pages/user/UserHotelDetailPage'
 import UserLoginPage from '@/pages/user/UserLoginPage'
 import UserSignupPage from '@/pages/user/UserSignupPage'
 import ProtectGuest from '@/ProtectRoutes/ProtectGuest'
@@ -48,6 +49,8 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       }
       />
+
+      <Route path="hotels/:hotelId" element={<UserHotelDetailPage />} />
     </Routes>
   )
 }

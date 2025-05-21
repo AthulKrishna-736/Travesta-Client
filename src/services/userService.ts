@@ -19,3 +19,8 @@ export const getAllUserHotels = async (page = 1, limit = 10, search?: string) =>
     });
     return response.data;
 };
+
+export const getUserHotelById = async (hotelId: string) => {
+    const response = await axiosInstance.get(`/users/hotels/${hotelId}`);
+    return response.data;
+};
