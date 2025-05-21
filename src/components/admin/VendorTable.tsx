@@ -7,6 +7,7 @@ import ShowDetailsModal from '../common/ShowDetailsModal'
 
 const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit, search }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<any>(null);
     const [rejectReason, setRejectReason] = useState('');
     const [vendorModalOpen, setVendorModalOpen] = useState(false);
@@ -51,6 +52,25 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         setRejectReason('');
     };
 
+    const handleAcceptConfirm = () => {
+        if (selectedVendor) {
+            updateVendorReq({
+                vendorId: selectedVendor.id,
+                isVerified: true,
+                reason: 'Approved by admin'
+            }, {
+                onSettled: () => {
+                    setIsAcceptModalOpen(false);
+                }
+            });
+        }
+    };
+
+    const handleAcceptCancel = () => {
+        setIsAcceptModalOpen(false);
+    };
+
+
     const columns = [
         { key: "firstName", label: "Name" },
         { key: "email", label: "Email" },
@@ -65,11 +85,8 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
             variant: 'ghost' as const,
             className: 'text-green-600 border-green-600 hover:bg-green-50',
             onClick: (row: any) => {
-                updateVendorReq({
-                    vendorId: row.id,
-                    isVerified: true,
-                    reason: 'Approved by admin'
-                })
+                setSelectedVendor(row);
+                setIsAcceptModalOpen(true);
             }
         },
         {
@@ -115,6 +132,16 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
                 data={selectedVendor}
                 onCancel={handleDetailModalClose}
             />
+            <ConfirmationModal
+                open={isAcceptModalOpen}
+                title="Accept Vendor"
+                description="Are you sure you want to accept this vendor?"
+                showInput={false}
+                onConfirm={handleAcceptConfirm}
+                onCancel={handleAcceptCancel}
+                isLoading={isPending}
+            />
+
         </>
     )
 }

@@ -26,3 +26,10 @@ export const createHotel = async (formData: IHotel) => {
     })
     return response.data;
 }
+
+export const getAllHotels = async (page = 1, limit = 10, search?: string) => {
+    const response = await axiosInstance.get('/vendor/hotels', {
+        params: { page, limit, search },
+    });
+    return response.data;
+};

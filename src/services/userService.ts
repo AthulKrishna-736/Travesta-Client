@@ -12,3 +12,10 @@ export const updateUser = async (formData: FormData) => {
     });
     return response.data;
 };
+
+export const getAllUserHotels = async (page = 1, limit = 10, search?: string) => {
+    const response = await axiosInstance.get('/users/hotels', {
+        params: { page, limit, search },
+    });
+    return response.data;
+};

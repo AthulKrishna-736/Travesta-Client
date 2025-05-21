@@ -1,7 +1,5 @@
 import * as Yup from 'yup';
 
-
-const SUPPORTED_IMAGE_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 const nameRegex = /^[A-Za-z\s]+$/;
 const tagAmenityServiceRegex = /^[A-Za-z0-9,\s]+$/;
 
@@ -54,11 +52,10 @@ export const hotelSchema = Yup.object().shape({
         .matches(tagAmenityServiceRegex, 'Services must be letters, numbers, or commas')
         .required('services are required'),
 
-    imageFile: Yup.mixed<FileList>()
-        .required('Image is required')
-        .test('fileType', 'Only JPG, PNG, or WEBP files are allowed', (value) => {
-            if (!value || value.length === 0) return false;
-            const file = value[0];
-            return file instanceof File && SUPPORTED_IMAGE_FORMATS.includes(file.type);
-        }),
+    imageFile: Yup
+        .mixed<FileList>()
+        .test("fileRequired", "Image is required", (value) => {
+            return value instanceof FileList && value.length > 0;
+        })
+        .required(),
 });

@@ -78,9 +78,7 @@ const CreateHotelModal: React.FC<CreateHotelModalProps> = ({ open, onClose, onSu
             imageFile: croppedImageFile || data.imageFile?.[0],
         };
 
-        console.log('hotel formdata: ', formData);
         onSubmit(formData);
-
         setPreviewImage(null);
         setCroppedImageFile(null);
         reset();

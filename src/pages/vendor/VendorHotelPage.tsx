@@ -1,14 +1,34 @@
 import Header from '@/components/vendor/Header';
 import Sidebar from '@/components/vendor/Sidebar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreateHotelModal from '@/components/vendor/CreateHotelModal';
 import HotelTable from '@/components/vendor/HotelList';
 import { IHotel } from '@/types/user.types';
 import { UseCreateHotel } from '@/hooks/vendor/useCreateHotel';
+import Pagination from '@/components/common/Pagination';
+import { useGetAllHotels } from '@/hooks/vendor/useGetAllHotels';
+import { Input } from '@/components/ui/input';
 
 const VendorHotelsPage: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [debouncedValue, setDebouncedValue] = useState('');
+    const limit = 10;
+
+    const { data, isLoading } = useGetAllHotels(page, limit, debouncedValue);
+
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            setDebouncedValue(searchTerm);
+            setPage(1);
+        }, 500);
+        return () => clearTimeout(debounce);
+    }, [searchTerm]);
+
+    const hotels = data?.data ?? [];
+    const meta = data?.meta;
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -25,7 +45,6 @@ const VendorHotelsPage: React.FC = () => {
     const { mutate: createHotelfn, isPending } = UseCreateHotel()
 
     const handleCreateHotel = async (hotelData: IHotel) => {
-        console.log('hote data before submit', hotelData)
         createHotelfn(hotelData)
     };
 
@@ -54,12 +73,24 @@ const VendorHotelsPage: React.FC = () => {
                             Manage your listed hotels. You can add, edit, or delete hotels from here.
                         </p>
                         <div className="overflow-x-auto space-y-4">
-                            <HotelTable />
+                            <Input
+                                type="text"
+                                placeholder="Search hotels..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <HotelTable hotels={hotels} loading={isLoading} />
                         </div>
                     </div>
+                    {meta && meta.totalPages > 0 && (
+                        <Pagination
+                            currentPage={meta.currentPage}
+                            totalPages={meta.totalPages}
+                            onPageChange={setPage}
+                        />
+                    )}
                 </main>
             </div>
-
             {isModalOpen && (
                 <CreateHotelModal
                     open={isModalOpen}

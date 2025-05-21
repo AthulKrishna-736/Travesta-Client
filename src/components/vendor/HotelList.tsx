@@ -1,39 +1,30 @@
 import React, { useState } from "react";
 import DataTable from "../common/Table";
-
-const dummyHotels = [
-    {
-        id: "1",
-        name: "Ocean View Hotel",
-        address: "Beach Road, Goa",
-        phone: "9876543210",
-        rooms: 35,
-    },
-    {
-        id: "2",
-        name: "Mountain Retreat",
-        address: "Hilltop, Manali",
-        phone: "9876543211",
-        rooms: 22,
-    },
-];
+import { IHotel } from "@/types/user.types";
+import ShowHotelDetailsModal from "./ShowHotelDetails";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
+    { key: "description", label: "Description" },
+    { key: "city", label: "City" },
+    { key: "state", label: "State" },
     { key: "address", label: "Address" },
-    { key: "phone", label: "Phone" },
-    { key: "rooms", label: "Rooms" },
 ];
 
-const HotelTable: React.FC = () => {
-    const [selectedHotel, setSelectedHotel] = useState<any>(null);
+interface IHotelTableProps {
+    hotels: IHotel[];
+    loading: boolean;
+}
+
+const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading }) => {
+    const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-    const handleEdit = (hotel: any) => {
+    const handleEdit = (hotel: IHotel) => {
         console.log("Edit hotel:", hotel);
     };
 
-    const handleDetails = (hotel: any) => {
+    const handleDetails = (hotel: IHotel) => {
         setSelectedHotel(hotel);
         setDetailModalOpen(true);
     };
@@ -54,7 +45,12 @@ const HotelTable: React.FC = () => {
 
     return (
         <>
-            <DataTable columns={columns} data={dummyHotels} actions={actions} />
+            <DataTable columns={columns} data={hotels} actions={actions} loading={loading} />
+            <ShowHotelDetailsModal
+                open={detailModalOpen}
+                data={selectedHotel}
+                onClose={() => setDetailModalOpen(false)}
+            />
         </>
     );
 };
