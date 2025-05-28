@@ -2,61 +2,32 @@ import React, { useState } from "react";
 import DataTable from "../common/Table";
 import { IHotel } from "@/types/user.types";
 import ShowHotelDetailsModal from "./ShowHotelDetails";
-import { useUpdateHotel } from "@/hooks/vendor/useCreateHotel";
+import { IHotelTableProps } from "@/types/component.types";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
-    { key: "description", label: "Description" },
     { key: "city", label: "City" },
     { key: "state", label: "State" },
     { key: "address", label: "Address" },
 ];
 
-interface IHotelTableProps {
-    hotels: IHotel[];
-    loading: boolean;
-}
-
-const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading }) => {
+const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading, onEdit }) => {
     const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-    // New state for edit modal
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [hotelToEdit, setHotelToEdit] = useState<IHotel | null>(null);
 
-    const { mutate: updateHotel, isPending } = useUpdateHotel()
-
-
-    const handleSubmitEdit = (data: any) => {
-        console.log('submit eidt: ', data)
-        updateHotel(data)
-    }
-
-    // Show details modal
-    const handleDetails = (hotel: any) => {
+    const handleDetails = (hotel: IHotel) => {
         console.log('check edit: ', hotel)
         setSelectedHotel(hotel);
         setDetailModalOpen(true);
     };
 
-    // Show edit modal
-    const handleEdit = (hotel: any) => {
-        setHotelToEdit(hotel);
-        setEditModalOpen(true);
+    const handleEdit = (hotel: IHotel) => {
+        if (onEdit) {
+            onEdit(hotel)
+        }
     };
 
-    // Close details modal
-    const handleCloseDetailsModal = () => {
-        setDetailModalOpen(false);
-        setSelectedHotel(null);
-    };
-
-    // Close edit modal
-    const handleCloseEditModal = () => {
-        setEditModalOpen(false);
-        setHotelToEdit(null);
-    };
 
     const actions = [
         {
@@ -80,26 +51,13 @@ const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading }) => {
                 actions={actions}
                 loading={loading}
             />
-
-            {/* Details modal */}
             {selectedHotel && (
                 <ShowHotelDetailsModal
                     open={detailModalOpen}
                     data={selectedHotel}
-                    onClose={handleCloseDetailsModal}
+                    onClose={() => { setDetailModalOpen(false) }}
                 />
             )}
-
-            {/* Edit modal */}
-            {/* {hotelToEdit && (
-                <EditHotelModal
-                    open={editModalOpen}
-                    hotel={hotelToEdit}
-                    onClose={handleCloseEditModal}
-                    onSubmit={handleSubmitEdit}
-                    isLoading={isPending}
-                />
-            )} */}
         </>
     );
 };

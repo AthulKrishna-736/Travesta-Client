@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import CreateHotelModal from '@/components/vendor/CreateHotelModal';
 import HotelTable from '@/components/vendor/HotelList';
 import { IHotel } from '@/types/user.types';
-import { UseCreateHotel } from '@/hooks/vendor/useCreateHotel';
+import { UseCreateHotel, useUpdateHotel } from '@/hooks/vendor/useCreateHotel';
 import Pagination from '@/components/common/Pagination';
 import { useGetAllHotels } from '@/hooks/vendor/useGetAllHotels';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 const VendorHotelsPage: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingHotel, setEditingHotel] = useState<IHotel | null>(null);
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedValue, setDebouncedValue] = useState('');
@@ -35,6 +36,12 @@ const VendorHotelsPage: React.FC = () => {
     };
 
     const handleModalOpen = () => {
+        setEditingHotel(null);
+        setIsModalOpen(true);
+    };
+
+    const handleEditHotel = (hotel: IHotel) => {
+        setEditingHotel(hotel);
         setIsModalOpen(true);
     };
 
@@ -42,11 +49,16 @@ const VendorHotelsPage: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const { mutate: createHotelfn, isPending } = UseCreateHotel(() => {
-        handleModalClose()
-    })
+    const { mutate: createHotelfn, isPending: isCreating } = UseCreateHotel(page, limit, () => {
+        handleModalClose();
+    }, debouncedValue);
 
-    const handleCreateHotel = async (hotelData: IHotel) => {
+    const { mutate: updateHotelfn, isPending: isUpdating } = useUpdateHotel(() => {
+        handleModalClose()
+    }, page, limit, debouncedValue);
+
+
+    const handleCreateOrEditHotel = async (hotelData: IHotel) => {
         const formData = new FormData();
 
         formData.append('name', hotelData.name);
@@ -54,9 +66,10 @@ const VendorHotelsPage: React.FC = () => {
         formData.append('address', hotelData.address);
         formData.append('city', hotelData.city);
         formData.append('state', hotelData.state);
-        formData.append('tags', hotelData.tags);
-        formData.append('amenities', hotelData.amenities);
-        formData.append('services', hotelData.services);
+        formData.append('tags', Array.isArray(hotelData.tags) ? hotelData.tags.join(',') : hotelData.tags);
+        formData.append('amenities', Array.isArray(hotelData.amenities) ? hotelData.amenities.join(',') : hotelData.amenities);
+        formData.append('services', Array.isArray(hotelData.services) ? hotelData.services.join(',') : hotelData.services);
+
 
         if (hotelData.geoLocation?.length === 2) {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
@@ -68,8 +81,21 @@ const VendorHotelsPage: React.FC = () => {
             });
         }
 
-        createHotelfn(formData);
+        if (editingHotel) {
+            const hotelId = editingHotel._id as string ?? hotelData.id;
+
+            if (!hotelId) {
+                console.error('Hotel ID is missing during update.', editingHotel);
+                return;
+            }
+
+            updateHotelfn({ id: hotelId, data: formData });
+        }
+        else {
+            createHotelfn(formData);
+        }
     };
+
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
@@ -101,7 +127,7 @@ const VendorHotelsPage: React.FC = () => {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <HotelTable hotels={hotels} loading={isLoading} />
+                            <HotelTable hotels={hotels} loading={isLoading} onEdit={handleEditHotel} />
                         </div>
                     </div>
                     {meta && meta.totalPages > 0 && (
@@ -117,8 +143,10 @@ const VendorHotelsPage: React.FC = () => {
                 <CreateHotelModal
                     open={isModalOpen}
                     onClose={handleModalClose}
-                    onSubmit={handleCreateHotel}
-                    isLoading={isPending}
+                    onSubmit={handleCreateOrEditHotel}
+                    isLoading={isCreating || isUpdating}
+                    hotelData={editingHotel}
+                    isEdit={!!editingHotel}
                 />
             )}
 

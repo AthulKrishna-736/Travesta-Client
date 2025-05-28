@@ -4,13 +4,24 @@ import { Input } from '@/components/ui/input';
 import { IMutilImageUploadProps } from '@/types/component.types';
 
 
-const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages = 4, onImagesChange }) => {
+const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages = 4, onImagesChange, initialImageUrls = [] }) => {
     const [previewImages, setPreviewImages] = useState<(string | null)[]>([]);
     const [originalFiles, setOriginalFiles] = useState<(File | null)[]>([]);
     const [croppedFiles, setCroppedFiles] = useState<(File | null)[]>([]);
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [showCropper, setShowCropper] = useState(false);
     const [cropSrc, setCropSrc] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (initialImageUrls.length > 0) {
+            const padded = [...initialImageUrls].concat(
+                Array(maxImages - initialImageUrls.length).fill(null)
+            );
+            setPreviewImages(padded);
+            setOriginalFiles(Array(maxImages).fill(null));
+            setCroppedFiles(Array(maxImages).fill(null));
+        }
+    }, [initialImageUrls, maxImages]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const file = e.target.files?.[0];
@@ -34,7 +45,6 @@ const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages = 4, o
             setShowCropper(true);
         }
     };
-
 
     const handleCropDone = (file: File) => {
         if (activeIndex !== null) {
@@ -82,7 +92,7 @@ const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages = 4, o
     useEffect(() => {
         const finalImages: File[] = [];
 
-        for (let i = 0; i < originalFiles.length; i++) {
+        for (let i = 0; i < previewImages.length; i++) {
             if (croppedFiles[i]) {
                 finalImages.push(croppedFiles[i]!);
             } else if (originalFiles[i]) {
@@ -91,7 +101,7 @@ const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages = 4, o
         }
 
         onImagesChange(finalImages);
-    }, [originalFiles, croppedFiles]);
+    }, [originalFiles, croppedFiles, previewImages]);
 
     return (
         <div className="space-y-4">

@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,119 +11,125 @@ import { ICreateHotelModalProps } from '@/types/component.types';
 import { IHotel } from '@/types/user.types';
 import { Loader2 } from 'lucide-react';
 import MultiImageUploader from '../common/ImageUpload';
+import { showError } from '@/utils/customToast';
 
-const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onSubmit, isLoading }) => {
+const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onSubmit, isLoading, hotelData = null, isEdit = false, }) => {
     const [geoLocation, setGeoLocation] = useState<number[] | null>(null);
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [imageFiles, setImageFiles] = useState<File[] | string[]>([]);
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<IHotel>({
-        resolver: yupResolver(hotelSchema),
-    });
+    const { register, handleSubmit, formState: { errors }, reset, } = useForm<IHotel>({ resolver: yupResolver(hotelSchema), });
 
     useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { longitude, latitude } = position.coords;
-                    setGeoLocation([longitude, latitude]);
-                },
-                (error) => {
-                    console.error("Error getting location", error);
-                    setGeoLocation(null);
-                }
-            );
+        if (hotelData) {
+            reset(hotelData);
+            setImageFiles(hotelData.images as string[] || []);
+            setGeoLocation(hotelData.geoLocation || null);
+        } else {
+            reset();
+            setImageFiles([]);
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { longitude, latitude } = position.coords;
+                        setGeoLocation([longitude, latitude]);
+                    },
+                    () => setGeoLocation(null)
+                );
+            }
         }
-    }, []);
+    }, [hotelData, reset]);
 
     const submitHandler = (data: IHotel) => {
-        if (imageFiles.length < 4) {
-            alert("Please upload at least 4 image.");
+        if (!isEdit && imageFiles.length !== 4) {
+            showError('Please upload exactly 4 images.');
             return;
         }
 
-        const finalPayload = {
+        if (isEdit && imageFiles.length > 0 && imageFiles.length > 4) {
+            showError('You can upload up to 4 images only.');
+            return;
+        }
+
+        const finalPayload: IHotel & { images: File[] } = {
             ...data,
-            geoLocation: geoLocation || undefined,
-            images: imageFiles, 
+            geoLocation: geoLocation || [],
+            images: imageFiles as File[],
         };
 
-        console.log("📦 Final payload:", finalPayload);
-
-        onSubmit(finalPayload); 
-        setImageFiles([]);
-        reset();
+        onSubmit(finalPayload);
     };
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-lg w-full max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>Create New Hotel</DialogTitle>
+                    <DialogTitle>
+                        {isEdit ? 'Edit Hotel' : 'Create New Hotel'}
+                    </DialogTitle>
                     <DialogDescription>
-                        Fill in the details below to add a new hotel to the system. Make sure all fields are accurate before submitting.
+                        {isEdit ? 'Update the hotel details below and save your changes.' : 'Fill in the details below to add a new hotel to the system.'}
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
                     <div>
                         <Label>Name</Label>
                         <Input {...register('name')} required />
-                        {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+                        {errors.name && (<p className="text-sm text-red-500">{errors.name.message}</p>)}
                     </div>
                     <div>
                         <Label>Description</Label>
                         <Textarea {...register('description')} required />
-                        {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+                        {errors.description && (<p className="text-sm text-red-500">{errors.description.message}</p>)}
                     </div>
                     <div>
                         <Label>Address</Label>
                         <Input {...register('address')} required />
-                        {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
+                        {errors.address && (<p className="text-sm text-red-500">{errors.address.message}</p>)}
                     </div>
                     <div className="flex gap-2">
                         <div className="w-1/2">
                             <Label>State</Label>
                             <Input {...register('state')} required />
-                            {errors.state && <p className="text-sm text-red-500">{errors.state.message}</p>}
+                            {errors.state && (<p className="text-sm text-red-500">{errors.state.message}</p>)}
                         </div>
                         <div className="w-1/2">
                             <Label>City</Label>
                             <Input {...register('city')} required />
-                            {errors.city && <p className="text-sm text-red-500">{errors.city.message}</p>}
+                            {errors.city && (<p className="text-sm text-red-500">{errors.city.message}</p>)}
                         </div>
                     </div>
                     <div>
                         <Label>Tags (comma separated)</Label>
                         <Input {...register('tags')} />
-                        {errors.tags && <p className="text-sm text-red-500">{errors.tags.message}</p>}
+                        {errors.tags && (<p className="text-sm text-red-500">{errors.tags.message}</p>)}
                     </div>
                     <div>
                         <Label>Amenities (comma separated)</Label>
                         <Input {...register('amenities')} />
-                        {errors.amenities && <p className="text-sm text-red-500">{errors.amenities.message}</p>}
+                        {errors.amenities && (<p className="text-sm text-red-500">{errors.amenities.message}</p>)}
                     </div>
                     <div>
                         <Label>Services (comma separated)</Label>
                         <Input {...register('services')} />
-                        {errors.services && <p className="text-sm text-red-500">{errors.services.message}</p>}
+                        {errors.services && (<p className="text-sm text-red-500">{errors.services.message}</p>)}
                     </div>
                     <div>
                         <Label>Images (max 4)</Label>
                         <MultiImageUploader
                             maxImages={4}
-                            onImagesChange={(files) => {
-                                console.log("🖼️ Image files selected:", files);
-                                setImageFiles(files);
-                            }}
+                            onImagesChange={(files) => setImageFiles(files)}
+                            initialImageUrls={isEdit && hotelData?.images ? hotelData.images as string[] : []}
                         />
                     </div>
+
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? (
                             <>
                                 <Loader2 className="animate-spin h-4 w-4 mr-2" />
-                                Creating...
+                                {isEdit ? 'Updating...' : 'Creating...'}
                             </>
                         ) : (
-                            "Create Hotel"
+                            isEdit ? 'Update Hotel' : 'Create Hotel'
                         )}
                     </Button>
                 </form>

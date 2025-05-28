@@ -71,9 +71,18 @@ export interface ICreateHotelModalProps {
     onClose: () => void;
     isLoading: boolean;
     onSubmit: (data: IHotel & { images: File[] }) => void;
+    hotelData?: IHotel | null;
+    isEdit?: boolean;
 }
 
 export interface IMutilImageUploadProps {
     maxImages?: number;
     onImagesChange: (files: File[]) => void;
+    initialImageUrls?: string[];
 };
+
+export interface IHotelTableProps {
+    hotels: IHotel[];
+    loading: boolean;
+    onEdit?: (hotel: IHotel) => void;
+}

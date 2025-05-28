@@ -51,6 +51,8 @@ export interface WishlistItem {
 
 
 export interface IHotel {
+  _id: string
+  id?: string
   name: string
   description: string
   address: string
@@ -60,5 +62,5 @@ export interface IHotel {
   amenities: string
   services: string
   geoLocation?: number[]
-  images?: File[]
+  images?: File[] | string[]
 }
