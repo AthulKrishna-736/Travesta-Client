@@ -14,6 +14,7 @@ export interface UserTableProps {
   page: number
   limit: number
   role: TRoles
+  search: string
 }
 
 export type TSubscriptionType = 'basic' | 'medium' | 'vip';
@@ -59,5 +60,5 @@ export interface IHotel {
   amenities: string
   services: string
   geoLocation?: number[]
-  imageFile: FileList
+  images?: File[]
 }

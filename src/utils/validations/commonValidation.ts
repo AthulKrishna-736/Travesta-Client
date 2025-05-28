@@ -51,11 +51,4 @@ export const hotelSchema = Yup.object().shape({
     services: Yup.string()
         .matches(tagAmenityServiceRegex, 'Services must be letters, numbers, or commas')
         .required('services are required'),
-
-    imageFile: Yup
-        .mixed<FileList>()
-        .test("fileRequired", "Image is required", (value) => {
-            return value instanceof FileList && value.length > 0;
-        })
-        .required(),
 });

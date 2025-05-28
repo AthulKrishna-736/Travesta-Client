@@ -5,11 +5,11 @@ import { User, UserTableProps } from "@/types/user.types"
 import ConfirmationModal from "../common/ConfirmationModa"
 
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role }) => {
+const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role, search }) => {
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-    const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role)
+    const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role, search)
 
     const handleConfirm = () => {
         if (selectedUser) {

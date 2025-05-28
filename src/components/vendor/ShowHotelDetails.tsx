@@ -1,6 +1,6 @@
 // components/vendor/ShowHotelDetailsModal.tsx
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 
 interface ShowHotelDetailsModalProps {
     open: boolean;
@@ -25,6 +25,7 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
             <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-semibold text-gray-900">{title}</DialogTitle>
+                    <DialogDescription />
                 </DialogHeader>
 
                 <div className="grid grid-cols-2 gap-6 mt-4">

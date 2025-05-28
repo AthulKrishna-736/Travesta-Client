@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { UpdateUser } from "./user.types";
-import { UserType } from "./response.types";
+import { IHotel, UpdateUser } from "./user.types";
+import { IUserType } from "./response.types";
 
 export interface AdminLayoutProps {
     children: ReactNode
@@ -50,13 +50,13 @@ export interface ProfileSectionProps {
 }
 
 export interface WishlistProps {
-    user: UserType
+    user: IUserType
 }
 
 export interface ShowDetailModalProps {
     open: boolean
     title: string
-    data: UserType
+    data: IUserType
     onCancel: () => void
 }
 export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified'>;
@@ -66,9 +66,14 @@ export type ImageUploadProps = {
     role: 'vendor' | 'user'
 };
 
-export interface CreateHotelModalProps {
+export interface ICreateHotelModalProps {
     open: boolean;
     onClose: () => void;
-    onSubmit: (data: any) => void;
-    isLoading: boolean
+    isLoading: boolean;
+    onSubmit: (data: IHotel & { images: File[] }) => void;
 }
+
+export interface IMutilImageUploadProps {
+    maxImages?: number;
+    onImagesChange: (files: File[]) => void;
+};

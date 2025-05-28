@@ -1,20 +1,20 @@
 import { toggleBlockUser } from "@/services/adminService";
 import { TRoles } from "@/types/Auth.Types";
-import { GetAllUsersResponse } from "@/types/response.types";
+import { TGetAllUsersResponse } from "@/types/response.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
-export const useBlockUser = (page: number, limit: number, role: TRoles) => {
+export const useBlockUser = (page: number, limit: number, role: TRoles, search: string) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (userId: string) => toggleBlockUser(userId),
         onMutate: async (userId: string) => {
-            await queryClient.cancelQueries({ queryKey: ['admin-users', page, limit, role] });
+            await queryClient.cancelQueries({ queryKey: ['admin-users', page, limit, role, search] });
 
-            const prevUsers = queryClient.getQueryData<any[]>(['admin-users', page, limit, role]);
+            const prevUsers = queryClient.getQueryData(['admin-users', page, limit, role, search]);
 
-            queryClient.setQueryData(['admin-users', page, limit, role], (oldData: GetAllUsersResponse) => {
+            queryClient.setQueryData(['admin-users', page, limit, role, search], (oldData: TGetAllUsersResponse) => {
                 return {
                     ...oldData,
                     data: oldData?.data?.map((user) => {
@@ -37,7 +37,7 @@ export const useBlockUser = (page: number, limit: number, role: TRoles) => {
         },
         onError: (error: any, _userId, context) => {
             if (context?.prevUsers) {
-                queryClient.setQueryData(['admin-users', page, limit, role], context.prevUsers);
+                queryClient.setQueryData(['admin-users', page, limit, role, search], context.prevUsers);
             }
 
             console.log('error logging: ', error)

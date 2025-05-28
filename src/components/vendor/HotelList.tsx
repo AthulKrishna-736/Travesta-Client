@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "../common/Table";
 import { IHotel } from "@/types/user.types";
 import ShowHotelDetailsModal from "./ShowHotelDetails";
+import { useUpdateHotel } from "@/hooks/vendor/useCreateHotel";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
@@ -20,13 +21,41 @@ const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading }) => {
     const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-    const handleEdit = (hotel: IHotel) => {
-        console.log("Edit hotel:", hotel);
-    };
+    // New state for edit modal
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [hotelToEdit, setHotelToEdit] = useState<IHotel | null>(null);
 
-    const handleDetails = (hotel: IHotel) => {
+    const { mutate: updateHotel, isPending } = useUpdateHotel()
+
+
+    const handleSubmitEdit = (data: any) => {
+        console.log('submit eidt: ', data)
+        updateHotel(data)
+    }
+
+    // Show details modal
+    const handleDetails = (hotel: any) => {
+        console.log('check edit: ', hotel)
         setSelectedHotel(hotel);
         setDetailModalOpen(true);
+    };
+
+    // Show edit modal
+    const handleEdit = (hotel: any) => {
+        setHotelToEdit(hotel);
+        setEditModalOpen(true);
+    };
+
+    // Close details modal
+    const handleCloseDetailsModal = () => {
+        setDetailModalOpen(false);
+        setSelectedHotel(null);
+    };
+
+    // Close edit modal
+    const handleCloseEditModal = () => {
+        setEditModalOpen(false);
+        setHotelToEdit(null);
     };
 
     const actions = [
@@ -45,12 +74,32 @@ const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading }) => {
 
     return (
         <>
-            <DataTable columns={columns} data={hotels} actions={actions} loading={loading} />
-            <ShowHotelDetailsModal
-                open={detailModalOpen}
-                data={selectedHotel}
-                onClose={() => setDetailModalOpen(false)}
+            <DataTable
+                columns={columns}
+                data={hotels}
+                actions={actions}
+                loading={loading}
             />
+
+            {/* Details modal */}
+            {selectedHotel && (
+                <ShowHotelDetailsModal
+                    open={detailModalOpen}
+                    data={selectedHotel}
+                    onClose={handleCloseDetailsModal}
+                />
+            )}
+
+            {/* Edit modal */}
+            {/* {hotelToEdit && (
+                <EditHotelModal
+                    open={editModalOpen}
+                    hotel={hotelToEdit}
+                    onClose={handleCloseEditModal}
+                    onSubmit={handleSubmitEdit}
+                    isLoading={isPending}
+                />
+            )} */}
         </>
     );
 };

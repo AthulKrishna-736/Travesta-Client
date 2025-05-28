@@ -1,19 +1,19 @@
 import { TRoles } from "./Auth.Types";
 import { TSubscriptionType, WishlistItem } from "./user.types";
 
-export type GetAllUsersResponse = {
-    data: UserType[];
-    meta: Pagination;
+export type TGetAllUsersResponse = {
+    data: IUserType[];
+    meta: TPagination;
 };
 
-type Pagination = {
+type TPagination = {
     currentPage: number,
     pageSize: number,
     totalData: number,
     totalPages: number,
 }
 
-export interface UserType {
+export interface IUserType {
     id: string
     firstName: string
     lastName: string
@@ -31,13 +31,13 @@ export interface UserType {
     updatedAt: Date
 }
 
-export interface CustomErrorResponse {
+export interface ICustomErrorResponse {
     message: string;
     statusCode?: number;
     success?: boolean;
 }
 
-export type GetVendorsResponse = {
-    data: UserType[],
-    meta: Pagination
+export type TGetVendorsResponse = {
+    data: IUserType[],
+    meta: TPagination
 }

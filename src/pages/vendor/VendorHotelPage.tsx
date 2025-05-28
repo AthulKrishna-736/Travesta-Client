@@ -42,12 +42,34 @@ const VendorHotelsPage: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const { mutate: createHotelfn, isPending } = UseCreateHotel()
+    const { mutate: createHotelfn, isPending } = UseCreateHotel(() => {
+        handleModalClose()
+    })
 
     const handleCreateHotel = async (hotelData: IHotel) => {
-        createHotelfn(hotelData)
-    };
+        const formData = new FormData();
 
+        formData.append('name', hotelData.name);
+        formData.append('description', hotelData.description);
+        formData.append('address', hotelData.address);
+        formData.append('city', hotelData.city);
+        formData.append('state', hotelData.state);
+        formData.append('tags', hotelData.tags);
+        formData.append('amenities', hotelData.amenities);
+        formData.append('services', hotelData.services);
+
+        if (hotelData.geoLocation?.length === 2) {
+            formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
+        }
+
+        if (hotelData.images && hotelData.images.length > 0) {
+            hotelData.images.forEach((file) => {
+                formData.append('imageFile', file);
+            });
+        }
+
+        createHotelfn(formData);
+    };
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
