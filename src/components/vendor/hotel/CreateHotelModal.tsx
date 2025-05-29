@@ -6,18 +6,29 @@ import { useForm } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { hotelSchema } from '@/utils/validations/commonValidation';
 import { ICreateHotelModalProps } from '@/types/component.types';
 import { IHotel } from '@/types/user.types';
 import { Loader2 } from 'lucide-react';
-import MultiImageUploader from '../common/ImageUpload';
 import { showError } from '@/utils/customToast';
+import MultiImageUploader from '@/components/common/ImageUpload';
+import { hotelSchema } from '@/utils/validations/commonValidation';
+
+export type IHotelFormData = {
+    name: string;
+    description: string;
+    address: string;
+    state: string;
+    city: string;
+    tags: string;
+    amenities: string;
+    services: string;
+};
 
 const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onSubmit, isLoading, hotelData = null, isEdit = false, }) => {
     const [geoLocation, setGeoLocation] = useState<number[] | null>(null);
     const [imageFiles, setImageFiles] = useState<File[] | string[]>([]);
 
-    const { register, handleSubmit, formState: { errors }, reset, } = useForm<IHotel>({ resolver: yupResolver(hotelSchema), });
+    const { register, handleSubmit, formState: { errors }, reset, } = useForm<IHotelFormData>({ resolver: yupResolver(hotelSchema), });
 
     useEffect(() => {
         if (hotelData) {
@@ -39,7 +50,7 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
         }
     }, [hotelData, reset]);
 
-    const submitHandler = (data: IHotel) => {
+    const submitHandler = (data: IHotelFormData) => {
         if (!isEdit && imageFiles.length !== 4) {
             showError('Please upload exactly 4 images.');
             return;

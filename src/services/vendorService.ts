@@ -39,3 +39,37 @@ export const updateHotel = async (id: string, formData: FormData) => {
     });
     return response.data;
 };
+
+export const getAllRooms = async () => {
+    const response = await axiosInstance.get('/vendor/rooms');
+    return response.data;
+};
+
+export const createRoom = async (formData: FormData) => {
+    const response = await axiosInstance.post('/vendor/rooms', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+};
+
+export const updateRoom = async (roomId: string, formData: FormData) => {
+    const response = await axiosInstance.patch(`/vendor/rooms/${roomId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+};
+
+export const getRoomById = async (roomId: string) => {
+    const response = await axiosInstance.get(`/vendor/rooms/${roomId}`);
+    return response.data;
+};
+
+export const getRoomsByHotel = async (hotelId: string) => {
+    const response = await axiosInstance.get(`/vendor/hotels/${hotelId}/rooms`);
+    return response.data;
+};
+
+export const getAvailableRoomsByHotel = async (hotelId: string) => {
+    const response = await axiosInstance.get(`/vendor/hotels/${hotelId}/rooms/available`);
+    return response.data;
+};

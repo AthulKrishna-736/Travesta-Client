@@ -1,25 +1,42 @@
 import Header from '@/components/vendor/Header';
 import Sidebar from '@/components/vendor/Sidebar';
 import React, { useEffect, useState } from 'react';
-import CreateHotelModal from '@/components/vendor/CreateHotelModal';
-import HotelTable from '@/components/vendor/HotelList';
-import { IHotel } from '@/types/user.types';
+import HotelTable from '@/components/vendor/hotel/HotelList';
+import RoomTable from '@/components/vendor/room/RoomList';
+import { IHotel, IRoom } from '@/types/user.types';
 import { UseCreateHotel, useUpdateHotel } from '@/hooks/vendor/useCreateHotel';
-import Pagination from '@/components/common/Pagination';
 import { useGetAllHotels } from '@/hooks/vendor/useGetAllHotels';
 import { Input } from '@/components/ui/input';
+import CreateHotelModal from '@/components/vendor/hotel/CreateHotelModal';
+import CreateRoomModal from '@/components/vendor/room/CreateRoomModal';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useCreateRoom, useGetAllRooms, useUpdateRoom } from '@/hooks/vendor/useRoom';
+import Pagination from '@/components/common/Pagination';
 
 const VendorHotelsPage: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isHotelModalOpen, setIsHotelModalOpen] = useState(false);
     const [editingHotel, setEditingHotel] = useState<IHotel | null>(null);
+
+    // State for Room Modal
+    const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+    const [editingRoom, setEditingRoom] = useState<IRoom | null>(null);
+
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedValue, setDebouncedValue] = useState('');
+    const [view, setView] = useState<'hotel' | 'room'>('hotel');
     const limit = 10;
 
-    const { data, isLoading } = useGetAllHotels(page, limit, debouncedValue);
+    const { data: hotelData, isLoading: isHotelLoading } = useGetAllHotels(page, limit, debouncedValue);
+    const hotels = hotelData?.data ?? [];
 
+    const { data: roomsData, isLoading: isRoomsLoading } = useGetAllRooms();
+    const rooms = roomsData?.data ?? [];
+    // const meta = roomsData?.meta?
+
+
+    // Debounce search input for performance
     useEffect(() => {
         const debounce = setTimeout(() => {
             setDebouncedValue(searchTerm);
@@ -28,39 +45,53 @@ const VendorHotelsPage: React.FC = () => {
         return () => clearTimeout(debounce);
     }, [searchTerm]);
 
-    const hotels = data?.data ?? [];
-    const meta = data?.meta;
+    // Sidebar toggle handler
+    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
-
-    const handleModalOpen = () => {
+    // HOTEL MODAL HANDLERS
+    const openHotelModalForCreate = () => {
         setEditingHotel(null);
-        setIsModalOpen(true);
+        setIsHotelModalOpen(true);
     };
 
-    const handleEditHotel = (hotel: IHotel) => {
+    const openHotelModalForEdit = (hotel: IHotel) => {
         setEditingHotel(hotel);
-        setIsModalOpen(true);
+        setIsHotelModalOpen(true);
     };
 
-    const handleModalClose = () => {
-        setIsModalOpen(false);
+    const closeHotelModal = () => {
+        setIsHotelModalOpen(false);
     };
 
-    const { mutate: createHotelfn, isPending: isCreating } = UseCreateHotel(page, limit, () => {
-        handleModalClose();
-    }, debouncedValue);
+    // ROOM MODAL HANDLERS
+    const openRoomModalForCreate = () => {
+        setEditingRoom(null);
+        setIsRoomModalOpen(true);
+    };
 
-    const { mutate: updateHotelfn, isPending: isUpdating } = useUpdateHotel(() => {
-        handleModalClose()
-    }, page, limit, debouncedValue);
+    const openRoomModalForEdit = (room: IRoom) => {
+        setEditingRoom(room);
+        setIsRoomModalOpen(true);
+    };
 
+    const closeRoomModal = () => {
+        setIsRoomModalOpen(false);
+    };
 
+    const { mutate: createHotelfn, isPending: isCreating } = UseCreateHotel(page, limit, closeHotelModal, debouncedValue);
+    const { mutate: updateHotelfn, isPending: isUpdating } = useUpdateHotel(closeHotelModal, page, limit, debouncedValue);
+
+    const { mutate: createRoomMutate, isPending: isCreatingRoom } = useCreateRoom(() => {
+        closeRoomModal();
+    });
+
+    const { mutate: updateRoomMutate, isPending: isUpdatingRoom } = useUpdateRoom(() => {
+        closeRoomModal();
+    });
+
+    //submit handlers
     const handleCreateOrEditHotel = async (hotelData: IHotel) => {
         const formData = new FormData();
-
         formData.append('name', hotelData.name);
         formData.append('description', hotelData.description);
         formData.append('address', hotelData.address);
@@ -69,7 +100,6 @@ const VendorHotelsPage: React.FC = () => {
         formData.append('tags', Array.isArray(hotelData.tags) ? hotelData.tags.join(',') : hotelData.tags);
         formData.append('amenities', Array.isArray(hotelData.amenities) ? hotelData.amenities.join(',') : hotelData.amenities);
         formData.append('services', Array.isArray(hotelData.services) ? hotelData.services.join(',') : hotelData.services);
-
 
         if (hotelData.geoLocation?.length === 2) {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
@@ -83,16 +113,23 @@ const VendorHotelsPage: React.FC = () => {
 
         if (editingHotel) {
             const hotelId = editingHotel._id as string ?? hotelData.id;
-
             if (!hotelId) {
                 console.error('Hotel ID is missing during update.', editingHotel);
                 return;
             }
-
             updateHotelfn({ id: hotelId, data: formData });
-        }
-        else {
+        } else {
             createHotelfn(formData);
+        }
+    };
+
+    const handleCreateOrEditRoom = (roomData: FormData | { id: string; data: FormData }) => {
+        if ('id' in roomData) {
+            // Edit case
+            updateRoomMutate({ id: roomData.id, formData: roomData.data });
+        } else {
+            // Create case
+            createRoomMutate(roomData);
         }
     };
 
@@ -102,47 +139,81 @@ const VendorHotelsPage: React.FC = () => {
             <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
             <div className="flex flex-1 overflow-hidden">
                 <Sidebar isOpen={sidebarOpen} />
-                <main
-                    className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}
-                >
+                <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}>
                     <div className="container mx-auto animate-fade-in space-y-6 mt-16">
                         <div className="mb-4 flex justify-between items-center">
                             <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                My Hotels
+                                My {view === 'hotel' ? 'Hotels' : 'Rooms'}
                             </h1>
-                            <button
-                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                                onClick={handleModalOpen}
-                            >
-                                Add Hotel
-                            </button>
+
+                            {/* Add Hotel button only if viewing hotels */}
+                            {view === 'hotel' && (
+                                <button
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                                    onClick={openHotelModalForCreate}
+                                >
+                                    Add Hotel
+                                </button>
+                            )}
+
+                            {/* Add Room button only if viewing rooms */}
+                            {view === 'room' && (
+                                <button
+                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                                    onClick={openRoomModalForCreate}
+                                >
+                                    Add Room
+                                </button>
+                            )}
                         </div>
+
                         <p className="text-muted-foreground">
-                            Manage your listed hotels. You can add, edit, or delete hotels from here.
+                            Manage your listed {view === 'hotel' ? 'hotels' : 'rooms'}. You can add, edit, or delete {view}s from here.
                         </p>
+
+                        <ToggleGroup
+                            type="single"
+                            value={view}
+                            onValueChange={(val) => val && setView(val as 'hotel' | 'room')}
+                            className="w-fit"
+                        >
+                            <ToggleGroupItem value="hotel">Hotels</ToggleGroupItem>
+                            <ToggleGroupItem value="room">Rooms</ToggleGroupItem>
+                        </ToggleGroup>
+
                         <div className="overflow-x-auto space-y-4">
                             <Input
                                 type="text"
-                                placeholder="Search hotels..."
+                                placeholder={`Search ${view}s...`}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <HotelTable hotels={hotels} loading={isLoading} onEdit={handleEditHotel} />
+
+                            {/* Render hotel or room table based on selected view */}
+                            {view === 'hotel' ? (
+                                <HotelTable hotels={hotels} loading={isHotelLoading} onEdit={openHotelModalForEdit} />
+                            ) : (
+                                // Pass onEdit handler for rooms to open room modal for editing
+                                <RoomTable rooms={rooms} loading={isRoomsLoading} onEdit={openRoomModalForEdit} />
+                            )}
                         </div>
+
+                        {/* {meta && meta.totalPages > 0 && (
+                            <Pagination
+                                currentPage={meta.currentPage}
+                                totalPages={meta.totalPages}
+                                onPageChange={setPage}
+                            />
+                        )} */}
                     </div>
-                    {meta && meta.totalPages > 0 && (
-                        <Pagination
-                            currentPage={meta.currentPage}
-                            totalPages={meta.totalPages}
-                            onPageChange={setPage}
-                        />
-                    )}
                 </main>
             </div>
-            {isModalOpen && (
+
+            {/* Hotel Create/Edit Modal */}
+            {isHotelModalOpen && view === 'hotel' && (
                 <CreateHotelModal
-                    open={isModalOpen}
-                    onClose={handleModalClose}
+                    open={isHotelModalOpen}
+                    onClose={closeHotelModal}
                     onSubmit={handleCreateOrEditHotel}
                     isLoading={isCreating || isUpdating}
                     hotelData={editingHotel}
@@ -150,6 +221,20 @@ const VendorHotelsPage: React.FC = () => {
                 />
             )}
 
+            {/* Room Create/Edit Modal */}
+            {isRoomModalOpen && view === 'room' && (
+                <CreateRoomModal
+                    open={isRoomModalOpen}
+                    onClose={closeRoomModal}
+                    onSubmit={handleCreateOrEditRoom}
+                    isLoading={isCreatingRoom || isUpdatingRoom}
+                    roomData={editingRoom}
+                    isEdit={!!editingRoom}
+                    hotelId={editingRoom ? editingRoom.hotelId : hotels[0]?._id ?? ''}
+                    hotels={hotels}  
+                />
+
+            )}
         </div>
     );
 };

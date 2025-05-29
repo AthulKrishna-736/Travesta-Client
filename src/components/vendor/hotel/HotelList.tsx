@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import DataTable from "../common/Table";
+import DataTable from "../../common/Table";
 import { IHotel } from "@/types/user.types";
 import ShowHotelDetailsModal from "./ShowHotelDetails";
 import { IHotelTableProps } from "@/types/component.types";

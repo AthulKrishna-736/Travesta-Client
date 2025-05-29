@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { IHotel, UpdateUser } from "./user.types";
+import { IHotel, IRoom, UpdateUser } from "./user.types";
 import { IUserType } from "./response.types";
 
 export interface AdminLayoutProps {
@@ -85,4 +85,25 @@ export interface IHotelTableProps {
     hotels: IHotel[];
     loading: boolean;
     onEdit?: (hotel: IHotel) => void;
+}
+
+type RoomSubmitPayload =
+    | FormData
+    | { id: string; data: FormData };
+
+
+export interface ICreateRoomProps {
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (data: RoomSubmitPayload) => void;
+    isLoading: boolean;
+    roomData?: IRoom | null;
+    isEdit?: boolean;
+    hotelId: string;
+}
+
+export interface IRoomTableProps {
+    rooms: IRoom[];
+    loading: boolean;
+    onEdit?: (room: IRoom) => void;
 }

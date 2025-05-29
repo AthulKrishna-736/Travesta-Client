@@ -1,6 +1,6 @@
 // components/vendor/ShowHotelDetailsModal.tsx
 import React from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../../ui/dialog';
 
 interface ShowHotelDetailsModalProps {
     open: boolean;
