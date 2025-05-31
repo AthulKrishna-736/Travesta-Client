@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface HotelCardProps {
     hotel: {
+        _id: string
         id: string;
         name: string;
         description: string;
@@ -27,7 +28,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
     const { name, description, images, rating, city, state, tags, amenities, services } = hotel;
 
     return (
-        <Card className="shadow-md hover:shadow-lg transition duration-300 rounded-2xl overflow-hidden" onClick={() => navigate(`/user/hotels/${hotel.id as string}`)}>
+        <Card className="shadow-md hover:shadow-lg transition duration-300 rounded-2xl overflow-hidden" onClick={() => navigate(`/user/hotels/${hotel._id as string}`)}>
             {/* Image Section */}
             <div className="h-48 w-full overflow-hidden">
                 <img
