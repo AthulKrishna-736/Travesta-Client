@@ -8,6 +8,7 @@ export const useCreateRoom = (cbFn: () => void) => {
     return useMutation({
         mutationFn: (formData: FormData) => createRoom(formData),
         onSuccess: (res) => {
+            console.log('room res: ', res)
             if (res.success) {
                 showSuccess(res.message);
                 queryClient.invalidateQueries({ queryKey: ['hotel-rooms'] });

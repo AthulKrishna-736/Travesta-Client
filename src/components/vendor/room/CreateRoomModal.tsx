@@ -14,7 +14,6 @@ type RoomFormValues = {
     basePrice: number;
     amenities: string;
     images: File[];
-    // Note: no hotelId here
 };
 
 const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ open, onClose, onSubmit, isLoading, roomData, isEdit, hotels, }) => {
@@ -29,7 +28,6 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
         },
     });
 
-    // Manage selectedHotelId in React state (not in RHF)
     const [selectedHotelId, setSelectedHotelId] = useState<string>(
         roomData?.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : '')
     );
@@ -67,7 +65,15 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
         formData.append('hotelId', selectedHotelId);
         formData.append('amenities', JSON.stringify(data.amenities.split(',').map(item => item.trim())));
 
-        data.images.forEach((file) => formData.append('imageFile', file));
+        const imageFiles = data.images.filter((item) => item instanceof File) as File[];
+        const imageUrls = data.images.filter((item) => typeof item === 'string') as string[];
+
+        imageFiles.forEach((file) => formData.append('imageFile', file));
+
+        if (isEdit && imageUrls.length > 0) {
+            formData.append('images', JSON.stringify(imageUrls));
+        }
+
 
         if (isEdit && roomData?._id) {
             onSubmit({ id: roomData._id, data: formData });
@@ -134,7 +140,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                     <div>
                         <label className="block mb-1 font-medium">Room Images</label>
                         <MultiImageUploader
-                            onImagesChange={(files: File[]) => setValue('images', files)}
+                            onImagesChange={(files: (string | File)[]) => setValue('images', files as File[])}
                             initialImageUrls={roomData?.images as string[] || []}
                         />
                     </div>

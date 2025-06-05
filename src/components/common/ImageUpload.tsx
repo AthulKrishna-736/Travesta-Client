@@ -90,28 +90,33 @@ const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages = 4, o
     };
 
     useEffect(() => {
-        const finalImages: File[] = [];
+        const finalImages: (File | string)[] = [];
 
         for (let i = 0; i < previewImages.length; i++) {
             if (croppedFiles[i]) {
                 finalImages.push(croppedFiles[i]!);
             } else if (originalFiles[i]) {
                 finalImages.push(originalFiles[i]!);
+            } else if (previewImages[i]) {
+                finalImages.push(previewImages[i]!);
             }
         }
 
         onImagesChange(finalImages);
     }, [originalFiles, croppedFiles, previewImages]);
 
+
     return (
         <div className="space-y-4">
             {[...Array(maxImages)].map((_, index) => (
                 <div key={index}>
-                    <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleFileChange(e, index)}
-                    />
+                    {!previewImages[index] && (
+                        <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleFileChange(e, index)}
+                        />
+                    )}
                     {previewImages[index] && (
                         <div className="relative mt-2 w-full max-h-64">
                             <img

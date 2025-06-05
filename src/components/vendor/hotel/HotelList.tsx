@@ -17,13 +17,14 @@ const HotelTable: React.FC<IHotelTableProps> = ({ hotels, loading, onEdit }) => 
 
 
     const handleDetails = (hotel: IHotel) => {
-        console.log('check edit: ', hotel)
+        console.log('check detail: ', hotel)
         setSelectedHotel(hotel);
         setDetailModalOpen(true);
     };
 
     const handleEdit = (hotel: IHotel) => {
         if (onEdit) {
+            console.log('check editing', hotel)
             onEdit(hotel)
         }
     };

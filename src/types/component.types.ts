@@ -77,7 +77,7 @@ export interface ICreateHotelModalProps {
 
 export interface IMutilImageUploadProps {
     maxImages?: number;
-    onImagesChange: (files: File[]) => void;
+    onImagesChange: (files: (string | File)[]) => void;
     initialImageUrls?: string[];
 };
 

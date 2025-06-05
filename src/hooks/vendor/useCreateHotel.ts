@@ -11,7 +11,7 @@ export const UseCreateHotel = (page: number, limit: number, cbFn: () => void, se
             if (res.success) {
                 showSuccess(res.message);
                 queryClient.invalidateQueries({ queryKey: ['vendor-hotels', page, limit, search] });
-                cbFn(); // Close modal
+                cbFn(); 
             } else {
                 showError(res.message || 'Something went wrong');
             }

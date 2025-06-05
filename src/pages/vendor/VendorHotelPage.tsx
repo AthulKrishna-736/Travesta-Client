@@ -30,10 +30,11 @@ const VendorHotelsPage: React.FC = () => {
 
     const { data: hotelData, isLoading: isHotelLoading } = useGetAllHotels(page, limit, debouncedValue);
     const hotels = hotelData?.data ?? [];
+    const hotelMeta = hotelData?.meta;
 
     const { data: roomsData, isLoading: isRoomsLoading } = useGetAllRooms();
     const rooms = roomsData?.data ?? [];
-    // const meta = roomsData?.meta?
+    const roomMeta = roomsData?.meta;
 
 
     // Debounce search input for performance
@@ -90,7 +91,8 @@ const VendorHotelsPage: React.FC = () => {
     });
 
     //submit handlers
-    const handleCreateOrEditHotel = async (hotelData: IHotel) => {
+    const handleCreateOrEditHotel = async (hotelData: Omit<IHotel, 'images'> & { images: File[], oldImages?: string[] }) => {
+        console.log('hotel data: ', hotelData)
         const formData = new FormData();
         formData.append('name', hotelData.name);
         formData.append('description', hotelData.description);
@@ -104,6 +106,16 @@ const VendorHotelsPage: React.FC = () => {
         if (hotelData.geoLocation?.length === 2) {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
         }
+
+        const urls = hotelData.oldImages
+            ? Array.isArray(hotelData.oldImages)
+                ? hotelData.oldImages
+                : [hotelData.oldImages]
+            : [];
+
+        formData.append('images', JSON.stringify(urls));
+
+
 
         if (hotelData.images && hotelData.images.length > 0) {
             hotelData.images.forEach((file) => {
@@ -188,23 +200,20 @@ const VendorHotelsPage: React.FC = () => {
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-
-                            {/* Render hotel or room table based on selected view */}
                             {view === 'hotel' ? (
                                 <HotelTable hotels={hotels} loading={isHotelLoading} onEdit={openHotelModalForEdit} />
                             ) : (
-                                // Pass onEdit handler for rooms to open room modal for editing
                                 <RoomTable rooms={rooms} loading={isRoomsLoading} onEdit={openRoomModalForEdit} />
                             )}
                         </div>
 
-                        {/* {meta && meta.totalPages > 0 && (
+                        {hotelMeta && hotelMeta.totalPages > 0 && (
                             <Pagination
-                                currentPage={meta.currentPage}
-                                totalPages={meta.totalPages}
+                                currentPage={hotelMeta.currentPage}
+                                totalPages={hotelMeta.totalPages}
                                 onPageChange={setPage}
                             />
-                        )} */}
+                        )}
                     </div>
                 </main>
             </div>
@@ -231,7 +240,7 @@ const VendorHotelsPage: React.FC = () => {
                     roomData={editingRoom}
                     isEdit={!!editingRoom}
                     hotelId={editingRoom ? editingRoom.hotelId : hotels[0]?._id ?? ''}
-                    hotels={hotels}  
+                    hotels={hotels}
                 />
 
             )}

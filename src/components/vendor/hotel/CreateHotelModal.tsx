@@ -26,7 +26,7 @@ export type IHotelFormData = {
 
 const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onSubmit, isLoading, hotelData = null, isEdit = false, }) => {
     const [geoLocation, setGeoLocation] = useState<number[] | null>(null);
-    const [imageFiles, setImageFiles] = useState<File[] | string[]>([]);
+    const [imageFiles, setImageFiles] = useState<(File | string)[]>([]);
 
     const { register, handleSubmit, formState: { errors }, reset, } = useForm<IHotelFormData>({ resolver: yupResolver(hotelSchema), });
 
@@ -56,19 +56,28 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
             return;
         }
 
-        if (isEdit && imageFiles.length > 0 && imageFiles.length > 4) {
+        if (isEdit && imageFiles.length > 4) {
             showError('You can upload up to 4 images only.');
             return;
         }
 
-        const finalPayload: IHotel & { images: File[] } = {
+        const newImageFiles = imageFiles.filter((img): img is File => typeof img !== 'string');
+        const keptImageUrls = imageFiles.filter((img): img is string => typeof img === 'string');
+
+        const finalPayload: IHotel & {
+            images: File[],
+            oldImages: string[]
+        } = {
             ...data,
             geoLocation: geoLocation || [],
-            images: imageFiles as File[],
+            images: newImageFiles,
+            oldImages: keptImageUrls
         };
 
+        console.log('final payload: ', finalPayload);
         onSubmit(finalPayload);
     };
+
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
