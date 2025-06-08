@@ -64,17 +64,13 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
         const newImageFiles = imageFiles.filter((img): img is File => typeof img !== 'string');
         const keptImageUrls = imageFiles.filter((img): img is string => typeof img === 'string');
 
-        const finalPayload: IHotel & {
-            images: File[],
-            oldImages: string[]
-        } = {
+        const finalPayload: IHotel & { oldImages: string[] } = {
             ...data,
             geoLocation: geoLocation || [],
             images: newImageFiles,
             oldImages: keptImageUrls
         };
 
-        console.log('final payload: ', finalPayload);
         onSubmit(finalPayload);
     };
 

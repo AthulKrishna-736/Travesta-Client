@@ -1,62 +1,25 @@
 import Header from '@/components/vendor/Header';
 import Sidebar from '@/components/vendor/Sidebar';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import HotelTable from '@/components/vendor/hotel/HotelList';
 import RoomTable from '@/components/vendor/room/RoomList';
 import { IHotel, IRoom } from '@/types/user.types';
-import { UseCreateHotel, useUpdateHotel } from '@/hooks/vendor/useCreateHotel';
-import { useGetAllHotels } from '@/hooks/vendor/useGetAllHotels';
-import { Input } from '@/components/ui/input';
+import { UseCreateHotel } from '@/hooks/vendor/useCreateHotel';
 import CreateHotelModal from '@/components/vendor/hotel/CreateHotelModal';
 import CreateRoomModal from '@/components/vendor/room/CreateRoomModal';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { useCreateRoom, useGetAllRooms, useUpdateRoom } from '@/hooks/vendor/useRoom';
-import Pagination from '@/components/common/Pagination';
+import { useCreateRoom } from '@/hooks/vendor/useRoom';
 
 const VendorHotelsPage: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [isHotelModalOpen, setIsHotelModalOpen] = useState(false);
-    const [editingHotel, setEditingHotel] = useState<IHotel | null>(null);
-
-    // State for Room Modal
     const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
-    const [editingRoom, setEditingRoom] = useState<IRoom | null>(null);
-
-    const [page, setPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [debouncedValue, setDebouncedValue] = useState('');
     const [view, setView] = useState<'hotel' | 'room'>('hotel');
-    const limit = 10;
 
-    const { data: hotelData, isLoading: isHotelLoading } = useGetAllHotels(page, limit, debouncedValue);
-    const hotels = hotelData?.data ?? [];
-    const hotelMeta = hotelData?.meta;
-
-    const { data: roomsData, isLoading: isRoomsLoading } = useGetAllRooms();
-    const rooms = roomsData?.data ?? [];
-    const roomMeta = roomsData?.meta;
-
-
-    // Debounce search input for performance
-    useEffect(() => {
-        const debounce = setTimeout(() => {
-            setDebouncedValue(searchTerm);
-            setPage(1);
-        }, 500);
-        return () => clearTimeout(debounce);
-    }, [searchTerm]);
-
-    // Sidebar toggle handler
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
     // HOTEL MODAL HANDLERS
     const openHotelModalForCreate = () => {
-        setEditingHotel(null);
-        setIsHotelModalOpen(true);
-    };
-
-    const openHotelModalForEdit = (hotel: IHotel) => {
-        setEditingHotel(hotel);
         setIsHotelModalOpen(true);
     };
 
@@ -66,12 +29,6 @@ const VendorHotelsPage: React.FC = () => {
 
     // ROOM MODAL HANDLERS
     const openRoomModalForCreate = () => {
-        setEditingRoom(null);
-        setIsRoomModalOpen(true);
-    };
-
-    const openRoomModalForEdit = (room: IRoom) => {
-        setEditingRoom(room);
         setIsRoomModalOpen(true);
     };
 
@@ -79,20 +36,11 @@ const VendorHotelsPage: React.FC = () => {
         setIsRoomModalOpen(false);
     };
 
-    const { mutate: createHotelfn, isPending: isCreating } = UseCreateHotel(page, limit, closeHotelModal, debouncedValue);
-    const { mutate: updateHotelfn, isPending: isUpdating } = useUpdateHotel(closeHotelModal, page, limit, debouncedValue);
-
-    const { mutate: createRoomMutate, isPending: isCreatingRoom } = useCreateRoom(() => {
-        closeRoomModal();
-    });
-
-    const { mutate: updateRoomMutate, isPending: isUpdatingRoom } = useUpdateRoom(() => {
-        closeRoomModal();
-    });
+    const { mutate: createHotelfn, isPending: isCreating } = UseCreateHotel(closeHotelModal);
+    const { mutate: createRoomfn, isPending: isCreatingRoom } = useCreateRoom(closeRoomModal);
 
     //submit handlers
-    const handleCreateOrEditHotel = async (hotelData: Omit<IHotel, 'images'> & { images: File[], oldImages?: string[] }) => {
-        console.log('hotel data: ', hotelData)
+    const handleCreateHotel = async (hotelData: Omit<IHotel, 'images'> & { images: File[], oldImages?: string[] }) => {
         const formData = new FormData();
         formData.append('name', hotelData.name);
         formData.append('description', hotelData.description);
@@ -107,15 +55,10 @@ const VendorHotelsPage: React.FC = () => {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
         }
 
-        const urls = hotelData.oldImages
-            ? Array.isArray(hotelData.oldImages)
-                ? hotelData.oldImages
-                : [hotelData.oldImages]
-            : [];
+        const urls = hotelData.oldImages ?
+            Array.isArray(hotelData.oldImages) ? hotelData.oldImages : [hotelData.oldImages] : [];
 
         formData.append('images', JSON.stringify(urls));
-
-
 
         if (hotelData.images && hotelData.images.length > 0) {
             hotelData.images.forEach((file) => {
@@ -123,24 +66,13 @@ const VendorHotelsPage: React.FC = () => {
             });
         }
 
-        if (editingHotel) {
-            const hotelId = editingHotel._id as string ?? hotelData.id;
-            if (!hotelId) {
-                console.error('Hotel ID is missing during update.', editingHotel);
-                return;
-            }
-            updateHotelfn({ id: hotelId, data: formData });
-        } else {
-            createHotelfn(formData);
-        }
+        createHotelfn(formData);
     };
 
     const handleCreateOrEditRoom = (roomData: FormData | { id: string; data: FormData }) => {
         if ('id' in roomData) {
-            // Edit case
-            updateRoomMutate({ id: roomData.id, formData: roomData.data });
+            updateRoomfn({ id: roomData.id, formData: roomData.data });
         } else {
-            // Create case
             createRoomMutate(roomData);
         }
     };
@@ -183,37 +115,21 @@ const VendorHotelsPage: React.FC = () => {
                             Manage your listed {view === 'hotel' ? 'hotels' : 'rooms'}. You can add, edit, or delete {view}s from here.
                         </p>
 
-                        <ToggleGroup
-                            type="single"
+                        <ToggleGroup type="single" className="w-fit"
                             value={view}
                             onValueChange={(val) => val && setView(val as 'hotel' | 'room')}
-                            className="w-fit"
                         >
                             <ToggleGroupItem value="hotel">Hotels</ToggleGroupItem>
                             <ToggleGroupItem value="room">Rooms</ToggleGroupItem>
                         </ToggleGroup>
 
                         <div className="overflow-x-auto space-y-4">
-                            <Input
-                                type="text"
-                                placeholder={`Search ${view}s...`}
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
                             {view === 'hotel' ? (
-                                <HotelTable hotels={hotels} loading={isHotelLoading} onEdit={openHotelModalForEdit} />
+                                <HotelTable />
                             ) : (
-                                <RoomTable rooms={rooms} loading={isRoomsLoading} onEdit={openRoomModalForEdit} />
+                                <RoomTable />
                             )}
                         </div>
-
-                        {hotelMeta && hotelMeta.totalPages > 0 && (
-                            <Pagination
-                                currentPage={hotelMeta.currentPage}
-                                totalPages={hotelMeta.totalPages}
-                                onPageChange={setPage}
-                            />
-                        )}
                     </div>
                 </main>
             </div>
@@ -223,8 +139,8 @@ const VendorHotelsPage: React.FC = () => {
                 <CreateHotelModal
                     open={isHotelModalOpen}
                     onClose={closeHotelModal}
-                    onSubmit={handleCreateOrEditHotel}
-                    isLoading={isCreating || isUpdating}
+                    onSubmit={handleCreateHotel}
+                    isLoading={isCreating}
                     hotelData={editingHotel}
                     isEdit={!!editingHotel}
                 />
@@ -239,7 +155,7 @@ const VendorHotelsPage: React.FC = () => {
                     isLoading={isCreatingRoom || isUpdatingRoom}
                     roomData={editingRoom}
                     isEdit={!!editingRoom}
-                    hotelId={editingRoom ? editingRoom.hotelId : hotels[0]?._id ?? ''}
+                    hotelId={editingRoom?.hotelId as string}
                     hotels={hotels}
                 />
 

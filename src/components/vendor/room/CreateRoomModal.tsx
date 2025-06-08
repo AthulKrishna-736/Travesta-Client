@@ -18,41 +18,18 @@ type RoomFormValues = {
 
 const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ open, onClose, onSubmit, isLoading, roomData, isEdit, hotels, }) => {
     const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoomFormValues>({
-        defaultValues: {
-            name: '',
-            capacity: 1,
-            bedType: '',
-            basePrice: 0,
-            amenities: '',
-            images: [],
-        },
+        defaultValues: { name: '', capacity: 1, bedType: '', basePrice: 0, amenities: '', images: [] },
     });
 
-    const [selectedHotelId, setSelectedHotelId] = useState<string>(
-        roomData?.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : '')
-    );
+    const [selectedHotelId, setSelectedHotelId] = useState<string>(roomData?.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : ''));
 
     useEffect(() => {
         if (roomData) {
-            reset({
-                name: roomData.name,
-                capacity: roomData.capacity,
-                bedType: roomData.bedType,
-                basePrice: roomData.basePrice,
-                amenities: roomData.amenities?.join(',') || '',
-                images: [],
-            });
+            reset({ name: roomData.name, capacity: roomData.capacity, bedType: roomData.bedType, basePrice: roomData.basePrice, amenities: roomData.amenities?.join(',') || '', images: [] });
             setSelectedHotelId(roomData.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : ''));
         } else {
             setSelectedHotelId(hotels.length > 0 ? hotels[0]._id || '' : '');
-            reset({
-                name: '',
-                capacity: 1,
-                bedType: '',
-                basePrice: 0,
-                amenities: '',
-                images: [],
-            });
+            reset({ name: '', capacity: 1, bedType: '', basePrice: 0, amenities: '', images: [] });
         }
     }, [roomData, reset, hotels]);
 
@@ -67,6 +44,8 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
 
         const imageFiles = data.images.filter((item) => item instanceof File) as File[];
         const imageUrls = data.images.filter((item) => typeof item === 'string') as string[];
+
+        imageFiles.forEach(i => console.log('images size: ', i.name, (i.size / (1024 * 1024))));
 
         imageFiles.forEach((file) => formData.append('imageFile', file));
 

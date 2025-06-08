@@ -20,7 +20,6 @@ export const useLogin = (role: string) => {
             return login(payload, role);
         },
         onSuccess: (res) => {
-            console.log('Login success:', res)
             if (role === 'admin') {
                 dispatch(setAdmin(res.data))
                 navigate(`/${role}/dashboard`)

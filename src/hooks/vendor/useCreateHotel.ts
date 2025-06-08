@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createHotel, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
 
-export const UseCreateHotel = (page: number, limit: number, cbFn: () => void, search?: string) => {
+export const UseCreateHotel = (cbFn: () => void) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -10,8 +10,8 @@ export const UseCreateHotel = (page: number, limit: number, cbFn: () => void, se
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
-                queryClient.invalidateQueries({ queryKey: ['vendor-hotels', page, limit, search] });
-                cbFn(); 
+                queryClient.invalidateQueries({ queryKey: ['vendor-hotels'] });
+                cbFn();
             } else {
                 showError(res.message || 'Something went wrong');
             }
@@ -23,7 +23,7 @@ export const UseCreateHotel = (page: number, limit: number, cbFn: () => void, se
     });
 };
 
-export const useUpdateHotel = (cbFn: () => void, page: number, limit: number, search?: string) => {
+export const useUpdateHotel = (cbFn: () => void) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -31,7 +31,7 @@ export const useUpdateHotel = (cbFn: () => void, page: number, limit: number, se
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
-                queryClient.invalidateQueries({ queryKey: ['vendor-hotels', page, limit, search] });
+                queryClient.invalidateQueries({ queryKey: ['vendor-hotels'] });
                 cbFn();
             } else {
                 showError(res.message || 'Update failed');

@@ -16,7 +16,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, role 
     );
 
     useEffect(() => {
-        console.log('data: ', data)
         if (data?.profileImage) {
             setPreviewImage(data?.profileImage);
         }

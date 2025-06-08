@@ -7,7 +7,6 @@ export const useOtpVerify = (role: string, onSuccessCallback: (data: any) => voi
     return useMutation({
         mutationFn: (values: TOtpFormValues) => verifyOtp(values, role),
         onSuccess: (res) => {
-            console.log('res on verifyotp: ', res)
             if (res.success) {
                 showSuccess(res.message)
                 if (res.data?.email) {

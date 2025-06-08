@@ -7,7 +7,6 @@ export const useResetPass = (role: string, onSuccessCallback: () => void) => {
     return useMutation({
         mutationFn: (values: TResetPassValues) => resetPassword(values, role),
         onSuccess: (res) => {
-            console.log('res on resetpass: ',res)
             if (res.success) {
                 showSuccess(res.message);
                 onSuccessCallback()

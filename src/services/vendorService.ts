@@ -26,7 +26,7 @@ export const createHotel = async (formData: FormData) => {
     return response.data;
 }
 
-export const getAllHotels = async (page = 1, limit = 10, search?: string) => {
+export const getAllHotels = async (page: number, limit: number, search?: string) => {
     const response = await axiosInstance.get('/vendor/hotels', {
         params: { page, limit, search },
     });
@@ -40,8 +40,10 @@ export const updateHotel = async (id: string, formData: FormData) => {
     return response.data;
 };
 
-export const getAllRooms = async () => {
-    const response = await axiosInstance.get('/vendor/rooms');
+export const getAllRooms = async (page: number, limit: number, search?: string) => {
+    const response = await axiosInstance.get('/vendor/rooms', {
+        params: { page, limit, search }
+    });
     return response.data;
 };
 

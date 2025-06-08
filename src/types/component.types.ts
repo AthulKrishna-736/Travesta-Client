@@ -70,7 +70,7 @@ export interface ICreateHotelModalProps {
     open: boolean;
     onClose: () => void;
     isLoading: boolean;
-    onSubmit: (data: IHotel & { images: File[] }) => void;
+    onSubmit: (data: IHotel & { oldImages: string[] }) => void;
     hotelData?: IHotel | null;
     isEdit?: boolean;
 }

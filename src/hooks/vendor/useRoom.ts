@@ -8,7 +8,6 @@ export const useCreateRoom = (cbFn: () => void) => {
     return useMutation({
         mutationFn: (formData: FormData) => createRoom(formData),
         onSuccess: (res) => {
-            console.log('room res: ', res)
             if (res.success) {
                 showSuccess(res.message);
                 queryClient.invalidateQueries({ queryKey: ['hotel-rooms'] });
@@ -45,10 +44,10 @@ export const useUpdateRoom = (cbFn: () => void) => {
 };
 
 
-export const useGetAllRooms = () => {
+export const useGetAllRooms = (page: number, limit: number, search?: string) => {
     return useQuery({
-        queryKey: ['vendor-rooms'],
-        queryFn: getAllRooms,
+        queryKey: ['hotel-rooms'],
+        queryFn: () => getAllRooms(page, limit, search),
         staleTime: 5 * 60 * 1000,
     });
 };
