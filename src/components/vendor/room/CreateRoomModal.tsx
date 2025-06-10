@@ -16,7 +16,7 @@ type RoomFormValues = {
     images: File[];
 };
 
-const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ open, onClose, onSubmit, isLoading, roomData, isEdit, hotels, }) => {
+const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ open, onClose, onSubmit, isLoading, roomData, isEdit, hotels }) => {
     const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoomFormValues>({
         defaultValues: { name: '', capacity: 1, bedType: '', basePrice: 0, amenities: '', images: [] },
     });

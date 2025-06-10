@@ -84,12 +84,10 @@ export interface IMutilImageUploadProps {
 export interface IHotelTableProps {
     hotels: IHotel[];
     loading: boolean;
-    onEdit?: (hotel: IHotel) => void;
+    onHotelsFetched?: (hotels: IHotel[]) => void;
 }
 
-type RoomSubmitPayload =
-    | FormData
-    | { id: string; data: FormData };
+type RoomSubmitPayload = FormData | { id: string; data: FormData };
 
 
 export interface ICreateRoomProps {
@@ -99,11 +97,11 @@ export interface ICreateRoomProps {
     isLoading: boolean;
     roomData?: IRoom | null;
     isEdit?: boolean;
-    hotelId: string;
+    hotelId?: string;
 }
 
 export interface IRoomTableProps {
+    hotels: IHotel[]
     rooms: IRoom[];
     loading: boolean;
-    onEdit?: (room: IRoom) => void;
 }

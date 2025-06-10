@@ -3,7 +3,7 @@ import Sidebar from '@/components/vendor/Sidebar';
 import React, { useState } from 'react';
 import HotelTable from '@/components/vendor/hotel/HotelList';
 import RoomTable from '@/components/vendor/room/RoomList';
-import { IHotel, IRoom } from '@/types/user.types';
+import { IHotel } from '@/types/user.types';
 import { UseCreateHotel } from '@/hooks/vendor/useCreateHotel';
 import CreateHotelModal from '@/components/vendor/hotel/CreateHotelModal';
 import CreateRoomModal from '@/components/vendor/room/CreateRoomModal';
@@ -15,6 +15,7 @@ const VendorHotelsPage: React.FC = () => {
     const [isHotelModalOpen, setIsHotelModalOpen] = useState(false);
     const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
     const [view, setView] = useState<'hotel' | 'room'>('hotel');
+    const [hotelsList, setHotelsList] = useState<IHotel[]>([]);
 
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -40,7 +41,7 @@ const VendorHotelsPage: React.FC = () => {
     const { mutate: createRoomfn, isPending: isCreatingRoom } = useCreateRoom(closeRoomModal);
 
     //submit handlers
-    const handleCreateHotel = async (hotelData: Omit<IHotel, 'images'> & { images: File[], oldImages?: string[] }) => {
+    const handleCreateHotel = async (hotelData: IHotel & { oldImages?: string[] }) => {
         const formData = new FormData();
         formData.append('name', hotelData.name);
         formData.append('description', hotelData.description);
@@ -69,12 +70,8 @@ const VendorHotelsPage: React.FC = () => {
         createHotelfn(formData);
     };
 
-    const handleCreateOrEditRoom = (roomData: FormData | { id: string; data: FormData }) => {
-        if ('id' in roomData) {
-            updateRoomfn({ id: roomData.id, formData: roomData.data });
-        } else {
-            createRoomMutate(roomData);
-        }
+    const handleCreateRoom = (roomData: FormData | { id: string, data: FormData }) => {
+        createRoomfn(roomData as FormData);
     };
 
 
@@ -125,9 +122,9 @@ const VendorHotelsPage: React.FC = () => {
 
                         <div className="overflow-x-auto space-y-4">
                             {view === 'hotel' ? (
-                                <HotelTable />
+                                <HotelTable onHotelsFetched={setHotelsList} />
                             ) : (
-                                <RoomTable />
+                                <RoomTable hotels={hotelsList} />
                             )}
                         </div>
                     </div>
@@ -141,8 +138,6 @@ const VendorHotelsPage: React.FC = () => {
                     onClose={closeHotelModal}
                     onSubmit={handleCreateHotel}
                     isLoading={isCreating}
-                    hotelData={editingHotel}
-                    isEdit={!!editingHotel}
                 />
             )}
 
@@ -151,14 +146,10 @@ const VendorHotelsPage: React.FC = () => {
                 <CreateRoomModal
                     open={isRoomModalOpen}
                     onClose={closeRoomModal}
-                    onSubmit={handleCreateOrEditRoom}
-                    isLoading={isCreatingRoom || isUpdatingRoom}
-                    roomData={editingRoom}
-                    isEdit={!!editingRoom}
-                    hotelId={editingRoom?.hotelId as string}
-                    hotels={hotels}
+                    onSubmit={handleCreateRoom}
+                    isLoading={isCreatingRoom}
+                    hotels={hotelsList}
                 />
-
             )}
         </div>
     );

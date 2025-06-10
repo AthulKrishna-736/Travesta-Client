@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createRoom, updateRoom, getRoomById, getRoomsByHotel, getAvailableRoomsByHotel, getAllRooms } from '@/services/vendorService';
+import { createRoom, updateRoom, getRoomById, getRoomsByHotel, getAvailableRoomsByHotel, getAllRooms, getAvailableRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
 
 export const useCreateRoom = (cbFn: () => void) => {
@@ -78,3 +78,10 @@ export const useGetAvailableRoomsByHotel = (hotelId: string) => {
         enabled: !!hotelId
     });
 };
+
+export const useGetAvailableRooms = (page: number, limit: number, search?: string) => {
+    return useQuery({
+        queryKey: ['available-rooms'],
+        queryFn: () => getAvailableRooms(page, limit, search),
+    })
+}

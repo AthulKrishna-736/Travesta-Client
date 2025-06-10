@@ -16,7 +16,7 @@ const columns = [
     { key: "address", label: "Address" },
 ];
 
-const HotelTable: React.FC<Partial<IHotelTableProps>> = () => {
+const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) => {
     const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -37,6 +37,13 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
+    useEffect(() => {
+        if (hotels.length > 0 && typeof onHotelsFetched === 'function') {
+            onHotelsFetched(hotels);
+        }
+    }, [hotels, onHotelsFetched]);
+
+
     const handleDetails = (hotel: IHotel) => {
         setSelectedHotel(hotel);
         setDetailModalOpen(true);
@@ -52,7 +59,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = () => {
         setIsEdit(false);
     }
 
-    const { mutate: updateHotelfn, isPending } = useUpdateHotel(handleEditClose)
+    const { mutate: updateHotelfn, isPending } = useUpdateHotel(handleEditClose);
 
     const handleEditHotel = (hotelData: IHotel & { oldImages: string[] }) => {
         const formData = new FormData();
