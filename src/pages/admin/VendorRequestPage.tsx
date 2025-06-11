@@ -2,7 +2,7 @@ import { AdminLayout } from '@/components/admin/layout/AdminLayout'
 import VendorTable from '@/components/admin/VendorTable';
 import Pagination from '@/components/common/Pagination';
 import { Input } from '@/components/ui/input';
-import { useGetVendors } from '@/hooks/admin/useGetVendor';
+import { useGetVendors } from '@/hooks/vendor/useVendor';
 import React, { useEffect, useState } from 'react'
 
 const VendorRequestPage: React.FC = () => {

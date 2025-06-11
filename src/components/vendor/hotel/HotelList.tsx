@@ -7,7 +7,7 @@ import { useGetAllHotels } from "@/hooks/vendor/useGetAllHotels";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
-import { useUpdateHotel } from "@/hooks/vendor/useCreateHotel";
+import { useUpdateHotel } from "@/hooks/vendor/useHotel";
 
 const columns = [
     { key: "name", label: "Hotel Name" },

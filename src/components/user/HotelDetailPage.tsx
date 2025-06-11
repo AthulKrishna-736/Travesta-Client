@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Star, MapPin, CheckCircle, BedDouble, Users, DollarSign } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useGetUserHotel } from '@/hooks/user/useGetUserHotels';
 import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
+import { useGetUserHotel } from '@/hooks/vendor/useHotel';
 
 interface BookingFormData {
     checkIn: string;

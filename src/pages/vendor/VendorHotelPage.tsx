@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import HotelTable from '@/components/vendor/hotel/HotelList';
 import RoomTable from '@/components/vendor/room/RoomList';
 import { IHotel } from '@/types/user.types';
-import { UseCreateHotel } from '@/hooks/vendor/useCreateHotel';
+import { UseCreateHotel } from '@/hooks/vendor/useHotel';
 import CreateHotelModal from '@/components/vendor/hotel/CreateHotelModal';
 import CreateRoomModal from '@/components/vendor/room/CreateRoomModal';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';

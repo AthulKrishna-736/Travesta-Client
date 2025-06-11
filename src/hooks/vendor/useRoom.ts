@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createRoom, updateRoom, getRoomById, getRoomsByHotel, getAvailableRoomsByHotel, getAllRooms, getAvailableRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
 
@@ -81,7 +81,9 @@ export const useGetAvailableRoomsByHotel = (hotelId: string) => {
 
 export const useGetAvailableRooms = (page: number, limit: number, search?: string) => {
     return useQuery({
-        queryKey: ['available-rooms'],
+        queryKey: ['available-rooms', page, limit, search],
         queryFn: () => getAvailableRooms(page, limit, search),
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
     })
 }

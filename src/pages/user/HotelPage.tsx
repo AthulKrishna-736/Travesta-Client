@@ -8,22 +8,24 @@ import RoomCard from '@/components/user/Hotelslist';
 import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
 
 const UserHotelPage: React.FC = () => {
-    const [page, setPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [debouncedValue, setDebouncedSearchTerm] = useState('');
+    const [page, setPage] = useState<number>(1);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [debouncedValue, setDebouncedSearchTerm] = useState<string>('');
     const limit = 9;
 
+    const { data, isLoading, isError } = useGetAvailableRooms(page, limit, debouncedValue);
+    const rooms = data?.data || [];
+    const meta = data?.meta;
+
     useEffect(() => {
+        console.log('updating', searchTerm)
         const timer = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
             setPage(1);
-        }, 600);
+        }, 500);
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data, isLoading, isError } = useGetAvailableRooms(page, limit, debouncedValue ? searchTerm : undefined);
-    const rooms = data?.data || [];
-    const meta = data?.meta;
 
     return (
         <div className="min-h-screen flex flex-col">
