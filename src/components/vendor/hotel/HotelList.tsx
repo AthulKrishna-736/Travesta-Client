@@ -3,11 +3,10 @@ import DataTable from "@/components/common/Table";
 import { IHotel } from "@/types/user.types";
 import ShowHotelDetailsModal from "./ShowHotelDetails";
 import { IHotelTableProps } from "@/types/component.types";
-import { useGetAllHotels } from "@/hooks/vendor/useGetAllHotels";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
-import { useUpdateHotel } from "@/hooks/vendor/useHotel";
+import { useGetAllHotels, useUpdateHotel } from "@/hooks/vendor/useHotel";
 
 const columns = [
     { key: "name", label: "Hotel Name" },

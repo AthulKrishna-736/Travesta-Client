@@ -76,7 +76,7 @@ export const getAvailableRoomsByHotel = async (hotelId: string) => {
     return response.data;
 };
 
-export const getAvailableRooms = async (page: number, limit: number, search?: string) => {
+export const getAvailableRooms = async (page: number, limit: number, priceRange: number, amenities: string, search?: string) => {
     const response = await axiosInstance.get(`/vendor/rooms/available`, {
         params: { page, limit, search }
     });

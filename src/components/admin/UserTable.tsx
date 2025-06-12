@@ -1,8 +1,8 @@
-import { useBlockUser } from "@/hooks/admin/useBlockUser"
 import React from "react"
 import DataTable from "../common/Table"
 import { User, UserTableProps } from "@/types/user.types"
 import ConfirmationModal from "../common/ConfirmationModa"
+import { useBlockUser } from "@/hooks/user/useUser"
 
 
 const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role, search }) => {

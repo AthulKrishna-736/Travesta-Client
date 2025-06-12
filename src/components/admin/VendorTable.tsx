@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import DataTable from '../common/Table'
 import { VendorRequestTableProps } from '@/types/user.types'
-import { useVendorVerify } from '@/hooks/admin/useVendorVerify'
 import ConfirmationModal from '../common/ConfirmationModa'
 import ShowDetailsModal from '../common/ShowDetailsModal'
+import { useVendorVerify } from '@/hooks/vendor/useVendor'
 
 const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit, search }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);

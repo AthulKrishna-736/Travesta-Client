@@ -79,10 +79,10 @@ export const useGetAvailableRoomsByHotel = (hotelId: string) => {
     });
 };
 
-export const useGetAvailableRooms = (page: number, limit: number, search?: string) => {
+export const useGetAvailableRooms = (page: number, limit: number, priceRange: number, amenities: string, search?: string) => {
     return useQuery({
         queryKey: ['available-rooms', page, limit, search],
-        queryFn: () => getAvailableRooms(page, limit, search),
+        queryFn: () => getAvailableRooms(page, limit, search, priceRange, amenities),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
     })
