@@ -31,6 +31,12 @@ export function AdminSidebar() {
             href: "/admin/vendor-requests",
             isActive: pathname === "/admin/vendor-requests",
         },
+        {
+            title: "Amenities",
+            icon: Layers,
+            href: "/admin/amenities",
+            isActive: pathname === "/admin/amenities",
+        },
     ]
 
     const managementNavItems = [
