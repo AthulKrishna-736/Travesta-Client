@@ -87,3 +87,12 @@ export interface TCreateAmenityData {
     description: string;
     type: "hotel" | "room";
 }
+
+export interface IAmenitiesModalProps {
+    open: boolean;
+    title: string;
+    onCancel: () => void;
+    onSubmit: (data: TCreateAmenityData) => void;
+    initialData?: TCreateAmenityData;
+    loading?: boolean;
+}

@@ -15,7 +15,7 @@ const AdminAmenities = () => {
     const [page, setPage] = useState<number>(1);
     const [openModal, setOpenModal] = useState<boolean>(false);
 
-    const limit = 10;
+    const limit = 8;
 
     useEffect(() => {
         const searchInput = setTimeout(() => {

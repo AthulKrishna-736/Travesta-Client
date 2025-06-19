@@ -8,17 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createAmenitySchema } from "@/utils/validations/commonValidation";
-import { TCreateAmenityData } from "@/types/component.types";
+import { IAmenitiesModalProps, TCreateAmenityData } from "@/types/component.types";
 
-
-interface IAmenitiesModalProps {
-    open: boolean;
-    title: string;
-    onCancel: () => void;
-    onSubmit: (data: TCreateAmenityData) => void;
-    initialData?: TCreateAmenityData;
-    loading?: boolean;
-}
 
 const AmenitiesModal: React.FC<IAmenitiesModalProps> = ({ open, title, onCancel, onSubmit, loading = false, initialData }) => {
     const [type, setType] = React.useState<"hotel" | "room">("hotel");
@@ -81,7 +72,11 @@ const AmenitiesModal: React.FC<IAmenitiesModalProps> = ({ open, title, onCancel,
 
                     <DialogFooter className="pt-4">
                         <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>Cancel</Button>
-                        <Button type="submit" disabled={loading}>{loading ? "Creating..." : "Create Amenity"}</Button>
+                        <Button type="submit" disabled={loading}>
+                            {loading
+                                ? initialData ? "Updating..." : "Creating..."
+                                : initialData ? "Update Amenity" : "Create Amenity"}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

@@ -3,16 +3,22 @@ import DataTable from "../common/Table";
 import { AmenityTableProps, IAmenity } from "@/types/component.types";
 import { useBlockAmenity, useUpdateAmenity } from "@/hooks/admin/useAmenities";
 import AmenitiesModal from "./AmenitiesModal";
+import ConfirmationModal from "../common/ConfirmationModa";
 
 const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, limit }) => {
-    const { mutate: toggleBlock, isPending } = useBlockAmenity(page, limit);
-    const { mutate: updateAmenity, isPending: isUpdating } = useUpdateAmenity(page, limit);
-
     const [editAmenity, setEditAmenity] = useState<IAmenity | null>(null);
+    const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
+    const [selectedAmenity, setSelectedAmenity] = useState<IAmenity | null>(null);
+
+    const { mutate: toggleBlock, isPending } = useBlockAmenity(page, limit, () => {
+        setIsToggleModalOpen(false);
+        setSelectedAmenity(null);
+    });
+    const { mutate: updateAmenity, isPending: isUpdating } = useUpdateAmenity(page, limit);
 
     const columns = [
         { key: "name", label: "Name" },
-        { key: "description", label: "Description", },
+        { key: "description", label: "Description" },
         { key: "isActive", label: "Active" },
         { key: "type", label: "Type" },
     ];
@@ -21,7 +27,10 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
         {
             label: "Toggle Block",
             variant: "ghost" as const,
-            onClick: (amenity: IAmenity) => toggleBlock(amenity._id),
+            onClick: (amenity: IAmenity) => {
+                setSelectedAmenity(amenity);
+                setIsToggleModalOpen(true);
+            },
         },
         {
             label: "Edit",
@@ -29,6 +38,17 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
             onClick: (amenity: IAmenity) => setEditAmenity(amenity),
         },
     ];
+
+    const handleToggleConfirm = () => {
+        if (selectedAmenity) {
+            toggleBlock(selectedAmenity._id);
+        }
+    };
+
+    const handleToggleCancel = () => {
+        setIsToggleModalOpen(false);
+        setSelectedAmenity(null);
+    };
 
     return (
         <>
@@ -59,6 +79,16 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
                     setEditAmenity(null);
                 }}
                 loading={isUpdating}
+            />
+
+            <ConfirmationModal
+                open={isToggleModalOpen}
+                title="Toggle Block Amenity"
+                description="Are you sure you want to block/unblock this amenity?"
+                showInput={false}
+                onConfirm={handleToggleConfirm}
+                onCancel={handleToggleCancel}
+                isLoading={isPending}
             />
         </>
     );

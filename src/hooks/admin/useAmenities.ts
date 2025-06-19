@@ -21,7 +21,7 @@ export const useCreateAmentiy = (page: number, limit: number) => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
-                queryClient.invalidateQueries({ queryKey: ['amenities', page, limit] });
+                queryClient.invalidateQueries({ queryKey: ['amenities', page, limit, ''] });
             } else {
                 showError(res.message || 'Something went wrong')
             }
@@ -41,7 +41,7 @@ export const useUpdateAmenity = (page: number, limit: number) => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
-                queryClient.invalidateQueries({ queryKey: ['amenities', page, limit] });
+                queryClient.invalidateQueries({ queryKey: ['amenities', page, limit, ''] });
             } else {
                 showError(res.message || 'Something went wrong')
             }
@@ -54,16 +54,16 @@ export const useUpdateAmenity = (page: number, limit: number) => {
 }
 
 
-export const useBlockAmenity = (page: number, limit: number) => {
+export const useBlockAmenity = (page: number, limit: number, cbFn: () => void) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (amenityId: string) => toggleBlockAmenity(amenityId),
         onMutate: async (amenityId: string) => {
-            await queryClient.cancelQueries({ queryKey: ['amenities', page, limit] });
+            await queryClient.cancelQueries({ queryKey: ['amenities', page, limit, ''] });
 
-            const prevAmenities = queryClient.getQueryData(['amenities', page, limit]);
+            const prevAmenities = queryClient.getQueryData(['amenities', page, limit, '']);
 
-            queryClient.setQueryData(['amenities', page, limit], (oldData: any) => {
+            queryClient.setQueryData(['amenities', page, limit, ''], (oldData: any) => {
                 return {
                     ...oldData,
                     data: oldData?.data?.map((amenity: IAmenity) => {
@@ -80,13 +80,14 @@ export const useBlockAmenity = (page: number, limit: number) => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
+                cbFn();
             } else {
                 showError(res.message || 'Something went wrong');
             }
         },
         onError: (error: any, _amenityId, context) => {
             if (context?.prevAmenities) {
-                queryClient.setQueryData(['amenities', page, limit], context.prevAmenities);
+                queryClient.setQueryData(['amenities', page, limit, ''], context.prevAmenities);
             }
 
             console.error('Error:', error);
