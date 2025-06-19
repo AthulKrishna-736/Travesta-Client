@@ -76,12 +76,13 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
         {
             label: 'Edit',
             variant: 'default' as const,
+            className: "bg-blue-50 text-blue-700 hover:bg-blue-100",
             onClick: handleEdit,
         },
         {
             label: 'Details',
-            variant: 'ghost' as const,
-            className: 'text-blue-600 border-blue-600 hover:bg-blue-50',
+            variant: 'outline' as const,
+            className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: handleDetails,
         },
     ];

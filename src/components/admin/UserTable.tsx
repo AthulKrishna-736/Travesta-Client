@@ -37,7 +37,8 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role
     const actions = [
         {
             label: "Toggle Block",
-            variant: "ghost" as const,
+            variant: 'ghost' as const,
+            className: "bg-red-50 text-red-700 hover:bg-red-100",
             onClick: (user: User) => {
                 setSelectedUser(user);
                 setIsModalOpen(true);

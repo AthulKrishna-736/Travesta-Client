@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
 import Pagination from '@/components/common/Pagination';
@@ -9,8 +9,6 @@ import { Button } from '@/components/ui/button';
 import RoomCard from '@/components/user/Hotelslist';
 import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
 import { IRoom } from '@/types/user.types';
-
-const amenitiesList = ['AC', 'TV', 'HotShower', 'Table', 'Beach'];
 
 const UserHotelPage: React.FC = () => {
     const [page, setPage] = useState<number>(1);
@@ -58,6 +56,7 @@ const UserHotelPage: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
+
             <main className="flex-grow py-10 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-6 text-travesty-700">
@@ -83,7 +82,7 @@ const UserHotelPage: React.FC = () => {
                                     max={1000}
                                     step={10}
                                     defaultValue={[priceRange[0], priceRange[1]]}
-                                    onValueChange={(value) => {
+                                    onValueChange={(value: any) => {
                                         if (value.length === 2) setPriceRange([value[0], value[1]]);
                                     }}
                                 />
@@ -135,6 +134,7 @@ const UserHotelPage: React.FC = () => {
                     </div>
                 </div>
             </main>
+
             <Footer />
         </div>
     );

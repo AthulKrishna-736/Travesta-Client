@@ -38,7 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
                             </TableCell>
                         ))}
                         {actions.length > 0 && (
-                            <TableCell>
+                            <TableCell className="flex gap-2">
                                 {actions.map((action, i) => (
                                     <Button
                                         key={i}

@@ -31,6 +31,11 @@ export const getAllAmenities = async (page: number, limit: number, search?: stri
     return response.data;
 };
 
+export const getActiveAmenities = async () => {
+    const response = await axiosInstance.get('/admin/amenities/active');
+    return response.data;
+}
+
 export const createAmenity = async (data: TCreateAmenityData) => {
     const response = await axiosInstance.post(`/admin/amenities`, data);
     return response.data;

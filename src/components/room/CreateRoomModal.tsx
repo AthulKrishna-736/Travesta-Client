@@ -3,9 +3,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
-import MultiImageUploader from '../../common/ImageUpload';
-import { ICreateRoomProps } from '@/types/component.types';
+import MultiImageUploader from '../common/ImageUpload';
+import { ICreateRoomProps, IAmenity } from '@/types/component.types';
 import { IHotel } from '@/types/user.types';
+import { X } from 'lucide-react';
+import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
 
 type RoomFormValues = {
     name: string;
@@ -22,14 +24,27 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
     });
 
     const [selectedHotelId, setSelectedHotelId] = useState<string>(roomData?.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : ''));
+    const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+    const { data: activeAmenitiesData } = useGetActiveAmenities();
+    const roomAmenities = (activeAmenitiesData?.data || []).filter((a: IAmenity) => a.type === 'room');
 
     useEffect(() => {
         if (roomData) {
-            reset({ name: roomData.name, capacity: roomData.capacity, bedType: roomData.bedType, basePrice: roomData.basePrice, amenities: roomData.amenities?.join(',') || '', images: [] });
+            reset({
+                name: roomData.name,
+                capacity: roomData.capacity,
+                bedType: roomData.bedType,
+                basePrice: roomData.basePrice,
+                amenities: roomData.amenities?.join(',') || '',
+                images: [],
+            });
             setSelectedHotelId(roomData.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : ''));
+            setSelectedAmenities(roomData.amenities || []);
         } else {
             setSelectedHotelId(hotels.length > 0 ? hotels[0]._id || '' : '');
-            reset({ name: '', capacity: 1, bedType: '', basePrice: 0, amenities: '', images: [] });
+            reset();
+            setSelectedAmenities([]);
         }
     }, [roomData, reset, hotels]);
 
@@ -40,19 +55,15 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
         formData.append('bedType', data.bedType);
         formData.append('basePrice', String(data.basePrice));
         formData.append('hotelId', selectedHotelId);
-        formData.append('amenities', JSON.stringify(data.amenities.split(',').map(item => item.trim())));
+        formData.append('amenities', JSON.stringify(selectedAmenities));
 
         const imageFiles = data.images.filter((item) => item instanceof File) as File[];
         const imageUrls = data.images.filter((item) => typeof item === 'string') as string[];
 
-        imageFiles.forEach(i => console.log('images size: ', i.name, (i.size / (1024 * 1024))));
-
         imageFiles.forEach((file) => formData.append('imageFile', file));
-
         if (isEdit && imageUrls.length > 0) {
             formData.append('images', JSON.stringify(imageUrls));
         }
-
 
         if (isEdit && roomData?._id) {
             onSubmit({ id: roomData._id, data: formData });
@@ -70,7 +81,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(submitHandler)} className="space-y-4">
-                    {/* Hotel Select Dropdown */}
+
                     <div>
                         <label className="block mb-1 font-medium">Select Hotel</label>
                         <select
@@ -111,15 +122,49 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                     </div>
 
                     <div>
-                        <label className="block mb-1 font-medium">Amenities (comma-separated)</label>
-                        <Input {...register('amenities')} />
-                        {errors.amenities && (<p className="text-sm text-red-500">{errors.amenities.message}</p>)}
+                        <label className="block mb-1 font-medium">Select Amenities</label>
+                        <div className="border p-2 rounded flex flex-wrap gap-2 min-h-[40px]">
+                            {selectedAmenities.map((amenityId) => {
+                                const amenity = roomAmenities.find((a: IAmenity) => a._id === amenityId);
+                                return (
+                                    <span key={amenityId} className="bg-gray-200 px-2 py-1 rounded flex items-center"                                    >
+                                        {amenity?.name}
+                                        <X className="ml-1 w-3 h-3 cursor-pointer"
+                                            onClick={() =>
+                                                setSelectedAmenities((prev) =>
+                                                    prev.filter((id) => id !== amenityId)
+                                                )
+                                            }
+                                        />
+                                    </span>
+                                );
+                            })}
+                            <select
+                                className="ml-auto px-2 py-1 outline-none"
+                                value=""
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (value && !selectedAmenities.includes(value)) {
+                                        setSelectedAmenities([...selectedAmenities, value]);
+                                    }
+                                }}
+                            >
+                                <option value="">+ Add Amenity</option>
+                                {roomAmenities.map((a: IAmenity) => (
+                                    <option key={a._id} value={a._id}>
+                                        {a.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <div>
                         <label className="block mb-1 font-medium">Room Images</label>
                         <MultiImageUploader
-                            onImagesChange={(files: (string | File)[]) => setValue('images', files as File[])}
+                            onImagesChange={(files: (string | File)[]) =>
+                                setValue('images', files as File[])
+                            }
                             initialImageUrls={roomData?.images as string[] || []}
                         />
                     </div>

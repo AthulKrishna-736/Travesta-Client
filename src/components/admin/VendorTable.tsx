@@ -84,7 +84,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Accept',
             variant: 'ghost' as const,
-            className: 'text-green-600 border-green-600 hover:bg-green-50',
+            className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: (row: any) => {
                 setSelectedVendor(row);
                 setIsAcceptModalOpen(true);
@@ -93,7 +93,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Reject',
             variant: 'ghost' as const,
-            className: 'text-red-600 border-red-600 hover:bg-red-50',
+            className: "bg-red-50 text-red-700 hover:bg-red-100",
             onClick: (row: any) => {
                 openRejectModal(row);
             }
