@@ -38,7 +38,6 @@ export interface ConfirmationModalProps {
     isLoading: boolean
 }
 
-
 export interface KycDocumentsProps {
     userId: string;
     onUpdate: (payload: { userId: string; files: File[] }) => void;
@@ -104,4 +103,37 @@ export interface IRoomTableProps {
     hotels: IHotel[]
     rooms: IRoom[];
     loading: boolean;
+}
+
+
+export interface IAmenity {
+    _id: string
+    name: string
+    description: string
+    type: 'hotel' | 'room'
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+}
+
+export interface AmenityTableProps {
+    amenities: IAmenity[]
+    loading: boolean
+    page: number
+    limit: number
+}
+
+export interface TCreateAmenityData {
+    name: string;
+    description: string;
+    type: "hotel" | "room";
+}
+
+export interface IAmenitiesModalProps {
+    open: boolean;
+    title: string;
+    onCancel: () => void;
+    onSubmit: (data: TCreateAmenityData) => void;
+    initialData?: TCreateAmenityData;
+    loading?: boolean;
 }

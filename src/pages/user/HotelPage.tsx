@@ -25,7 +25,7 @@ const UserHotelPage: React.FC = () => {
         page,
         limit,
         priceRange,
-        selectedAmenities
+        selectedAmenities,
         debouncedValue,
     );
 
