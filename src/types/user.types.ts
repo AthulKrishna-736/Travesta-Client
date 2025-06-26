@@ -67,6 +67,7 @@ export interface IHotel {
 
 
 export interface IRoom {
+  id?: string
   _id?: string;
   hotelId: string;
   name: string;

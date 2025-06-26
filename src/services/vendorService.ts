@@ -67,7 +67,7 @@ export const getRoomById = async (roomId: string) => {
 };
 
 export const getRoomsByHotel = async (hotelId: string) => {
-    const response = await axiosInstance.get(`/vendor/hotels/${hotelId}/rooms`);
+    const response = await axiosInstance.get(`/vendor/rooms/by-hotel/${hotelId}`);
     return response.data;
 };
 
@@ -76,9 +76,27 @@ export const getAvailableRoomsByHotel = async (hotelId: string) => {
     return response.data;
 };
 
-export const getAvailableRooms = async (page: number, limit: number, priceRange: number, amenities: string, search?: string) => {
+export const getAvailableRooms = async (page: number, limit: number, priceRange?: [number, number], amenities?: string[], search?: string) => {
+    const params: Record<string, any> = {
+        page,
+        limit,
+    };
+
+    if (search) params.search = search;
+
+    if (priceRange?.length === 2) {
+        params.minPrice = priceRange[0];
+        params.maxPrice = priceRange[1];
+    }
+
+    if (amenities && amenities.length > 0) {
+        params.amenities = amenities.join(',');
+    }
+
     const response = await axiosInstance.get(`/vendor/rooms/available`, {
-        params: { page, limit, search }
+        params,
     });
+
     return response.data;
-}
+};
+

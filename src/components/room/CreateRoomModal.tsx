@@ -23,7 +23,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
         defaultValues: { name: '', capacity: 1, bedType: '', basePrice: 0, amenities: '', images: [] },
     });
 
-    const [selectedHotelId, setSelectedHotelId] = useState<string>(roomData?.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : ''));
+    const [selectedHotelId, setSelectedHotelId] = useState<string>(roomData?.hotelId || (hotels.length > 0 ? hotels[0].id || '' : ''));
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
     const { data: activeAmenitiesData } = useGetActiveAmenities();
@@ -39,10 +39,10 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                 amenities: roomData.amenities?.join(',') || '',
                 images: [],
             });
-            setSelectedHotelId(roomData.hotelId || (hotels.length > 0 ? hotels[0]._id || '' : ''));
+            setSelectedHotelId(roomData.hotelId || (hotels.length > 0 ? hotels[0].id || '' : ''));
             setSelectedAmenities(roomData.amenities || []);
         } else {
-            setSelectedHotelId(hotels.length > 0 ? hotels[0]._id || '' : '');
+            setSelectedHotelId(hotels.length > 0 ? hotels[0].id || '' : '');
             reset();
             setSelectedAmenities([]);
         }
@@ -65,8 +65,8 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
             formData.append('images', JSON.stringify(imageUrls));
         }
 
-        if (isEdit && roomData?._id) {
-            onSubmit({ id: roomData._id, data: formData });
+        if (isEdit && roomData) {
+            onSubmit({ id: roomData.id as string, data: formData });
         } else {
             onSubmit(formData);
         }
@@ -90,7 +90,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                             onChange={(e) => setSelectedHotelId(e.target.value)}
                         >
                             {hotels.map((hotel) => (
-                                <option key={hotel._id} value={hotel._id}>
+                                <option key={hotel.id} value={hotel.id}>
                                     {hotel.name}
                                 </option>
                             ))}

@@ -14,7 +14,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
     const { name, capacity, bedType, amenities, images, basePrice, isAvailable } = room;
 
     return (
-        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden border-0 group h-full flex flex-col" onClick={()=> navigate(`/user/hotels/${room.hotelId}`)}>
+        <Card className="shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden border-0 group h-full flex flex-col" >
             {/* Image Section */}
             <div className="relative aspect-[16/9] w-full overflow-hidden">
                 <img
@@ -51,7 +51,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                             </p>
                         </div>
                         <span className="text-lg font-bold text-primary">
-                            ${basePrice.toFixed(2)}
+                            ₹{basePrice.toFixed(2)}
                             <span className="text-sm font-normal text-gray-500">/night</span>
                         </span>
                     </CardTitle>
@@ -94,7 +94,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                         <Button
                             variant="outline"
                             className="flex-1 rounded-lg border-primary text-primary hover:bg-primary/10"
-                            onClick={() => navigate(`/user/hotel/${room.hotelId}`)}
+                            onClick={() => navigate(`/user/hotels/${room.hotelId}`)}
                         >
                             View Details
                         </Button>

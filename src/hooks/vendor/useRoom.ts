@@ -17,8 +17,21 @@ export const useCreateRoom = (cbFn: () => void) => {
             }
         },
         onError: (err: any) => {
-            showError(err.response?.data?.message || 'Something went wrong');
-        }
+            const res = err.response?.data;
+            if (res?.message) {
+                showError(res.message);
+            }
+
+            if (res?.error && typeof res.error === 'object') {
+                Object.entries(res.error).forEach(([field, messages]) => {
+                    if (Array.isArray(messages)) {
+                        messages.forEach((msg) => showError(`${field}: ${msg}`));
+                    } else {
+                        showError(`${field}: ${messages}`);
+                    }
+                });
+            }
+        },
     });
 };
 
@@ -46,9 +59,19 @@ export const useUpdateRoom = (cbFn: () => void) => {
 
 export const useGetAllRooms = (page: number, limit: number, search?: string) => {
     return useQuery({
-        queryKey: ['hotel-rooms'],
-        queryFn: () => getAllRooms(page, limit, search),
+        queryKey: ['hotel-rooms', page, limit, search],
+        queryFn: async () => {
+            try {
+                return await getAllRooms(page, limit, search);
+            } catch (error: any) {
+                const msg = error?.response?.data?.message || 'Failed to fetch rooms';
+                showError(msg);
+                return { data: [], meta: { currentPage: 1, totalPages: 1 } };
+            }
+        },
         staleTime: 5 * 60 * 1000,
+        retry: false,
+
     });
 };
 
@@ -66,7 +89,8 @@ export const useGetRoomsByHotel = (hotelId: string) => {
     return useQuery({
         queryKey: ['hotel-rooms', hotelId],
         queryFn: () => getRoomsByHotel(hotelId),
-        enabled: !!hotelId
+        enabled: !!hotelId,
+        staleTime: 5 * 60 * 1000,
     });
 };
 
@@ -79,11 +103,11 @@ export const useGetAvailableRoomsByHotel = (hotelId: string) => {
     });
 };
 
-export const useGetAvailableRooms = (page: number, limit: number, priceRange: number, amenities: string, search?: string) => {
+export const useGetAvailableRooms = (page: number, limit: number, priceRange: [number, number], amenities: string[], search?: string) => {
     return useQuery({
-        queryKey: ['available-rooms', page, limit, search],
-        queryFn: () => getAvailableRooms(page, limit, search, priceRange, amenities),
+        queryKey: ['available-rooms', page, limit, search, priceRange, amenities],
+        queryFn: () => getAvailableRooms(page, limit, priceRange, amenities, search),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
-    })
-}
+    });
+};

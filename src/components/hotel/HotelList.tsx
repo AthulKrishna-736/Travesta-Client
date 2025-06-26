@@ -67,9 +67,9 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
         formData.append('address', hotelData.address);
         formData.append('city', hotelData.city);
         formData.append('state', hotelData.state);
-        formData.append('tags', Array.isArray(hotelData.tags) ? hotelData.tags.join(',') : hotelData.tags);
-        formData.append('amenities', Array.isArray(hotelData.amenities) ? hotelData.amenities.join(',') : hotelData.amenities);
-        formData.append('services', Array.isArray(hotelData.services) ? hotelData.services.join(',') : hotelData.services);
+        formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
+        formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
+        formData.append('services', JSON.stringify(Array.isArray(hotelData.services) ? hotelData.services : [hotelData.services]));
 
         if (hotelData.geoLocation?.length === 2) {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));

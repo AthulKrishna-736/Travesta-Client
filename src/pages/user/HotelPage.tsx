@@ -9,23 +9,19 @@ import { Button } from '@/components/ui/button';
 import RoomCard from '@/components/user/Hotelslist';
 import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
 import { IRoom } from '@/types/user.types';
+import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
 
 const UserHotelPage: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [debouncedValue, setDebouncedSearchTerm] = useState<string>('');
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
     const limit = 9;
-
-    const { data, isLoading, isError } = useGetAvailableRooms(
-        page,
-        limit,
-        priceRange,
-        selectedAmenities,
-        debouncedValue,
-    );
+    const { data: amenities, isLoading: isAmenitiesLoading } = useGetActiveAmenities();
+    const amenitiesData = amenities?.data || [];
+    const { data, isLoading, isError } = useGetAvailableRooms(page, limit, priceRange, selectedAmenities, debouncedValue,);
 
     const rooms = data?.data || [];
     const meta = data?.meta;
@@ -48,7 +44,7 @@ const UserHotelPage: React.FC = () => {
     const resetFilters = () => {
         setSearchTerm('');
         setDebouncedSearchTerm('');
-        setPriceRange([0, 1000]);
+        setPriceRange([0, 5000]);
         setSelectedAmenities([]);
         setPage(1);
     };
@@ -79,9 +75,9 @@ const UserHotelPage: React.FC = () => {
                                 <label className="font-semibold block mb-2">Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}</label>
                                 <Slider
                                     min={0}
-                                    max={1000}
+                                    max={5000}
                                     step={10}
-                                    defaultValue={[priceRange[0], priceRange[1]]}
+                                    value={priceRange}
                                     onValueChange={(value: any) => {
                                         if (value.length === 2) setPriceRange([value[0], value[1]]);
                                     }}
@@ -90,15 +86,20 @@ const UserHotelPage: React.FC = () => {
 
                             <div className="mb-6">
                                 <label className="font-semibold block mb-2">Amenities</label>
-                                {amenitiesList.map((amenity) => (
-                                    <div key={amenity} className="flex items-center gap-2 mb-2">
-                                        <Checkbox
-                                            checked={selectedAmenities.includes(amenity)}
-                                            onCheckedChange={() => toggleAmenity(amenity)}
-                                        />
-                                        <span>{amenity}</span>
-                                    </div>
-                                ))}
+                                {isAmenitiesLoading ? (
+                                    <p>Loading amenities...</p>
+                                ) : (
+                                    amenitiesData.map((amenity: any) => (
+                                        <div key={amenity._id} className="flex items-center gap-2 mb-2">
+                                            <Checkbox
+                                                checked={selectedAmenities.includes(amenity._id)}
+                                                onCheckedChange={() => toggleAmenity(amenity._id)}
+                                            />
+                                            <span>{amenity.name}</span>
+                                        </div>
+                                    ))
+                                )}
+
                             </div>
 
                             <Button variant="outline" className="w-full" onClick={resetFilters}>
@@ -117,7 +118,7 @@ const UserHotelPage: React.FC = () => {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                                 {rooms.map((room: IRoom) => (
-                                    <RoomCard key={room._id} room={room} />
+                                    <RoomCard key={room.id} room={room} />
                                 ))}
                             </div>
 

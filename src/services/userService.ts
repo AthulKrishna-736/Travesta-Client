@@ -24,3 +24,4 @@ export const getUserHotelById = async (hotelId: string) => {
     const response = await axiosInstance.get(`/users/hotels/${hotelId}`);
     return response.data;
 };
+
