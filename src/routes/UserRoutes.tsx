@@ -1,4 +1,5 @@
 import UserHotelPage from '@/pages/user/HotelPage'
+import UserChatPage from '@/pages/user/UserChatPage'
 import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
 import UserHomePage from '@/pages/user/UserHomePage'
@@ -48,6 +49,12 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       }
       />
+
+      <Route path='chat' element={
+        <ProtectedUser>
+          <UserChatPage />
+        </ProtectedUser>
+      } />
     </Routes>
   )
 }
