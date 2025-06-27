@@ -1,5 +1,8 @@
 import { TRoles } from '@/types/Auth.Types';
-import { io, Socket } from 'socket.io-client';
+import io from 'socket.io-client';
+import { useEffect, useRef, useState } from "react";
+import { showError } from "@/utils/customToast";
+
 
 export interface SocketMessage {
     from: {
@@ -19,15 +22,16 @@ export interface SendMessagePayload {
 
 const token = localStorage.getItem('token');
 
-export const socket: Socket = io(import.meta.env.VITE_API_URL!, {
+export const socket: any = io(import.meta.env.VITE_SOCKET_URL!, {
     auth: { token },
     transports: ['websocket'],
+    path: '/path/chat', 
     reconnectionAttempts: 5,
 });
 
 
-import { useEffect, useRef, useState } from "react";
-import { showError } from "@/utils/customToast";
+socket.connect()
+
 
 export const useSocketChat = () => {
     const [messages, setMessages] = useState<SocketMessage[]>([]);
@@ -40,7 +44,7 @@ export const useSocketChat = () => {
                 setMessages((prev) => [...prev, data]);
             });
 
-            socket.on("connect_error", (err) => {
+            socket.on("connect_error", (err: any) => {
                 showError("Socket connection error: " + err.message);
             });
 
@@ -53,6 +57,31 @@ export const useSocketChat = () => {
             isConnected.current = false;
         };
     }, []);
+
+
+    useEffect(() => {
+        const onConnect = () => {
+            console.log("✅ Socket connected:", socket.id);
+        };
+
+        socket.on("connect", onConnect);
+        socket.on("receive_message", (data: SocketMessage) => {
+            console.log("📥 New message received:", data);
+            setMessages((prev) => [...prev, data]);
+        });
+
+        socket.on("connect_error", (err: any) => {
+            showError("❌ Socket connection error: " + err.message);
+            console.error("Socket error:", err);
+        });
+
+        return () => {
+            socket.off("connect", onConnect);
+            socket.off("receive_message");
+            socket.off("connect_error");
+        };
+    }, []);
+
 
     // Send a message
     const sendMessage = (payload: SendMessagePayload) => {

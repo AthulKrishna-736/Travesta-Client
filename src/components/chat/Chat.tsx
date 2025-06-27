@@ -2,7 +2,6 @@ import { SocketMessage } from '@/utils/socket';
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
 interface ChatProps {
@@ -22,9 +21,8 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend }) => {
     const isSender = (role: string) => role === 'user';
 
     return (
-        <div className="flex flex-col flex-grow overflow-hidden"> {/* stop overall overflow */}
+        <div className="flex flex-col flex-grow overflow-hidden"> 
 
-            {/* Scrollable message area */}
             <div className="flex-grow overflow-y-auto bg-gray-50 p-4 space-y-4">
                 {messages.map((m, i) => (
                     <div
@@ -46,7 +44,6 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend }) => {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input box at bottom */}
             <div className="border-t bg-white p-3 flex gap-2 items-center">
                 <Input
                     value={msg}
