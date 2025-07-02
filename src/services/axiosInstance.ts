@@ -1,3 +1,4 @@
+import { env, HttpStatusCode } from '@/config/config';
 import { logoutUser } from '@/store/slices/authSlice';
 import { logoutVendor } from '@/store/slices/vendorSlice';
 import store from '@/store/store';
@@ -6,7 +7,7 @@ import { showError } from '@/utils/customToast';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
+    baseURL: env.SERVER_URL,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
@@ -36,7 +37,7 @@ axiosInstance.interceptors.response.use(
             }, 1000);
         }
 
-        if (errorMsg?.message == 'Unauthorized access' && error.response?.status == 401) {
+        if (errorMsg?.message == 'Unauthorized access' && error.response?.status == HttpStatusCode.UNAUTHORIZED) {
             if (isUserRoute) {
                 showError(errorMsg.message)
                 store.dispatch(logoutUser());

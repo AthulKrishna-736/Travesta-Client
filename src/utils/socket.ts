@@ -1,7 +1,8 @@
 import { TRoles } from '@/types/Auth.Types';
-import io from 'socket.io-client';
 import { useEffect, useRef, useState } from "react";
 import { showError } from "@/utils/customToast";
+import { Socket } from 'socket.io-client';
+import { env } from '@/config/config';
 
 
 export interface SocketMessage {
@@ -19,14 +20,14 @@ export interface SendMessagePayload {
     message: string;
 }
 
-
 const token = localStorage.getItem('token');
 
-export const socket: any = io(import.meta.env.VITE_SOCKET_URL!, {
+export const socket: typeof Socket = io(env.SOCKET_URL, {
     auth: { token },
     transports: ['websocket'],
-    path: '/path/chat', 
+    path: '/path/chat',
     reconnectionAttempts: 5,
+    
 });
 
 

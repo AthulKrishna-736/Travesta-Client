@@ -7,11 +7,12 @@ import VendorRoutes from './routes/VendorRoutes';
 import AdminRoutes from './routes/AdminRoutes';
 import NotFound from './components/auth/Page404';
 import { ErrorBoundary } from './utils/ErrorBoundary';
+import { env } from './config/config';
 
 const App: React.FC = () => {
   return (
     <>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
+      <GoogleOAuthProvider clientId={env.GOOGLE_ID}>
         <Router>
           <ErrorBoundary>
             <Routes>
