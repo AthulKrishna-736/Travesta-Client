@@ -3,15 +3,18 @@ import { useEffect, useRef, useState } from "react";
 import { showError } from "@/utils/customToast";
 import { Socket } from 'socket.io-client';
 import { env } from '@/config/config';
+import io from 'socket.io-client';
 
 
 export interface SocketMessage {
-    from: {
-        id: string;
-        role: TRoles;
-    };
+    fromId: string;
+    fromRole: TRoles;
+    toId: string;
+    toRole: TRoles;
     message: string;
     timestamp: string;
+    _id?: string;
+    isRead?: boolean;
 }
 
 export interface SendMessagePayload {
@@ -20,14 +23,23 @@ export interface SendMessagePayload {
     message: string;
 }
 
-const token = localStorage.getItem('token');
+export interface TypingPayload {
+    fromId: string;
+    toId: string;
+    toRole: TRoles;
+}
+
+export interface ReadReceiptPayload {
+    messageId: string;
+    toId: string;
+    toRole: TRoles;
+}
 
 export const socket: typeof Socket = io(env.SOCKET_URL, {
-    auth: { token },
     transports: ['websocket'],
-    path: '/path/chat',
+    path: '/api/chat',
     reconnectionAttempts: 5,
-    
+
 });
 
 

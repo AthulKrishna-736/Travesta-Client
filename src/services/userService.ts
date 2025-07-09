@@ -12,3 +12,8 @@ export const updateUser = async (formData: FormData) => {
     });
     return response.data;
 };
+
+export const getChatMessages = async (userId: string) => {
+    const { data } = await axiosInstance.get(`/users/chat/${userId}`);
+    return data;
+};

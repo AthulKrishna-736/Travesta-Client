@@ -9,45 +9,59 @@ interface ChatProps {
     setMsg: (msg: string) => void;
     messages: SocketMessage[];
     handleSend: () => void;
+    handleTyping: () => void;
+    typingStatus: boolean;
 }
 
-const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend }) => {
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, }) => {
+    const messageContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        const container = messageContainerRef.current;
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
     }, [messages]);
 
     const isSender = (role: string) => role === 'user';
 
     return (
-        <div className="flex flex-col flex-grow overflow-hidden"> 
-
+        <div className="flex flex-col flex-grow overflow-hidden">
             <div className="flex-grow overflow-y-auto bg-gray-50 p-4 space-y-4">
-                {messages.map((m, i) => (
-                    <div
-                        key={i}
-                        className={`flex ${isSender(m.from.role) ? 'justify-end' : 'justify-start'}`}
-                    >
+                <div
+                    ref={messageContainerRef}
+                    className="flex-grow overflow-y-auto bg-gray-50 p-4 space-y-4"
+                >
+                    {messages.map((m, i) => (
                         <div
-                            className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${isSender(m.from.role)
+                            key={i}
+                            className={`flex ${isSender(m.fromRole) ? 'justify-end' : 'justify-start'}`}
+                        >
+                            <div
+                                className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${isSender(m.fromRole)
                                     ? 'bg-violet-600 text-white rounded-br-none'
                                     : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
-                                }`}
-                            style={{ maxWidth: '40%' }} 
-                        >
-                            <p>{m.message}</p>
+                                    }`}
+                                style={{ maxWidth: '40%' }}
+                            >
+                                <p>{m.message}</p>
+                            </div>
                         </div>
+                    ))}
 
-                    </div>
-                ))}
-                <div ref={messagesEndRef} />
+                    {typingStatus && (
+                        <div className="text-sm text-gray-400 italic">Typing...</div>
+                    )}
+                </div>
             </div>
 
             <div className="border-t bg-white p-3 flex gap-2 items-center">
                 <Input
                     value={msg}
-                    onChange={(e) => setMsg(e.target.value)}
+                    onChange={(e) => {
+                        setMsg(e.target.value);
+                        handleTyping();
+                    }}
                     placeholder="Type your message..."
                     className="flex-1 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-traveste-600"
                     onKeyDown={(e) => {
