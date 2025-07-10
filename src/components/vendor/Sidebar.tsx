@@ -1,9 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import {
-    LayoutDashboard, Building, Calendar, BarChart3, Star, MessageSquare,
-    Settings, LogOut, TagIcon
-} from 'lucide-react';
+import { LayoutDashboard, Building, Calendar, BarChart3, Star, MessageSquare, Settings, LogOut, TagIcon } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useLogout } from '@/hooks/auth/useLogout';
@@ -15,12 +12,12 @@ interface SidebarProps {
 const navItems = [
     { name: 'Dashboard', path: '/vendor/dashboard', icon: LayoutDashboard },
     { name: 'Hotels', path: '/vendor/hotels', icon: Building },
-    { name: 'Bookings', path: '/dashboard/bookings', icon: Calendar, badge: '5' },
-    { name: 'Analytics', path: '/dashboard/analytics', icon: BarChart3 },
-    { name: 'Reviews', path: '/dashboard/reviews', icon: Star, badge: '3' },
-    { name: 'Promotions', path: '/dashboard/promotions', icon: TagIcon },
-    { name: 'Messages', path: '/dashboard/messages', icon: MessageSquare, badge: '12' },
-    { name: 'Settings', path: '/dashboard/settings', icon: Settings },
+    { name: 'Bookings', path: '/vendor/bookings', icon: Calendar },
+    // { name: 'Analytics', path: '/vendor/analytics', icon: BarChart3 },
+    // { name: 'Reviews', path: '/vendor/reviews', icon: Star, badge: '3' },
+    // { name: 'Promotions', path: '/vendor/promotions', icon: TagIcon },
+    { name: 'Messages', path: '/vendor/messages', icon: MessageSquare },
+    // { name: 'Settings', path: '/vendor/settings', icon: Settings },
 ];
 
 const Sidebar = ({ isOpen }: SidebarProps) => {
@@ -56,16 +53,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
                                         "h-5 w-5",
                                         !isOpen ? "mr-0" : "mr-3"
                                     )} />
-                                    {isOpen && (
-                                        <>
-                                            <span>{item.name}</span>
-                                            {item.badge && (
-                                                <Badge variant="secondary" className="ml-auto">
-                                                    {item.badge}
-                                                </Badge>
-                                            )}
-                                        </>
-                                    )}
+                                    {isOpen && (<span>{item.name}</span>)}
                                 </NavLink>
                             </li>
                         ))}
