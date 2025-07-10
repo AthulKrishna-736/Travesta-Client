@@ -18,3 +18,8 @@ export const uplodKyc = async (formData: FormData) => {
     })
     return response.data
 }
+
+export const getChatUsers = async () => {
+    const response = await axiosInstance.get('/vendor/chat-users');
+    return response.data;
+}

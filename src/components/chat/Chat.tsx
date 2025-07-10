@@ -11,9 +11,10 @@ interface ChatProps {
     handleSend: () => void;
     handleTyping: () => void;
     typingStatus: boolean;
+    currentUserId: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, }) => {
+const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -23,7 +24,7 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
         }
     }, [messages]);
 
-    const isSender = (role: string) => role === 'user';
+    const isSender = (fromId: string) => String(fromId) === String(currentUserId);
 
     return (
         <div className="flex flex-col flex-grow overflow-hidden">
@@ -32,22 +33,25 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
                     ref={messageContainerRef}
                     className="flex-grow overflow-y-auto bg-gray-50 p-4 space-y-4"
                 >
-                    {messages.map((m, i) => (
-                        <div
-                            key={i}
-                            className={`flex ${isSender(m.fromRole) ? 'justify-end' : 'justify-start'}`}
-                        >
+                    {messages.map((m, i) => {
+                        const sent = isSender(m.fromId);
+                        return (
                             <div
-                                className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${isSender(m.fromRole)
-                                    ? 'bg-violet-600 text-white rounded-br-none'
-                                    : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
-                                    }`}
-                                style={{ maxWidth: '40%' }}
+                                key={i}
+                                className={`flex ${sent ? 'justify-end' : 'justify-start'}`}
                             >
-                                <p>{m.message}</p>
+                                <div
+                                    className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${sent
+                                        ? 'bg-violet-600 text-white rounded-br-none'
+                                        : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
+                                        }`}
+                                    style={{ maxWidth: '40%' }}
+                                >
+                                    <p>{m.message}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
 
                     {typingStatus && (
                         <div className="text-sm text-gray-400 italic">Typing...</div>
@@ -64,7 +68,7 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
                     }}
                     placeholder="Type your message..."
                     className="flex-1 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-traveste-600"
-                    onKeyDown={(e) => {
+                    onKeyUp={(e) => {
                         if (e.key === 'Enter') handleSend();
                     }}
                 />

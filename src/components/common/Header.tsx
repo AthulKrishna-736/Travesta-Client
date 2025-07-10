@@ -74,7 +74,13 @@ const Header = () => {
                                 About us
                             </Link>
                         </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <Link to="/user/chat" className={navigationMenuTriggerStyle()}>
+                                Chat
+                            </Link>
+                        </NavigationMenuItem>
                     </NavigationMenuList>
+
                 </NavigationMenu>
 
                 {/* User Section */}

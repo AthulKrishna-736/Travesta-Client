@@ -4,12 +4,21 @@ import { getChatMessages } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
 import { ReadReceiptPayload, SendMessagePayload, socket, SocketMessage, TypingPayload } from '@/utils/socket';
 import { showError } from '@/utils/customToast';
+import { getChatUsers } from '@/services/vendorService';
 
 export const useGetChatMessages = (userId: string, enabled: boolean) => {
     return useQuery({
         queryKey: ['chat-history', userId],
         queryFn: () => getChatMessages(userId),
         enabled,
+        staleTime: 60 * 1000,
+    });
+};
+
+export const useGetChattedUsers = () => {
+    return useQuery({
+        queryKey: ['vendor-chatted-users'],
+        queryFn: () => getChatUsers(),
         staleTime: 60 * 1000,
     });
 };

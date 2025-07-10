@@ -1,116 +1,121 @@
 import React, { useEffect, useState } from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
 import { SendMessagePayload } from '@/utils/socket';
 import Chat from '@/components/chat/Chat';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
 import { UserType } from '@/types/response.types';
-import { useGetChatMessages, useSocketChat } from '@/hooks/user/useChat';
-import { getUser } from '@/services/userService';
+import { getVendor } from '@/services/vendorService';
 import { useQueryClient } from '@tanstack/react-query';
+import { useGetChatMessages, useGetChattedUsers, useSocketChat } from '@/hooks/user/useChat';
+import Header from '@/components/vendor/Header';
+import Sidebar from '@/components/vendor/Sidebar';
 
-const UserChatPage: React.FC = () => {
+const VendorChatPage: React.FC = () => {
     const queryClient = useQueryClient();
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [msg, setMsg] = useState('');
-    const [selectedVendor, setSelectedVendor] = useState<UserType | null>(null);
-    const [currentUserId, setCurrentUserId] = useState<string>('');
+    const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+    const [currentVendorId, setCurrentVendorId] = useState<string>('');
 
-    const { data, isLoading } = useGetAllUsers(1, 20, 'vendor');
-    const vendors = data?.data || [];
+    const { data: chattedUsersResponse, isLoading } = useGetChattedUsers();
+    const users: UserType[] = Array.isArray(chattedUsersResponse?.data)
+        ? chattedUsersResponse.data.map((u: any) => ({
+            id: u.id ?? u._id,
+            firstName: u.firstName
+        }))
+        : [];
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const user = await getUser();
-            console.log('user: ', user);
-            setCurrentUserId(user.data.id);
+        const fetchVendor = async () => {
+            const vendor = await getVendor();
+            console.log('vendor: ', vendor)
+            if (vendor?.data?.id) {
+                setCurrentVendorId(vendor.data.id);
+            }
         };
-        fetchUser();
+        fetchVendor();
     }, []);
 
-    const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedVendor?.id);
-
-    const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
-
+    const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedUser?.id);
+    const { data: oldMessagesData } = useGetChatMessages(selectedUser?.id || '', !!selectedUser);
     const oldMessages = oldMessagesData?.data || [];
     const combinedMessages = [...oldMessages, ...liveMessages];
 
+    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+
     const handleTyping = () => {
-        if (selectedVendor) {
-            sendTyping(selectedVendor.id, 'vendor');
+        if (selectedUser) {
+            sendTyping(selectedUser.id, 'user');
         }
     };
 
     useEffect(() => {
-        if (selectedVendor && combinedMessages.length > 0) {
+        if (selectedUser && combinedMessages.length > 0) {
             const lastMsg = combinedMessages[combinedMessages.length - 1];
             if (
                 lastMsg &&
                 !lastMsg.isRead &&
-                lastMsg.toId === currentUserId &&
+                lastMsg.toId === currentVendorId &&
                 lastMsg._id
             ) {
                 sendReadReceipt(lastMsg._id, lastMsg.fromId, lastMsg.fromRole);
             }
         }
-    }, [selectedVendor, combinedMessages, currentUserId]);
+    }, [selectedUser, combinedMessages, currentVendorId]);
 
     const handleSend = () => {
-        if (msg.trim() && selectedVendor) {
+        if (msg.trim() && selectedUser && currentVendorId) {
             const payload: SendMessagePayload = {
-                toId: selectedVendor.id,
-                toRole: 'vendor',
+                toId: selectedUser.id,
+                toRole: 'user',
                 message: msg.trim(),
             };
             sendMessage(payload);
             setMsg('');
-
-            queryClient.invalidateQueries({
-                queryKey: ['chat-history', selectedVendor.id],
-            });
+            queryClient.invalidateQueries({ queryKey: ['chat-history', selectedUser.id] });
         }
     };
 
+
     return (
-        <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-grow bg-gray-50">
-                <div className="container mx-auto px-4 py-6 max-w-6xl">
+        <div className="min-h-screen bg-background flex flex-col">
+            <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+            <div className="flex flex-1 overflow-hidden mt-16">
+                <Sidebar isOpen={sidebarOpen} />
+                <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}>
                     <div className="grid grid-cols-12 gap-6 h-[70vh]">
+                        {/* Left Sidebar: User List */}
                         <Card className="col-span-4 flex flex-col">
                             <div className="p-4 border-b">
-                                <Input placeholder="Search vendors..." />
+                                <Input placeholder="Search users..." />
                             </div>
                             <ScrollArea className="flex-grow px-2">
                                 {isLoading ? (
-                                    <div className="p-4 text-sm text-gray-500">Loading vendors...</div>
-                                ) : vendors.length === 0 ? (
-                                    <div className="p-4 text-sm text-gray-500">No vendors found.</div>
+                                    <div className="p-4 text-sm text-gray-500">Loading users...</div>
+                                ) : users.length === 0 ? (
+                                    <div className="p-4 text-sm text-gray-500">No users have chatted yet.</div>
                                 ) : (
-                                    vendors.map((vendor) => (
+                                    users.map((user) => (
                                         <div
-                                            key={vendor.id}
-                                            onClick={() => setSelectedVendor(vendor)}
-                                            className={`p-3 my-1 cursor-pointer rounded-md hover:bg-gray-100 ${selectedVendor?.id === vendor.id
-                                                ? 'bg-gray-100 font-semibold'
-                                                : ''
-                                                }`}
+                                            key={user.id}
+                                            onClick={() => setSelectedUser(user)}
+                                            className={`p-3 my-1 cursor-pointer rounded-md hover:bg-gray-100 ${selectedUser?.id === user.id ? 'bg-gray-100 font-semibold' : ''}`}
                                         >
-                                            {vendor.firstName}
+                                            {user.firstName}
                                         </div>
                                     ))
                                 )}
                             </ScrollArea>
                         </Card>
 
+                        {/* Chat Panel */}
                         <Card className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden">
                             <div className="px-4 py-2 border-b font-bold text-traveste-700 bg-violet-500 text-white">
-                                {selectedVendor?.firstName || 'Select a vendor to chat'}
+                                {selectedUser?.firstName || 'Select a user to chat'}
                             </div>
                             <CardContent className="flex-grow flex flex-col p-0 overflow-hidden">
-                                {selectedVendor ? (
+                                {selectedUser ? (
                                     <>
                                         {combinedMessages.length === 0 && (
                                             <div className="flex-grow flex items-center justify-center text-gray-400 text-sm">
@@ -124,22 +129,21 @@ const UserChatPage: React.FC = () => {
                                             handleSend={handleSend}
                                             handleTyping={handleTyping}
                                             typingStatus={typingStatus}
-                                            currentUserId={currentUserId}
+                                            currentUserId={currentVendorId}
                                         />
                                     </>
                                 ) : (
                                     <div className="flex-grow flex items-center justify-center text-gray-400 text-sm">
-                                        Select a vendor to start chatting
+                                        Select a user to start chatting
                                     </div>
                                 )}
                             </CardContent>
                         </Card>
                     </div>
-                </div>
-            </main>
-            <Footer />
+                </main>
+            </div>
         </div>
     );
 };
 
-export default UserChatPage;
+export default VendorChatPage;
