@@ -86,23 +86,28 @@ const VendorChatPage: React.FC = () => {
                 <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}>
                     <div className="grid grid-cols-12 gap-6 h-[70vh]">
                         {/* Left Sidebar: User List */}
-                        <Card className="col-span-4 flex flex-col">
+                        <Card className="col-span-4 flex flex-col bg-[#402e57] text-white">
                             <div className="p-4 border-b">
-                                <Input placeholder="Search users..." />
+                                <Input placeholder="Search users..." className='bg-white text-black'/>
                             </div>
                             <ScrollArea className="flex-grow px-2">
                                 {isLoading ? (
                                     <div className="p-4 text-sm text-gray-500">Loading users...</div>
                                 ) : users.length === 0 ? (
-                                    <div className="p-4 text-sm text-gray-500">No users have chatted yet.</div>
+                                    <div className="p-4 text-sm text-gray-500">No users have messaged yet.</div>
                                 ) : (
                                     users.map((user) => (
                                         <div
                                             key={user.id}
                                             onClick={() => setSelectedUser(user)}
-                                            className={`p-3 my-1 cursor-pointer rounded-md hover:bg-gray-100 ${selectedUser?.id === user.id ? 'bg-gray-100 font-semibold' : ''}`}
+                                            className={`p-3 my-1 cursor-pointer rounded-md flex items-center gap-3 hover:bg-[#4e3c69] transition ${selectedUser?.id === user.id ? 'bg-[#4e3c69] font-semibold' : ''
+                                                }`}
                                         >
-                                            {user.firstName}
+                                            {/* Profile Picture Placeholder */}
+                                            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm text-gray-700">
+                                                {user.firstName?.charAt(0).toUpperCase()}
+                                            </div>
+                                            <span className="text-white">{user.firstName}</span>
                                         </div>
                                     ))
                                 )}
@@ -110,8 +115,8 @@ const VendorChatPage: React.FC = () => {
                         </Card>
 
                         {/* Chat Panel */}
-                        <Card className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden">
-                            <div className="px-4 py-2 border-b font-bold text-traveste-700 bg-violet-500 text-white">
+                        <Card className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden p-0 gap-0">
+                            <div className="m-0 px-4 py-3 border-b font-bold bg-[#402e57] text-white">
                                 {selectedUser?.firstName || 'Select a user to chat'}
                             </div>
                             <CardContent className="flex-grow flex flex-col p-0 overflow-hidden">
