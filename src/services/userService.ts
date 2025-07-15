@@ -1,3 +1,4 @@
+import { TResponseChat } from "@/types/chat.types";
 import { axiosInstance } from "./axiosInstance"
 
 
@@ -13,7 +14,7 @@ export const updateUser = async (formData: FormData) => {
     return response.data;
 };
 
-export const getChatMessages = async (userId: string) => {
-    const { data } = await axiosInstance.get(`/users/chat/${userId}`);
-    return data;
+export const getChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
+    const response = await axiosInstance.get(`/users/chat/${userId}`);
+    return response.data?.data;
 };

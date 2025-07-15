@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { TRoles } from '@/types/Auth.Types';
 import { getChatMessages } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
-import { ReadReceiptPayload, SendMessagePayload, socket, SocketMessage, TypingPayload } from '@/utils/socket';
+import { socket } from '@/utils/socket';
 import { showError } from '@/utils/customToast';
 import { getChatUsers } from '@/services/vendorService';
+import { IChat, ReadReceiptPayload, SendMessagePayload, TypingPayload } from '@/types/chat.types';
 
 export const useGetChatMessages = (userId: string, enabled: boolean) => {
     return useQuery({
@@ -25,13 +26,13 @@ export const useGetChattedUsers = () => {
 
 
 export const useSocketChat = (selectedId?: string) => {
-    const [messages, setMessages] = useState<SocketMessage[]>([]);
+    const [messages, setMessages] = useState<IChat[]>([]);
     const [typingStatus, setTypingStatus] = useState(false);
     const isConnected = useRef(false);
 
     useEffect(() => {
         if (!isConnected.current) {
-            socket.on("receive_message", (data: SocketMessage) => {
+            socket.on("receive_message", (data: IChat) => {
                 setMessages((prev) => [...prev, data]);
             });
 

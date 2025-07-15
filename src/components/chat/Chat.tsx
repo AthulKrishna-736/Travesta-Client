@@ -1,20 +1,12 @@
-import { SocketMessage } from '@/utils/socket';
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { IChatProps } from '@/types/chat.types';
+import { Check } from 'lucide-react';
 
-interface ChatProps {
-    msg: string;
-    setMsg: (msg: string) => void;
-    messages: SocketMessage[];
-    handleSend: () => void;
-    handleTyping: () => void;
-    typingStatus: boolean;
-    currentUserId: string;
-}
 
-const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
+const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -48,7 +40,29 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
                                         }`}
                                     style={{ maxWidth: '40%' }}
                                 >
-                                    <p>{m.message}</p>
+                                    <p className="text-sm">{m.message}</p>
+
+                                    <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
+                                        <span className="text-xs">
+                                            {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
+
+                                        {isSender(m.fromId) && (
+                                            <span className="flex items-center gap-[2px]">
+                                                <Check
+                                                    size={12}
+                                                    className={m.isRead ? 'text-white' : 'text-gray-300'}
+                                                />
+                                                {m.isRead && (
+                                                    <Check
+                                                        size={12}
+                                                        className={m.isRead ? 'text-white' : 'text-gray-300'}
+                                                    />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
                         );
