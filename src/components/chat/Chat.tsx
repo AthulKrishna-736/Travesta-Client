@@ -44,7 +44,12 @@ const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleT
 
                                     <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
                                         <span className="text-xs">
-                                            {new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            {new Date(m.timestamp).toLocaleString([], {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
                                         </span>
 
                                         {isSender(m.fromId) && (

@@ -13,10 +13,17 @@ const VendorChatPage: React.FC = () => {
     const queryClient = useQueryClient();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [msg, setMsg] = useState('');
-    const [selectedUser, setSelectedUser] = useState<Pick<User, 'id' | 'firstName'> | null>(null);
+    const [selectedUser, setSelectedUser] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
     const currentVendorId = useSelector((state: RootState) => state.vendor.vendor?.id);
+    const [searchText, setSearchText] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 
-    const { data: chattedUsersResponse, isLoading } = useGetChattedUsers();
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearch(searchText), 400);
+        return () => clearTimeout(handler);
+    }, [searchText]);
+
+    const { data: chattedUsersResponse, isLoading } = useGetChattedUsers(debouncedSearch);
     const users = chattedUsersResponse || []
 
     const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedUser?.id);
@@ -33,7 +40,7 @@ const VendorChatPage: React.FC = () => {
 
     const handleTyping = () => {
         if (selectedUser) {
-            sendTyping(selectedUser.id, 'user');
+            sendTyping(selectedUser.id, selectedUser.role);
         }
     };
 
@@ -50,7 +57,7 @@ const VendorChatPage: React.FC = () => {
         if (msg.trim() && selectedUser && currentVendorId) {
             const payload: SendMessagePayload = {
                 toId: selectedUser.id,
-                toRole: 'user',
+                toRole: selectedUser.role,
                 message: msg.trim(),
             };
             sendMessage(payload);
@@ -78,6 +85,8 @@ const VendorChatPage: React.FC = () => {
                         typingStatus={typingStatus}
                         currentUserId={currentVendorId}
                         combinedMessages={combinedMessages}
+                        searchText={searchText}
+                        setSearchText={setSearchText}
                     />
                 </main>
             </div>

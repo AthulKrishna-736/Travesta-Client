@@ -1,4 +1,5 @@
 import AdminAmenities from '@/pages/admin/AdminAmenities'
+import AdminChatPage from '@/pages/admin/AdminChatPage'
 import AdminDash from '@/pages/admin/AdminDash'
 import AdminLoginPage from '@/pages/admin/AdminLoginPage'
 import AdminUsers from '@/pages/admin/AdminUsers'
@@ -40,6 +41,13 @@ const AdminRoutes: React.FC = () => {
       <Route path='amenities' element={
         <ProtectedAdmin>
           <AdminAmenities />
+        </ProtectedAdmin>
+      }
+      />
+
+      <Route path='chat' element={
+        <ProtectedAdmin>
+          <AdminChatPage />
         </ProtectedAdmin>
       }
       />

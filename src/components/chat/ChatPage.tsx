@@ -17,14 +17,21 @@ const ChatPage: React.FC<IChatPageProps> = ({
     handleTyping,
     typingStatus,
     currentUserId,
-    combinedMessages }) => {
+    combinedMessages,
+    searchText,
+    setSearchText }) => {
 
     return (
         <div className="grid grid-cols-12 gap-6 h-[70vh]">
             {/* Left Sidebar: User List */}
             <Card className="col-span-4 flex flex-col bg-[#402e57] text-white">
                 <div className="p-4 border-b">
-                    <Input placeholder="Search users..." className='bg-white text-black' />
+                    <Input
+                        placeholder="Search users..."
+                        className="bg-white text-black"
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                    />
                 </div>
                 <ScrollArea className="flex-grow px-2">
                     {isLoading ? (
@@ -43,7 +50,14 @@ const ChatPage: React.FC<IChatPageProps> = ({
                                 <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm text-gray-700">
                                     {user.firstName?.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="text-white">{user.firstName}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-white">{user.firstName}</span>
+                                    {user.role === 'admin' && (
+                                        <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-full">
+                                            Admin
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         ))
                     )}

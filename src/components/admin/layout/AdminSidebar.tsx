@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { Calendar, CalendarCheck, DollarSign, Layers, LayoutDashboard, Tag, Users } from "lucide-react"
+import { Calendar, CalendarCheck, DollarSign, Layers, LayoutDashboard, MessageSquare, Tag, Users } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
@@ -36,6 +36,12 @@ export function AdminSidebar() {
             icon: Layers,
             href: "/admin/amenities",
             isActive: pathname === "/admin/amenities",
+        },
+        {
+            title: "Messages",
+            icon: MessageSquare,
+            href: "/admin/chat",
+            isActive: pathname === "/admin/chat",
         },
     ]
 
@@ -111,10 +117,10 @@ export function AdminSidebar() {
                     <div className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
                             <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
-                            <AvatarFallback>AD</AvatarFallback>
+                            <AvatarFallback>{admin?.firstName.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className="text-sm font-medium">{admin?.name}</p>
+                            <p className="text-sm font-medium">{admin?.firstName}</p>
                             <p className="text-xs text-muted-foreground">{admin?.email}</p>
                         </div>
                     </div>

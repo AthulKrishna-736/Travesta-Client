@@ -21,16 +21,18 @@ export type TResponseChat = IChat;
 //component props and types
 export interface IChatPageProps {
     isLoading: boolean;
-    users: Pick<User, 'id' | 'firstName'>[];
-    setSelectedUser: (data: Pick<User, 'id' | 'firstName'>) => void;
-    selectedUser: Pick<User, 'id' | 'firstName'>;
+    users: Pick<User, 'id' | 'firstName' | 'role'>[];
+    setSelectedUser: (data: Pick<User, 'id' | 'firstName' | 'role'>) => void;
+    selectedUser: Pick<User, 'id' | 'firstName' | 'role'>;
     msg: string;
     setMsg: (data: string) => void;
     handleSend: () => void;
     handleTyping: () => void;
     typingStatus: boolean;
     currentUserId: string;
-    combinedMessages: IChat[]
+    combinedMessages: IChat[];
+    searchText: string;
+    setSearchText: (data: string) => void;
 }
 
 export interface IChatProps {

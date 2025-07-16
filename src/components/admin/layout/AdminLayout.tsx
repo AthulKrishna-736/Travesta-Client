@@ -6,10 +6,12 @@ import { AdminSidebar } from "./AdminSidebar"
 import { useLogout } from "@/hooks/auth/useLogout"
 import React from "react"
 import { AdminLayoutProps } from "@/types/component.types"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-
+  const adminName = useSelector((state: RootState) => state.admin.admin?.firstName)
   const { mutate: logout } = useLogout('admin')
 
   return (
@@ -31,7 +33,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                     <Button variant="ghost" size="icon" className="rounded-full">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
-                        <AvatarFallback>AD</AvatarFallback>
+                        <AvatarFallback>{adminName.charAt(0)}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>

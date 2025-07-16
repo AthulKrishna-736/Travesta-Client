@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
-import { useGetAllUsers } from '@/hooks/admin/useGetAllUsers';
-import { useGetChatMessages, useSocketChat } from '@/hooks/user/useChat';
+import { useGetChatMessages, useGetChattedVendors, useSocketChat } from '@/hooks/user/useChat';
 import { useQueryClient } from '@tanstack/react-query';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
@@ -13,11 +12,18 @@ import { RootState } from '@/store/store';
 const UserChatPage: React.FC = () => {
     const queryClient = useQueryClient();
     const [msg, setMsg] = useState('');
-    const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName'> | null>(null);
+    const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
     const currentUserId = useSelector((state: RootState) => state.auth.user?.id)
+    const [searchText, setSearchText] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 
-    const { data, isLoading } = useGetAllUsers(1, 20, 'vendor');
-    const vendors = data?.data || [];
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearch(searchText), 400);
+        return () => clearTimeout(handler);
+    }, [searchText]);
+
+    const { data: chattedVendorsResponse, isLoading } = useGetChattedVendors(debouncedSearch);
+    const vendors = chattedVendorsResponse || [];
 
     const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedVendor?.id);
     const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
@@ -77,6 +83,8 @@ const UserChatPage: React.FC = () => {
                         typingStatus={typingStatus}
                         currentUserId={currentUserId}
                         combinedMessages={combinedMessages}
+                        searchText={searchText}
+                        setSearchText={setSearchText}
                     />
                 </div>
             </main>
