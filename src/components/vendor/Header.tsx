@@ -1,14 +1,7 @@
 import { Bell, Menu, ChevronDown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
 import { useLogout } from '@/hooks/auth/useLogout';
@@ -22,7 +15,7 @@ interface HeaderProps {
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
     const navigate = useNavigate()
-    const profileImage = useSelector((state: RootState) => state.vendor.vendor.profileImage)
+    const vendor = useSelector((state: RootState) => state.vendor.vendor)
 
     const { mutate: logoutVendor } = useLogout('vendor')
 
@@ -55,11 +48,11 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                                <AvatarImage src={profileImage} />
+                                <AvatarImage src={vendor?.profileImage} />
                                 <AvatarFallback>VH</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col items-start text-sm">
-                                <span className="font-medium">Coastal Resort</span>
+                                <span className="font-medium">Hello, {vendor?.firstName}</span>
                                 <span className="text-xs text-muted-foreground">Hotel Manager</span>
                             </div>
                             <ChevronDown className="h-4 w-4 ml-1 text-gray-500" />

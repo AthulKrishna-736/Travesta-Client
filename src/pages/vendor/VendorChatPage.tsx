@@ -1,74 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { SendMessagePayload } from '@/utils/socket';
-import Chat from '@/components/chat/Chat';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { UserType } from '@/types/response.types';
-import { getVendor } from '@/services/vendorService';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetChatMessages, useGetChattedUsers, useSocketChat } from '@/hooks/user/useChat';
 import Header from '@/components/vendor/Header';
 import Sidebar from '@/components/vendor/Sidebar';
+import { SendMessagePayload } from '@/types/chat.types';
+import ChatPage from '@/components/chat/ChatPage';
+import { User } from '@/types/user.types';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 const VendorChatPage: React.FC = () => {
     const queryClient = useQueryClient();
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [msg, setMsg] = useState('');
-    const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
-    const [currentVendorId, setCurrentVendorId] = useState<string>('');
-
-    const { data: chattedUsersResponse, isLoading } = useGetChattedUsers();
-    const users: UserType[] = Array.isArray(chattedUsersResponse?.data)
-        ? chattedUsersResponse.data.map((u: any) => ({
-            id: u.id ?? u._id,
-            firstName: u.firstName
-        }))
-        : [];
+    const [selectedUser, setSelectedUser] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
+    const currentVendorId = useSelector((state: RootState) => state.vendor.vendor?.id);
+    const [searchText, setSearchText] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 
     useEffect(() => {
-        const fetchVendor = async () => {
-            const vendor = await getVendor();
-            console.log('vendor: ', vendor)
-            if (vendor?.data?.id) {
-                setCurrentVendorId(vendor.data.id);
-            }
-        };
-        fetchVendor();
-    }, []);
+        const handler = setTimeout(() => setDebouncedSearch(searchText), 400);
+        return () => clearTimeout(handler);
+    }, [searchText]);
 
-    const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedUser?.id);
+    const { data: chattedUsersResponse, isLoading } = useGetChattedUsers(debouncedSearch);
+    const users = chattedUsersResponse || []
+
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus } = useSocketChat(selectedUser?.id);
     const { data: oldMessagesData } = useGetChatMessages(selectedUser?.id || '', !!selectedUser);
-    const oldMessages = oldMessagesData?.data || [];
-    const combinedMessages = [...oldMessages, ...liveMessages];
+    const oldMessages = oldMessagesData || [];
+    const combinedMessages = [
+        ...oldMessages,
+        ...liveMessages.filter(
+            (liveMsg) => !oldMessages.some((oldMsg) => oldMsg._id === liveMsg._id)
+        ),
+    ];
 
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
     const handleTyping = () => {
         if (selectedUser) {
-            sendTyping(selectedUser.id, 'user');
+            sendTyping(selectedUser.id, selectedUser.role);
         }
     };
-
-    useEffect(() => {
-        if (selectedUser && combinedMessages.length > 0) {
-            const lastMsg = combinedMessages[combinedMessages.length - 1];
-            if (
-                lastMsg &&
-                !lastMsg.isRead &&
-                lastMsg.toId === currentVendorId &&
-                lastMsg._id
-            ) {
-                sendReadReceipt(lastMsg._id, lastMsg.fromId, lastMsg.fromRole);
-            }
-        }
-    }, [selectedUser, combinedMessages, currentVendorId]);
 
     const handleSend = () => {
         if (msg.trim() && selectedUser && currentVendorId) {
             const payload: SendMessagePayload = {
                 toId: selectedUser.id,
-                toRole: 'user',
+                toRole: selectedUser.role,
                 message: msg.trim(),
             };
             sendMessage(payload);
@@ -84,62 +64,21 @@ const VendorChatPage: React.FC = () => {
             <div className="flex flex-1 overflow-hidden mt-16">
                 <Sidebar isOpen={sidebarOpen} />
                 <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}>
-                    <div className="grid grid-cols-12 gap-6 h-[70vh]">
-                        {/* Left Sidebar: User List */}
-                        <Card className="col-span-4 flex flex-col">
-                            <div className="p-4 border-b">
-                                <Input placeholder="Search users..." />
-                            </div>
-                            <ScrollArea className="flex-grow px-2">
-                                {isLoading ? (
-                                    <div className="p-4 text-sm text-gray-500">Loading users...</div>
-                                ) : users.length === 0 ? (
-                                    <div className="p-4 text-sm text-gray-500">No users have chatted yet.</div>
-                                ) : (
-                                    users.map((user) => (
-                                        <div
-                                            key={user.id}
-                                            onClick={() => setSelectedUser(user)}
-                                            className={`p-3 my-1 cursor-pointer rounded-md hover:bg-gray-100 ${selectedUser?.id === user.id ? 'bg-gray-100 font-semibold' : ''}`}
-                                        >
-                                            {user.firstName}
-                                        </div>
-                                    ))
-                                )}
-                            </ScrollArea>
-                        </Card>
-
-                        {/* Chat Panel */}
-                        <Card className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden">
-                            <div className="px-4 py-2 border-b font-bold text-traveste-700 bg-violet-500 text-white">
-                                {selectedUser?.firstName || 'Select a user to chat'}
-                            </div>
-                            <CardContent className="flex-grow flex flex-col p-0 overflow-hidden">
-                                {selectedUser ? (
-                                    <>
-                                        {combinedMessages.length === 0 && (
-                                            <div className="flex-grow flex items-center justify-center text-gray-400 text-sm">
-                                                No messages yet. Say hello 👋
-                                            </div>
-                                        )}
-                                        <Chat
-                                            msg={msg}
-                                            setMsg={setMsg}
-                                            messages={combinedMessages}
-                                            handleSend={handleSend}
-                                            handleTyping={handleTyping}
-                                            typingStatus={typingStatus}
-                                            currentUserId={currentVendorId}
-                                        />
-                                    </>
-                                ) : (
-                                    <div className="flex-grow flex items-center justify-center text-gray-400 text-sm">
-                                        Select a user to start chatting
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </div>
+                    <ChatPage
+                        isLoading={isLoading}
+                        users={users}
+                        setSelectedUser={setSelectedUser}
+                        selectedUser={selectedUser!}
+                        msg={msg}
+                        setMsg={setMsg}
+                        handleSend={handleSend}
+                        handleTyping={handleTyping}
+                        typingStatus={typingStatus}
+                        currentUserId={currentVendorId}
+                        combinedMessages={combinedMessages}
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                    />
                 </main>
             </div>
         </div>

@@ -4,6 +4,7 @@ export type User = {
   id: string
   firstName: string
   lastName: string
+  role: TRoles
   email: string
   isBlocked: boolean
 }

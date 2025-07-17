@@ -1,10 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { TRoles } from '@/types/Auth.Types';
-import { getChatMessages } from '@/services/userService';
+import { getChatMessages, getChattedVendors } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
-import { ReadReceiptPayload, SendMessagePayload, socket, SocketMessage, TypingPayload } from '@/utils/socket';
+import { socket } from '@/utils/socket';
 import { showError } from '@/utils/customToast';
 import { getChatUsers } from '@/services/vendorService';
+import { IChat, ReadReceiptPayload, SendMessagePayload, TypingPayload } from '@/types/chat.types';
+import { getAdminChatVendors } from '@/services/adminService';
 
 export const useGetChatMessages = (userId: string, enabled: boolean) => {
     return useQuery({
@@ -15,23 +17,41 @@ export const useGetChatMessages = (userId: string, enabled: boolean) => {
     });
 };
 
-export const useGetChattedUsers = () => {
+export const useGetChattedUsers = (search: string) => {
     return useQuery({
-        queryKey: ['vendor-chatted-users'],
-        queryFn: () => getChatUsers(),
+        queryKey: ['vendor-chatted-users', search],
+        queryFn: () => getChatUsers(search),
         staleTime: 60 * 1000,
+        enabled: typeof search === 'string',
     });
 };
 
+export const useGetChattedVendors = (search: string) => {
+    return useQuery({
+        queryKey: ['user-chatted-vendors', search],
+        queryFn: () => getChattedVendors(search),
+        staleTime: 60 * 1000,
+        enabled: typeof search === 'string',
+    });
+};
+
+export const useGetVendorsChatAdmin = (search?: string) => {
+    return useQuery({
+        queryKey: ['admin-chatted-vendors', search],
+        queryFn: () => getAdminChatVendors(search),
+        staleTime: 60 * 1000,
+        enabled: typeof search === 'string',
+    });
+}
 
 export const useSocketChat = (selectedId?: string) => {
-    const [messages, setMessages] = useState<SocketMessage[]>([]);
+    const [messages, setMessages] = useState<IChat[]>([]);
     const [typingStatus, setTypingStatus] = useState(false);
     const isConnected = useRef(false);
 
     useEffect(() => {
         if (!isConnected.current) {
-            socket.on("receive_message", (data: SocketMessage) => {
+            socket.on("receive_message", (data: IChat) => {
                 setMessages((prev) => [...prev, data]);
             });
 
@@ -65,6 +85,14 @@ export const useSocketChat = (selectedId?: string) => {
             isConnected.current = false;
         };
     }, [selectedId]);
+
+    useEffect(() => {
+        messages.forEach((msg) => {
+            if (!msg.isRead && msg.fromId === selectedId) {
+                sendReadReceipt(msg._id, msg.fromId, msg.fromRole);
+            }
+        });
+    }, [selectedId, messages]);
 
     const sendMessage = (payload: SendMessagePayload) => {
         socket.emit("send_message", payload);

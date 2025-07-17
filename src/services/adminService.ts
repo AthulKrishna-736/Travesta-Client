@@ -2,6 +2,7 @@ import { GetAllUsersResponse, GetVendorsResponse } from "@/types/response.types"
 import { axiosInstance } from "./axiosInstance";
 import { TUpdateVendorReqValues } from "@/types/Auth.Types";
 import { TCreateAmenityData } from "@/types/component.types";
+import { User } from "@/types/user.types";
 
 
 export const getAllUsers = async (page = 1, limit = 10, role: string, search?: string): Promise<GetAllUsersResponse> => {
@@ -46,3 +47,10 @@ export const toggleBlockAmenity = async (amenityId: string) => {
     const response = await axiosInstance.patch(`/admin/amenities/${amenityId}/block-toggle`);
     return response.data;
 };
+
+export const getAdminChatVendors = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
+    const response = await axiosInstance.get('/admin/chat-vendors', {
+        params: { search },
+    })
+    return response.data?.data;
+}

@@ -1,20 +1,12 @@
-import { SocketMessage } from '@/utils/socket';
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
+import { IChatProps } from '@/types/chat.types';
+import { Check } from 'lucide-react';
 
-interface ChatProps {
-    msg: string;
-    setMsg: (msg: string) => void;
-    messages: SocketMessage[];
-    handleSend: () => void;
-    handleTyping: () => void;
-    typingStatus: boolean;
-    currentUserId: string;
-}
 
-const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
+const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
     const messageContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -22,16 +14,17 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
         if (container) {
             container.scrollTop = container.scrollHeight;
         }
-    }, [messages]);
+    }, [messages.length]);
+
 
     const isSender = (fromId: string) => String(fromId) === String(currentUserId);
 
     return (
         <div className="flex flex-col flex-grow overflow-hidden">
-            <div className="flex-grow overflow-y-auto bg-gray-50 p-4 space-y-4">
+            <div className="flex-grow overflow-y-auto bg-[#f1edf7] p-4 space-y-4">
                 <div
                     ref={messageContainerRef}
-                    className="flex-grow overflow-y-auto bg-gray-50 p-4 space-y-4"
+                    className="flex-grow overflow-y-auto bg-[#f1edf7] p-4 space-y-4"
                 >
                     {messages.map((m, i) => {
                         const sent = isSender(m.fromId);
@@ -47,19 +40,50 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
                                         }`}
                                     style={{ maxWidth: '40%' }}
                                 >
-                                    <p>{m.message}</p>
+                                    <p className="text-sm">{m.message}</p>
+
+                                    <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
+                                        <span className="text-xs">
+                                            {new Date(m.timestamp).toLocaleString([], {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </span>
+
+                                        {isSender(m.fromId) && (
+                                            <span className="flex items-center gap-[2px]">
+                                                <Check
+                                                    size={12}
+                                                    className={m.isRead ? 'text-white' : 'text-gray-300'}
+                                                />
+                                                {m.isRead && (
+                                                    <Check
+                                                        size={12}
+                                                        className={m.isRead ? 'text-white' : 'text-gray-300'}
+                                                    />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
                         );
                     })}
 
                     {typingStatus && (
-                        <div className="text-sm text-gray-400 italic">Typing...</div>
+                        <div className="flex justify-start">
+                            <div className="inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap bg-white text-gray-400 border border-gray-200 rounded-bl-none italic">
+                                Typing...
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
 
-            <div className="border-t bg-white p-3 flex gap-2 items-center">
+            <div className="border-t bg-[#402e57] p-3 flex gap-2 items-center">
                 <Input
                     value={msg}
                     onChange={(e) => {
@@ -67,7 +91,7 @@ const Chat: React.FC<ChatProps> = ({ msg, setMsg, messages, handleSend, handleTy
                         handleTyping();
                     }}
                     placeholder="Type your message..."
-                    className="flex-1 bg-gray-100 focus:bg-white focus:ring-2 focus:ring-traveste-600"
+                    className="flex-1 bg-gray-100 focus:ring-2 focus:ring-traveste-600"
                     onKeyUp={(e) => {
                         if (e.key === 'Enter') handleSend();
                     }}
