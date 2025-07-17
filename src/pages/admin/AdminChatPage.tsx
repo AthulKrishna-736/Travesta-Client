@@ -22,7 +22,7 @@ const AdminChatPage: React.FC = () => {
     }, [searchText]);
 
     const { data: vendors, isLoading } = useGetVendorsChatAdmin(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedVendor?.id);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus } = useSocketChat(selectedVendor?.id);
     const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
     const oldMessages = oldMessagesData || [];
 
@@ -49,15 +49,6 @@ const AdminChatPage: React.FC = () => {
             queryClient.invalidateQueries({ queryKey: ['chat-history', selectedVendor.id] });
         }
     };
-
-    useEffect(() => {
-        if (selectedVendor && combinedMessages.length > 0) {
-            const lastMsg = combinedMessages[combinedMessages.length - 1];
-            if (lastMsg && !lastMsg.isRead && lastMsg.toId === adminId && lastMsg._id) {
-                sendReadReceipt(lastMsg._id, lastMsg.fromId, lastMsg.fromRole);
-            }
-        }
-    }, [selectedVendor, combinedMessages, adminId]);
 
     return (
         <AdminLayout>

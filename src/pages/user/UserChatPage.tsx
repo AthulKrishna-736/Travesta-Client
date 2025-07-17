@@ -25,7 +25,7 @@ const UserChatPage: React.FC = () => {
     const { data: chattedVendorsResponse, isLoading } = useGetChattedVendors(debouncedSearch);
     const vendors = chattedVendorsResponse || [];
 
-    const { messages: liveMessages, sendMessage, sendTyping, sendReadReceipt, typingStatus } = useSocketChat(selectedVendor?.id);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus } = useSocketChat(selectedVendor?.id);
     const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
     const oldMessages = oldMessagesData || [];
     const combinedMessages = [
@@ -40,15 +40,6 @@ const UserChatPage: React.FC = () => {
             sendTyping(selectedVendor.id, 'vendor');
         }
     };
-
-    useEffect(() => {
-        if (selectedVendor && combinedMessages.length > 0) {
-            const lastMsg = combinedMessages[combinedMessages.length - 1];
-            if (lastMsg && !lastMsg.isRead && lastMsg.toId === currentUserId && lastMsg._id) {
-                sendReadReceipt(lastMsg._id, lastMsg.fromId, lastMsg.fromRole);
-            }
-        }
-    }, [selectedVendor, combinedMessages, currentUserId]);
 
     const handleSend = () => {
         if (msg.trim() && selectedVendor) {

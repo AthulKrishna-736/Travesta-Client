@@ -22,7 +22,7 @@ export const useGetChattedUsers = (search: string) => {
         queryKey: ['vendor-chatted-users', search],
         queryFn: () => getChatUsers(search),
         staleTime: 60 * 1000,
-        enabled: !!search || search === "",
+        enabled: typeof search === 'string',
     });
 };
 
@@ -31,7 +31,7 @@ export const useGetChattedVendors = (search: string) => {
         queryKey: ['user-chatted-vendors', search],
         queryFn: () => getChattedVendors(search),
         staleTime: 60 * 1000,
-        enabled: !!search || search === "",
+        enabled: typeof search === 'string',
     });
 };
 
@@ -40,8 +40,8 @@ export const useGetVendorsChatAdmin = (search?: string) => {
         queryKey: ['admin-chatted-vendors', search],
         queryFn: () => getAdminChatVendors(search),
         staleTime: 60 * 1000,
-        enabled: !!search || search === '',
-    })
+        enabled: typeof search === 'string',
+    });
 }
 
 export const useSocketChat = (selectedId?: string) => {
@@ -85,6 +85,14 @@ export const useSocketChat = (selectedId?: string) => {
             isConnected.current = false;
         };
     }, [selectedId]);
+
+    useEffect(() => {
+        messages.forEach((msg) => {
+            if (!msg.isRead && msg.fromId === selectedId) {
+                sendReadReceipt(msg._id, msg.fromId, msg.fromRole);
+            }
+        });
+    }, [selectedId, messages]);
 
     const sendMessage = (payload: SendMessagePayload) => {
         socket.emit("send_message", payload);
