@@ -14,7 +14,7 @@ export const useUpdateUser = () => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setUser(res.data.user))
+                // dispatch(setUser(res.data.user))
                 queryClient.invalidateQueries({ queryKey: ['user'] });
             } else {
                 showError(res.message || 'Something went wrong')
