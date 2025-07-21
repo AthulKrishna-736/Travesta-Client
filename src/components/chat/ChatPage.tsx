@@ -22,7 +22,7 @@ const ChatPage: React.FC<IChatPageProps> = ({
     setSearchText }) => {
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-[100vh] md:h-[80vh]">
+        <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-[120vh] md:h-[80vh]">
             {/* Left Sidebar: User List */}
             <Card className="col-span-4 flex flex-col bg-[#402e57] text-white">
                 <div className="p-4 border-b">

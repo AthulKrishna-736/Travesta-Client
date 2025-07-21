@@ -14,73 +14,67 @@ const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleT
         if (container) {
             container.scrollTop = container.scrollHeight;
         }
-    }, [messages.length]);
-
+    }, [messages]);
 
     const isSender = (fromId: string) => String(fromId) === String(currentUserId);
 
     return (
         <div className="flex flex-col flex-grow overflow-hidden">
-            <div className="flex-grow overflow-y-auto bg-[#f1edf7] p-4 space-y-4">
-                <div
-                    ref={messageContainerRef}
-                    className="flex-grow overflow-y-auto bg-[#f1edf7] p-4 space-y-4"
-                >
-                    {messages.map((m, i) => {
-                        const sent = isSender(m.fromId);
-                        return (
+            <div className="flex-grow overflow-y-auto bg-[#f1edf7] p-4 space-y-4" ref={messageContainerRef}>
+                {messages.map((m, i) => {
+                    const sent = isSender(m.fromId);
+                    return (
+                        <div
+                            key={i}
+                            className={`flex ${sent ? 'justify-end' : 'justify-start'}`}
+                        >
                             <div
-                                key={i}
-                                className={`flex ${sent ? 'justify-end' : 'justify-start'}`}
+                                className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${sent
+                                    ? 'bg-violet-600 text-white rounded-br-none'
+                                    : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
+                                    }`}
+                                style={{ maxWidth: '40%' }}
                             >
-                                <div
-                                    className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${sent
-                                        ? 'bg-violet-600 text-white rounded-br-none'
-                                        : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
-                                        }`}
-                                    style={{ maxWidth: '40%' }}
-                                >
-                                    <p className="text-sm">{m.message}</p>
+                                <p className="text-sm">{m.message}</p>
 
-                                    <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
-                                        <span className="text-xs">
-                                            {new Date(m.timestamp).toLocaleString([], {
-                                                day: '2-digit',
-                                                month: 'short',
-                                                hour: '2-digit',
-                                                minute: '2-digit'
-                                            })}
-                                        </span>
+                                <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
+                                    <span className="text-xs">
+                                        {new Date(m.timestamp).toLocaleString([], {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })}
+                                    </span>
 
-                                        {isSender(m.fromId) && (
-                                            <span className="flex items-center gap-[2px]">
+                                    {isSender(m.fromId) && (
+                                        <span className="flex items-center gap-[2px]">
+                                            <Check
+                                                size={12}
+                                                className={m.isRead ? 'text-white' : 'text-gray-300'}
+                                            />
+                                            {m.isRead && (
                                                 <Check
                                                     size={12}
                                                     className={m.isRead ? 'text-white' : 'text-gray-300'}
                                                 />
-                                                {m.isRead && (
-                                                    <Check
-                                                        size={12}
-                                                        className={m.isRead ? 'text-white' : 'text-gray-300'}
-                                                    />
-                                                )}
-                                            </span>
-                                        )}
-                                    </div>
-
+                                            )}
+                                        </span>
+                                    )}
                                 </div>
-                            </div>
-                        );
-                    })}
 
-                    {typingStatus && (
-                        <div className="flex justify-start">
-                            <div className="inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap bg-white text-gray-400 border border-gray-200 rounded-bl-none italic">
-                                Typing...
                             </div>
                         </div>
-                    )}
-                </div>
+                    );
+                })}
+
+                {typingStatus && (
+                    <div className="flex justify-start">
+                        <div className="inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap bg-white text-gray-400 border border-gray-200 rounded-bl-none italic">
+                            Typing...
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="border-t bg-[#402e57] p-3 flex gap-2 items-center">
