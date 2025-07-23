@@ -39,16 +39,22 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
                         ))}
                         {actions.length > 0 && (
                             <TableCell>
-                                {actions.map((action, i) => (
-                                    <Button
-                                        key={i}
-                                        variant={action.variant || 'default'}
-                                        onClick={() => action.onClick(row)}
-                                        className={`px-3 ${action.className || ''}`}
-                                    >
-                                        {action.label}
-                                    </Button>
-                                ))}
+                                {actions.map((action, i) => {
+                                    const Icon = typeof action.icon === "function" ? action.icon(row) : action.icon;
+
+                                    return (
+                                        <Button
+                                            key={i}
+                                            variant={action.variant || "default"}
+                                            onClick={() => action.onClick(row)}
+                                            className={`flex items-center gap-1 px-3 ${action.className || ""}`}
+                                        >
+                                            {Icon && React.createElement(Icon as any, { className: "w-4 h-4" })}
+                                            {action.showLabel !== false && <span>{action.label}</span>}
+                                        </Button>
+                                    );
+                                })}
+
                             </TableCell>
                         )}
                     </TableRow>

@@ -7,11 +7,14 @@ export interface AdminLayoutProps {
 }
 
 export type Action = {
-    label: string
-    onClick: (rowData: any) => void
-    variant?: "default" | "outline" | "ghost" | "link" | "destructive"
-    className?: string
-}
+    label: string;
+    onClick: (rowData: any) => void;
+    variant?: "default" | "outline" | "ghost" | "link" | "destructive";
+    className?: string;
+    showLabel?: boolean;
+    icon?: any;
+};
+
 
 export interface DataTableProps {
     columns: { key: string; label: string }[]

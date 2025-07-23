@@ -1,3 +1,4 @@
+import NotFound from '@/components/auth/Page404'
 import UserHotelPage from '@/pages/user/HotelPage'
 import UserChatPage from '@/pages/user/UserChatPage'
 import UserDashboard from '@/pages/user/UserDashboard'
@@ -13,6 +14,8 @@ import { Route, Routes } from 'react-router-dom'
 const UserRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path='*' element={<NotFound />} />
+
       <Route path='login' element={
         <ProtectGuest>
           <UserLoginPage />
