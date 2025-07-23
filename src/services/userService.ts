@@ -1,4 +1,6 @@
+import { TResponseChat } from "@/types/chat.types";
 import { axiosInstance } from "./axiosInstance"
+import { User } from "@/types/user.types";
 
 
 export const getUser = async () => {
@@ -25,3 +27,14 @@ export const getUserHotelById = async (hotelId: string) => {
     return response.data;
 };
 
+export const getChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
+    const response = await axiosInstance.get(`/users/chat/${userId}`);
+    return response.data?.data;
+};
+
+export const getChattedVendors = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
+    const response = await axiosInstance.get('/users/chat-vendors', {
+        params: { search }
+    })
+    return response.data?.data
+}

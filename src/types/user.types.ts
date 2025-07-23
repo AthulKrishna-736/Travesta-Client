@@ -4,6 +4,7 @@ export type User = {
   id: string
   firstName: string
   lastName: string
+  role: TRoles
   email: string
   isBlocked: boolean
 }
@@ -40,6 +41,7 @@ export type UpdateUser = {
   firstName: string
   lastName: string
   email: string
+  password: string
   phone: number
   isVerified: boolean
 }

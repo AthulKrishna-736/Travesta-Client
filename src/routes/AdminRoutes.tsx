@@ -1,4 +1,6 @@
+import NotFound from '@/components/auth/Page404'
 import AdminAmenities from '@/pages/admin/AdminAmenities'
+import AdminChatPage from '@/pages/admin/AdminChatPage'
 import AdminDash from '@/pages/admin/AdminDash'
 import AdminLoginPage from '@/pages/admin/AdminLoginPage'
 import AdminUsers from '@/pages/admin/AdminUsers'
@@ -11,6 +13,8 @@ import { Route, Routes } from 'react-router-dom'
 const AdminRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path='*' element={<NotFound />} />
+
       <Route path='login' element={
         <ProtectAdminGuest>
           <AdminLoginPage />
@@ -40,6 +44,13 @@ const AdminRoutes: React.FC = () => {
       <Route path='amenities' element={
         <ProtectedAdmin>
           <AdminAmenities />
+        </ProtectedAdmin>
+      }
+      />
+
+      <Route path='chat' element={
+        <ProtectedAdmin>
+          <AdminChatPage />
         </ProtectedAdmin>
       }
       />

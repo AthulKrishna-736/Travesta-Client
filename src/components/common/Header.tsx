@@ -11,7 +11,7 @@ import {
     navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Hotel, Search, Menu, Bell, LogOutIcon, X } from "lucide-react";
+import { Hotel, Search, Menu, LogOutIcon, X } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { useLogout } from '@/hooks/auth/useLogout';
 import { useSelector } from 'react-redux';
@@ -73,18 +73,17 @@ const Header = () => {
                                     About us
                                 </Link>
                             </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <Link to="/user/chat" className={navigationMenuTriggerStyle()}>
+                                    Chat
+                                </Link>
+                            </NavigationMenuItem>
                         </NavigationMenuList>
+
                     </NavigationMenu>
 
                     {/* User Section */}
                     <div className="flex items-center space-x-3">
-                        <Button variant="ghost" size="icon" className="relative">
-                            <span className="sr-only">Notifications</span>
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">
-                                2
-                            </div>
-                            <Bell className="h-5 w-5" />
-                        </Button>
 
                         <Link to="/user/profile">
                             <Avatar className="cursor-pointer">
@@ -97,11 +96,23 @@ const Header = () => {
                         <Button size="icon" variant="outline" className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                         </Button>
+                        {/* User Section */}
+                        <div className="flex items-center space-x-4">
+                            <Link to="/user/profile">
+                                <Avatar className="cursor-pointer">
+                                    <AvatarImage src={profileImage} alt="User" />
+                                    <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                            </Link>
+                            <Button size="icon" variant="outline" className="md:hidden">
+                                <Menu className="h-5 w-5" />
+                            </Button>
 
-                        {/* Logout (Desktop only) */}
-                        <Button variant="outline" size="sm" className="hidden md:inline-flex" onClick={handleLogout}>
-                            <LogOutIcon />
-                        </Button>
+                            {/* Logout (Desktop only) */}
+                            <Button variant="outline" size="sm" className="hidden md:inline-flex" onClick={handleLogout}>
+                                <LogOutIcon />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </header>

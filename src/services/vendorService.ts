@@ -1,4 +1,5 @@
 import { axiosInstance } from "./axiosInstance"
+import { User } from "@/types/user.types";
 
 export const getVendor = async () => {
     const response = await axiosInstance.get('/vendor/profile');
@@ -100,3 +101,11 @@ export const getAvailableRooms = async (page: number, limit: number, priceRange?
     return response.data;
 };
 
+
+
+export const getChatUsers = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
+    const response = await axiosInstance.get('/vendor/chat-users', {
+        params: { search },
+    });
+    return response.data?.data;
+}

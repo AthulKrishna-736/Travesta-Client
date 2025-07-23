@@ -1,4 +1,6 @@
+import NotFound from '@/components/auth/Page404'
 import UserHotelPage from '@/pages/user/HotelPage'
+import UserChatPage from '@/pages/user/UserChatPage'
 import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
 import UserHomePage from '@/pages/user/UserHomePage'
@@ -13,6 +15,8 @@ import { Route, Routes } from 'react-router-dom'
 const UserRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path='*' element={<NotFound />} />
+
       <Route path='login' element={
         <ProtectGuest>
           <UserLoginPage />
@@ -49,6 +53,12 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       }
       />
+
+      <Route path='chat' element={
+        <ProtectedUser>
+          <UserChatPage />
+        </ProtectedUser>
+      } />
 
       <Route path="hotels/:hotelId" element={<UserHotelDetailPage />} />
     </Routes>
