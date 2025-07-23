@@ -38,23 +38,24 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
                             </TableCell>
                         ))}
                         {actions.length > 0 && (
-                            <TableCell>
-                                {actions.map((action, i) => {
-                                    const Icon = typeof action.icon === "function" ? action.icon(row) : action.icon;
+                            <TableCell className="whitespace-nowrap">
+                                <div className="flex items-center space-x-2">
+                                    {actions.map((action, i) => {
+                                        const Icon = typeof action.icon === "function" ? action.icon(row) : action.icon;
 
-                                    return (
-                                        <Button
-                                            key={i}
-                                            variant={action.variant || "default"}
-                                            onClick={() => action.onClick(row)}
-                                            className={`flex items-center gap-1 px-3 ${action.className || ""}`}
-                                        >
-                                            {Icon && React.createElement(Icon as any, { className: "w-4 h-4" })}
-                                            {action.showLabel !== false && <span>{action.label}</span>}
-                                        </Button>
-                                    );
-                                })}
-
+                                        return (
+                                            <Button
+                                                key={i}
+                                                variant={action.variant || "default"}
+                                                onClick={() => action.onClick(row)}
+                                                className={`flex items-center gap-1 px-2 py-1 text-sm ${action.className || ""}`}
+                                            >
+                                                {Icon && React.createElement(Icon as any, { className: "w-4 h-4" })}
+                                                {action.showLabel !== false && <span>{action.label}</span>}
+                                            </Button>
+                                        );
+                                    })}
+                                </div>
                             </TableCell>
                         )}
                     </TableRow>
