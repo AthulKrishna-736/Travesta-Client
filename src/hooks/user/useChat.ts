@@ -3,7 +3,7 @@ import { TRoles } from '@/types/Auth.Types';
 import { getChatMessages, getChattedVendors } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
 import { socket } from '@/utils/socket';
-import { showError } from '@/utils/customToast';
+import { showError, showSuccess } from '@/utils/customToast';
 import { getChatUsers } from '@/services/vendorService';
 import { IChat, ReadReceiptPayload, SendMessagePayload, TypingPayload } from '@/types/chat.types';
 import { getAdminChatVendors } from '@/services/adminService';
@@ -52,7 +52,14 @@ export const useSocketChat = (selectedId?: string) => {
     useEffect(() => {
         if (!isConnected.current) {
             socket.on("receive_message", (data: IChat) => {
-                setMessages((prev) => [...prev, data]);
+                if (
+                    data.fromId === selectedId ||
+                    data.toId === selectedId
+                ) {
+                    setMessages((prev) => [...prev, data]);
+                } else {
+                    showSuccess(`New message from user someone`);
+                }
             });
 
             socket.on("typing", (data: TypingPayload) => {

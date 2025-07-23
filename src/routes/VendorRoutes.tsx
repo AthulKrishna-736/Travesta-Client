@@ -1,3 +1,4 @@
+import NotFound from '@/components/auth/Page404'
 import VendorChatPage from '@/pages/vendor/VendorChatPage'
 import VendorDashboard from '@/pages/vendor/VendorDash'
 import VendorForgotPassPage from '@/pages/vendor/VendorForgotPassPage'
@@ -13,6 +14,9 @@ import { Route, Routes } from 'react-router-dom'
 const VendorRoutes: React.FC = () => {
     return (
         <Routes>
+            <Route path='*' element={<NotFound />} />
+
+
             <Route path='login' element={
                 <ProtectGuestVendor>
                     <VendorLoginPage />

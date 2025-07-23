@@ -36,6 +36,14 @@ const VendorChatPage: React.FC = () => {
         ),
     ];
 
+    useEffect(() => {
+        if (selectedUser?.id) {
+            queryClient.invalidateQueries({
+                queryKey: ['chat-history', selectedUser.id],
+            });
+        }
+    }, [selectedUser?.id, queryClient]);
+
     const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
     const handleTyping = () => {

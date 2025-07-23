@@ -4,50 +4,48 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, Edit, X } from "lucide-react";
+import { Edit } from "lucide-react";
 import { ProfileSectionProps, UpdateUserFormValues } from "@/types/component.types";
 import { validationSchema } from "@/utils/validations/commonValidation";
 
-
-export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
+const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const [initialValues, setInitialValues] = useState<UpdateUserFormValues>({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        id: user.id,
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        phone: 0,
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         setInitialValues({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            phone: user.phone,
-            id: user.id,
+            firstName: user.firstName || "",
+            lastName: user.lastName || "",
+            email: user.email || "",
+            password: user.password || "",
+            phone: user.phone || 0,
         });
     }, [user]);
 
     const handleSave = (values: UpdateUserFormValues) => {
-        const updatedUser = {
-            ...values,
-            phone: values.phone,
-        };
-        onUpdate(updatedUser);
+        const { firstName, lastName, phone, password } = values;
+        onUpdate({ firstName, lastName, password, phone });
         setIsEditing(false);
     };
 
     return (
-        <Card className="animate-fade-in">
+        <Card className="animate-fade-in bg-yellow-50 border border-yellow-100">
             <CardHeader className="flex items-center justify-between pb-2">
                 <div className="flex items-center gap-3">
                     <CardTitle>Personal Information</CardTitle>
                     <span
-                        className={`text-xs px-2 py-1 rounded-full ${user.isVerified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                        className={`text-xs px-2 py-1 rounded-full ${user.isVerified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                            }`}
                     >
-                        {user.isVerified ? 'Verified' : 'Unverified'}
+                        {user.isVerified ? "Verified" : "Unverified"}
                     </span>
                 </div>
 
@@ -65,13 +63,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
             </CardHeader>
 
             <CardContent>
-                <Formik<UpdateUserFormValues>
+                <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
                     onSubmit={handleSave}
                     enableReinitialize
                 >
-                    {({ values, handleChange, handleReset, isSubmitting }) => (
+                    {({ values, handleChange, handleReset }) => (
                         <Form>
                             <div className="grid gap-4 md:grid-cols-2">
                                 {/* First Name */}
@@ -124,12 +122,45 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
                                     )}
                                 </div>
 
-                                {/* Email */}
+                                {/* Email - always non-editable */}
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
                                     <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
                                         {user.email}
                                     </div>
+                                </div>
+
+                                {/* Password */}
+                                <div className="grid gap-2 relative">
+                                    <Label htmlFor="password">Password</Label>
+                                    {isEditing ? (
+                                        <>
+                                            <Input
+                                                id="password"
+                                                name="password"
+                                                type={showPassword ? "text" : "password"}
+                                                value={values.password}
+                                                onChange={handleChange}
+                                                className="h-9 pr-10"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword((prev) => !prev)}
+                                                className="absolute right-2 top-[30px] text-sm text-muted-foreground hover:underline"
+                                            >
+                                                {showPassword ? "Hide" : "Show"}
+                                            </button>
+                                            <ErrorMessage
+                                                name="password"
+                                                component="div"
+                                                className="text-sm text-red-500"
+                                            />
+                                        </>
+                                    ) : (
+                                        <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3 text-muted-foreground">
+                                            ********
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Phone */}
@@ -164,25 +195,22 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="h-8 w-8 p-0 text-destructive"
+                                        className="text-destructive"
                                         type="button"
                                         onClick={() => {
                                             handleReset();
                                             setIsEditing(false);
                                         }}
                                     >
-                                        <X className="h-4 w-4" />
-                                        <span className="sr-only">Cancel</span>
+                                        Cancel
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="h-8 w-8 p-0 text-green-500"
+                                        className="text-green-500"
                                         type="submit"
-                                        disabled={isSubmitting}
                                     >
-                                        <Check className="h-4 w-4" />
-                                        <span className="sr-only">Save</span>
+                                        Save
                                     </Button>
                                 </div>
                             )}

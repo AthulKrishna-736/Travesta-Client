@@ -31,6 +31,14 @@ const AdminChatPage: React.FC = () => {
         ...liveMessages.filter((liveMsg) => !oldMessages.some((oldMsg) => oldMsg._id === liveMsg._id)),
     ];
 
+    useEffect(() => {
+        if (selectedVendor?.id) {
+            queryClient.invalidateQueries({
+                queryKey: ['chat-history', selectedVendor.id],
+            });
+        }
+    }, [selectedVendor?.id, queryClient]);
+
     const handleTyping = () => {
         if (selectedVendor) {
             sendTyping(selectedVendor.id, selectedVendor.role);

@@ -7,11 +7,14 @@ export interface AdminLayoutProps {
 }
 
 export type Action = {
-    label: string
-    onClick: (rowData: any) => void
-    variant?: "default" | "outline" | "ghost" | "link" | "destructive"
-    className?: string
-}
+    label: string;
+    onClick: (rowData: any) => void;
+    variant?: "default" | "outline" | "ghost" | "link" | "destructive";
+    className?: string;
+    showLabel?: boolean;
+    icon?: any;
+};
+
 
 export interface DataTableProps {
     columns: { key: string; label: string }[]
@@ -45,7 +48,7 @@ export interface KycDocumentsProps {
 
 export interface ProfileSectionProps {
     user: UpdateUser;
-    onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified'>) => void;
+    onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => void;
 }
 
 export interface WishlistProps {
@@ -58,10 +61,11 @@ export interface ShowDetailModalProps {
     data: UserType
     onCancel: () => void
 }
-export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified'>;
+export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified' | 'id'>;
 
 export type ImageUploadProps = {
     onImageSelected: (file: File | null) => void;
+    updateProfileImage?: () => void;
     role: 'vendor' | 'user'
 };
 
