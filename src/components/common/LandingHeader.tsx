@@ -1,6 +1,4 @@
-import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import React, { useState } from 'react';
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -10,20 +8,13 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Hotel, Search, Menu, LogOutIcon } from "lucide-react";
+import { Hotel, Search, Menu, X } from "lucide-react";
 import { Link } from 'react-router-dom';
-import { useLogout } from '@/hooks/auth/useLogout';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
 
-const Header = () => {
-    const { mutate: logoutUserFn } = useLogout('user')
-    const profileImage = useSelector((state: RootState) => state.auth.user.profileImage)
-
-    const handleLogout = () => {
-        logoutUserFn()
-    };
+const LandingHeader = () => {
+    const [open, setOpen] = useState(false);
 
     return (
         <header className="sticky top-0 w-full bg-white/70 backdrop-blur-md z-50 shadow-sm">
@@ -37,14 +28,19 @@ const Header = () => {
                     </Link>
                 </div>
 
-                {/* Navigation */}
+                {/* Navigation - Desktop */}
                 <NavigationMenu className="hidden md:flex">
                     <NavigationMenuList>
-                        <NavigationMenuItem>
-                            <Link to="/user/home" className={navigationMenuTriggerStyle()}>
-                                Home
-                            </Link>
-                        </NavigationMenuItem>
+                        {["Home", "Subscription", "About Us", "Chat"].map((label, index) => (
+                            <NavigationMenuItem key={index}>
+                                <Link
+                                    to={`/user/${label.toLowerCase().replace(/\s/g, '-')}`}
+                                    className={navigationMenuTriggerStyle()}
+                                >
+                                    {label}
+                                </Link>
+                            </NavigationMenuItem>
+                        ))}
                         <NavigationMenuItem>
                             <NavigationMenuTrigger>Hotels</NavigationMenuTrigger>
                             <NavigationMenuContent>
@@ -64,43 +60,54 @@ const Header = () => {
                                 </ul>
                             </NavigationMenuContent>
                         </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <Link to="/user/subscription" className={navigationMenuTriggerStyle()}>
-                                Subscription
-                            </Link>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <Link to='/user/about-us' className={navigationMenuTriggerStyle()}>
-                                About us
-                            </Link>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <Link to="/user/chat" className={navigationMenuTriggerStyle()}>
-                                Chat
-                            </Link>
-                        </NavigationMenuItem>
                     </NavigationMenuList>
-
                 </NavigationMenu>
 
-                {/* User Section */}
-                <div className="flex items-center space-x-4">
-                    <Link to="/user/profile">
-                        <Avatar className="cursor-pointer">
-                            <AvatarImage src={profileImage} alt="User" />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
+                {/* Action Buttons - Desktop */}
+                <div className="hidden md:flex items-center gap-2">
+                    <Link to="/user/login">
+                        <Button variant="outline" className="bg-white text-black border border-black hover:bg-gray-100 text-sm">
+                            Become a User ?
+                        </Button>
                     </Link>
-                    <Button size="icon" variant="outline" className="md:hidden">
-                        <Menu className="h-5 w-5" />
-                    </Button>
+                    <Link to="/vendor/login">
+                        <Button className="bg-yellow-400 text-black hover:bg-yellow-300 text-sm">
+                            Become a Vendor ?
+                        </Button>
+                    </Link>
+                </div>
 
-                    {/* Logout Button */}
-                    <Button variant="outline" size="sm" onClick={handleLogout}>
-                        <LogOutIcon />
+                {/* Mobile Menu Toggle */}
+                <div className="md:hidden">
+                    <Button variant="ghost" size="icon" onClick={() => setOpen(!open)}>
+                        {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </Button>
                 </div>
             </div>
+
+            {/* Mobile Sidebar */}
+            {open && (
+                <div className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 p-6 flex flex-col gap-4 md:hidden">
+                    <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+                    <Link to="/user/hotels" onClick={() => setOpen(false)}>Hotels</Link>
+                    <Link to="/user/subscription" onClick={() => setOpen(false)}>Subscription</Link>
+                    <Link to="/user/about-us" onClick={() => setOpen(false)}>About Us</Link>
+                    <Link to="/user/chat" onClick={() => setOpen(false)}>Chat</Link>
+
+                    <div className="mt-6 flex flex-col gap-2">
+                        <Link to="/user/login" onClick={() => setOpen(false)}>
+                            <Button variant="outline" className="bg-white text-black border border-black w-full text-sm">
+                                Become a User ?
+                            </Button>
+                        </Link>
+                        <Link to="/vendor/login" onClick={() => setOpen(false)}>
+                            <Button className="bg-yellow-400 text-black hover:bg-yellow-300 w-full text-sm">
+                                Become a Vendor ?
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
+            )}
         </header>
     );
 };
@@ -120,7 +127,8 @@ const ListItem = ({ title, href, children, Icon }: ListItemProps) => {
                     href={href}
                     className={cn(
                         "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    )}>
+                    )}
+                >
                     <div className="flex items-center gap-2">
                         {Icon && <Icon className="h-5 w-5 text-traveste-500" />}
                         <div className="text-sm font-medium leading-none">{title}</div>
@@ -134,4 +142,4 @@ const ListItem = ({ title, href, children, Icon }: ListItemProps) => {
     );
 };
 
-export default Header;
+export default LandingHeader;

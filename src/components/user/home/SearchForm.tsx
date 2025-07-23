@@ -15,37 +15,24 @@ const SearchForm = () => {
     const [checkInDate, setCheckInDate] = useState<Date>();
     const [checkOutDate, setCheckOutDate] = useState<Date>();
     const [guests, setGuests] = useState("2");
-    const [rooms, setRooms] = useState("1");
-
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validate form
-        if (!destination) {
-            showError("Please enter a destination");
-            return;
-        }
+        if (!destination) return showError("Please enter a destination");
+        if (!checkInDate || !checkOutDate) return showError("Please select check-in and check-out dates");
 
-        if (!checkInDate || !checkOutDate) {
-            showError("Please select check-in and check-out dates");
-            return;
-        }
-
-        showSuccess(`Looking for stays in ${destination}`);
-
-        console.log("Search params:", { destination, checkInDate, checkOutDate, guests, rooms });
+        showSuccess(`Searching in ${destination}`);
+        console.log('check query here', { destination, checkInDate, checkOutDate, guests });
     };
 
     return (
-        <Card className="mx-auto max-w-5xl -mt-24 z-10 relative shadow-lg animate-slide-in">
-            <CardContent className="p-6">
+        <Card className="mx-auto max-w-5xl w-full -mt-24 z-10 relative shadow-lg bg-white border border-gray-200 animate-slide-in">
+            <CardContent className="p-6 md:p-8">
                 <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     {/* Destination */}
                     <div className="space-y-2 lg:col-span-2">
-                        <Label htmlFor="destination" className="text-sm font-medium">
-                            Destination
-                        </Label>
+                        <Label htmlFor="destination" className="text-sm font-medium">Destination</Label>
                         <div className="relative">
                             <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
                             <Input
@@ -58,7 +45,7 @@ const SearchForm = () => {
                         </div>
                     </div>
 
-                    {/* Check-in Date */}
+                    {/* Check-in */}
                     <div className="space-y-2">
                         <Label className="text-sm font-medium">Check-in</Label>
                         <Popover>
@@ -71,23 +58,22 @@ const SearchForm = () => {
                                     )}
                                 >
                                     <CalendarDays className="mr-2 h-4 w-4" />
-                                    {/* {checkInDate ? format(checkInDate, "PP") : "Select date"} */}
+                                    {checkInDate ? checkInDate.toDateString() : "Select date"}
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 z-50" align="start">
                                 <Calendar
                                     mode="single"
                                     selected={checkInDate}
                                     onSelect={setCheckInDate}
                                     initialFocus
-                                    // disabled={(date) => date < new Date()}
                                     className="p-3 pointer-events-auto"
                                 />
                             </PopoverContent>
                         </Popover>
                     </div>
 
-                    {/* Check-out Date */}
+                    {/* Check-out */}
                     <div className="space-y-2">
                         <Label className="text-sm font-medium">Check-out</Label>
                         <Popover>
@@ -100,62 +86,51 @@ const SearchForm = () => {
                                     )}
                                 >
                                     <CalendarDays className="mr-2 h-4 w-4" />
-                                    {/* {checkOutDate ? format(checkOutDate, "PP") : "Select date"} */}
+                                    {checkOutDate ? checkOutDate.toDateString() : "Select date"}
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 z-50" align="start">
                                 <Calendar
                                     mode="single"
                                     selected={checkOutDate}
                                     onSelect={setCheckOutDate}
                                     initialFocus
-                                    // disabled={(date) => (checkInDate ? date < new Date() || date < checkInDate : date < new Date())}
-
                                     className="p-3 pointer-events-auto"
                                 />
                             </PopoverContent>
                         </Popover>
                     </div>
 
-                    {/* Guests & Room Selector and Submit Button */}
-                    <div className="space-y-4 lg:col-span-1">
-                        {/* Guests & Rooms */}
-                        <div className="space-y-2">
-                            <Label className="text-sm font-medium">Guests & Rooms</Label>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Select value={guests} onValueChange={setGuests}>
-                                    <SelectTrigger>
-                                        <div className="flex items-center gap-2">
-                                            <Users className="h-4 w-4" />
-                                            <SelectValue placeholder="Guests" />
-                                        </div>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="1">1 Guest</SelectItem>
-                                        <SelectItem value="2">2 Guests</SelectItem>
-                                        <SelectItem value="3">3 Guests</SelectItem>
-                                        <SelectItem value="4">4 Guests</SelectItem>
-                                        <SelectItem value="5+">5+ Guests</SelectItem>
-                                    </SelectContent>
-                                </Select>
-
-                                <Select value={rooms} onValueChange={setRooms}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Rooms" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="1">1 Room</SelectItem>
-                                        <SelectItem value="2">2 Rooms</SelectItem>
-                                        <SelectItem value="3">3 Rooms</SelectItem>
-                                        <SelectItem value="4+">4+ Rooms</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                    {/* Guests & Rooms */}
+                    <div className="space-y-2">
+                        <Label className="text-sm font-medium">Guests & Rooms</Label>
+                        <div className="flex gap-2">
+                            <Select value={guests} onValueChange={setGuests}>
+                                <SelectTrigger className="w-full">
+                                    <div className="flex items-center gap-2">
+                                        <Users className="h-4 w-4" />
+                                        <SelectValue placeholder="Guests" />
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="1">1 Guest</SelectItem>
+                                    <SelectItem value="2">2 Guests</SelectItem>
+                                    <SelectItem value="3">3 Guests</SelectItem>
+                                    <SelectItem value="4">4 Guests</SelectItem>
+                                    <SelectItem value="5+">5+ Guests</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
+                    </div>
 
-                        {/* Submit Button */}
-                        <Button type="submit" className="w-full bg-traveste-500 hover:bg-traveste-600">
-                            <Search className="mr-2 h-4 w-4" /> Search Hotels
+                    {/* Search Button */}
+                    <div className="flex items-end">
+                        <Button
+                            type="submit"
+                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
+                        >
+                            <Search className="mr-2 h-4 w-4" />
+                            Search
                         </Button>
                     </div>
                 </form>

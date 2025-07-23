@@ -8,6 +8,7 @@ import AdminRoutes from './routes/AdminRoutes';
 import NotFound from './components/auth/Page404';
 import { ErrorBoundary } from './utils/ErrorBoundary';
 import { env } from './config/config';
+import LandingPage from './pages/user/LandingPage';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Router>
           <ErrorBoundary>
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/user/*" element={<UserRoutes />} />
               <Route path="/vendor/*" element={<VendorRoutes />} />
               <Route path="/admin/*" element={<AdminRoutes />} />
