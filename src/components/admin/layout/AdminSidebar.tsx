@@ -1,8 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { Calendar, CalendarCheck, DollarSign, Layers, LayoutDashboard, MessageSquare, Tag, Users } from "lucide-react"
+import { Calendar, Layers, LayoutDashboard, MessageSquare, Users } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 
@@ -45,27 +45,6 @@ export function AdminSidebar() {
         },
     ]
 
-    const managementNavItems = [
-        {
-            title: "Payments & Wallet",
-            icon: DollarSign,
-            href: "/admin/payments",
-            isActive: pathname === "/admin/payments",
-        },
-        {
-            title: "Categories",
-            icon: Tag,
-            href: "/admin/categories",
-            isActive: pathname === "/admin/categories",
-        },
-        {
-            title: "Community & Contest",
-            icon: CalendarCheck,
-            href: "/admin/contest",
-            isActive: pathname === "/admin/contest",
-        },
-    ]
-
     return (
         <Sidebar>
             <SidebarHeader>
@@ -78,7 +57,6 @@ export function AdminSidebar() {
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Main</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {mainNavItems.map((item) => (
@@ -94,26 +72,9 @@ export function AdminSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                <SidebarGroup>
-                    <SidebarGroupLabel>Management</SidebarGroupLabel>
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {managementNavItems.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton isActive={item.isActive} asChild>
-                                        <button onClick={() => navigate(item.href)}>
-                                            <item.icon className="h-4 w-4" />
-                                            <span>{item.title}</span>
-                                        </button>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
-                </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <div className="flex items-center justify-between px-4 py-2">
+                <div className="flex items-center justify-between px-4 py-2 bg-slate-500 border border-black rounded-md">
                     <div className="flex items-center gap-2">
                         <Avatar className="h-8 w-8">
                             <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
@@ -121,7 +82,7 @@ export function AdminSidebar() {
                         </Avatar>
                         <div>
                             <p className="text-sm font-medium">{admin?.firstName}</p>
-                            <p className="text-xs text-muted-foreground">{admin?.email}</p>
+                            <p className="text-xs">{admin?.email}</p>
                         </div>
                     </div>
                 </div>

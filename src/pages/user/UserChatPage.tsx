@@ -35,6 +35,14 @@ const UserChatPage: React.FC = () => {
         ),
     ];
 
+    useEffect(() => {
+        if (selectedVendor?.id) {
+            queryClient.invalidateQueries({
+                queryKey: ['chat-history', selectedVendor.id],
+            });
+        }
+    }, [selectedVendor?.id, queryClient]);
+
     const handleTyping = () => {
         if (selectedVendor) {
             sendTyping(selectedVendor.id, 'vendor');

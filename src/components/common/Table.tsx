@@ -9,8 +9,8 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
 
     return (
         <Table>
-            <TableHeader>
-                <TableRow className="bg-gray-100">
+            <TableHeader className="bg-sky-300">
+                <TableRow className="bg-sky-300">
                     {columns.map((col) => (
                         <TableHead
                             key={col.key}

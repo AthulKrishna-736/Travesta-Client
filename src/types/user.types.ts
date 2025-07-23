@@ -40,6 +40,7 @@ export type UpdateUser = {
   firstName: string
   lastName: string
   email: string
+  password: string
   phone: number
   isVerified: boolean
 }
