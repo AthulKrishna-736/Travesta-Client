@@ -6,7 +6,7 @@ import { UpdateUser } from "@/types/user.types";
 import Header from "@/components/common/Header";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { useUpdateUser } from "@/hooks/user/useUpdateUser";
+import { useUpdateUser } from "@/hooks/user/useUser";
 import { showError } from "@/utils/customToast";
 
 const UserDashboard: React.FC = () => {

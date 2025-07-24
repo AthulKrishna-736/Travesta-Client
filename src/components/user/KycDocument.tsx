@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/store/store";
 import { showError } from "@/utils/customToast";
-import { useKycUpload } from "@/hooks/vendor/useKycUpload";
+import { useKycUpload } from "@/hooks/vendor/useVendor";
 
 export const KycDocuments = () => {
     const [frontFile, setFrontFile] = useState<File | null>(null);

@@ -15,7 +15,6 @@ export const useGoogleLogin = (role: string) => {
     return useMutation({
         mutationFn: (values: TGoogleLoginValues) => googleLogin(values, role),
         onSuccess: (res) => {
-            console.log('res on googleLogin: ', res)
             if (res.success) {
                 if (role === 'user') {
                     dispatch(setUser(res.data))

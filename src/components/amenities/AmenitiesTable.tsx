@@ -27,6 +27,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
         {
             label: "Toggle Block",
             variant: "ghost" as const,
+            className: "bg-red-50 text-red-700 hover:bg-red-100 mx-2",
             onClick: (amenity: IAmenity) => {
                 setSelectedAmenity(amenity);
                 setIsToggleModalOpen(true);
@@ -35,6 +36,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
         {
             label: "Edit",
             variant: "ghost" as const,
+            className: "bg-blue-50 text-blue-700 hover:bg-blue-100 mx-2",
             onClick: (amenity: IAmenity) => setEditAmenity(amenity),
         },
     ];

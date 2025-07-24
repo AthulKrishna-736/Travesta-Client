@@ -17,7 +17,6 @@ export const useLogout = (role: TRoles) => {
     return useMutation({
         mutationFn: () => logout(role),
         onSuccess: (res) => {
-            console.log('Logout success:', res)
             if (res.success) {
                 if (role === 'admin') {
                     dispatch(logoutAdmin())

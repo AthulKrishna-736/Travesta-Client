@@ -1,11 +1,31 @@
-import { useBlockUser } from "@/hooks/admin/useBlockUser"
 import React from "react"
 import DataTable from "../common/Table"
 import { User, UserTableProps } from "@/types/user.types"
+import ConfirmationModal from "../common/ConfirmationModa"
+import { useBlockUser } from "@/hooks/user/useUser"
 
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role }) => {
-    const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role)
+const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role, search }) => {
+    const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role, search)
+
+    const handleConfirm = () => {
+        if (selectedUser) {
+            toggleBlock(selectedUser.id, {
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setSelectedUser(null);
+                }
+            });
+        }
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        setSelectedUser(null);
+    };
 
     const columns = [
         { key: "firstName", label: "Name" },
@@ -17,18 +37,33 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role
     const actions = [
         {
             label: "Toggle Block",
-            variant: "ghost" as const,
-            onClick: (user: User) => toggleBlock(user.id),
+            variant: 'ghost' as const,
+            className: "bg-red-50 text-red-700 hover:bg-red-100",
+            onClick: (user: User) => {
+                setSelectedUser(user);
+                setIsModalOpen(true);
+            },
         },
     ]
 
     return (
-        <DataTable
-            columns={columns}
-            data={users}
-            actions={actions}
-            loading={loading || isPending}
-        />
+        <>
+            <DataTable
+                columns={columns}
+                data={users}
+                actions={actions}
+                loading={loading || isPending}
+            />
+            <ConfirmationModal
+                open={isModalOpen}
+                title={`${selectedUser?.isBlocked ? "Unblock" : "Block"} User`}
+                description={`Are you sure you want to ${selectedUser?.isBlocked ? "unblock" : "block"} this user?`}
+                showInput={false}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                isLoading={isPending}
+            />
+        </>
     )
 }
 

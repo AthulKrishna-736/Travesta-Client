@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import DataTable from '../common/Table'
 import { VendorRequestTableProps } from '@/types/user.types'
-import { useVendorVerify } from '@/hooks/admin/useVendorVerify'
 import ConfirmationModal from '../common/ConfirmationModa'
 import ShowDetailsModal from '../common/ShowDetailsModal'
+import { useVendorVerify } from '@/hooks/vendor/useVendor'
 
 const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit, search }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<any>(null);
     const [rejectReason, setRejectReason] = useState('');
     const [vendorModalOpen, setVendorModalOpen] = useState(false);
@@ -51,6 +52,26 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         setRejectReason('');
     };
 
+    const handleAcceptConfirm = () => {
+        if (selectedVendor) {
+            console.log('selected vendor: ', selectedVendor)
+            updateVendorReq({
+                vendorId: selectedVendor._id,
+                isVerified: true,
+                reason: 'Approved by admin'
+            }, {
+                onSettled: () => {
+                    setIsAcceptModalOpen(false);
+                }
+            });
+        }
+    };
+
+    const handleAcceptCancel = () => {
+        setIsAcceptModalOpen(false);
+    };
+
+
     const columns = [
         { key: "firstName", label: "Name" },
         { key: "email", label: "Email" },
@@ -63,19 +84,16 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Accept',
             variant: 'ghost' as const,
-            className: 'text-green-600 border-green-600 hover:bg-green-50',
+            className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: (row: any) => {
-                updateVendorReq({
-                    vendorId: row.id,
-                    isVerified: true,
-                    reason: 'Approved by admin'
-                })
+                setSelectedVendor(row);
+                setIsAcceptModalOpen(true);
             }
         },
         {
             label: 'Reject',
             variant: 'ghost' as const,
-            className: 'text-red-600 border-red-600 hover:bg-red-50',
+            className: "bg-red-50 text-red-700 hover:bg-red-100",
             onClick: (row: any) => {
                 openRejectModal(row);
             }
@@ -115,6 +133,16 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
                 data={selectedVendor}
                 onCancel={handleDetailModalClose}
             />
+            <ConfirmationModal
+                open={isAcceptModalOpen}
+                title="Accept Vendor"
+                description="Are you sure you want to accept this vendor?"
+                showInput={false}
+                onConfirm={handleAcceptConfirm}
+                onCancel={handleAcceptCancel}
+                isLoading={isPending}
+            />
+
         </>
     )
 }

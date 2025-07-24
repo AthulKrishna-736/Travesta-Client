@@ -13,7 +13,6 @@ export const useForgotPass = (role: string, onSuccessCallback: (userId: string) 
             return forgotPass(payload, role)
         },
         onSuccess: (res) => {
-            console.log('res on forgot pass: ', res)
             if (res.success) {
                 showSuccess(res.message);
                 onSuccessCallback(res.data);

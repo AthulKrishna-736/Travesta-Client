@@ -15,6 +15,7 @@ export interface UserTableProps {
   page: number
   limit: number
   role: TRoles
+  search: string
 }
 
 export type TSubscriptionType = 'basic' | 'medium' | 'vip';
@@ -46,6 +47,38 @@ export type UpdateUser = {
 }
 
 export interface WishlistItem {
-  id: string;
-  image: string;
+  id: string
+  image: string
+}
+
+
+export interface IHotel {
+  _id?: string
+  id?: string
+  name: string
+  description: string
+  address: string
+  state: string
+  city: string
+  tags: string
+  amenities: string
+  services: string
+  geoLocation?: number[]
+  images?: File[] | string[]
+}
+
+
+export interface IRoom {
+  id?: string
+  _id?: string;
+  hotelId: string;
+  name: string;
+  capacity: number;
+  bedType: string;
+  amenities: string[];
+  images: (string | File)[];
+  basePrice: number;
+  isAvailable?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

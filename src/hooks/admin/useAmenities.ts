@@ -1,4 +1,4 @@
-import { createAmenity, getAllAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
+import { createAmenity, getActiveAmenities, getAllAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
 import { IAmenity, TCreateAmenityData } from "@/types/component.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,15 @@ export const useGetAllAmenities = (page: number, limit: number, search?: string)
     });
 };
 
+
+export const useGetActiveAmenities = () => {
+    return useQuery({
+        queryKey: ['active-amenities'],
+        queryFn: () => getActiveAmenities(),
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
+    })
+}
 
 export const useCreateAmentiy = (page: number, limit: number) => {
     const queryClient = useQueryClient()

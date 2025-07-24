@@ -10,7 +10,6 @@ export const useResendOtp = (role: string, purpose: 'signup' | 'reset', onSucces
             return resendOtp(payload, role)
         },
         onSuccess: (res) => {
-            console.log('res on resentotp: ', res)
             if (res.success) {
                 showSuccess(res.message || 'Otp resend successfully!');
                 onSuccessCallback()

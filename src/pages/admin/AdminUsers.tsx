@@ -3,7 +3,7 @@ import UserTable from "@/components/admin/UserTable"
 import Pagination from "@/components/common/Pagination"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { useGetAllUsers } from "@/hooks/admin/useGetAllUsers"
+import { useGetAllUsers } from "@/hooks/user/useUser"
 import { useEffect, useState } from "react"
 
 const AdminUsers = () => {
@@ -58,7 +58,7 @@ const AdminUsers = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         value={searchTerm}
                     />
-                    <UserTable users={users} loading={isLoading} page={page} limit={limit} role={role} />
+                    <UserTable users={users} loading={isLoading} page={page} limit={limit} role={role} search={debouncedValue} />
                 </div>
 
                 {meta && meta.totalPages > 0 && (

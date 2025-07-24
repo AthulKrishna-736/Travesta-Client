@@ -7,8 +7,8 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { KycDocuments } from "@/components/user/KycDocument";
 import Header from "@/components/vendor/Header";
-import { useUpdateVendor } from "@/hooks/vendor/useUpdateVendor";
 import Sidebar from "@/components/vendor/Sidebar";
+import { useUpdateVendor } from "@/hooks/vendor/useVendor";
 import { showError } from "@/utils/customToast";
 
 const VendorProfile: React.FC = () => {

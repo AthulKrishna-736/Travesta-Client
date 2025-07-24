@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { UpdateUser } from "./user.types";
-import { UserType } from "./response.types";
+import { IHotel, IRoom, UpdateUser } from "./user.types";
+import { IUserType } from "./response.types";
 
 export interface AdminLayoutProps {
     children: ReactNode
@@ -52,13 +52,13 @@ export interface ProfileSectionProps {
 }
 
 export interface WishlistProps {
-    user: UserType
+    user: IUserType
 }
 
 export interface ShowDetailModalProps {
     open: boolean
     title: string
-    data: UserType
+    data: IUserType
     onCancel: () => void
 }
 export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified' | 'id'>;
@@ -68,6 +68,47 @@ export type ImageUploadProps = {
     updateProfileImage?: () => void;
     role: 'vendor' | 'user'
 };
+
+export interface ICreateHotelModalProps {
+    open: boolean;
+    onClose: () => void;
+    isLoading: boolean;
+    onSubmit: (data: IHotel & { oldImages: string[] }) => void;
+    hotelData?: IHotel | null;
+    isEdit?: boolean;
+}
+
+export interface IMutilImageUploadProps {
+    maxImages?: number;
+    onImagesChange: (files: (string | File)[]) => void;
+    initialImageUrls?: string[];
+};
+
+export interface IHotelTableProps {
+    hotels: IHotel[];
+    loading: boolean;
+    onHotelsFetched?: (hotels: IHotel[]) => void;
+}
+
+type RoomSubmitPayload = FormData | { id: string; data: FormData };
+
+
+export interface ICreateRoomProps {
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (data: RoomSubmitPayload) => void;
+    isLoading: boolean;
+    roomData?: IRoom | null;
+    isEdit?: boolean;
+    hotelId?: string;
+}
+
+export interface IRoomTableProps {
+    hotels: IHotel[]
+    rooms: IRoom[];
+    loading: boolean;
+}
+
 
 export interface IAmenity {
     _id: string

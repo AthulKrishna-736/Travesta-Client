@@ -7,7 +7,6 @@ export const useSignup = (role: string, onSuccessCallback: (userId: string) => v
     return useMutation({
         mutationFn: (values: TSignUpFormValues) => register(values, role),
         onSuccess: (res) => {
-            console.log('data on response: ', res)
             if (res.success && res.data?.userId) {
                 showSuccess(res.message)
                 onSuccessCallback(res.data?.userId)
