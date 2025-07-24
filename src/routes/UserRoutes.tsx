@@ -1,5 +1,6 @@
 import NotFound from '@/components/auth/Page404'
 import UserHotelPage from '@/pages/user/HotelPage'
+import UserBookingListPage from '@/pages/user/UserBookingListPage'
 import UserChatPage from '@/pages/user/UserChatPage'
 import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
@@ -7,6 +8,7 @@ import UserHomePage from '@/pages/user/UserHomePage'
 import UserHotelDetailPage from '@/pages/user/UserHotelDetailPage'
 import UserLoginPage from '@/pages/user/UserLoginPage'
 import UserSignupPage from '@/pages/user/UserSignupPage'
+import UserWallet from '@/pages/user/UserWallet'
 import ProtectGuest from '@/ProtectRoutes/ProtectGuest'
 import ProtectedUser from '@/ProtectRoutes/ProtectUser'
 import React from 'react'
@@ -57,6 +59,18 @@ const UserRoutes: React.FC = () => {
       <Route path='chat' element={
         <ProtectedUser>
           <UserChatPage />
+        </ProtectedUser>
+      } />
+
+      <Route path='booking' element={
+        <ProtectedUser>
+          <UserBookingListPage />
+        </ProtectedUser>
+      } />
+
+      <Route path='wallet' element={
+        <ProtectedUser>
+          <UserWallet />
         </ProtectedUser>
       } />
 

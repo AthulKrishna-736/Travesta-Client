@@ -21,7 +21,7 @@ const UserHotelPage: React.FC = () => {
     const limit = 9;
     const { data: amenities, isLoading: isAmenitiesLoading } = useGetActiveAmenities();
     const amenitiesData = amenities?.data || [];
-    const { data, isLoading, isError } = useGetAvailableRooms(page, limit, priceRange, selectedAmenities, debouncedValue,);
+    const { data, isLoading, isError } = useGetAvailableRooms(page, limit, priceRange, selectedAmenities, debouncedValue);
 
     const rooms = data?.data || [];
     const meta = data?.meta;

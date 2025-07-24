@@ -13,7 +13,7 @@ const UserChatPage: React.FC = () => {
     const queryClient = useQueryClient();
     const [msg, setMsg] = useState('');
     const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
-    const currentUserId = useSelector((state: RootState) => state.auth.user?.id)
+    const currentUserId = useSelector((state: RootState) => state?.auth?.user?.id)
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 

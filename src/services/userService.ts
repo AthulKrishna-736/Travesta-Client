@@ -38,3 +38,21 @@ export const getChattedVendors = async (search?: string): Promise<Pick<User, 'id
     })
     return response.data?.data
 }
+
+export const getUserBookings = async (page: number, limit: number) => {
+    const response = await axiosInstance.get('/users/bookings', {
+        params: { page, limit }
+    });
+    return response.data
+};
+
+
+export const cancelBooking = async (bookingId: string) => {
+    const response = await axiosInstance.delete(`/users/booking/${bookingId}`);
+    return response.data;
+};
+
+export const createBooking = async (payload: any) => {
+    const response = await axiosInstance.post('/users/booking', payload);
+    return response.data?.data;
+};

@@ -9,6 +9,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     open,
     title,
     description,
+    extraNote,
     showInput = false,
     inputValue = '',
     onInputChange,
@@ -22,6 +23,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     {description && <DialogDescription>{description}</DialogDescription>}
+                    {extraNote && (
+                        <div className="mt-2 text-sm text-muted-foreground">
+                            {extraNote}
+                        </div>
+                    )}
                 </DialogHeader>
 
                 {showInput && (
