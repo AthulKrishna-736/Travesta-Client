@@ -14,7 +14,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, updat
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const data = useSelector((state: RootState) =>
-        role === "user" ? state.auth.user : state.vendor.vendor
+        role === "user" ? state?.auth?.user : state?.vendor?.vendor
     );
 
     useEffect(() => {

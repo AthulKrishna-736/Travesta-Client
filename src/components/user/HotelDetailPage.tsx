@@ -167,18 +167,6 @@ const HotelDetail: React.FC = () => {
                     </div>
                 )}
 
-                {/* Amenities */}
-                {hotel.amenities?.length > 0 && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Amenities</h2>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 list-disc ml-4 gap-y-1 text-sm text-muted-foreground">
-                            {hotel.amenities.map((item: any, idx: any) => (
-                                <li key={idx}>{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-
                 {/* Services */}
                 {hotel.services?.length > 0 && (
                     <div>

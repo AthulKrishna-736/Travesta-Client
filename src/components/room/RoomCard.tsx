@@ -3,15 +3,7 @@ import { Users, BedDouble } from "lucide-react";
 import { RoomCardLayoutProps } from "@/types/component.types";
 
 
-const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({
-    room,
-    bookingRoomId,
-    setBookingRoomId,
-    formData,
-    handleInputChange,
-    handleBookingSubmit,
-    handleBookClick
-}) => {
+const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, setBookingRoomId, formData, handleInputChange, handleBookingSubmit, handleBookClick }) => {
     return (
         <div
             key={room._id}
@@ -64,12 +56,12 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({
                 <div className="mb-4">
                     <h4 className="font-medium text-sm text-gray-800 mb-1">Amenities</h4>
                     <div className="flex flex-wrap gap-2">
-                        {room.amenities.map((item: string, idx: number) => (
+                        {room.amenities.map((item: any) => (
                             <span
-                                key={idx}
+                                key={item._id}
                                 className="text-xs bg-accent text-muted-foreground px-2 py-1 rounded-full border"
                             >
-                                {item}
+                                {item.name}
                             </span>
                         ))}
                     </div>
