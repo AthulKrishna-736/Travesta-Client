@@ -29,7 +29,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="sticky top-0 w-full bg-white/70 backdrop-blur-md z-50 shadow-sm">
+            <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md shadow-sm relative">
                 <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                     {/* Logo */}
                     <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-traveste-500 to-traveste-700 bg-clip-text">
@@ -98,16 +98,6 @@ const Header = () => {
                         </Button>
                         {/* User Section */}
                         <div className="flex items-center space-x-4">
-                            <Link to="/user/profile">
-                                <Avatar className="cursor-pointer">
-                                    <AvatarImage src={profileImage} alt="User" />
-                                    <AvatarFallback>CN</AvatarFallback>
-                                </Avatar>
-                            </Link>
-                            <Button size="icon" variant="outline" className="md:hidden">
-                                <Menu className="h-5 w-5" />
-                            </Button>
-
                             {/* Logout (Desktop only) */}
                             <Button variant="outline" size="sm" className="hidden md:inline-flex" onClick={handleLogout}>
                                 <LogOutIcon />
@@ -119,7 +109,7 @@ const Header = () => {
 
             {/* Mobile Menu */}
             {isMobileMenuOpen && (
-                <div className="md:hidden bg-white px-4 py-4 shadow-md border-t space-y-2">
+                <div className="absolute top-[68px] left-0 w-full bg-white border-t z-50 shadow-md px-4 py-4">
                     <nav className="flex flex-col space-y-2">
                         <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-semibold text-center bg-gradient-to-r from-traveste-500 to-traveste-700 bg-clip-text">
                             Travesta
@@ -130,6 +120,7 @@ const Header = () => {
                             { to: "/user/hotels", label: "Hotels" },
                             { to: "/user/subscription", label: "Subscription" },
                             { to: "/user/about-us", label: "About us" },
+                            { to: "/user/chat", label: "chat" },
                         ].map((item) => (
                             <Link
                                 key={item.to}

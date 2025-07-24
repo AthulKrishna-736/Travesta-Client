@@ -15,7 +15,7 @@ const UserHotelPage: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [debouncedValue, setDebouncedSearchTerm] = useState<string>('');
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
     const limit = 9;
@@ -44,7 +44,7 @@ const UserHotelPage: React.FC = () => {
     const resetFilters = () => {
         setSearchTerm('');
         setDebouncedSearchTerm('');
-        setPriceRange([0, 5000]);
+        setPriceRange([0, 10000]);
         setSelectedAmenities([]);
         setPage(1);
     };
@@ -75,7 +75,7 @@ const UserHotelPage: React.FC = () => {
                                 <label className="font-semibold block mb-2">Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}</label>
                                 <Slider
                                     min={0}
-                                    max={5000}
+                                    max={10000}
                                     step={10}
                                     value={priceRange}
                                     onValueChange={(value: any) => {
