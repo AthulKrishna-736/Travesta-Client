@@ -5,7 +5,7 @@ import Pagination from "@/components/common/Pagination";
 import { useGetUserBookings } from "@/hooks/user/useBooking";
 
 const UserBookingListPage: React.FC = () => {
-    const limit = 10;
+    const limit = 6;
     const [page, setPage] = useState(1);
 
     const { data: bookingsResponse, isLoading } = useGetUserBookings(page, limit);

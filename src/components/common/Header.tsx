@@ -83,6 +83,11 @@ const Header = () => {
                                     Bookings
                                 </Link>
                             </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <Link to="/user/wallet" className={navigationMenuTriggerStyle()}>
+                                    Wallet
+                                </Link>
+                            </NavigationMenuItem>
                         </NavigationMenuList>
 
                     </NavigationMenu>
@@ -127,6 +132,7 @@ const Header = () => {
                             { to: "/user/about-us", label: "About us" },
                             { to: "/user/chat", label: "chat" },
                             { to: "/user/booking", label: "Bookings" },
+                            { to: "/user/wallet", label: "Wallet" },
                         ].map((item) => (
                             <Link
                                 key={item.to}
