@@ -9,4 +9,5 @@ export interface WalletSectionProps {
     balance: number;
     transactions: WalletTransaction[];
     userName?: string;
+    addMoney: () => void;
 }

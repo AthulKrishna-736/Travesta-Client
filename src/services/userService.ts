@@ -60,38 +60,29 @@ export const createBooking = async (payload: any) => {
 };
 
 //payment
-export const createPaymentIntent = async (amount: number) => {
-    const response = await axiosInstance.post('/users/wallet/payment-intent', { amount });
+export const createPaymentIntent = async (data: { amount: number }) => {
+    const response = await axiosInstance.post('/users/wallet/payment-intent', data);
     return response.data;
 };
 
-export const addWalletCredit = async (amount: number) => {
-    const response = await axiosInstance.post('/users/wallet/transaction', {
-        type: 'credit',
-        amount,
-        description: 'Wallet top-up via Stripe',
-        date: new Date(),
-    });
+export const addWalletCredit = async (data: { type: 'credit', amount: number, description: string, date: Date, }) => {
+    const response = await axiosInstance.post('/users/wallet/transaction', data);
     return response.data;
 };
 
 export const createWallet = async () => {
     const response = await axiosInstance.post('/users/wallet/create');
     return response.data;
-}
+};
 
-export const getWallet = async () => {
-    const response = await axiosInstance.get('/users/wallet');
-    return response.data;
-}
-
-export const confirmBooking = async (amount: number, bookingId: string) => {
-    const response = await axiosInstance.post('/users/wallet/transaction', {
-        type: 'debit',
-        amount,
-        description: '',
-        date: new Date(),
-        relatedBookingId: bookingId,
+export const getWallet = async (page: number, limit: number) => {
+    const response = await axiosInstance.get('/users/wallet', {
+        params: { page, limit },
     });
     return response.data;
-}
+};
+
+export const confirmBooking = async (data: { type: 'debit', amount: number, description: string, date: Date, relatedBookingId: string, }) => {
+    const response = await axiosInstance.post('/users/wallet/transaction', data);
+    return response.data;
+};

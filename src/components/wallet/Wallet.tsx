@@ -1,35 +1,56 @@
 import { WalletSectionProps } from '@/types/wallet.types';
+import { Plus } from 'lucide-react';
 import React from 'react';
 
-
-const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, userName }) => {
+const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, addMoney }) => {
     return (
-        <div className="bg-yellow-100 shadow-md rounded-xl p-6 border border-gray-200">
-            <h2 className="text-2xl font-semibold mb-4">Welcome, {userName || 'User'}</h2>
+        <div className="space-y-8">
+            {/* Wallet Balance Section */}
+            <div className="bg-[#fef5e6] shadow-md rounded-xl p-6 flex justify-between items-center">
+                <div>
+                    <div className="text-4xl font-bold text-[#ef9d05]">
+                        ₹{balance.toFixed(2)}
+                    </div>
+                    <p className="text-sm text-[#ef9d05] mt-1">Current Wallet Balance</p>
+                </div>
 
-            <div className="mb-6">
-                <h3 className="text-lg font-medium text-gray-700">Wallet Balance</h3>
-                <p className="text-3xl font-bold text-green-600">₹{balance.toFixed(2)}</p>
+                <button
+                    className="bg-[#f59f00] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#e08900] transition flex items-center gap-2"
+                    onClick={addMoney}
+                >
+                    <Plus size={18} />
+                    <span>Add Money</span>
+                </button>
             </div>
 
-            <div>
-                <h3 className="text-lg font-medium text-gray-700 mb-2">Recent Transactions</h3>
-                <ul className="space-y-3">
-                    {transactions.map((tx, index) => (
-                        <li key={index} className="flex justify-between items-center bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <div>
-                                <p className="font-semibold">{tx.description}</p>
-                                <p className="text-sm text-gray-500">{new Date(tx.date).toLocaleDateString()}</p>
-                            </div>
-                            <span
-                                className={`font-bold ${tx.type === 'credit' ? 'text-green-600' : 'text-red-500'
-                                    }`}
+            {/* Transactions History Section */}
+            <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Transaction History</h3>
+                {transactions.length === 0 ? (
+                    <p className="text-gray-500">No transactions yet.</p>
+                ) : (
+                    <ul className="space-y-3">
+                        {transactions.map((tx, index) => (
+                            <li
+                                key={index}
+                                className="flex justify-between items-center bg-gray-50 border border-gray-200 rounded-lg p-3"
                             >
-                                {tx.type === 'credit' ? '+' : '-'}₹{tx.amount.toFixed(2)}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
+                                <div>
+                                    <p className="font-semibold text-gray-800">{tx.description}</p>
+                                    <p className="text-sm text-gray-500">
+                                        {new Date(tx.date).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <span
+                                    className={`font-bold ${tx.type === 'credit' ? 'text-green-600' : 'text-red-500'
+                                        }`}
+                                >
+                                    {tx.type === 'credit' ? '+' : '-'}₹{tx.amount.toFixed(2)}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
         </div>
     );
