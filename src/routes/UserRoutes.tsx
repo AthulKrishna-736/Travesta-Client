@@ -1,5 +1,6 @@
 import NotFound from '@/components/auth/Page404'
 import UserHotelPage from '@/pages/user/HotelPage'
+import UserAboutPage from '@/pages/user/UserAboutUsPage'
 import UserBookingListPage from '@/pages/user/UserBookingListPage'
 import UserChatPage from '@/pages/user/UserChatPage'
 import UserDashboard from '@/pages/user/UserDashboard'
@@ -73,6 +74,8 @@ const UserRoutes: React.FC = () => {
           <UserWallet />
         </ProtectedUser>
       } />
+
+      <Route path='/about-us' element={<UserAboutPage />} />
 
       <Route path="hotels/:hotelId" element={<UserHotelDetailPage />} />
     </Routes>
