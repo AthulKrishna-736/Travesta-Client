@@ -31,3 +31,13 @@ export interface BookingDetailProps {
     onClose: () => void;
     booking: Booking | null;
 }
+
+
+export interface BookingPayload {
+    hotelId: string;
+    roomId: string;
+    checkIn: string; // or Date, but you're sending ISO strings from frontend
+    checkOut: string;
+    guests: number;
+    totalPrice: number;
+}

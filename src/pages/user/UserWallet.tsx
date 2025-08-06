@@ -5,8 +5,8 @@ import Pagination from "@/components/common/Pagination";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { env } from "@/config/config";
-import CheckoutForm from "@/components/wallet/CheckoutForm";
-import { useCreatePaymentIntent, useCreateWallet, useGetWallet } from "@/hooks/user/useWallet";
+import CheckoutForm, { PaymentSuccessData } from "@/components/wallet/CheckoutForm";
+import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetWallet } from "@/hooks/user/useWallet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,8 @@ const UserWallet: React.FC = () => {
     const limit = 5;
 
     const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(page, limit);
+    const { mutateAsync: addWalletCredit } = useAddWalletCredit();
+
     const { mutateAsync: createWallet } = useCreateWallet();
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
 
@@ -35,6 +37,15 @@ const UserWallet: React.FC = () => {
             createWallet();
         }
     }, [walletDataResponse, createWallet]);
+
+    const handleWalletPaymentSuccess = async (data: PaymentSuccessData) => {
+        if (data.type === "wallet") {
+            await addWalletCredit({
+                amount: data.amount,
+                transactionId: data.transactionId,
+            });
+        }
+    };
 
     const handleAddMoney = async () => {
         const numericAmount = parseFloat(amount);
@@ -116,7 +127,12 @@ const UserWallet: React.FC = () => {
                     {/* Payment Section */}
                     {showPayment && clientSecret && (
                         <Elements options={options} stripe={stripePromise}>
-                            <CheckoutForm open={showPayment} onClose={() => setShowPayment(false)} />
+                            <CheckoutForm
+                                open={showPayment}
+                                onClose={() => setShowPayment(false)}
+                                onPaymentSuccess={handleWalletPaymentSuccess}
+                                isForBooking={false} 
+                            />
                         </Elements>
                     )}
 

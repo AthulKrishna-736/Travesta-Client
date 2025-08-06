@@ -28,7 +28,7 @@ axiosInstance.interceptors.response.use(
         if (errorMsg?.message == 'user is blocked' && isUserRoute) {
             store.dispatch(logoutUser())
             setTimeout(() => {
-                window.location.href = '/vendor/login';
+                window.location.href = '/user/login';
             }, 1000);
         } else if (errorMsg?.message == 'vendor is blocked' && isVendorRoute) {
             store.dispatch(logoutVendor())

@@ -1,6 +1,7 @@
 import { TResponseChat } from "@/types/chat.types";
 import { axiosInstance } from "./axiosInstance"
 import { User } from "@/types/user.types";
+import { BookingPayload } from "@/types/booking.types";
 
 //user
 export const getUser = async () => {
@@ -54,9 +55,9 @@ export const cancelBooking = async (bookingId: string) => {
     return response.data;
 };
 
-export const createBooking = async (payload: any) => {
+export const createBooking = async (payload: BookingPayload) => {
     const response = await axiosInstance.post('/users/booking', payload);
-    return response.data?.data;
+    return response.data;
 };
 
 //payment
@@ -65,7 +66,7 @@ export const createPaymentIntent = async (data: { amount: number }) => {
     return response.data;
 };
 
-export const addWalletCredit = async (data: { type: 'credit', amount: number, description: string, date: Date, }) => {
+export const addWalletCredit = async (data: { type: 'credit', amount: number, description: string, transactionId: string, }) => {
     const response = await axiosInstance.post('/users/wallet/transaction', data);
     return response.data;
 };
@@ -82,7 +83,7 @@ export const getWallet = async (page: number, limit: number) => {
     return response.data;
 };
 
-export const confirmBooking = async (data: { type: 'debit', amount: number, description: string, date: Date, relatedBookingId: string, }) => {
-    const response = await axiosInstance.post('/users/wallet/transaction', data);
+export const confirmBooking = async (data: { receiverId: string, amount: number, transactionId: string, description: string, relatedBookingId: string }) => {
+    const response = await axiosInstance.post('/users/wallet/transaction-transfer', data);
     return response.data;
 };

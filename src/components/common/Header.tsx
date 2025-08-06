@@ -20,6 +20,7 @@ import { RootState } from '@/store/store';
 const Header = () => {
     const { mutate: logoutUserFn } = useLogout('user');
     const profileImage = useSelector((state: RootState) => state.auth.user.profileImage);
+    const userName = useSelector((state: RootState) => state.auth.user.firstName);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleLogout = () => {
@@ -98,7 +99,7 @@ const Header = () => {
                         <Link to="/user/profile">
                             <Avatar className="cursor-pointer">
                                 <AvatarImage src={profileImage} alt="User" />
-                                <AvatarFallback>CN</AvatarFallback>
+                                <AvatarFallback>{userName?.charAt(0).toUpperCase() || 'N/A'}</AvatarFallback>
                             </Avatar>
                         </Link>
 

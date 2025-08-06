@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Star, MapPin, CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
 import { showError } from '@/utils/customToast';
-import { useCreateBooking } from '@/hooks/user/useBooking';
 import RoomCardLayout from '../room/RoomCard';
 
 interface BookingFormData {
@@ -26,8 +25,7 @@ const HotelDetail: React.FC = () => {
         checkOut: '',
         guests: 1,
     });
-
-    const { mutate: createBookingMutate } = useCreateBooking();
+    const navigate = useNavigate();
 
     if (hotelLoading)
         return (
@@ -92,20 +90,25 @@ const HotelDetail: React.FC = () => {
 
         const totalPrice = room.basePrice * diffInDays;
 
-        const bookingPayload = {
-            hotelId: hotel._id,
-            roomId,
-            checkIn: checkInDate,
-            checkOut: checkOutDate,
-            guests: formData.guests,
-            totalPrice,
-        };
+        // const bookingPayload = {
+        //     hotelId: hotel._id,
+        //     roomId,
+        //     checkIn: checkInDate,
+        //     checkOut: checkOutDate,
+        //     guests: formData.guests,
+        //     totalPrice,
+        // };
 
-        createBookingMutate(bookingPayload, {
-            onSuccess: () => {
-                setBookingRoomId(null);
+        navigate('/user/checkout', {
+            state: {
+                hotel,
+                room,
+                formData,
+                totalPrice,
+                days: diffInDays,
             }
         });
+
     };
 
     return (

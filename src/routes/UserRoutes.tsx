@@ -3,6 +3,7 @@ import UserHotelPage from '@/pages/user/HotelPage'
 import UserAboutPage from '@/pages/user/UserAboutUsPage'
 import UserBookingListPage from '@/pages/user/UserBookingListPage'
 import UserChatPage from '@/pages/user/UserChatPage'
+import UserCheckoutPage from '@/pages/user/UserCheckout'
 import UserDashboard from '@/pages/user/UserDashboard'
 import UserForgotPassPage from '@/pages/user/UserForgotPassPage'
 import UserHomePage from '@/pages/user/UserHomePage'
@@ -72,6 +73,12 @@ const UserRoutes: React.FC = () => {
       <Route path='wallet' element={
         <ProtectedUser>
           <UserWallet />
+        </ProtectedUser>
+      } />
+
+      <Route path='checkout' element={
+        <ProtectedUser>
+          <UserCheckoutPage />
         </ProtectedUser>
       } />
 

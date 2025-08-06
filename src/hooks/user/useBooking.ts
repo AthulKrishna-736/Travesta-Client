@@ -1,5 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { cancelBooking, createBooking, getUserBookings } from '@/services/userService';
+import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@/services/userService';
 import { showError, showSuccess } from '@/utils/customToast';
 
 export const useGetUserBookings = (page: number, limit: number) => {
@@ -43,3 +43,16 @@ export const useCreateBooking = () => {
         },
     });
 };
+
+export const useConfirmBooking = () => {
+    return useMutation({
+        mutationFn: confirmBooking,
+        onSuccess: (res) => {
+            showSuccess(res?.message || 'Booking confirmed!');
+        },
+        onError: (error: any) => {
+            const msg = error?.response?.data?.message || 'Booking failed. Try again.';
+            showError(msg);
+        },
+    });
+}

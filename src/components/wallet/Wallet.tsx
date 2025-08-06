@@ -38,7 +38,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
                                 <div>
                                     <p className="font-semibold text-gray-800">{tx.description}</p>
                                     <p className="text-sm text-gray-500">
-                                        {new Date(tx.date).toLocaleDateString()}
+                                        {new Date(tx.date).toUTCString()}
                                     </p>
                                 </div>
                                 <span
