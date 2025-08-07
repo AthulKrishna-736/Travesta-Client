@@ -46,6 +46,7 @@ const BookingCheckout: React.FC = () => {
                 description: data.description,
                 relatedBookingId: data.relatedBookingId,
             });
+            navigate('/user/booking')
         }
     };
 
@@ -168,8 +169,8 @@ const BookingCheckout: React.FC = () => {
                                         onClose={() => setClientSecret(null)}
                                         onPaymentSuccess={handleBookingPaymentSuccess}
                                         isForBooking
-                                        receiverId={hotel.vendorId} 
-                                        bookingId={bookingId!}    
+                                        receiverId={hotel.vendorId}
+                                        bookingId={bookingId!}
                                     />
                                 </Elements>
                             )}

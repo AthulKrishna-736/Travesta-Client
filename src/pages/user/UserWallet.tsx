@@ -12,15 +12,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { showError } from "@/utils/customToast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
+import UserSidebar from "@/components/common/UserSidebar";
+import { Menu } from "lucide-react";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const UserWallet: React.FC = () => {
+    const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const [showPayment, setShowPayment] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
     const [amount, setAmount] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const limit = 5;
 
     const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(page, limit);
@@ -44,6 +49,8 @@ const UserWallet: React.FC = () => {
                 amount: data.amount,
                 transactionId: data.transactionId,
             });
+
+            navigate('/user/wallet');
         }
     };
 
@@ -84,7 +91,20 @@ const UserWallet: React.FC = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
 
-            <main className="flex-grow bg-gray-100 px-4 py-6 mt-4">
+            {/* Sidebar */}
+            <UserSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+            {/* Toggle Button */}
+            {!sidebarOpen && (
+                <button
+                    className="fixed top-18 left-1 z-40 bg-yellow-200 p-2 rounded-md shadow-lg lg:hidden"
+                    onClick={() => setSidebarOpen(true)}
+                >
+                    <Menu className="w-5 h-5" />
+                </button>
+            )}
+
+            <main className="flex-grow bg-gray-100 px-4 py-6 mt-4 lg:ml-64">
                 <div className="mx-auto max-w-6xl space-y-6">
                     <h1 className="text-3xl font-bold text-gray-800">Your Wallet</h1>
 
@@ -131,7 +151,7 @@ const UserWallet: React.FC = () => {
                                 open={showPayment}
                                 onClose={() => setShowPayment(false)}
                                 onPaymentSuccess={handleWalletPaymentSuccess}
-                                isForBooking={false} 
+                                isForBooking={false}
                             />
                         </Elements>
                     )}

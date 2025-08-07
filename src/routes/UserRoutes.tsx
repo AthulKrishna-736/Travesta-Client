@@ -51,7 +51,7 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       } />
 
-      <Route path='/hotels' element={
+      <Route path='hotels' element={
         <ProtectedUser>
           <UserHotelPage />
         </ProtectedUser>
@@ -82,7 +82,7 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       } />
 
-      <Route path='/about-us' element={<UserAboutPage />} />
+      <Route path='about-us' element={<UserAboutPage />} />
 
       <Route path="hotels/:hotelId" element={<UserHotelDetailPage />} />
     </Routes>
