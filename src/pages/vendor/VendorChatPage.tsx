@@ -26,7 +26,7 @@ const VendorChatPage: React.FC = () => {
     const { data: chattedUsersResponse, isLoading } = useGetChattedUsers(debouncedSearch);
     const users = chattedUsersResponse || []
 
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus } = useSocketChat(selectedUser?.id);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, unreadFrom } = useSocketChat(selectedUser?.id);
     const { data: oldMessagesData } = useGetChatMessages(selectedUser?.id || '', !!selectedUser);
     const oldMessages = oldMessagesData || [];
     const combinedMessages = [
@@ -79,6 +79,7 @@ const VendorChatPage: React.FC = () => {
                         selectedUser={selectedUser!}
                         msg={msg}
                         setMsg={setMsg}
+                        unreadFrom={unreadFrom}
                         handleSend={handleSend}
                         handleTyping={handleTyping}
                         typingStatus={typingStatus}

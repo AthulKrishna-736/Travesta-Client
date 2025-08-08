@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
@@ -13,6 +13,7 @@ const ChatPage: React.FC<IChatPageProps> = ({
     selectedUser,
     msg,
     setMsg,
+    unreadFrom,
     handleSend,
     handleTyping,
     typingStatus,
@@ -20,6 +21,10 @@ const ChatPage: React.FC<IChatPageProps> = ({
     combinedMessages,
     searchText,
     setSearchText }) => {
+
+    useEffect(() => {
+        console.log('unread: ', unreadFrom)
+    }, [unreadFrom])
 
     return (
         <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-[120vh] md:h-[80vh]">
@@ -52,6 +57,9 @@ const ChatPage: React.FC<IChatPageProps> = ({
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="text-white">{user.firstName}</span>
+                                    {unreadFrom?.has(user.id) && (
+                                        <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
+                                    )}
                                     {user.role === 'admin' && (
                                         <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-full">
                                             Admin

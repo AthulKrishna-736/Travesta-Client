@@ -56,7 +56,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         if (selectedVendor) {
             console.log('selected vendor: ', selectedVendor)
             updateVendorReq({
-                vendorId: selectedVendor._id,
+                vendorId: selectedVendor.id,
                 isVerified: true,
                 reason: 'Approved by admin'
             }, {

@@ -77,14 +77,25 @@ export const getAvailableRoomsByHotel = async (hotelId: string) => {
     return response.data;
 };
 
-export const getAvailableRooms = async (page: number, limit: number, priceRange?: [number, number], amenities?: string[], search?: string) => {
+export const getAvailableRooms = async (
+    page: number,
+    limit: number,
+    priceRange?: [number, number],
+    amenities?: string[],
+    search?: string,
+    checkIn?: string,
+    checkOut?: string,
+    guests?: number
+) => {
     const params: Record<string, any> = {
         page,
         limit,
     };
 
     if (search) params.search = search;
-
+    if (checkIn) params.checkIn = checkIn;
+    if (checkOut) params.checkOut = checkOut;
+    if (guests) params.guests = guests;
     if (priceRange?.length === 2) {
         params.minPrice = priceRange[0];
         params.maxPrice = priceRange[1];
@@ -102,10 +113,16 @@ export const getAvailableRooms = async (page: number, limit: number, priceRange?
 };
 
 
-
 export const getChatUsers = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
     const response = await axiosInstance.get('/vendor/chat-users', {
         params: { search },
     });
     return response.data?.data;
 }
+
+export const getBookingsToVendor = async (page: number, limit: number) => {
+    const response = await axiosInstance.get('/vendor/bookings', {
+        params: { page, limit },
+    });
+    return response.data;
+};

@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Building, Calendar, BarChart3, Star, MessageSquare, Settings, LogOut, TagIcon } from 'lucide-react';
+import { LayoutDashboard, Building, Calendar, BarChart3, Star, MessageSquare, Settings, LogOut, TagIcon, Wallet } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useLogout } from '@/hooks/auth/useLogout';
@@ -17,6 +17,7 @@ const navItems = [
     // { name: 'Reviews', path: '/vendor/reviews', icon: Star, badge: '3' },
     // { name: 'Promotions', path: '/vendor/promotions', icon: TagIcon },
     { name: 'Messages', path: '/vendor/messages', icon: MessageSquare },
+    { name: 'Wallet', path: '/vendor/wallet', icon: Wallet },
     // { name: 'Settings', path: '/vendor/settings', icon: Settings },
 ];
 

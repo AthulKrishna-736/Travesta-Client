@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Bed, CheckCircle, MapPin, Star } from 'lucide-react';
+import { Users, Bed, CheckCircle, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { IRoom } from '@/types/user.types';
 import { Button } from '@/components/ui/button';
@@ -45,10 +45,9 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                     <CardTitle className="flex justify-between items-start">
                         <div>
                             <h3 className="text-xl font-bold text-gray-900">{name}</h3>
-                            <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                            {/* <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                                 <MapPin className="w-4 h-4" />
-                                New York, USA
-                            </p>
+                            </p> */}
                         </div>
                         <span className="text-lg font-bold text-primary">
                             ₹{basePrice.toFixed(2)}
@@ -75,9 +74,9 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                         <div className="mb-4">
                             <h4 className="text-sm font-semibold text-gray-700 mb-2">Amenities</h4>
                             <div className="flex flex-wrap gap-2">
-                                {amenities.slice(0, 4).map((item, idx) => (
-                                    <span key={idx} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-                                        {item}
+                                {amenities.slice(0, 4).map((item: any) => (
+                                    <span key={item._id} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
+                                        {item.name}
                                     </span>
                                 ))}
                                 {amenities.length > 4 && (
@@ -98,13 +97,13 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                         >
                             View Details
                         </Button>
-                        <Button
+                        {/* <Button
                             className="flex-1 rounded-lg bg-primary hover:bg-primary/90"
                             onClick={() => navigate(`/user/booking/${room._id}`)}
                             disabled={!isAvailable}
                         >
                             Book Now
-                        </Button>
+                        </Button> */}
                     </div>
                 </CardContent>
             </div>

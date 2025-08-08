@@ -42,16 +42,24 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data, actions = [], load
                                 <div className="flex items-center space-x-2">
                                     {actions.map((action, i) => {
                                         const Icon = typeof action.icon === "function" ? action.icon(row) : action.icon;
+                                        const className =
+                                            typeof action.className === "function"
+                                                ? action.className(row)
+                                                : action.className || "";
 
                                         return (
                                             <Button
                                                 key={i}
                                                 variant={action.variant || "default"}
                                                 onClick={() => action.onClick(row)}
-                                                className={`flex items-center gap-1 px-2 py-1 text-sm ${action.className || ""}`}
+                                                className={`flex items-center gap-1 px-2 py-1 text-sm ${className}`}
                                             >
-                                                {Icon && React.createElement(Icon as any, { className: "w-4 h-4" })}
-                                                {action.showLabel !== false && <span>{action.label}</span>}
+                                                {action.icon && React.createElement(action.icon, { className: "w-4 h-4" })}
+                                                {action.showLabel !== false && (
+                                                    <span>
+                                                        {typeof action.label === "function" ? action.label(row) : action.label}
+                                                    </span>
+                                                )}
                                             </Button>
                                         );
                                     })}

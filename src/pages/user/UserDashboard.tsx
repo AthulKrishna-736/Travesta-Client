@@ -8,36 +8,29 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useUpdateUser } from "@/hooks/user/useUser";
 import { showError } from "@/utils/customToast";
+import UserSidebar from "@/components/common/UserSidebar";
+import { Menu } from "lucide-react";
 
 const UserDashboard: React.FC = () => {
     const user = useSelector((state: RootState) => state.auth.user);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    const { mutate: updateUser } = useUpdateUser()
+    const { mutate: updateUser } = useUpdateUser();
 
-    const handleProfileUpdate = (userData: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => {
-        const formData = new FormData()
-        if (userData.firstName) {
-            formData.append('firstName', userData.firstName)
-        }
-        if (userData.lastName) {
-            formData.append('lastName', userData.lastName)
-        }
-        if (userData.phone) {
-            formData.append('phone', String(userData.phone));
-        }
-        if (userData.password) {
-            formData.append('password', userData.password);
-        }
-        if (selectedImageFile) {
-            formData.append('image', selectedImageFile);
-        }
-        updateUser({ data: formData })
+    const handleProfileUpdate = (userData: Omit<UpdateUser, "isVerified" | "id" | "email">) => {
+        const formData = new FormData();
+        if (userData.firstName) formData.append("firstName", userData.firstName);
+        if (userData.lastName) formData.append("lastName", userData.lastName);
+        if (userData.phone) formData.append("phone", String(userData.phone));
+        if (userData.password) formData.append("password", userData.password);
+        if (selectedImageFile) formData.append("image", selectedImageFile);
+        updateUser({ data: formData });
     };
 
     const handleProfileImageUpdate = () => {
         if (!selectedImageFile) {
-            showError('No image provided. Please upload an Image');
+            showError("No image provided. Please upload an Image");
             return;
         }
         const formData = new FormData();
@@ -49,7 +42,20 @@ const UserDashboard: React.FC = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
 
-            <main className="flex-grow bg-background px-4 py-6">
+            {/* Sidebar */}
+            <UserSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+            {/* Toggle Button */}
+            {!sidebarOpen && (
+                <button
+                    className="fixed top-18 left-1 z-40 bg-yellow-200 p-2 rounded-md shadow-lg lg:hidden"
+                    onClick={() => setSidebarOpen(true)}
+                >
+                    <Menu className="w-5 h-5" />
+                </button>
+            )}
+
+            <main className="flex-grow bg-background px-4 py-6 lg:ml-64">
                 <div className="mx-auto max-w-6xl">
                     <h1 className="mb-6 text-3xl font-bold">User Dashboard</h1>
 

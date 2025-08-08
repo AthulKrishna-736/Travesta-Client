@@ -10,7 +10,7 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Company Info */}
                     <div className="space-y-4">
-                        <h3 className="text-2xl font-bold text-white">Traveste</h3>
+                        <h3 className="text-2xl font-bold text-white">Travesta</h3>
                         <p className="text-gray-400 max-w-xs">
                             Find the perfect hotel at the best price. Compare rates from all major booking sites.
                         </p>
@@ -70,7 +70,7 @@ const Footer = () => {
                 </div>
 
                 <div className="border-t border-gray-700 mt-12 pt-6 text-center text-gray-400">
-                    <p>© {new Date().getFullYear()} Traveste. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Travesta. All rights reserved.</p>
                 </div>
             </div>
         </footer>

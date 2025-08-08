@@ -3,7 +3,7 @@ import { TRoles } from '@/types/Auth.Types';
 import { getChatMessages, getChattedVendors } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
 import { socket } from '@/utils/socket';
-import { showError, showSuccess } from '@/utils/customToast';
+import { showError } from '@/utils/customToast';
 import { getChatUsers } from '@/services/vendorService';
 import { IChat, ReadReceiptPayload, SendMessagePayload, TypingPayload } from '@/types/chat.types';
 import { getAdminChatVendors } from '@/services/adminService';
@@ -46,19 +46,17 @@ export const useGetVendorsChatAdmin = (search?: string) => {
 
 export const useSocketChat = (selectedId?: string) => {
     const [messages, setMessages] = useState<IChat[]>([]);
+    const [unreadFrom, setUnreadFrom] = useState<Set<string>>(new Set());
     const [typingStatus, setTypingStatus] = useState(false);
     const isConnected = useRef(false);
 
     useEffect(() => {
         if (!isConnected.current) {
             socket.on("receive_message", (data: IChat) => {
-                if (
-                    data.fromId === selectedId ||
-                    data.toId === selectedId
-                ) {
+                if (data.fromId === selectedId || data.toId === selectedId) {
                     setMessages((prev) => [...prev, data]);
                 } else {
-                    showSuccess(`New message from user someone`);
+                    setUnreadFrom((prev) => new Set(prev).add(data.fromId));
                 }
             });
 
@@ -130,6 +128,7 @@ export const useSocketChat = (selectedId?: string) => {
         sendReadReceipt,
         typingStatus,
         socketConnected: socket.connected,
+        unreadFrom,
     };
 };
 
