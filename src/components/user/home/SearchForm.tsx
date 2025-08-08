@@ -5,22 +5,46 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Users, MapPin } from "lucide-react";
-import { showError, showSuccess } from '@/utils/customToast';
+import { showError } from '@/utils/customToast';
+import { useNavigate } from 'react-router-dom';
 
 const SearchForm = () => {
     const [destination, setDestination] = useState('');
     const [checkInDate, setCheckInDate] = useState('');
     const [checkOutDate, setCheckOutDate] = useState('');
     const [guests, setGuests] = useState('1');
+    const navigate = useNavigate();
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!destination) return showError("Please enter a destination");
-        if (!checkInDate || !checkOutDate) return showError("Please select both check-in and check-out dates");
+        const today = new Date();
+        const checkIn = new Date(checkInDate);
+        const checkOut = new Date(checkOutDate);
 
-        showSuccess(`Searching in ${destination}`);
-        console.log({ destination, checkInDate, checkOutDate, guests });
+        if (!destination || !checkInDate || !checkOutDate) {
+            showError("Please fill in all fields");
+            return;
+        }
+
+        if (checkIn < today) {
+            showError("Check-in date cannot be in the past");
+            return;
+        }
+
+        if (checkOut <= checkIn) {
+            showError("Check-out date must be after check-in date");
+            return;
+        }
+
+        const params = new URLSearchParams({
+            destination,
+            checkIn: checkInDate,
+            checkOut: checkOutDate,
+            guests,
+        });
+
+        navigate(`/user/hotels?${params.toString()}`);
     };
 
     return (

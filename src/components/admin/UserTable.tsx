@@ -36,9 +36,12 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role
 
     const actions = [
         {
-            label: "Toggle Block",
+            label: (user: User) => (user.isBlocked ? "Unblock" : "Block"),
             variant: 'ghost' as const,
-            className: "bg-red-50 text-red-700 hover:bg-red-100",
+            className: (user: User) =>
+                user.isBlocked
+                    ? "bg-green-50 text-green-700 hover:bg-green-100"
+                    : "bg-red-50 text-red-700 hover:bg-red-100",
             onClick: (user: User) => {
                 setSelectedUser(user);
                 setIsModalOpen(true);

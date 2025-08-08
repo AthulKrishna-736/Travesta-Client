@@ -10,21 +10,21 @@ import RoomCard from '@/components/user/Hotelslist';
 import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
 import { IRoom } from '@/types/user.types';
 import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
+import { useSearchParams } from 'react-router-dom';
 
 const UserHotelPage: React.FC = () => {
-    const [page, setPage] = useState<number>(1);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [debouncedValue, setDebouncedSearchTerm] = useState<string>('');
+    const [params] = useSearchParams();
+
+    const destination = params.get('destination') || '';
+    const checkIn = params.get('checkIn') || '';
+    const checkOut = params.get('checkOut') || '';
+    const guests = parseInt(params.get('guests') || '1', 10);
+
+    const [searchTerm, setSearchTerm] = useState(destination);
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+    const [page, setPage] = useState(1);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-
-    const limit = 9;
-    const { data: amenities, isLoading: isAmenitiesLoading } = useGetActiveAmenities();
-    const amenitiesData = amenities?.data || [];
-    const { data, isLoading, isError } = useGetAvailableRooms(page, limit, priceRange, selectedAmenities, debouncedValue);
-
-    const rooms = data?.data || [];
-    const meta = data?.meta;
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -33,6 +33,25 @@ const UserHotelPage: React.FC = () => {
         }, 500);
         return () => clearTimeout(timer);
     }, [searchTerm]);
+
+    const limit = 9;
+    const { data, isLoading } = useGetAvailableRooms(
+        page,
+        limit,
+        priceRange,
+        selectedAmenities,
+        debouncedSearchTerm,
+        checkIn,
+        checkOut,
+        guests
+    );
+
+    const rooms = data?.data || [];
+    const meta = data?.meta;
+
+
+    const { data: amenities, isLoading: isAmenitiesLoading } = useGetActiveAmenities();
+    const amenitiesData = amenities?.data || [];
 
     const toggleAmenity = (amenity: string) => {
         setSelectedAmenities((prev) =>
@@ -109,18 +128,17 @@ const UserHotelPage: React.FC = () => {
 
                         {/* Rooms Listing */}
                         <section className="w-full lg:w-3/4">
-                            {isLoading && <p className="text-center">Loading rooms...</p>}
-                            {isError && <p className="text-center text-red-600">Failed to load rooms.</p>}
-
-                            {!isLoading && rooms.length === 0 && (
+                            {isLoading ? (
+                                <p className="text-center">Loading rooms...</p>
+                            ) : rooms.length === 0 ? (
                                 <p className="text-center text-gray-500">No rooms found.</p>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {rooms.map((room: IRoom) => (
+                                        <RoomCard key={room.id} room={room} />
+                                    ))}
+                                </div>
                             )}
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {rooms.map((room: IRoom) => (
-                                    <RoomCard key={room.id} room={room} />
-                                ))}
-                            </div>
 
                             {meta && meta.totalPages > 0 && (
                                 <div className="mt-10 flex justify-center">
@@ -132,6 +150,7 @@ const UserHotelPage: React.FC = () => {
                                 </div>
                             )}
                         </section>
+
                     </div>
                 </div>
             </main>

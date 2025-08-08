@@ -1,11 +1,21 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@/services/userService';
 import { showError, showSuccess } from '@/utils/customToast';
+import { getBookingsToVendor } from '@/services/vendorService';
 
 export const useGetUserBookings = (page: number, limit: number) => {
     return useQuery({
         queryKey: ['user-bookings', page],
         queryFn: () => getUserBookings(page, limit),
+        placeholderData: keepPreviousData,
+        staleTime: 60 * 1000,
+    });
+};
+
+export const useGetVendorBookings = (page: number, limit: number) => {
+    return useQuery({
+        queryKey: ['vendor-bookings', page],
+        queryFn: () => getBookingsToVendor(page, limit),
         placeholderData: keepPreviousData,
         staleTime: 60 * 1000,
     });

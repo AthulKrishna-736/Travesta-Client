@@ -127,11 +127,17 @@ const BookingCheckout: React.FC = () => {
                         <div className="grid grid-cols-2 gap-4 text-sm pt-4">
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
-                                Check-In: {formData.checkIn}
+                                Check-In:  {new Date(formData.checkIn).toLocaleString('en-US', {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'short',
+                                })}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
-                                Check-Out: {formData.checkOut}
+                                Check-Out: {new Date(formData.checkOut).toLocaleString('en-US', {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'short',
+                                })}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Users className="h-4 w-4" />

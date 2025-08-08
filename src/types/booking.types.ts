@@ -41,3 +41,49 @@ export interface BookingPayload {
     guests: number;
     totalPrice: number;
 }
+
+
+
+export interface BookingRes {
+    _id: string;
+    userId: string;
+    hotelId: {
+        _id: string;
+        vendorId: string;
+        name: string;
+    };
+    roomId: {
+        _id: string;
+        name: string;
+        basePrice: number;
+    };
+    checkIn: string;
+    checkOut: string;
+    guests: number;
+    totalPrice: number;
+    status: 'pending' | 'confirmed' | 'cancelled';
+    payment: {
+        status: 'pending' | 'success' | 'refunded';
+    };
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface BookingResponse {
+    success: boolean;
+    message: string;
+    data: BookingRes[];
+    meta: {
+        currentPage: number;
+        pageSize: number;
+        totalData: number;
+        totalPages: number;
+    };
+    statusCode: number;
+}
+
+export interface BookingTableProps {
+    bookings: Booking[];
+    loading: boolean;
+}
+

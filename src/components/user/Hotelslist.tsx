@@ -97,13 +97,13 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                         >
                             View Details
                         </Button>
-                        <Button
+                        {/* <Button
                             className="flex-1 rounded-lg bg-primary hover:bg-primary/90"
                             onClick={() => navigate(`/user/booking/${room._id}`)}
                             disabled={!isAvailable}
                         >
                             Book Now
-                        </Button>
+                        </Button> */}
                     </div>
                 </CardContent>
             </div>

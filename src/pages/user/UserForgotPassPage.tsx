@@ -39,7 +39,6 @@ const ForgotPassPage: React.FC = () => {
   };
 
   //step 3 reset password
-
   const { mutate: resetPassFn, isPending: isLoadingReset } = useResetPass(role, () => {
     setShowResetModal(false)
     navigate(`/${role}/login`)

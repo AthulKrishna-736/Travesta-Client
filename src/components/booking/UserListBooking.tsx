@@ -78,8 +78,13 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
                 title="Cancel Booking"
                 description="Are you sure you want to cancel this booking?"
                 extraNote={
-                    <div className="mt-4 rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
-                        <strong>Note:</strong> Cancelling this booking will result in a <strong>10%</strong> deduction from your refund.<br />
+                    <div className="mt-4 space-y-2">
+                        <div className="rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
+                            <strong>Note:</strong> Cancelling this booking will result in a <strong>10%</strong> deduction from your refund.
+                        </div>
+                        <div className="rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
+                            <strong>Policy:</strong> Bookings can only be cancelled within <strong>3 hours</strong> of making the reservation. After that, cancellations are no longer allowed.
+                        </div>
                     </div>
                 }
                 showInput={false}
@@ -87,7 +92,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
                 onCancel={handleCancel}
                 isLoading={isCancelling}
             />
-            
+
             <BookingDetailDialog
                 open={isDetailsModalOpen}
                 onClose={() => setIsDetailsModalOpen(false)}

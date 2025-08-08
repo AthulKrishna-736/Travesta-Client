@@ -103,11 +103,21 @@ export const useGetAvailableRoomsByHotel = (hotelId: string) => {
     });
 };
 
-export const useGetAvailableRooms = (page: number, limit: number, priceRange: [number, number], amenities: string[], search?: string) => {
-    return useQuery({
-        queryKey: ['available-rooms', page, limit, search, priceRange, amenities],
-        queryFn: () => getAvailableRooms(page, limit, priceRange, amenities, search),
-        staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
-    });
+export const useGetAvailableRooms = (
+  page: number,
+  limit: number,
+  priceRange: [number, number],
+  amenities: string[],
+  search?: string,
+  checkIn?: string,
+  checkOut?: string,
+  guests?: number
+) => {
+  return useQuery({
+    queryKey: ['available-rooms', page, limit, search, priceRange, amenities, checkIn, checkOut, guests],
+    queryFn: () => getAvailableRooms(page, limit, priceRange, amenities, search, checkIn, checkOut, guests),
+    staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
+  });
 };
+

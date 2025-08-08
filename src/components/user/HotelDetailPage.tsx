@@ -58,29 +58,47 @@ const HotelDetail: React.FC = () => {
     };
 
     const handleBookingSubmit = async (roomId: string) => {
+        const now = new Date(); // exact moment when user clicks
+        const currentHours = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const currentSeconds = now.getSeconds();
+        const currentMilliseconds = now.getMilliseconds();
+
+        console.log('formdata', formData)
+
+        const checkInDate = new Date(formData.checkIn);
+        checkInDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
+
+        const checkOutDate = new Date(formData.checkOut);
+        checkOutDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
+
+        console.log("Exact checkIn date-time:", checkInDate.toISOString());
+        console.log("Exact checkOut date-time:", checkOutDate.toISOString());
+
+        // Check if either date is missing or guests is less than 1
         if (!formData.checkIn || !formData.checkOut || formData.guests < 1) {
             showError('Please fill all fields correctly.');
             return;
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const checkInDate = new Date(formData.checkIn);
-        const checkOutDate = new Date(formData.checkOut);
-
-        if (checkInDate < today || checkOutDate < today) {
-            showError('Check-in and Check-out dates cannot be in the past.');
+        // Validate check-in is not in the past
+        if (checkInDate < now) {
+            showError('Check-in date/time cannot be in the past.');
             return;
         }
 
+        // Validate check-out after check-in
+        if (checkOutDate <= checkInDate) {
+            showError('Check-out must be after check-in.');
+            return;
+        }
+
+        // Calculate days difference
         const diffInTime = checkOutDate.getTime() - checkInDate.getTime();
         const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
 
-        if (diffInDays < 1) {
-            showError('Check-out date must be at least one day after check-in.');
-            return;
-        }
+        // Optional: round up days for hourly differences
+        const days = Math.ceil(diffInDays);
 
         const room = rooms.find((r: any) => r._id === roomId);
         if (!room) {
@@ -88,24 +106,26 @@ const HotelDetail: React.FC = () => {
             return;
         }
 
-        const totalPrice = room.basePrice * diffInDays;
+        console.log('romm: ', room)
 
-        // const bookingPayload = {
-        //     hotelId: hotel._id,
-        //     roomId,
-        //     checkIn: checkInDate,
-        //     checkOut: checkOutDate,
-        //     guests: formData.guests,
-        //     totalPrice,
-        // };
+        if (formData.guests > room.capacity) {
+            showError(`Maximum ${room.capacity} guest${room.capacity > 1 ? 's are' : ' is'} allowed per room`);
+            return
+        }
+
+        const totalPrice = room.basePrice * days;
 
         navigate('/user/checkout', {
             state: {
                 hotel,
                 room,
-                formData,
+                formData: {
+                    ...formData,
+                    checkIn: checkInDate.toISOString(),
+                    checkOut: checkOutDate.toISOString(),
+                },
                 totalPrice,
-                days: diffInDays,
+                days,
             }
         });
 

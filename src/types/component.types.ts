@@ -7,10 +7,10 @@ export interface AdminLayoutProps {
 }
 
 export type Action = {
-    label: string;
+    label: string | ((rowData: any) => string);
     onClick: (rowData: any) => void;
     variant?: "default" | "outline" | "ghost" | "link" | "destructive";
-    className?: string;
+    className?: string | ((rowData: any) => string); 
     showLabel?: boolean;
     icon?: any;
 };
