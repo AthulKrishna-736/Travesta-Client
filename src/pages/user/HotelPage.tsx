@@ -11,6 +11,7 @@ import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
 import { IRoom } from '@/types/user.types';
 import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
 import { useSearchParams } from 'react-router-dom';
+import CustomSearch from '@/components/common/CustomSearch';
 
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
@@ -74,9 +75,7 @@ const UserHotelPage: React.FC = () => {
 
             <main className="flex-grow py-10 bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-6 text-travesty-700">
-                        Explore Available Rooms
-                    </h2>
+                    <CustomSearch />
 
                     <div className="flex flex-col lg:flex-row gap-6">
                         {/* Filter Sidebar */}
