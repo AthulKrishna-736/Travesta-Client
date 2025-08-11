@@ -12,6 +12,7 @@ import { IRoom } from '@/types/user.types';
 import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
 import { useSearchParams } from 'react-router-dom';
 import CustomSearch from '@/components/common/CustomSearch';
+import Breadcrumbs from '@/components/common/BreadCrumps';
 
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
@@ -72,10 +73,10 @@ const UserHotelPage: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-
+            <CustomSearch />
+            
             <main className="flex-grow py-10 bg-gray-50">
                 <div className="container mx-auto px-4">
-                    <CustomSearch />
 
                     <div className="flex flex-col lg:flex-row gap-6">
                         {/* Filter Sidebar */}
