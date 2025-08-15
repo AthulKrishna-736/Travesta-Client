@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetChatMessages, useGetChattedUsers, useSocketChat } from '@/hooks/user/useChat';
-import Header from '@/components/vendor/Header';
-import Sidebar from '@/components/vendor/Sidebar';
+import Header from '@/components/header/vendor/Header';
+import Sidebar from '@/components/sidebar/Sidebar';
 import { SendMessagePayload } from '@/types/chat.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { User } from '@/types/user.types';

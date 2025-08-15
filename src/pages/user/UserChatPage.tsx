@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Header from '@/components/common/Header';
+import Header from '@/components/header/user/Header';
 import { useGetChatMessages, useGetChattedVendors, useSocketChat } from '@/hooks/user/useChat';
 import { useQueryClient } from '@tanstack/react-query';
 import { SendMessagePayload } from '@/types/chat.types';
@@ -7,7 +7,7 @@ import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import UserSidebar from '@/components/common/UserSidebar';
+import UserSidebar from '@/components/sidebar/UserSidebar';
 import { Menu } from 'lucide-react';
 
 const UserChatPage: React.FC = () => {
@@ -15,7 +15,7 @@ const UserChatPage: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [msg, setMsg] = useState('');
     const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
-    const currentUserId = useSelector((state: RootState) => state?.auth?.user?.id)
+    const currentUserId = useSelector((state: RootState) => state?.user?.user?.id)
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 

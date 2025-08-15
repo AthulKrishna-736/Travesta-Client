@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Header from "@/components/common/Header";
+import Header from "@/components/header/user/Header";
 import WalletSection from "@/components/wallet/Wallet";
 import Pagination from "@/components/common/Pagination";
 import { Elements } from "@stripe/react-stripe-js";
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { showError } from "@/utils/customToast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import UserSidebar from "@/components/common/UserSidebar";
+import UserSidebar from "@/components/sidebar/UserSidebar";
 import { Menu } from "lucide-react";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);

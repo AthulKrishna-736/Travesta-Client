@@ -1,5 +1,5 @@
 import NotFound from '@/components/auth/Page404'
-import UserHotelPage from '@/pages/user/HotelPage'
+import UserHotelPage from '@/pages/user/UserHotelPage'
 import UserAboutPage from '@/pages/user/UserAboutUsPage'
 import UserBookingListPage from '@/pages/user/UserBookingListPage'
 import UserChatPage from '@/pages/user/UserChatPage'

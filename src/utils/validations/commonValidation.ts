@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 
 const nameRegex = /^[A-Za-z\s]+$/;
-const tagAmenityServiceRegex = /^[A-Za-z0-9,\s]+$/;
 
 export const validationSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -35,14 +34,6 @@ export const hotelSchema = Yup.object().shape({
     city: Yup.string()
         .matches(nameRegex, 'City must contain only letters and spaces')
         .required('City is required'),
-
-    tags: Yup.string()
-        .matches(tagAmenityServiceRegex, 'Tags must be letters, numbers, or commas')
-        .required('Tags are required'),
-
-    services: Yup.string()
-        .matches(tagAmenityServiceRegex, 'Services must be letters, numbers, or commas')
-        .required('Services are required'),
 });
 
 export const createAmenitySchema = Yup.object({

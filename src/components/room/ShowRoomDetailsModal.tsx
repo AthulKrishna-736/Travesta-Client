@@ -1,6 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { IRoom } from "@/types/user.types";
+import { IRoom } from "@/types/room.types";
 
 type TRoomDetailProps = {
     open: boolean;

@@ -80,7 +80,7 @@ export interface ICreateHotelModalProps {
 }
 
 export interface IMutilImageUploadProps {
-    maxImages?: number;
+    maxImages: number;
     onImagesChange: (files: (string | File)[]) => void;
     initialImageUrls?: string[];
 };

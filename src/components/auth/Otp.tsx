@@ -1,5 +1,5 @@
 import { useResendOtp } from '@/hooks/auth/useResendOtp';
-import { IOtpModalProps } from '@/types/Auth.Types';
+import { IOtpModalProps } from '@/types/auth.types';
 import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';

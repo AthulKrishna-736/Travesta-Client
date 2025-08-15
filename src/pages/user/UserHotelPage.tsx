@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import Header from '@/components/header/user/Header';
+import Footer from '@/components/footer/Footer';
 import Pagination from '@/components/common/Pagination';
-import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
 import RoomCard from '@/components/user/Hotelslist';
 import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
-import { IRoom } from '@/types/user.types';
-import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
+import { IRoom } from '@/types/room.types';
 import { useSearchParams } from 'react-router-dom';
 import CustomSearch from '@/components/common/CustomSearch';
 import Breadcrumbs from '@/components/common/BreadCrumps';
+import UserFilterSidebar from '@/components/sidebar/UserFilterSidebar';
+import { Loader2 } from 'lucide-react';
+import { useGetUsedActiveAmenities } from '@/hooks/admin/useAmenities';
 
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
@@ -25,8 +23,9 @@ const UserHotelPage: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState(destination);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [page, setPage] = useState(1);
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, Infinity]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+    const [roomType, setRoomType] = useState<string[]>([]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -37,22 +36,21 @@ const UserHotelPage: React.FC = () => {
     }, [searchTerm]);
 
     const limit = 9;
-    const { data, isLoading } = useGetAvailableRooms(
+    const { data, isLoading: isRoomLoading } = useGetAvailableRooms(
         page,
         limit,
         priceRange,
         selectedAmenities,
+        roomType,
         debouncedSearchTerm,
         checkIn,
         checkOut,
         guests
     );
-
     const rooms = data?.data || [];
     const meta = data?.meta;
 
-
-    const { data: amenities, isLoading: isAmenitiesLoading } = useGetActiveAmenities();
+    const { data: amenities, isLoading: isAmenitiesLoading } = useGetUsedActiveAmenities();
     const amenitiesData = amenities?.data || [];
 
     const toggleAmenity = (amenity: string) => {
@@ -62,11 +60,19 @@ const UserHotelPage: React.FC = () => {
         setPage(1);
     };
 
+    const toggleRoomType = (type: string) => {
+        setRoomType((prev: string[]) => {
+            return prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type];
+        })
+        setPage(1);
+    }
+
     const resetFilters = () => {
         setSearchTerm('');
         setDebouncedSearchTerm('');
-        setPriceRange([0, 10000]);
+        setPriceRange([0, Infinity]);
         setSelectedAmenities([]);
+        setRoomType([]);
         setPage(1);
     };
 
@@ -74,64 +80,35 @@ const UserHotelPage: React.FC = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
             <CustomSearch />
-            
+
             <main className="flex-grow py-10 bg-gray-50">
                 <div className="container mx-auto px-4">
 
                     <div className="flex flex-col lg:flex-row gap-6">
                         {/* Filter Sidebar */}
-                        <aside className="w-full lg:w-1/4 bg-white p-4 rounded-xl shadow-md">
-                            <div className="mb-6">
-                                <Input
-                                    type="text"
-                                    placeholder="Search rooms..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-
-                            <div className="mb-6">
-                                <label className="font-semibold block mb-2">Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}</label>
-                                <Slider
-                                    min={0}
-                                    max={10000}
-                                    step={10}
-                                    value={priceRange}
-                                    onValueChange={(value: any) => {
-                                        if (value.length === 2) setPriceRange([value[0], value[1]]);
-                                    }}
-                                />
-                            </div>
-
-                            <div className="mb-6">
-                                <label className="font-semibold block mb-2">Amenities</label>
-                                {isAmenitiesLoading ? (
-                                    <p>Loading amenities...</p>
-                                ) : (
-                                    amenitiesData.map((amenity: any) => (
-                                        <div key={amenity._id} className="flex items-center gap-2 mb-2">
-                                            <Checkbox
-                                                checked={selectedAmenities.includes(amenity._id)}
-                                                onCheckedChange={() => toggleAmenity(amenity._id)}
-                                            />
-                                            <span>{amenity.name}</span>
-                                        </div>
-                                    ))
-                                )}
-
-                            </div>
-
-                            <Button variant="outline" className="w-full" onClick={resetFilters}>
-                                Reset Filters
-                            </Button>
-                        </aside>
+                        <UserFilterSidebar
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            priceRange={priceRange}
+                            setPriceRange={setPriceRange}
+                            selectedRoomTypes={roomType}
+                            setRoomType={toggleRoomType}
+                            selectedAmenities={selectedAmenities}
+                            toggleAmenity={toggleAmenity}
+                            resetFilters={resetFilters}
+                            amenitiesData={amenitiesData}
+                            isAmenitiesLoading={isAmenitiesLoading}
+                        />
 
                         {/* Rooms Listing */}
                         <section className="w-full lg:w-3/4">
-                            {isLoading ? (
-                                <p className="text-center">Loading rooms...</p>
+                            {isRoomLoading ? (
+                                <div className='flex items-center justify-center gap-4'>
+                                    <Loader2 className='w-10 h-10 animate-spin' />
+                                    <p className="text-center text-2xl font-semibold">Loading rooms...</p>
+                                </div>
                             ) : rooms.length === 0 ? (
-                                <p className="text-center text-gray-500">No rooms found.</p>
+                                <p className="text-center text-gray-500 text-2xl">No rooms found.</p>
                             ) : (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                                     {rooms.map((room: IRoom) => (

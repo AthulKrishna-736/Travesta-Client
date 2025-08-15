@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import Header from '@/components/header/user/Header';
+import Footer from '@/components/footer/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 

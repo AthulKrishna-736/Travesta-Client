@@ -1,9 +1,9 @@
 import { logout } from "@/services/authService";
 import { logoutAdmin } from "@/store/slices/adminSlice";
-import { logoutUser } from "@/store/slices/authSlice";
+import { logoutUser } from "@/store/slices/userSlice";
 import { logoutVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch } from "@/store/store";
-import { TRoles } from "@/types/Auth.Types";
+import { TRoles } from "@/types/auth.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";

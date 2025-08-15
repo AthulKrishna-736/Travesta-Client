@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
-import HotelDetail from '@/components/user/HotelDetailPage';
+import Header from '@/components/header/user/Header';
+import Footer from '@/components/footer/Footer';
+import HotelDetail from '@/components/hotel/HotelDetail';
 
 const UserHotelDetailPage: React.FC = () => {
     return (

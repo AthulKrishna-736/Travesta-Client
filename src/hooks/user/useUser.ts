@@ -2,7 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { getUser, updateUser } from "@/services/userService"
 import { useDispatch } from "react-redux"
 import { showError, showSuccess } from "@/utils/customToast"
-import { setUser } from "@/store/slices/authSlice"
+import { setUser } from "@/store/slices/userSlice"
 import { getAllUsers, toggleBlockUser } from "@/services/adminService"
 import { TGetAllUsersResponse } from "@/types/response.types"
 import { TRoles } from "@/types/Auth.Types"

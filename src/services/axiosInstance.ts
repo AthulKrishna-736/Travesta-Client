@@ -1,5 +1,5 @@
 import { env, HttpStatusCode } from '@/config/config';
-import { logoutUser } from '@/store/slices/authSlice';
+import { logoutUser } from '@/store/slices/userSlice';
 import { logoutVendor } from '@/store/slices/vendorSlice';
 import store from '@/store/store';
 import { ICustomErrorResponse } from '@/types/response.types';

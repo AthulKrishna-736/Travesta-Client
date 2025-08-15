@@ -1,5 +1,5 @@
 import { updateUser } from "@/services/userService";
-import { setUser } from "@/store/slices/authSlice";
+import { setUser } from "@/store/slices/userSlice";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";

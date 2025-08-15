@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Header from "@/components/common/Header";
+import Header from "@/components/header/user/Header";
 import BookingTable from "@/components/booking/UserListBooking";
 import Pagination from "@/components/common/Pagination";
 import { useGetUserBookings } from "@/hooks/user/useBooking";
-import UserSidebar from "@/components/common/UserSidebar";
+import UserSidebar from "@/components/sidebar/UserSidebar";
 import { Menu } from "lucide-react";
 
 const UserBookingListPage: React.FC = () => {

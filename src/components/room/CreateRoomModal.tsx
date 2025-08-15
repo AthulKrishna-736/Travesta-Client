@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import MultiImageUploader from '../common/ImageUpload';
 import { ICreateRoomProps, IAmenity } from '@/types/component.types';
-import { IHotel } from '@/types/user.types';
+import { IHotel } from '@/types/hotel.types';
 import { X } from 'lucide-react';
 import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
 
@@ -162,6 +162,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                     <div>
                         <label className="block mb-1 font-medium">Room Images</label>
                         <MultiImageUploader
+                            // maxImages={10}
                             onImagesChange={(files: (string | File)[]) =>
                                 setValue('images', files as File[])
                             }

@@ -15,8 +15,15 @@ export const showError = (message: string) => {
 };
 
 export const showInfo = (message: string) => {
-  toast(message, {
+  toast.info(message, {
     duration: 2000,
     position: 'top-right',
   });
 };
+
+export const showWarn = (message: string) => {
+  toast.warning(message, {
+    duration: 2000,
+    position: 'top-right',
+  })
+}

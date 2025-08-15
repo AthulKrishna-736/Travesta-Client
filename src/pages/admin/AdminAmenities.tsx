@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { useCreateAmentiy, useGetAllAmenities } from "@/hooks/admin/useAmenities";
 import Pagination from "@/components/common/Pagination";
-import { AdminLayout } from "@/components/admin/layout/AdminLayout";
+import { AdminLayout } from "@/components/header/admin/AdminLayout";
 import AmenitiesModal from "@/components/amenities/AmenitiesModal";
 import { TCreateAmenityData } from "@/types/component.types";
 

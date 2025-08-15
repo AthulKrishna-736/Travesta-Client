@@ -6,7 +6,7 @@ import { useGetChatMessages, useGetVendorsChatAdmin, useSocketChat } from '@/hoo
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
-import { AdminLayout } from '@/components/admin/layout/AdminLayout';
+import { AdminLayout } from '@/components/header/admin/AdminLayout';
 
 const AdminChatPage: React.FC = () => {
     const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ const AdminChatPage: React.FC = () => {
     }, [searchText]);
 
     const { data: vendors, isLoading } = useGetVendorsChatAdmin(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus } = useSocketChat(selectedVendor?.id);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, unreadFrom } = useSocketChat(selectedVendor?.id);
     const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
     const oldMessages = oldMessagesData || [];
 
@@ -72,6 +72,7 @@ const AdminChatPage: React.FC = () => {
                     selectedUser={selectedVendor!}
                     msg={msg}
                     setMsg={setMsg}
+                    unreadFrom={unreadFrom}
                     handleSend={handleSend}
                     handleTyping={handleTyping}
                     typingStatus={typingStatus}

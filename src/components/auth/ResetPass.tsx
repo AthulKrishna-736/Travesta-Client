@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IResetPassModalProps } from '@/types/Auth.Types';
+import { IResetPassModalProps } from '@/types/auth.types';
 import { Input } from '../ui/input';
 import { resetPasswordValidationSchema } from '@/utils/validations/authValidation';
 import { Formik, Form, Field, ErrorMessage } from 'formik';

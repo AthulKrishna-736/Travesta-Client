@@ -7,14 +7,14 @@ import { ImageUploadProps } from "@/types/component.types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, updateProfileImage, role }) => {
+export const ProfileImage: React.FC<ImageUploadProps> = ({ onImageSelected, updateProfileImage, role }) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [originalImage, setOriginalImage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const data = useSelector((state: RootState) =>
-        role === "user" ? state?.auth?.user : state?.vendor?.vendor
+        role === "user" ? state?.user?.user : state?.vendor?.vendor
     );
 
     useEffect(() => {
@@ -135,4 +135,4 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelected, updat
     );
 };
 
-export default ImageUpload;
+export default ProfileImage;

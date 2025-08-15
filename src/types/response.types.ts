@@ -1,4 +1,4 @@
-import { TRoles } from "./Auth.Types";
+import { TRoles } from "./auth.types";
 import { TSubscriptionType, WishlistItem } from "./user.types";
 
 export type TGetAllUsersResponse = {

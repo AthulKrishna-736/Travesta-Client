@@ -10,7 +10,7 @@ interface SidebarProps {
 }
 
 const navItems = [
-    { name: 'Dashboard', path: '/vendor/dashboard', icon: LayoutDashboard },
+    { name: 'Dashboard', path: '/vendor/home', icon: LayoutDashboard },
     { name: 'Hotels', path: '/vendor/hotels', icon: Building },
     { name: 'Bookings', path: '/vendor/bookings', icon: Calendar },
     // { name: 'Analytics', path: '/vendor/analytics', icon: BarChart3 },

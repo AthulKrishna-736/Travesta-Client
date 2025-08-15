@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ImageUpload from "@/components/user/ImageUpload";
-import ProfileSection from "@/components/user/ProfileSection";
+import ImageUpload from "@/components/profile/ProfileImage";
+import ProfileSection from "@/components/profile/ProfileSection";
 import { UpdateUser } from "@/types/user.types";
-import Header from "@/components/common/Header";
+import Header from "@/components/header/user/Header";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { useUpdateUser } from "@/hooks/user/useUser";
 import { showError } from "@/utils/customToast";
-import UserSidebar from "@/components/common/UserSidebar";
+import UserSidebar from "@/components/sidebar/UserSidebar";
 import { Menu } from "lucide-react";
 
 const UserDashboard: React.FC = () => {
-    const user = useSelector((state: RootState) => state.auth.user);
+    const user = useSelector((state: RootState) => state.user.user);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 

@@ -104,20 +104,32 @@ export const useGetAvailableRoomsByHotel = (hotelId: string) => {
 };
 
 export const useGetAvailableRooms = (
-  page: number,
-  limit: number,
-  priceRange: [number, number],
-  amenities: string[],
-  search?: string,
-  checkIn?: string,
-  checkOut?: string,
-  guests?: number
+    page: number,
+    limit: number,
+    priceRange: [number, number],
+    amenities: string[],
+    roomTypes: string[],
+    search?: string,
+    checkIn?: string,
+    checkOut?: string,
+    guests?: number
 ) => {
-  return useQuery({
-    queryKey: ['available-rooms', page, limit, search, priceRange, amenities, checkIn, checkOut, guests],
-    queryFn: () => getAvailableRooms(page, limit, priceRange, amenities, search, checkIn, checkOut, guests),
-    staleTime: 5 * 60 * 1000,
-    placeholderData: keepPreviousData,
-  });
+    return useQuery({
+        queryKey: [
+            'available-rooms',
+            page,
+            limit,
+            search,
+            priceRange,
+            amenities,
+            roomTypes,
+            checkIn,
+            checkOut,
+            guests
+        ],
+        queryFn: () => getAvailableRooms(page, limit, priceRange, amenities, roomTypes, search, checkIn, checkOut, guests),
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
+    });
 };
 

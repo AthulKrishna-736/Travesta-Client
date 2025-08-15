@@ -25,7 +25,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     const limit = 10;
 
     const { data: hotelsData, isLoading } = useGetAllHotels(page, limit, debouncedSearch);
-    const hotels = hotelsData?.data ?? [];
+    const hotels = hotelsData?.data;
     const meta = hotelsData?.meta;
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     }, [searchTerm]);
 
     useEffect(() => {
-        if (hotels.length > 0 && typeof onHotelsFetched === 'function') {
+        if (hotels > 0 && typeof onHotelsFetched === 'function') {
             onHotelsFetched(hotels);
         }
     }, [hotels, onHotelsFetched]);
@@ -69,7 +69,6 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
         formData.append('state', hotelData.state);
         formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
         formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
-        formData.append('services', JSON.stringify(Array.isArray(hotelData.services) ? hotelData.services : [hotelData.services]));
 
         if (hotelData.geoLocation?.length === 2) {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
@@ -113,12 +112,18 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
 
-                <DataTable
-                    columns={columns}
-                    data={hotels}
-                    actions={actions}
-                    loading={isLoading}
-                />
+                {hotels ? (
+                    <DataTable
+                        columns={columns}
+                        data={hotels}
+                        actions={actions}
+                        loading={isLoading}
+                    />
+                ) : (
+                    <div className="flex justify-center items-center">
+                        <p className="text-semibold text-lg text-red-500">No hotels found. Please create one</p>
+                    </div>
+                )}
 
                 {meta && meta.totalPages > 1 && (
                     <Pagination

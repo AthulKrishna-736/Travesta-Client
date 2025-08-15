@@ -1,9 +1,9 @@
-import Header from '@/components/vendor/Header';
-import Sidebar from '@/components/vendor/Sidebar';
+import Header from '@/components/header/vendor/Header';
+import Sidebar from '@/components/sidebar/Sidebar';
 import React, { useState } from 'react';
 import HotelTable from '@/components/hotel/HotelList';
 import RoomTable from '@/components/room/RoomList';
-import { IHotel } from '@/types/user.types';
+import { IHotel } from '@/types/hotel.types';
 import { UseCreateHotel } from '@/hooks/vendor/useHotel';
 import CreateHotelModal from '@/components/hotel/CreateHotelModal';
 import CreateRoomModal from '@/components/room/CreateRoomModal';
@@ -50,7 +50,6 @@ const VendorHotelsPage: React.FC = () => {
         formData.append('state', hotelData.state);
         formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
         formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
-        formData.append('services', JSON.stringify(Array.isArray(hotelData.services) ? hotelData.services : [hotelData.services]));
 
         if (hotelData.geoLocation?.length === 2) {
             formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
@@ -59,7 +58,7 @@ const VendorHotelsPage: React.FC = () => {
         formData.append('images', JSON.stringify([]));
 
         if (hotelData.images && hotelData.images.length > 0) {
-            hotelData.images.forEach((file) => {
+            hotelData.images.forEach((file: any) => {
                 formData.append('imageFile', file);
             });
         }

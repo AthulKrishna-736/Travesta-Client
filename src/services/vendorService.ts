@@ -82,35 +82,36 @@ export const getAvailableRooms = async (
     limit: number,
     priceRange?: [number, number],
     amenities?: string[],
+    roomTypes?: string[],
     search?: string,
     checkIn?: string,
     checkOut?: string,
     guests?: number
 ) => {
-    const params: Record<string, any> = {
-        page,
-        limit,
-    };
+    const params: Record<string, any> = { page, limit };
 
     if (search) params.search = search;
     if (checkIn) params.checkIn = checkIn;
     if (checkOut) params.checkOut = checkOut;
     if (guests) params.guests = guests;
+
     if (priceRange?.length === 2) {
         params.minPrice = priceRange[0];
         params.maxPrice = priceRange[1];
     }
 
-    if (amenities && amenities.length > 0) {
-        params.amenities = amenities.join(',');
+    if (amenities?.length) {
+        params.amenities = amenities.join(",");
     }
 
-    const response = await axiosInstance.get(`/vendor/rooms/available`, {
-        params,
-    });
+    if (roomTypes?.length) {
+        params.roomTypes = roomTypes.join(",");
+    }
 
-    return response.data;
+    const { data } = await axiosInstance.get(`/vendor/rooms/available`, { params });
+    return data;
 };
+
 
 
 export const getChatUsers = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {

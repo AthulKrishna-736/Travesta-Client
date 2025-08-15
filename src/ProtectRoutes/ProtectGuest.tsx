@@ -8,7 +8,7 @@ interface GuestRouteProps {
 }
 
 const ProtectGuest: React.FC<GuestRouteProps> = ({ children }) => {
-    const user = useSelector((state: RootState) => state.auth.user);  
+    const user = useSelector((state: RootState) => state.user.user);  
 
     if (user) {
         return <Navigate to="/user/home" replace />;

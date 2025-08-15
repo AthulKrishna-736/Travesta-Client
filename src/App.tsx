@@ -9,6 +9,7 @@ import NotFound from './components/auth/Page404';
 import { ErrorBoundary } from './utils/ErrorBoundary';
 import { env } from './config/config';
 import LandingPage from './pages/user/LandingPage';
+import 'leaflet/dist/leaflet.css';
 
 const App: React.FC = () => {
   return (

@@ -73,16 +73,15 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
 
                         <div className="space-y-4">
                             <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
-                                    Features
-                                </h3>
                                 <div className="space-y-2 text-sm sm:text-base">
-                                    {['rating', 'services', 'amenities', 'tags'].map((key) => {
+                                    {['rating', 'amenities', 'tags'].map((key) => {
                                         if (!data[key]) return null;
 
-                                        if (['services', 'amenities', 'tags'].includes(key)) {
+                                        if (['amenities', 'tags'].includes(key)) {
                                             const values = Array.isArray(data[key])
-                                                ? data[key].join(',').split(',')
+                                                ? data[key].map((item: any) =>
+                                                    key === 'amenities' ? item.name : item
+                                                )
                                                 : [];
 
                                             return (
@@ -118,6 +117,7 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                                             </p>
                                         );
                                     })}
+
                                 </div>
                             </div>
                         </div>

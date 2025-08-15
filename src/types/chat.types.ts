@@ -1,4 +1,4 @@
-import { TRoles } from "./Auth.Types";
+import { TRoles } from "./auth.types";
 import { User } from "./user.types";
 
 //chat model

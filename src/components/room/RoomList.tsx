@@ -27,7 +27,7 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
     const limit = 10;
 
     const { data: roomsData, isLoading } = useGetAllRooms(page, limit, debouncedSearch);
-    const rooms = roomsData?.data ?? [];
+    const rooms = roomsData?.data;
     const meta = roomsData?.meta;
 
     // Debounce search input
@@ -96,13 +96,18 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-
-                <DataTable
-                    columns={columns}
-                    data={rooms}
-                    actions={actions}
-                    loading={isLoading}
-                />
+                {rooms ? (
+                    <DataTable
+                        columns={columns}
+                        data={rooms}
+                        actions={actions}
+                        loading={isLoading}
+                    />
+                ) : (
+                    <div className="flex justify-center items-center">
+                        <p className="text-semibold text-lg text-red-500">No rooms found. Please create one</p>
+                    </div>
+                )}
 
                 {meta && meta.totalPages > 1 && (
                     <Pagination

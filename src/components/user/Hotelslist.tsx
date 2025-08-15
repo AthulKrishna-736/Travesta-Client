@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Bed, CheckCircle, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { IRoom } from '@/types/user.types';
+import { IRoom } from '@/types/room.types';
 import { Button } from '@/components/ui/button';
 
 interface RoomCardProps {
@@ -11,7 +11,7 @@ interface RoomCardProps {
 
 const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
     const navigate = useNavigate();
-    const { name, capacity, bedType, amenities, images, basePrice, isAvailable } = room;
+    const { name, roomCount, bedType, amenities, images, basePrice, isAvailable } = room;
 
     return (
         <Card className="shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl overflow-hidden border-0 group h-full flex flex-col" >
@@ -66,7 +66,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room }) => {
                             </div>
                             <div className="flex items-center gap-1 text-sm text-gray-600">
                                 <Users className="w-4 h-4" />
-                                {capacity} {capacity === 1 ? 'Guest' : 'Guests'}
+                                {roomCount} {roomCount === 1 ? 'Guest' : 'Guests'}
                             </div>
                         </div>
 

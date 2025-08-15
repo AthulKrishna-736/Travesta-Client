@@ -1,4 +1,4 @@
-import { AdminLayout } from "@/components/admin/layout/AdminLayout"
+import { AdminLayout } from "@/components/header/admin/AdminLayout"
 
 const AdminDash = () => {
     return (

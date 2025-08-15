@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
+import Header from '@/components/header/user/Header';
+import Footer from '@/components/footer/Footer';
 import BookingCheckout from '@/components/booking/BookingCheckout';
 
 const UserCheckoutPage: React.FC = () => {

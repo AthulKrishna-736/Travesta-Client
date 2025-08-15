@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Header from "@/components/vendor/Header";
-import Sidebar from "@/components/vendor/Sidebar";
+import Header from "@/components/header/vendor/Header";
+import Sidebar from "@/components/sidebar/Sidebar";
 import Pagination from "@/components/common/Pagination";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";

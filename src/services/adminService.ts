@@ -32,6 +32,11 @@ export const getAllAmenities = async (page: number, limit: number, search?: stri
     return response.data;
 };
 
+export const getUsedActiveAmenities = async () => {
+    const response = await axiosInstance.get(`/admin/amenities/used`);
+    return response.data;
+}
+
 export const getActiveAmenities = async () => {
     const response = await axiosInstance.get('/admin/amenities/active');
     return response.data;

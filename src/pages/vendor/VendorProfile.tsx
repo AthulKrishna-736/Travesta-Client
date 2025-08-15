@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ImageUpload from "@/components/user/ImageUpload";
-import ProfileSection from "@/components/user/ProfileSection";
+import ImageUpload from "@/components/profile/ProfileImage";
+import ProfileSection from "@/components/profile/ProfileSection";
 import { UpdateUser } from "@/types/user.types";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { KycDocuments } from "@/components/user/KycDocument";
-import Header from "@/components/vendor/Header";
-import Sidebar from "@/components/vendor/Sidebar";
+import { KycDocuments } from "@/components/profile/KycDocument";
+import Header from "@/components/header/vendor/Header";
+import Sidebar from "@/components/sidebar/Sidebar";
 import { useUpdateVendor } from "@/hooks/vendor/useVendor";
 import { showError } from "@/utils/customToast";
 
