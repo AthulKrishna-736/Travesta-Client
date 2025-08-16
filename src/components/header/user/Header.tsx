@@ -10,8 +10,8 @@ import { RootState } from '@/store/store';
 const Header = () => {
     const { mutate: logoutUserFn } = useLogout('user');
     const location = useLocation();
-    const profileImage = useSelector((state: RootState) => state.user.user.profileImage);
-    const userName = useSelector((state: RootState) => state.user.user.firstName);
+    const profileImage = useSelector((state: RootState) => state.user.user?.profileImage);
+    const userName = useSelector((state: RootState) => state.user.user?.firstName);
 
     const isHotelsPage = location.pathname === '/user/hotels'
 

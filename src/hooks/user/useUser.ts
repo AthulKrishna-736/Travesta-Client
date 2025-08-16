@@ -5,7 +5,7 @@ import { showError, showSuccess } from "@/utils/customToast"
 import { setUser } from "@/store/slices/userSlice"
 import { getAllUsers, toggleBlockUser } from "@/services/adminService"
 import { TGetAllUsersResponse } from "@/types/response.types"
-import { TRoles } from "@/types/Auth.Types"
+import { TRoles } from "@/types/auth.types"
 
 export const useGetUser = () => {
     return useQuery({

@@ -1,7 +1,7 @@
 import { getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
 import { setVendor } from "@/store/slices/vendorSlice"
-import { TUpdateVendorReqValues } from "@/types/Auth.Types"
+import { TUpdateVendorReqValues } from "@/types/auth.types"
 import { TGetVendorsResponse } from "@/types/response.types"
 import { showError, showSuccess } from "@/utils/customToast"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"

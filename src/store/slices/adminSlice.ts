@@ -1,6 +1,7 @@
+import { IAdmin } from '@/types/user.types';
 import { createSlice } from '@reduxjs/toolkit';
 
-const adminFromStorage = localStorage.getItem('admin')
+const adminFromStorage: IAdmin | null = localStorage.getItem('admin')
     ? JSON.parse(localStorage.getItem('admin') as string)
     : null;
 

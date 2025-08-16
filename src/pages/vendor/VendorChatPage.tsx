@@ -83,7 +83,7 @@ const VendorChatPage: React.FC = () => {
                         handleSend={handleSend}
                         handleTyping={handleTyping}
                         typingStatus={typingStatus}
-                        currentUserId={currentVendorId}
+                        currentUserId={currentVendorId as string}
                         combinedMessages={combinedMessages}
                         searchText={searchText}
                         setSearchText={setSearchText}

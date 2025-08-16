@@ -76,7 +76,7 @@ const AdminChatPage: React.FC = () => {
                     handleSend={handleSend}
                     handleTyping={handleTyping}
                     typingStatus={typingStatus}
-                    currentUserId={adminId}
+                    currentUserId={adminId as string}
                     combinedMessages={combinedMessages}
                     searchText={searchText}
                     setSearchText={setSearchText}

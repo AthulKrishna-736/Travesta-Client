@@ -9,6 +9,35 @@ export type User = {
   isBlocked: boolean
 }
 
+export interface IAdmin {
+  id: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  role: 'admin',
+  createdAt: Date,
+  updatedAt: Date
+}
+
+export interface IUser {
+  id: string,
+  firstName: string,
+  lastName: string,
+  isGoogle: boolean,
+  email: string,
+  password?: string, 
+  role: Exclude<TRoles, 'admin'>,
+  phone: number,
+  isBlocked: boolean,
+  profileImage?: string,
+  wishlist: string[],
+  isVerified: boolean,
+  verificationReason?: string,
+  kycDocuments?: string[],
+  createdAt: Date,
+  updatedAt: Date
+}
+
 export interface UserTableProps {
   users: User[]
   loading: boolean

@@ -8,7 +8,7 @@ interface GuestRouteProps {
 }
 
 const ProtectAdminGuest: React.FC<GuestRouteProps> = ({ children }) => {
-    const user = useSelector((state: RootState) => state.admin.admin);  
+    const user = useSelector((state: RootState) => state.admin.admin?.id);  
 
     if (user) {
         return <Navigate to="/admin/dashboard" replace />;

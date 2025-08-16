@@ -12,7 +12,7 @@ import { useUpdateVendor } from "@/hooks/vendor/useVendor";
 import { showError } from "@/utils/customToast";
 
 const VendorProfile: React.FC = () => {
-    const user = useSelector((state: RootState) => state.vendor.vendor);
+    const vendor = useSelector((state: RootState) => state.vendor.vendor);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -68,7 +68,7 @@ const VendorProfile: React.FC = () => {
                                     <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="vendor" />
                                 </div>
                                 <div className="lg:col-span-2">
-                                    <ProfileSection user={user} onUpdate={handleProfileUpdate} />
+                                    <ProfileSection user={vendor!} onUpdate={handleProfileUpdate} />
                                 </div>
                             </div>
                         </TabsContent>

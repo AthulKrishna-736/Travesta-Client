@@ -1,6 +1,7 @@
+import { IUser } from '@/types/user.types';
 import { createSlice } from '@reduxjs/toolkit';
 
-const userFromStorage = localStorage.getItem('user')
+const userFromStorage: IUser | null = localStorage.getItem('user')
     ? JSON.parse(localStorage.getItem('user') as string)
     : null;
 

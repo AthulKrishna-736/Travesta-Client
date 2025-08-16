@@ -70,7 +70,7 @@ const UserDashboard: React.FC = () => {
                                     <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="user" />
                                 </div>
                                 <div className="lg:col-span-2">
-                                    <ProfileSection user={user} onUpdate={handleProfileUpdate} />
+                                    <ProfileSection user={user!} onUpdate={handleProfileUpdate} />
                                 </div>
                             </div>
                         </TabsContent>

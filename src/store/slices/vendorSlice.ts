@@ -1,6 +1,7 @@
+import { IUser } from '@/types/user.types';
 import { createSlice } from '@reduxjs/toolkit';
 
-const vendorFromStorage = localStorage.getItem('vendor')
+const vendorFromStorage: IUser | null = localStorage.getItem('vendor')
   ? JSON.parse(localStorage.getItem('vendor') as string)
   : null;
 
@@ -16,7 +17,7 @@ const vendorSlice = createSlice({
     },
     logoutVendor: (state) => {
       state.vendor = null;
-      localStorage.removeItem('vendor'); 
+      localStorage.removeItem('vendor');
     },
   },
 });

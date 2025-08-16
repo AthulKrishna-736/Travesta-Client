@@ -37,7 +37,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                     <Button variant="ghost" size="icon" className="rounded-full">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
-                        <AvatarFallback>{adminName.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{adminName!.charAt(0)}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>

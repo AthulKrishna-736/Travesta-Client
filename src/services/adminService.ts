@@ -1,6 +1,6 @@
 import { TGetAllUsersResponse, TGetVendorsResponse } from "@/types/response.types";
 import { axiosInstance } from "./axiosInstance";
-import { TUpdateVendorReqValues } from "@/types/Auth.Types";
+import { TUpdateVendorReqValues } from "@/types/auth.types";
 import { TCreateAmenityData } from "@/types/component.types";
 import { User } from "@/types/user.types";
 

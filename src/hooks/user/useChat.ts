@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { TRoles } from '@/types/Auth.Types';
+import { TRoles } from '@/types/auth.types';
 import { getChatMessages, getChattedVendors } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
 import { socket } from '@/utils/socket';

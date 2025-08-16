@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
-import { IHotel, IRoom, UpdateUser } from "./user.types";
+import {  IUser, UpdateUser } from "./user.types";
 import { IUserType } from "./response.types";
+import { IHotel } from "./hotel.types";
+import { IRoom } from "./room.types";
 
 export interface AdminLayoutProps {
     children: ReactNode
@@ -48,7 +50,7 @@ export interface KycDocumentsProps {
 }
 
 export interface ProfileSectionProps {
-    user: UpdateUser;
+    user: IUser;
     onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => void;
 }
 
