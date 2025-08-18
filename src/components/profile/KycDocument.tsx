@@ -73,7 +73,7 @@ export const KycDocuments = () => {
                 </p>
 
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm">
-                    <span className="text-yellow-800 font-semibold mb-1">Notes: </span>
+                    <span className="text-yellow-800 font-semibold mb-1">Note: </span>
                     <span className="text-yellow-700 text-sm leading-relaxed">
                         Please upload your documents and wait for verification by the admin.
                         Only <span className="font-medium">verified vendors</span> can create hotels and rooms.

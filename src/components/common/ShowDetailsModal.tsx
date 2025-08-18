@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 const ShowDetailsModal: React.FC<ShowDetailModalProps> = ({ open, onCancel, data, title }) => {
     if (!data) return null;
 
-    const excludedKeys = ['wishlist', 'createdAt', 'updatedAt', '__v'];
+    const excludedKeys = ['wishlist', 'createdAt', 'updatedAt', '__v', 'profileImage'];
 
     const formatKey = (key: string) =>
         key
@@ -40,7 +40,7 @@ const ShowDetailsModal: React.FC<ShowDetailModalProps> = ({ open, onCancel, data
                     {kycDocs.length === 0 ? (
                         <p className="text-sm text-muted-foreground">No KYC documents uploaded.</p>
                     ) : (
-                        <div className="flex gap-4 flex-wrap">
+                        <div className="flex gap-4">
                             {kycDocs.map((url, idx) => (
                                 <div key={idx} className="flex flex-col items-center">
                                     <span className="text-sm text-muted-foreground mb-1">Preview {idx + 1}</span>

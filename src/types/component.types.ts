@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
-import {  IUser, UpdateUser } from "./user.types";
+import { IUser, UpdateUser } from "./user.types";
 import { IUserType } from "./response.types";
 import { IHotel } from "./hotel.types";
 import { IRoom } from "./room.types";
+import { LucideIcon } from "lucide-react";
 
 export interface AdminLayoutProps {
     children: ReactNode
@@ -10,11 +11,13 @@ export interface AdminLayoutProps {
 
 export type Action = {
     label: string | ((rowData: any) => string);
+    tooltip?: string | ((rowData: any) => string);
     onClick: (rowData: any) => void;
     variant?: "default" | "outline" | "ghost" | "link" | "destructive";
-    className?: string | ((rowData: any) => string); 
+    className?: string | ((rowData: any) => string);
     showLabel?: boolean;
-    icon?: any;
+    icon?: LucideIcon | ((rowData: any) => LucideIcon);
+    hidden?: boolean | ((rowData: any) => boolean);
 };
 
 

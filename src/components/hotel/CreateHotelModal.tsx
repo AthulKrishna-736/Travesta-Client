@@ -156,7 +156,7 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
             ...data,
             _id: hotelData?.id,
             geoLocation: geoLocation as [number, number],
-            amenities: selectedAmenities.join(','),
+            amenities: selectedAmenities,
             images: newImageFiles,
             oldImages: keptImageUrls,
             tags,

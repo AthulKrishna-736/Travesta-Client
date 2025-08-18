@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "@/components/common/Table";
-import { IHotel } from "@/types/user.types";
+import { IHotel } from "@/types/hotel.types";
 import ShowHotelDetailsModal from "../hotel/ShowHotelDetails";
 import { IHotelTableProps } from "@/types/component.types";
 import { Input } from "@/components/ui/input";
@@ -113,12 +113,14 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                 />
 
                 {hotels ? (
-                    <DataTable
-                        columns={columns}
-                        data={hotels}
-                        actions={actions}
-                        loading={isLoading}
-                    />
+                    <div className="rounded-lg border-1 overflow-hidden">
+                        <DataTable
+                            columns={columns}
+                            data={hotels}
+                            actions={actions}
+                            loading={isLoading}
+                        />
+                    </div>
                 ) : (
                     <div className="flex justify-center items-center">
                         <p className="text-semibold text-lg text-red-500">No hotels found. Please create one</p>
