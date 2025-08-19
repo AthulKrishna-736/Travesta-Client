@@ -10,14 +10,17 @@ import AmenitiesModal from "@/components/amenities/AmenitiesModal";
 import { TCreateAmenityData } from "@/types/component.types";
 import CustomSort from "@/components/common/CustomSort";
 import { ArrowUpAZ, ArrowDownAZ, Clock } from "lucide-react";
+import { TSortOption } from "@/types/custom.types";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const AdminAmenities = () => {
+    const queryClient = useQueryClient();
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedValue, setDebouncedValue] = useState<string>("");
     const [page, setPage] = useState<number>(1);
+    const [sortOption, setSortOption] = useState<TSortOption>({ 'name': 'ascending' });
     const [openModal, setOpenModal] = useState<boolean>(false);
-
     const limit = 8;
 
     useEffect(() => {
@@ -29,7 +32,7 @@ const AdminAmenities = () => {
         return () => clearTimeout(searchInput);
     }, [searchTerm]);
 
-    const { data, isLoading } = useGetAllAmenities(page, limit, debouncedValue);
+    const { data, isLoading } = useGetAllAmenities(page, limit, debouncedValue, sortOption);
     const { mutate: createAmenityfn, isPending } = useCreateAmentiy(page, limit);
 
     const amenities = data?.data || [];
@@ -47,8 +50,9 @@ const AdminAmenities = () => {
             name: "Name (A → Z)",
             tooltip: "Sort alphabetically ascending",
             onClickHandler: () => {
-                console.log(`Sorting by  ascending`);
-                // call API here with field
+                setPage(1);
+                setSortOption({ name: 'ascending' });
+                queryClient.invalidateQueries({ queryKey: ['amenities'] });
             },
             icon: ArrowUpAZ,
         },
@@ -56,8 +60,9 @@ const AdminAmenities = () => {
             name: "Name (Z → A)",
             tooltip: "Sort alphabetically descending",
             onClickHandler: () => {
-                console.log(`Sorting by descending`);
-                // call API here with field
+                setPage(1);
+                setSortOption({ name: 'descending' });
+                queryClient.invalidateQueries({ queryKey: ['amenities'] });
             },
             icon: ArrowDownAZ,
         },
@@ -65,8 +70,9 @@ const AdminAmenities = () => {
             name: "Recently Updated",
             tooltip: "Sort by last updated date",
             onClickHandler: () => {
-                console.log(`Sorting by latest`);
-                // call API here with field
+                setPage(1);
+                setSortOption({ updatedAt: 'ascending' })
+                queryClient.invalidateQueries({ queryKey: ['amenities'] });
             },
             icon: Clock,
         },

@@ -3,6 +3,7 @@ import { axiosInstance } from "./axiosInstance";
 import { TUpdateVendorReqValues } from "@/types/auth.types";
 import { TCreateAmenityData } from "@/types/component.types";
 import { User } from "@/types/user.types";
+import { TSortOption } from "@/types/custom.types";
 
 
 export const getAllUsers = async (page = 1, limit = 10, role: string, search?: string): Promise<TGetAllUsersResponse> => {
@@ -25,9 +26,9 @@ export const updateVendorVerify = async (data: TUpdateVendorReqValues) => {
     return response.data;
 };
 
-export const getAllAmenities = async (page: number, limit: number, search?: string) => {
+export const getAllAmenities = async (page: number, limit: number, search?: string, sortOption?: TSortOption) => {
     const response = await axiosInstance.get(`/admin/amenities`, {
-        params: { page, limit, search },
+        params: { page, limit, search, sortOption },
     });
     return response.data;
 };

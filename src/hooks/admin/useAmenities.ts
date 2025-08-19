@@ -1,13 +1,14 @@
 import { createAmenity, getActiveAmenities, getAllAmenities, getUsedActiveAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
 import { IAmenity, TCreateAmenityData } from "@/types/component.types";
+import { TSortOption } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
-export const useGetAllAmenities = (page: number, limit: number, search?: string) => {
+export const useGetAllAmenities = (page: number, limit: number, search?: string, sortOption?: TSortOption) => {
     return useQuery({
-        queryKey: ['amenities', page, limit, search],
-        queryFn: () => getAllAmenities(page, limit, search),
+        queryKey: ['amenities', page, limit, search, sortOption],
+        queryFn: () => getAllAmenities(page, limit, search, sortOption),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
     });
