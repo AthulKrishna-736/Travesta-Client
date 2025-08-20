@@ -11,7 +11,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
     const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
     const [selectedAmenity, setSelectedAmenity] = useState<IAmenity | null>(null);
 
-    const { mutate: toggleBlock, isPending } = useBlockAmenity(page, limit, () => {
+    const { mutate: toggleBlock, isPending } = useBlockAmenity(() => {
         setIsToggleModalOpen(false);
         setSelectedAmenity(null);
     });

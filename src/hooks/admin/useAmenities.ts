@@ -1,14 +1,15 @@
 import { createAmenity, getActiveAmenities, getAllAmenities, getUsedActiveAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
-import { IAmenity, TCreateAmenityData } from "@/types/component.types";
+import { TCreateAmenityData } from "@/types/component.types";
 import { TSortOption } from "@/types/custom.types";
+import { TGetAmenityResponse } from "@/types/response.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
-export const useGetAllAmenities = (page: number, limit: number, search?: string, sortOption?: TSortOption) => {
+export const useGetAllAmenities = (page: number, limit: number, type: 'hotel' | 'room', search?: string, sortOption?: TSortOption) => {
     return useQuery({
-        queryKey: ['amenities', page, limit, search, sortOption],
-        queryFn: () => getAllAmenities(page, limit, search, sortOption),
+        queryKey: ['amenities', { page, limit, type, search, sortOption }],
+        queryFn: () => getAllAmenities(page, limit, type, search, sortOption),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
     });
@@ -72,28 +73,25 @@ export const useUpdateAmenity = (page: number, limit: number) => {
 }
 
 
-export const useBlockAmenity = (page: number, limit: number, cbFn: () => void) => {
+export const useBlockAmenity = (cbFn: () => void) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (amenityId: string) => toggleBlockAmenity(amenityId),
         onMutate: async (amenityId: string) => {
-            await queryClient.cancelQueries({ queryKey: ['amenities', page, limit, ''] });
+            await queryClient.cancelQueries({ queryKey: ['amenities'], exact: false });
 
-            const prevAmenities = queryClient.getQueryData(['amenities', page, limit, '']);
+            const allQueries = queryClient.getQueriesData<TGetAmenityResponse>({ queryKey: ['amenities'] });
 
-            queryClient.setQueryData(['amenities', page, limit, ''], (oldData: any) => {
-                return {
-                    ...oldData,
-                    data: oldData?.data?.map((amenity: IAmenity) => {
-                        if (amenity._id === amenityId) {
-                            amenity.isActive = !amenity.isActive;
-                        }
-                        return amenity;
-                    }),
-                };
-            });
+            allQueries.forEach(([key, _]) => {
+                queryClient.setQueryData(key, (prev: TGetAmenityResponse) => ({
+                    ...prev,
+                    data: prev?.data?.map(amenity =>
+                        amenity._id == amenityId ? { ...amenity, isActive: !amenity.isActive } : amenity
+                    )
+                }))
+            })
 
-            return { prevAmenities };
+            return { allQueries };
         },
         onSuccess: (res) => {
             if (res.success) {
@@ -104,8 +102,10 @@ export const useBlockAmenity = (page: number, limit: number, cbFn: () => void) =
             }
         },
         onError: (error: any, _amenityId, context) => {
-            if (context?.prevAmenities) {
-                queryClient.setQueryData(['amenities', page, limit, ''], context.prevAmenities);
+            if (context?.allQueries) {
+                context.allQueries.forEach(([key, oldData]) => {
+                    queryClient.setQueryData(key, oldData);
+                });
             }
 
             console.error('Error:', error);
@@ -113,6 +113,3 @@ export const useBlockAmenity = (page: number, limit: number, cbFn: () => void) =
         },
     });
 };
-
-
-

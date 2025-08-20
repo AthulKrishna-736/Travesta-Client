@@ -6,11 +6,11 @@ import { useBlockUser } from "@/hooks/user/useUser"
 import { Ban, Unlock } from "lucide-react"
 
 
-const UserTable: React.FC<UserTableProps> = ({ users, loading, page, limit, role, search }) => {
+const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
     const [selectedUser, setSelectedUser] = React.useState<User | null>(null);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-    const { mutate: toggleBlock, isPending } = useBlockUser(page, limit, role, search)
+    const { mutate: toggleBlock, isPending } = useBlockUser()
 
     const handleConfirm = () => {
         if (selectedUser) {

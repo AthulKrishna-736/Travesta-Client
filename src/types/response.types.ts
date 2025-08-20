@@ -1,4 +1,5 @@
 import { TRoles } from "./auth.types";
+import { IAmenity } from "./component.types";
 import { TSubscriptionType, WishlistItem } from "./user.types";
 
 export type TGetAllUsersResponse = {
@@ -40,4 +41,9 @@ export interface ICustomErrorResponse {
 export type TGetVendorsResponse = {
     data: IUserType[],
     meta: TPagination
+}
+
+export type TGetAmenityResponse = {
+    data: IAmenity[],
+    meta: TPagination,
 }

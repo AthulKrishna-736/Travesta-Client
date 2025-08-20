@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/header/user/Header';
-import { useGetChatMessages, useGetChattedVendors, useSocketChat } from '@/hooks/user/useChat';
+import { useGetChatMessages, useGetChattedVendors, useGetUnreadMsg, useSocketChat } from '@/hooks/user/useChat';
 import { useQueryClient } from '@tanstack/react-query';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
@@ -24,24 +24,13 @@ const UserChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
+    const { data: unReadMsgResponse } = useGetUnreadMsg();
     const { data: chattedVendorsResponse, isLoading } = useGetChattedVendors(debouncedSearch);
-    const vendors = chattedVendorsResponse || [];
-
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, unreadFrom } = useSocketChat(selectedVendor?.id);
-
-    const sortedVendors = [...vendors].sort((a, b) => {
-        const aUnread = unreadFrom.has(a.id);
-        const bUnread = unreadFrom.has(b.id);
-        if (aUnread && !bUnread) return -1;
-        if (!aUnread && bUnread) return 1;
-        return 0;
-    });
-
-    useEffect(()=> {
-        console.log('unread: ', unreadFrom);
-    },[unreadFrom])
-
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedVendor?.id, currentUserId, 'user');
     const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
+
+    const vendors = chattedVendorsResponse || [];
+    const unreadMsg = unReadMsgResponse?.data;
     const oldMessages = oldMessagesData || [];
     const combinedMessages = [
         ...oldMessages,
@@ -97,16 +86,17 @@ const UserChatPage: React.FC = () => {
                 <div className="container mx-auto px-4 py-6 max-w-6xl">
                     <ChatPage
                         isLoading={isLoading}
-                        users={sortedVendors}
+                        users={vendors}
                         setSelectedUser={setSelectedVendor}
                         selectedUser={selectedVendor!}
                         msg={msg}
                         setMsg={setMsg}
-                        unreadFrom={unreadFrom}
+                        liveUnreadCounts={liveUnreadCounts}
+                        unreadCounts={unreadMsg}
                         handleSend={handleSend}
                         handleTyping={handleTyping}
                         typingStatus={typingStatus}
-                        currentUserId={currentUserId}
+                        currentUserId={currentUserId!}
                         combinedMessages={combinedMessages}
                         searchText={searchText}
                         setSearchText={setSearchText}

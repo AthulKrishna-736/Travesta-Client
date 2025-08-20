@@ -6,9 +6,16 @@ import { User } from "@/types/user.types";
 import { TSortOption } from "@/types/custom.types";
 
 
-export const getAllUsers = async (page = 1, limit = 10, role: string, search?: string): Promise<TGetAllUsersResponse> => {
-    const response = await axiosInstance.get(`/admin/users`, { params: { page, limit, role, search } });
-    return response.data
+export const getAllUsers = async (page = 1, limit = 10, role: string, search?: string, sortOption?: TSortOption): Promise<TGetAllUsersResponse> => {
+    const params: any = { page, limit, role, search };
+    if (sortOption) {
+        const [field, order] = Object.entries(sortOption)[0];
+        params.sortField = field;
+        params.sortOrder = order;
+    }
+
+    const response = await axiosInstance.get(`/admin/users`, { params });
+    return response.data;
 };
 
 export const toggleBlockUser = async (userId: string) => {
@@ -16,8 +23,15 @@ export const toggleBlockUser = async (userId: string) => {
     return response.data;
 };
 
-export const getVendors = async (page = 1, limit = 10, search?: string): Promise<TGetVendorsResponse> => {
-    const response = await axiosInstance.get(`/admin/vendor-requests`, { params: { page, limit, search } })
+export const getVendors = async (page = 1, limit = 10, search?: string, sortOption?: TSortOption): Promise<TGetVendorsResponse> => {
+    const params: any = { page, limit, search };
+    if (sortOption) {
+        const [field, order] = Object.entries(sortOption)[0];
+        params.sortField = field;
+        params.sortOrder = order;
+    }
+
+    const response = await axiosInstance.get(`/admin/vendor-requests`, { params })
     return response.data
 }
 
@@ -26,10 +40,15 @@ export const updateVendorVerify = async (data: TUpdateVendorReqValues) => {
     return response.data;
 };
 
-export const getAllAmenities = async (page: number, limit: number, search?: string, sortOption?: TSortOption) => {
-    const response = await axiosInstance.get(`/admin/amenities`, {
-        params: { page, limit, search, sortOption },
-    });
+export const getAllAmenities = async (page: number, limit: number, type: 'hotel' | 'room', search?: string, sortOption?: TSortOption) => {
+    const params: any = { page, limit, type, search };
+    if (sortOption) {
+        const [field, order] = Object.entries(sortOption)[0];
+        params.sortField = field;
+        params.sortOrder = order;
+    }
+
+    const response = await axiosInstance.get(`/admin/amenities`, { params });
     return response.data;
 };
 

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import Chat from './Chat';
 import { IChatPageProps } from '@/types/chat.types';
 import { Loader2 } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 const ChatPage: React.FC<IChatPageProps> = ({
     isLoading,
@@ -13,7 +14,8 @@ const ChatPage: React.FC<IChatPageProps> = ({
     selectedUser,
     msg,
     setMsg,
-    unreadFrom,
+    liveUnreadCounts,
+    unreadCounts,
     handleSend,
     handleTyping,
     typingStatus,
@@ -21,10 +23,6 @@ const ChatPage: React.FC<IChatPageProps> = ({
     combinedMessages,
     searchText,
     setSearchText }) => {
-
-    useEffect(() => {
-        console.log('unread: ', unreadFrom)
-    }, [unreadFrom])
 
     return (
         <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-[120vh] md:h-[80vh]">
@@ -47,27 +45,35 @@ const ChatPage: React.FC<IChatPageProps> = ({
                     ) : users.length === 0 ? (
                         <div className="p-4 text-sm text-gray-500">No users have messaged yet.</div>
                     ) : (
-                        users.map((user) => (
-                            <div key={user.id}
-                                onClick={() => setSelectedUser(user)}
-                                className={`p-3 my-1 cursor-pointer rounded-md flex items-center gap-3 hover:bg-[#4e3c69] transition ${selectedUser?.id === user.id ? 'bg-[#4e3c69] font-semibold' : ''}`}   >
-                                {/* Profile Picture Placeholder */}
-                                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm text-gray-700">
-                                    {user.firstName?.charAt(0).toUpperCase()}
+                        users.map((user) => {
+
+                            const serverCount = unreadCounts?.find(u => u.id === user.id)?.count || 0;
+                            const liveCount = liveUnreadCounts[user.id] || 0;
+                            const totalCount = serverCount + liveCount;
+
+                            return (
+                                <div key={user.id} onClick={() => setSelectedUser(user)}
+                                    className={`relative p-3 my-1 cursor-pointer rounded-md flex items-center gap-3 hover:bg-[#4e3c69] transition ${selectedUser?.id === user.id ? 'bg-[#4e3c69] font-semibold' : ''}`}   >
+
+                                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm text-gray-700">
+                                        {user.firstName?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-white">{user.firstName}</span>
+                                        {totalCount > 0 && (
+                                            <Badge className="absolute right-5 bg-green-500 rounded-full">
+                                                {totalCount}
+                                            </Badge>
+                                        )}
+                                        {user.role === 'admin' && (
+                                            <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-full">
+                                                Admin
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="text-white">{user.firstName}</span>
-                                    {unreadFrom?.has(user.id) && (
-                                        <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
-                                    )}
-                                    {user.role === 'admin' && (
-                                        <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-full">
-                                            Admin
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        ))
+                            )
+                        })
                     )}
                 </ScrollArea>
             </Card>

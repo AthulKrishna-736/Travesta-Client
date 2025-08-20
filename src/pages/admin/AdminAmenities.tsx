@@ -11,17 +11,17 @@ import { TCreateAmenityData } from "@/types/component.types";
 import CustomSort from "@/components/common/CustomSort";
 import { ArrowUpAZ, ArrowDownAZ, Clock } from "lucide-react";
 import { TSortOption } from "@/types/custom.types";
-import { useQueryClient } from "@tanstack/react-query";
-
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const AdminAmenities = () => {
-    const queryClient = useQueryClient();
+    const [role, setRole] = useState<'hotel' | 'room'>('hotel');
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedValue, setDebouncedValue] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [sortOption, setSortOption] = useState<TSortOption>({ 'name': 'ascending' });
     const [openModal, setOpenModal] = useState<boolean>(false);
     const limit = 8;
+
 
     useEffect(() => {
         const searchInput = setTimeout(() => {
@@ -32,7 +32,7 @@ const AdminAmenities = () => {
         return () => clearTimeout(searchInput);
     }, [searchTerm]);
 
-    const { data, isLoading } = useGetAllAmenities(page, limit, debouncedValue, sortOption);
+    const { data, isLoading } = useGetAllAmenities(page, limit, role, debouncedValue, sortOption);
     const { mutate: createAmenityfn, isPending } = useCreateAmentiy(page, limit);
 
     const amenities = data?.data || [];
@@ -44,6 +44,15 @@ const AdminAmenities = () => {
         setOpenModal(false);
     };
 
+    const handleRoleChange = (val: string) => {
+        if (val) {
+            setRole(val as 'hotel' | 'room');
+            setPage(1);
+            setSearchTerm('');
+            setDebouncedValue('');
+        }
+    };
+
 
     const sortOptions = [
         {
@@ -52,7 +61,6 @@ const AdminAmenities = () => {
             onClickHandler: () => {
                 setPage(1);
                 setSortOption({ name: 'ascending' });
-                queryClient.invalidateQueries({ queryKey: ['amenities'] });
             },
             icon: ArrowUpAZ,
         },
@@ -62,7 +70,6 @@ const AdminAmenities = () => {
             onClickHandler: () => {
                 setPage(1);
                 setSortOption({ name: 'descending' });
-                queryClient.invalidateQueries({ queryKey: ['amenities'] });
             },
             icon: ArrowDownAZ,
         },
@@ -72,7 +79,6 @@ const AdminAmenities = () => {
             onClickHandler: () => {
                 setPage(1);
                 setSortOption({ updatedAt: 'ascending' })
-                queryClient.invalidateQueries({ queryKey: ['amenities'] });
             },
             icon: Clock,
         },
@@ -103,6 +109,26 @@ const AdminAmenities = () => {
                         can easily understand what your property offers.
                     </span>
                 </div>
+
+                <ToggleGroup
+                    type="single"
+                    value={role}
+                    onValueChange={handleRoleChange}
+                    className="w-fit"
+                >
+                    <ToggleGroupItem
+                        value="hotel"
+                        className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
+                    >
+                        Hotels
+                    </ToggleGroupItem>
+                    <ToggleGroupItem
+                        value="room"
+                        className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
+                    >
+                        Rooms
+                    </ToggleGroupItem>
+                </ToggleGroup>
 
                 <div className="space-y-4 overflow-x-auto">
 

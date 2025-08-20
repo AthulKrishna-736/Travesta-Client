@@ -42,6 +42,11 @@ export const getChattedVendors = async (search?: string): Promise<Pick<User, 'id
     return response.data?.data
 }
 
+export const getUnreadChats = async () => {
+    const response = await axiosInstance.get('/users/chat-unread');
+    return response.data;
+}
+
 //booking
 export const getUserBookings = async (page: number, limit: number) => {
     const response = await axiosInstance.get('/users/bookings', {

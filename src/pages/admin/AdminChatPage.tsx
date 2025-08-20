@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useGetChatMessages, useGetVendorsChatAdmin, useSocketChat } from '@/hooks/user/useChat';
+import { useGetChatMessages, useGetUnreadMsg, useGetVendorsChatAdmin, useSocketChat } from '@/hooks/user/useChat';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
@@ -21,11 +21,14 @@ const AdminChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
+    const { data: unReadMsgResponse } = useGetUnreadMsg();
     const { data: vendors, isLoading } = useGetVendorsChatAdmin(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, unreadFrom } = useSocketChat(selectedVendor?.id);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedVendor?.id, adminId, 'admin');
     const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
-    const oldMessages = oldMessagesData || [];
 
+
+    const unReadMsg = unReadMsgResponse?.data;
+    const oldMessages = oldMessagesData || [];
     const combinedMessages = [
         ...oldMessages,
         ...liveMessages.filter((liveMsg) => !oldMessages.some((oldMsg) => oldMsg._id === liveMsg._id)),
@@ -72,7 +75,8 @@ const AdminChatPage: React.FC = () => {
                     selectedUser={selectedVendor!}
                     msg={msg}
                     setMsg={setMsg}
-                    unreadFrom={unreadFrom}
+                    liveUnreadCounts={liveUnreadCounts}
+                    unreadCounts={unReadMsg}
                     handleSend={handleSend}
                     handleTyping={handleTyping}
                     typingStatus={typingStatus}
