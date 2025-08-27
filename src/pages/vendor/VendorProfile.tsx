@@ -19,7 +19,7 @@ const VendorProfile: React.FC = () => {
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
-    const { mutate: updateVendor } = useUpdateVendor()
+    const { mutate: updateVendor } = useUpdateVendor();
 
     const handleProfileUpdate = (userData: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => {
         const formData = new FormData()

@@ -3,10 +3,10 @@ import { addWalletCredit, createPaymentIntent, createWallet, getWallet } from "@
 import { showSuccess, showError } from "@/utils/customToast";
 
 // Get Wallet
-export const useGetWallet = (page: number, limit: number) => {
+export const useGetWallet = () => {
     return useQuery({
-        queryKey: ['wallet', page, limit],
-        queryFn: () => getWallet(page, limit),
+        queryKey: ['wallet'],
+        queryFn: getWallet,
         staleTime: 5 * 60 * 1000,
     });
 };

@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { showError } from "@/utils/customToast";
 import { useNavigate } from "react-router-dom";
-import CheckoutForm, { PaymentSuccessData } from "@/components/wallet/CheckoutForm";
+import CheckoutForm from "@/components/wallet/CheckoutForm";
 import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetWallet } from "@/hooks/user/useWallet";
 import WalletSection from "@/components/wallet/Wallet";
 
@@ -27,7 +27,7 @@ const VendorWalletPage = () => {
     const navigate = useNavigate();
     const limit = 5;
 
-    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(page, limit);
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
     const { mutateAsync: addWalletCredit } = useAddWalletCredit();
 
     const { mutateAsync: createWallet } = useCreateWallet();
@@ -68,14 +68,9 @@ const VendorWalletPage = () => {
         }
     };
 
-    const handlePaymentSuccess = async (data: PaymentSuccessData) => {
-        if (data.type === "wallet") {
-            await addWalletCredit({
-                amount: data.amount,
-                transactionId: data.transactionId,
-            });
+    const handlePaymentSuccess = async () => {
+        
             navigate("/vendor/wallet");
-        }
     };
 
     const stripeOptions: StripeElementsOptions = {
@@ -135,7 +130,6 @@ const VendorWalletPage = () => {
                                     open={showPayment}
                                     onClose={() => setShowPayment(false)}
                                     onPaymentSuccess={handlePaymentSuccess}
-                                    isForBooking={false}
                                 />
                             </Elements>
                         )}

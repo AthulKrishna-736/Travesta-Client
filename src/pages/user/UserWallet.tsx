@@ -5,7 +5,7 @@ import Pagination from "@/components/common/Pagination";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { env } from "@/config/config";
-import CheckoutForm, { PaymentSuccessData } from "@/components/wallet/CheckoutForm";
+import CheckoutForm from "@/components/wallet/CheckoutForm";
 import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetWallet } from "@/hooks/user/useWallet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ const UserWallet: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const limit = 5;
 
-    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(page, limit);
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
     const { mutateAsync: addWalletCredit } = useAddWalletCredit();
 
     const { mutateAsync: createWallet } = useCreateWallet();
@@ -43,15 +43,10 @@ const UserWallet: React.FC = () => {
         }
     }, [walletDataResponse, createWallet]);
 
-    const handleWalletPaymentSuccess = async (data: PaymentSuccessData) => {
-        if (data.type === "wallet") {
-            await addWalletCredit({
-                amount: data.amount,
-                transactionId: data.transactionId,
-            });
+    const handleWalletPaymentSuccess = async () => {
 
-            navigate('/user/wallet');
-        }
+        navigate('/user/wallet');
+
     };
 
     const handleAddMoney = async () => {
@@ -151,7 +146,6 @@ const UserWallet: React.FC = () => {
                                 open={showPayment}
                                 onClose={() => setShowPayment(false)}
                                 onPaymentSuccess={handleWalletPaymentSuccess}
-                                isForBooking={false}
                             />
                         </Elements>
                     )}

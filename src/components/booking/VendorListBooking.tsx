@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DataTable from "../common/Table";
-import BookingDetailDialog from "./BookingDetailsModal";
 import { Booking, BookingTableProps } from "@/types/booking.types";
+import BookingDetailModalVendor from "./BookingDetailVendor";
 
 const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
@@ -34,7 +34,7 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
     const actions = [
         {
             label: "Details",
-            variant: "default" as const,
+            variant: "outline" as const,
             onClick: (booking: Booking) => {
                 setSelectedBooking(booking);
                 setIsDetailsModalOpen(true);
@@ -51,7 +51,7 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
                 loading={loading}
             />
 
-            <BookingDetailDialog
+            <BookingDetailModalVendor
                 open={isDetailsModalOpen}
                 onClose={() => setIsDetailsModalOpen(false)}
                 booking={selectedBooking}

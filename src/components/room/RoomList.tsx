@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from '@/components/common/Table';
-import { IHotel, IRoom } from '@/types/user.types';
+import { IHotel } from '@/types/hotel.types';
+import { IRoom } from '@/types/room.types';
 import ShowRoomDetailsModal from './ShowRoomDetailsModal';
 import CreateRoomModal from './CreateRoomModal';
 import { IRoomTableProps } from '@/types/component.types';
@@ -8,11 +9,12 @@ import { useGetAllRooms } from '@/hooks/vendor/useRoom';
 import { useUpdateRoom } from '@/hooks/vendor/useRoom';
 import { Input } from '@/components/ui/input';
 import Pagination from '@/components/common/Pagination';
+import { Edit, InfoIcon } from 'lucide-react';
 
 const columns = [
     { key: 'name', label: 'Room Name' },
-    { key: 'basePrice', label: 'Price' },
-    { key: 'capacity', label: 'Capacity' },
+    { key: 'roomType', label: 'Room Type' },
+    { key: 'guest', label: 'Guests' },
     { key: 'bedType', label: 'Bed Type' },
     { key: 'isAvailable', label: 'Available' },
 ];
@@ -76,12 +78,18 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
         {
             label: 'Edit',
             variant: 'default' as const,
+            icon: Edit,
+            showLabel: false,
+            tooltip: 'edit room',
             className: "bg-blue-50 text-blue-700 hover:bg-blue-100",
             onClick: handleEdit,
         },
         {
             label: 'Details',
             variant: 'outline' as const,
+            icon: InfoIcon,
+            showLabel: false,
+            tooltip: 'room details',
             className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: handleDetails,
         },
@@ -97,19 +105,21 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 {rooms ? (
-                    <DataTable
-                        columns={columns}
-                        data={rooms}
-                        actions={actions}
-                        loading={isLoading}
-                    />
+                    <div className="rounded-lg border-1 overflow-hidden">
+                        <DataTable
+                            columns={columns}
+                            data={rooms}
+                            actions={actions}
+                            loading={isLoading}
+                        />
+                    </div>
                 ) : (
                     <div className="flex justify-center items-center">
                         <p className="text-semibold text-lg text-red-500">No rooms found. Please create one</p>
                     </div>
                 )}
 
-                {meta && meta.totalPages > 1 && (
+                {meta && meta.totalPages > 0 && (
                     <Pagination
                         currentPage={meta.currentPage}
                         totalPages={meta.totalPages}

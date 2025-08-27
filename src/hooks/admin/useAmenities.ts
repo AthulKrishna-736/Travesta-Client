@@ -1,4 +1,6 @@
-import { createAmenity, getActiveAmenities, getAllAmenities, getUsedActiveAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
+import { createAmenity, getAllAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
+import { getUserAmenities } from "@/services/userService";
+import { getVendorAmenities } from "@/services/vendorService";
 import { TCreateAmenityData } from "@/types/component.types";
 import { TSortOption } from "@/types/custom.types";
 import { TGetAmenityResponse } from "@/types/response.types";
@@ -15,23 +17,42 @@ export const useGetAllAmenities = (page: number, limit: number, type: 'hotel' | 
     });
 };
 
-export const useGetUsedActiveAmenities = () => {
+// export const useGetUsedActiveAmenities = () => {
+//     return useQuery({
+//         queryKey: ['used-amenities'],
+//         queryFn: () => getUsedActiveAmenities(),
+//         staleTime: 5 * 60 * 1000,
+//         placeholderData: keepPreviousData,
+//     });
+// }
+
+export const useGetUserAmenities = () => {
     return useQuery({
-        queryKey: ['used-amenities'],
-        queryFn: () => getUsedActiveAmenities(),
+        queryKey: ['user-amenities'],
+        queryFn: getUserAmenities,
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
+    })
+}
+
+export const useGetVendorAmenities = () => {
+    return useQuery({
+        queryKey: ['vendor-amenities'],
+        queryFn: getVendorAmenities,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
     });
 }
 
-export const useGetActiveAmenities = () => {
-    return useQuery({
-        queryKey: ['active-amenities'],
-        queryFn: () => getActiveAmenities(),
-        staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
-    })
-}
+
+// export const useGetActiveAmenities = () => {
+//     return useQuery({
+//         queryKey: ['active-amenities'],
+//         queryFn: () => getActiveAmenities(),
+//         staleTime: 5 * 60 * 1000,
+//         placeholderData: keepPreviousData,
+//     })
+// }
 
 export const useCreateAmentiy = (page: number, limit: number) => {
     const queryClient = useQueryClient()

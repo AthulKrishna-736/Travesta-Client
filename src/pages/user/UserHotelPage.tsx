@@ -2,27 +2,31 @@ import React, { useEffect, useState } from 'react';
 import Header from '@/components/header/user/Header';
 import Footer from '@/components/footer/Footer';
 import Pagination from '@/components/common/Pagination';
-import RoomCard from '@/components/user/Hotelslist';
-import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
-import { IRoom } from '@/types/room.types';
 import { useSearchParams } from 'react-router-dom';
 import CustomSearch from '@/components/common/CustomSearch';
 import Breadcrumbs from '@/components/common/BreadCrumps';
 import UserFilterSidebar from '@/components/sidebar/UserFilterSidebar';
 import { Loader2 } from 'lucide-react';
-import { useGetUsedActiveAmenities } from '@/hooks/admin/useAmenities';
+import { useGetUserAmenities } from '@/hooks/admin/useAmenities';
+import { useGetAllUserHotels } from '@/hooks/vendor/useHotel';
+import HotelCard from '@/components/user/Hotelslist';
 
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
 
     const destination = params.get('destination') || '';
-    const checkIn = params.get('checkIn') || '';
-    const checkOut = params.get('checkOut') || '';
-    const guests = parseInt(params.get('guests') || '1', 10);
+    const checkInParam = params.get('checkIn') || '';
+    const checkOutParam = params.get('checkOut') || '';
+    const guestsParam = parseInt(params.get('guests') || '1', 10);
 
     const [searchTerm, setSearchTerm] = useState(destination);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+    const [checkIn, setCheckIn] = useState(checkInParam);
+    const [checkOut, setCheckOut] = useState(checkOutParam);
+    const [guests, setGuests] = useState(guestsParam);
     const [page, setPage] = useState(1);
+    const limit = 9;
+
     const [priceRange, setPriceRange] = useState<[number, number]>([0, Infinity]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [roomType, setRoomType] = useState<string[]>([]);
@@ -35,22 +39,20 @@ const UserHotelPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const limit = 9;
-    const { data, isLoading: isRoomLoading } = useGetAvailableRooms(
-        page,
-        limit,
+    const { data, isLoading: isHotelLoading } = useGetAllUserHotels(page, limit, {
+        search: debouncedSearchTerm,
         priceRange,
         selectedAmenities,
         roomType,
-        debouncedSearchTerm,
         checkIn,
         checkOut,
-        guests
-    );
-    const rooms = data?.data || [];
+        guests,
+    });
+
+    const hotels = data?.data?.length ? data.data : [];
     const meta = data?.meta;
 
-    const { data: amenities, isLoading: isAmenitiesLoading } = useGetUsedActiveAmenities();
+    const { data: amenities, isLoading: isAmenitiesLoading } = useGetUserAmenities();
     const amenitiesData = amenities?.data || [];
 
     const toggleAmenity = (amenity: string) => {
@@ -76,11 +78,24 @@ const UserHotelPage: React.FC = () => {
         setPage(1);
     };
 
+    const handleSearch = () => {
+        setPage(1);
+    };
+
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <CustomSearch />
-
+            <CustomSearch
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                checkIn={checkIn}
+                setCheckIn={setCheckIn}
+                checkOut={checkOut}
+                setCheckOut={setCheckOut}
+                guests={guests}
+                setGuests={setGuests}
+                onSearch={handleSearch}
+            />
             <main className="flex-grow py-10 bg-gray-50">
                 <div className="container mx-auto px-4">
 
@@ -100,19 +115,19 @@ const UserHotelPage: React.FC = () => {
                             isAmenitiesLoading={isAmenitiesLoading}
                         />
 
-                        {/* Rooms Listing */}
+                        {/* Hotels Listing */}
                         <section className="w-full lg:w-3/4">
-                            {isRoomLoading ? (
+                            {isHotelLoading ? (
                                 <div className='flex items-center justify-center gap-4'>
                                     <Loader2 className='w-10 h-10 animate-spin' />
-                                    <p className="text-center text-2xl font-semibold">Loading rooms...</p>
+                                    <p className="text-center text-2xl font-semibold">Loading Hotels...</p>
                                 </div>
-                            ) : rooms.length === 0 ? (
-                                <p className="text-center text-gray-500 text-2xl">No rooms found.</p>
+                            ) : hotels.length === 0 ? (
+                                <p className="text-center text-gray-500 text-2xl">No hotels found.</p>
                             ) : (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    {rooms.map((room: IRoom) => (
-                                        <RoomCard key={room.id} room={room} />
+                                    {hotels.map((hotel: any) => (
+                                        <HotelCard key={hotel.id} hotel={hotel} />
                                     ))}
                                 </div>
                             )}

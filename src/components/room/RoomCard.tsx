@@ -43,11 +43,14 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
                 <div className="flex items-center gap-1">
                     <Users className="w-4 h-4 text-blue-500" />
-                    <span>{room.capacity} Guests</span>
+                    <span>{room.guest} Guests</span>
                 </div>
                 <div className="flex items-center gap-1">
                     <BedDouble className="w-4 h-4 text-purple-500" />
                     <span>{room.bedType}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <span className="font-medium">Room Type: {room.roomType}</span>
                 </div>
             </div>
 

@@ -1,79 +1,84 @@
+import { TResponseChat } from "@/types/chat.types";
+import { VENDOR_APIS } from "./apiConstants";
 import { axiosInstance } from "./axiosInstance"
 import { User } from "@/types/user.types";
 
+
+//vendor profile
 export const getVendor = async () => {
-    const response = await axiosInstance.get('/vendor/profile');
+    const response = await axiosInstance.get(`${VENDOR_APIS.profile}`);
     return response.data;
 }
 
 export const updateVendor = async (formData: FormData) => {
-    const response = await axiosInstance.patch(`/vendor/profile`, formData, {
+    const response = await axiosInstance.put(`${VENDOR_APIS.profile}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     });
     return response.data;
 };
 
 export const uplodKyc = async (formData: FormData) => {
-    const response = await axiosInstance.patch('/vendor/kyc', formData, {
+    const response = await axiosInstance.patch(`${VENDOR_APIS.profile}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     })
     return response.data
 }
 
+//vendor hotels
 export const createHotel = async (formData: FormData) => {
-    const response = await axiosInstance.post('/vendor/hotels', formData, {
+    const response = await axiosInstance.post(`${VENDOR_APIS.hotels}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     })
     return response.data;
 }
 
 export const getAllHotels = async (page: number, limit: number, search?: string) => {
-    const response = await axiosInstance.get('/vendor/hotels', {
+    const response = await axiosInstance.get(`${VENDOR_APIS.hotels}`, {
         params: { page, limit, search },
     });
     return response.data;
 };
 
 export const updateHotel = async (id: string, formData: FormData) => {
-    const response = await axiosInstance.patch(`/vendor/hotels/${id}`, formData, {
+    const response = await axiosInstance.patch(`${VENDOR_APIS.hotels}/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
 };
 
 export const getAllRooms = async (page: number, limit: number, search?: string) => {
-    const response = await axiosInstance.get('/vendor/rooms', {
+    const response = await axiosInstance.get(`${VENDOR_APIS.rooms}`, {
         params: { page, limit, search }
     });
     return response.data;
 };
 
 export const createRoom = async (formData: FormData) => {
-    const response = await axiosInstance.post('/vendor/rooms', formData, {
+    const response = await axiosInstance.post(`${VENDOR_APIS.rooms}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     });
     return response.data;
 };
 
 export const updateRoom = async (roomId: string, formData: FormData) => {
-    const response = await axiosInstance.patch(`/vendor/rooms/${roomId}`, formData, {
+    const response = await axiosInstance.patch(`${VENDOR_APIS.rooms}/${roomId}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
     });
     return response.data;
 };
 
 export const getRoomById = async (roomId: string) => {
-    const response = await axiosInstance.get(`/vendor/rooms/${roomId}`);
+    const response = await axiosInstance.get(`${VENDOR_APIS.rooms}/${roomId}`);
     return response.data;
 };
 
 export const getRoomsByHotel = async (hotelId: string) => {
-    const response = await axiosInstance.get(`/vendor/rooms/by-hotel/${hotelId}`);
+    const response = await axiosInstance.get(`${VENDOR_APIS.rooms}/by-hotel/${hotelId}`);
     return response.data;
 };
 
 export const getAvailableRoomsByHotel = async (hotelId: string) => {
-    const response = await axiosInstance.get(`/vendor/hotels/${hotelId}/rooms/available`);
+    const response = await axiosInstance.get(`${VENDOR_APIS.hotels}/${hotelId}/rooms/available`);
     return response.data;
 };
 
@@ -108,21 +113,38 @@ export const getAvailableRooms = async (
         params.roomTypes = roomTypes.join(",");
     }
 
-    const { data } = await axiosInstance.get(`/vendor/rooms/available`, { params });
+    const { data } = await axiosInstance.get(`${VENDOR_APIS.rooms}/available`, { params });
     return data;
 };
 
-
-
-export const getChatUsers = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
-    const response = await axiosInstance.get('/vendor/chat-users', {
-        params: { search },
-    });
-    return response.data?.data;
+//amenities
+export const getVendorAmenities = async () => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.amenities}`);
+    return response.data;
 }
 
+
+//chat
+export const getChattedCustomers = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.chat}/vendors`, {
+        params: { search }
+    });
+    return response.data?.data
+};
+
+export const getVendorChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.chat}/${userId}/messages`);
+    return response.data?.data;
+};
+
+export const getVendorUnreadChats = async () => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.chat}/unread`);
+    return response.data;
+};
+
+
 export const getBookingsToVendor = async (page: number, limit: number) => {
-    const response = await axiosInstance.get('/vendor/bookings', {
+    const response = await axiosInstance.get(`${VENDOR_APIS.booking}`, {
         params: { page, limit },
     });
     return response.data;

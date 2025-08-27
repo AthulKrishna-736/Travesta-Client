@@ -129,7 +129,7 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
 
                                 <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
                                     {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
-                                    {isLoading ? 'Logging in...' : 'Login'}
+                                    {isLoading ? 'Signing in...' : 'Signup'}
                                 </Button>
 
                                 {/* Already have an account? Login */}

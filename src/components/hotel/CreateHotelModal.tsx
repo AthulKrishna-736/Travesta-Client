@@ -12,7 +12,7 @@ import { Loader2, X } from 'lucide-react';
 import { showError } from '@/utils/customToast';
 import MultiImageUploader from '@/components/common/ImageUpload';
 import { hotelSchema } from '@/utils/validations/commonValidation';
-import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
+import { useGetVendorAmenities } from '@/hooks/admin/useAmenities';
 import GeoMap from '../common/GeoMap';
 
 export type IHotelFormData = {
@@ -33,13 +33,12 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
     const [tagInput, setTagInput] = useState<string>('');
     const [tagError, SetTagError] = useState<string>('');
 
-    const { data: activeAmenitiesData } = useGetActiveAmenities();
+    const { data: activeAmenitiesData } = useGetVendorAmenities();
     const hotelAmenities = (activeAmenitiesData?.data || []).filter((a: IAmenity) => a.type === 'hotel');
 
     const { register, handleSubmit, formState: { errors }, reset, } = useForm<IHotelFormData>({ resolver: yupResolver(hotelSchema), });
 
     useEffect(() => {
-        console.log(hotelData)
         if (hotelData) {
             reset({
                 name: hotelData.name,
@@ -53,7 +52,7 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
             if (Array.isArray(hotelData?.amenities)) {
                 setSelectedAmenities(hotelData.amenities.map((a: any) => a._id));
             } else if (typeof hotelData?.amenities === 'string') {
-                setSelectedAmenities(hotelData.amenities.split(',').map((a: any) => a.trim()).filter(Boolean));
+                setSelectedAmenities((hotelData.amenities as string).split(',').map((a: any) => a.trim()).filter(Boolean));
             } else {
                 setSelectedAmenities([]);
             }
@@ -67,6 +66,7 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
 
 
             setImageFiles((hotelData.images as string[]) || []);
+            setImageCount(hotelData.images?.length as number)
             setGeoLocation(hotelData.geoLocation || null);
 
         } else {

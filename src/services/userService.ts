@@ -4,14 +4,14 @@ import { User } from "@/types/user.types";
 import { BookingPayload } from "@/types/booking.types";
 import { USER_APIS } from "./apiConstants";
 
-//user
+//user profile
 export const getUser = async () => {
     const response = await axiosInstance.get(`${USER_APIS.profile}`);
     return response.data;
 }
 
 export const updateUser = async (formData: FormData) => {
-    const response = await axiosInstance.patch(`${USER_APIS.profile}`, formData, {
+    const response = await axiosInstance.put(`${USER_APIS.profile}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     });
     return response.data;
@@ -58,21 +58,27 @@ export const getUserHotelById = async (hotelId: string) => {
     return response.data;
 };
 
-//chat
-export const getChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
-    const response = await axiosInstance.get(`${USER_APIS.getChat}/${userId}`);
-    return response.data?.data;
-};
+//amenities
+export const getUserAmenities = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.amenities}`);
+    return response.data;
+}
 
+//chat
 export const getChattedVendors = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
-    const response = await axiosInstance.get(`${USER_APIS.getChatVendors}`, {
+    const response = await axiosInstance.get(`${USER_APIS.chat}/vendors`, {
         params: { search }
     })
     return response.data?.data
 }
 
-export const getUnreadChats = async () => {
-    const response = await axiosInstance.get(`${USER_APIS.getChatVendors}`);
+export const getUserChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
+    const response = await axiosInstance.get(`${USER_APIS.chat}/${userId}/messages`);
+    return response.data?.data;
+};
+
+export const getUserUnreadChats = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.chat}/unread`);
     return response.data;
 }
 
@@ -96,7 +102,7 @@ export const createBooking = async (payload: BookingPayload) => {
 
 //payment
 export const createPaymentIntent = async (data: { amount: number }) => {
-    const response = await axiosInstance.post(`${USER_APIS.wallet}/payment-intent`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payement}/online`, data);
     return response.data;
 };
 
@@ -106,18 +112,27 @@ export const addWalletCredit = async (data: { type: 'credit', amount: number, de
 };
 
 export const createWallet = async () => {
-    const response = await axiosInstance.post(`${USER_APIS.wallet}/create`);
+    const response = await axiosInstance.post(`${USER_APIS.wallet}`);
     return response.data;
 };
 
-export const getWallet = async (page: number, limit: number) => {
-    const response = await axiosInstance.get(`${USER_APIS.wallet}`, {
-        params: { page, limit },
-    });
+export const getWallet = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.wallet}`);
     return response.data;
 };
 
-export const confirmBooking = async (data: { receiverId: string, amount: number, transactionId: string, description: string, relatedBookingId: string }) => {
-    const response = await axiosInstance.post(`${USER_APIS.wallet}/transaction-transfer`, data);
+export const confirmBooking = async (
+    vendorId: string,
+    data: {
+        hotelId: string;
+        roomId: string;
+        checkIn: string;
+        checkOut: string;
+        guests: number;
+        totalPrice: number;
+    },
+    method: 'wallet' | 'online'
+) => {
+    const response = await axiosInstance.post(`${USER_APIS.payement}/${vendorId}/booking?method=${method}`, data);
     return response.data;
 };

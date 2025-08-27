@@ -7,40 +7,61 @@ import MultiImageUploader from '../common/ImageUpload';
 import { ICreateRoomProps, IAmenity } from '@/types/component.types';
 import { IHotel } from '@/types/hotel.types';
 import { X } from 'lucide-react';
-import { useGetActiveAmenities } from '@/hooks/admin/useAmenities';
+import { useGetVendorAmenities } from '@/hooks/admin/useAmenities';
+import { BED_TYPE_CAPACITY, BedType } from '@/types/room.types';
+import { Label } from '../ui/label';
+import { showError } from '@/utils/customToast';
 
 type RoomFormValues = {
     name: string;
-    capacity: number;
+    roomType: string;
+    roomCount: number;
     bedType: string;
+    guest: number;
     basePrice: number;
     amenities: string;
     images: File[];
 };
 
 const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ open, onClose, onSubmit, isLoading, roomData, isEdit, hotels }) => {
-    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoomFormValues>({
-        defaultValues: { name: '', capacity: 1, bedType: '', basePrice: 0, amenities: '', images: [] },
-    });
-
+    const [imageCount, setImageCount] = useState<number>(1);
     const [selectedHotelId, setSelectedHotelId] = useState<string>(roomData?.hotelId || (hotels.length > 0 ? hotels[0].id || '' : ''));
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
-    const { data: activeAmenitiesData } = useGetActiveAmenities();
+    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<RoomFormValues>({
+        defaultValues: {
+            name: '',
+            roomType: '',
+            roomCount: 1,
+            bedType: '',
+            guest: 1,
+            basePrice: 0,
+            amenities: '',
+            images: []
+        },
+    });
+
+    const { data: activeAmenitiesData } = useGetVendorAmenities();
     const roomAmenities = (activeAmenitiesData?.data || []).filter((a: IAmenity) => a.type === 'room');
 
     useEffect(() => {
         if (roomData) {
             reset({
                 name: roomData.name,
-                capacity: roomData.capacity,
+                roomType: roomData.roomType,
+                roomCount: roomData.roomCount,
                 bedType: roomData.bedType,
+                guest: roomData.guest,
                 basePrice: roomData.basePrice,
                 amenities: roomData.amenities?.join(',') || '',
                 images: [],
             });
+
             setSelectedHotelId(roomData.hotelId || (hotels.length > 0 ? hotels[0].id || '' : ''));
-            setSelectedAmenities(roomData.amenities || []);
+            setSelectedAmenities(
+                (roomData.amenities || []).map((a: any) => typeof a === "string" ? a : a._id)
+            );
+            setImageCount(roomData.images.length);
         } else {
             setSelectedHotelId(hotels.length > 0 ? hotels[0].id || '' : '');
             reset();
@@ -48,17 +69,47 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
         }
     }, [roomData, reset, hotels]);
 
+    const handleImageCount = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault()
+        if (imageCount >= 10) {
+            showError('Max image limit is 10')
+            return;
+        }
+        setImageCount(prev => prev + 1);
+    }
+
+    const handleReduceImageCount = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (imageCount <= 1) {
+            showError('Min one image is required');
+            return;
+        }
+        setImageCount(prev => prev - 1);
+    }
+
     const submitHandler = (data: RoomFormValues) => {
+        const imageFiles = data.images.filter((item) => item instanceof File) as File[];
+        const imageUrls = data.images.filter((item) => typeof item === 'string') as string[];
+
+        if (selectedAmenities.length < 1) {
+            showError('Min one amenity should be selected');
+            return
+        }
+
+        if (!isEdit && imageFiles.length < 1) {
+            showError('Min one image is required')
+            return
+        }
+
         const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('capacity', String(data.capacity));
+        formData.append('name', data.name.trim());
+        formData.append('roomType', data.roomType);
         formData.append('bedType', data.bedType);
+        formData.append('roomCount', String(data.roomCount));
+        formData.append('guest', String(data.guest));
         formData.append('basePrice', String(data.basePrice));
         formData.append('hotelId', selectedHotelId);
         formData.append('amenities', JSON.stringify(selectedAmenities));
-
-        const imageFiles = data.images.filter((item) => item instanceof File) as File[];
-        const imageUrls = data.images.filter((item) => typeof item === 'string') as string[];
 
         imageFiles.forEach((file) => formData.append('imageFile', file));
         if (isEdit && imageUrls.length > 0) {
@@ -85,7 +136,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                     <div>
                         <label className="block mb-1 font-medium">Select Hotel</label>
                         <select
-                            className="w-full p-2 border rounded"
+                            className="w-full p-2 border rounded overflow-y-auto"
                             value={selectedHotelId}
                             onChange={(e) => setSelectedHotelId(e.target.value)}
                         >
@@ -103,33 +154,77 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                         {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
                     </div>
 
+
+                    {/* Room Type select */}
                     <div>
-                        <label className="block mb-1 font-medium">Capacity</label>
-                        <Input type="number" {...register('capacity', { required: true, min: 1 })} />
-                        {errors.capacity && <p className="text-red-500 text-sm">Minimum capacity is 1</p>}
+                        <label className="block mb-1 font-medium">Room Type</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            {...register('roomType', { required: 'Room type is required' })}
+                        >
+                            <option value="" disabled>Select Room Type</option>
+                            {["AC", "Non-AC", "Deluxe", "Suite", "Standard", "Penthouse"].map((type) => (
+                                <option key={type} value={type}>
+                                    {type}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.roomType && <p className="text-red-500 text-sm">{errors.roomType.message}</p>}
                     </div>
 
+                    {/* Room Count */}
+                    <div>
+                        <label className="block mb-1 font-medium">Room Count</label>
+                        <Input type="number" {...register('roomCount', { required: true, min: 1 })} />
+                        {errors.roomCount && <p className="text-red-500 text-sm">Minimum 1 room required</p>}
+                    </div>
+
+                    {/* Bed Type + Guest */}
                     <div>
                         <label className="block mb-1 font-medium">Bed Type</label>
-                        <Input {...register('bedType', { required: 'Bed type is required' })} />
+                        <select
+                            className="w-full p-2 border rounded"
+                            {...register('bedType', { required: 'Bed type is required' })}
+                            onChange={(e) => {
+                                const value = e.target.value as BedType;
+                                setValue('bedType', value);
+                                setValue('guest', BED_TYPE_CAPACITY[value]);
+                            }}
+                        >
+                            <option value="" disabled>Select Bed Type</option>
+                            {Object.values(BedType).map((type) => (
+                                <option key={type} value={type}>
+                                    {type}
+                                </option>
+                            ))}
+                        </select>
                         {errors.bedType && <p className="text-red-500 text-sm">{errors.bedType.message}</p>}
                     </div>
 
                     <div>
+                        <label className="block mb-1 font-medium">Guest Capacity</label>
+                        <Input type="number" {...register('guest')} readOnly />
+                    </div>
+
+                    <div>
                         <label className="block mb-1 font-medium">Base Price</label>
-                        <Input type="number" {...register('basePrice', { required: true, min: 0 })} />
-                        {errors.basePrice && <p className="text-red-500 text-sm">Price must be at least 0</p>}
+                        <Input type="number" {...register('basePrice', { required: true, min: 1 })} />
+                        {errors.basePrice && <p className="text-red-500 text-sm">Price must be greater than 0</p>}
                     </div>
 
                     <div>
                         <label className="block mb-1 font-medium">Select Amenities</label>
                         <div className="border p-2 rounded flex flex-wrap gap-2 min-h-[40px]">
-                            {selectedAmenities.map((amenityId) => {
+                            {selectedAmenities.map((amenityId: any) => {
                                 const amenity = roomAmenities.find((a: IAmenity) => a._id === amenityId);
                                 return (
-                                    <span key={amenityId} className="bg-gray-200 px-2 py-1 rounded flex items-center"                                    >
-                                        {amenity?.name}
-                                        <X className="ml-1 w-3 h-3 cursor-pointer"
+                                    <span
+                                        key={amenityId}
+                                        className="bg-gray-200 px-2 py-1 rounded flex items-center"
+                                    >
+                                        {amenity?.name || amenityId?.name}
+                                        <X
+                                            className="ml-1 w-3 h-3 cursor-pointer"
                                             onClick={() =>
                                                 setSelectedAmenities((prev) =>
                                                     prev.filter((id) => id !== amenityId)
@@ -139,30 +234,41 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                                     </span>
                                 );
                             })}
+
+                            {/* Add new amenity dropdown */}
                             <select
                                 className="ml-auto px-2 py-1 outline-none"
                                 value=""
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     if (value && !selectedAmenities.includes(value)) {
-                                        setSelectedAmenities([...selectedAmenities, value]);
+                                        setSelectedAmenities((prev) => [...prev, value]);
                                     }
                                 }}
                             >
                                 <option value="">+ Add Amenity</option>
-                                {roomAmenities.map((a: IAmenity) => (
-                                    <option key={a._id} value={a._id}>
-                                        {a.name}
-                                    </option>
-                                ))}
+                                {roomAmenities
+                                    .filter((a: IAmenity) => !selectedAmenities.includes(a._id))
+                                    .map((a: IAmenity) => (
+                                        <option key={a._id} value={a._id}>
+                                            {a.name}
+                                        </option>
+                                    ))}
                             </select>
                         </div>
                     </div>
 
+
                     <div>
-                        <label className="block mb-1 font-medium">Room Images</label>
+                        <div className='flex justify-between mb-2'>
+                            <Label className='mb-1'>Images</Label>
+                            <div>
+                                <Button variant='ghost' className='bg-red-100 mr-2' onClick={handleReduceImageCount}>Remove</Button>
+                                <Button variant='ghost' className='bg-green-200' onClick={handleImageCount}>Add+</Button>
+                            </div>
+                        </div>
                         <MultiImageUploader
-                            // maxImages={10}
+                            maxImages={imageCount}
                             onImagesChange={(files: (string | File)[]) =>
                                 setValue('images', files as File[])
                             }

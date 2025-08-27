@@ -54,9 +54,11 @@ export const useCreateBooking = () => {
     });
 };
 
-export const useConfirmBooking = () => {
+export const useConfirmBooking = (
+    vendorId: string,
+    method: 'wallet' | 'online') => {
     return useMutation({
-        mutationFn: confirmBooking,
+        mutationFn: (data: { hotelId: string, roomId: string, checkIn: string, checkOut: string, guests: number, totalPrice: number }) => confirmBooking(vendorId, data, method),
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
         },

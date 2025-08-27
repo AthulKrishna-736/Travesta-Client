@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Star, MapPin, CheckCircle } from 'lucide-react';
+import { Star, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
 import { showError } from '@/utils/customToast';
@@ -106,10 +106,10 @@ const HotelDetail: React.FC = () => {
             return;
         }
 
-        console.log('romm: ', room)
+        console.log('room: ', room);
 
-        if (formData.guests > room.capacity) {
-            showError(`Maximum ${room.capacity} guest${room.capacity > 1 ? 's are' : ' is'} allowed per room`);
+        if (formData.guests > room.guest) {
+            showError(`Maximum ${room.guest} guest${room.guest > 1 ? 's are' : ' is'} allowed per room`);
             return
         }
 
@@ -185,24 +185,6 @@ const HotelDetail: React.FC = () => {
                                 <Badge key={idx} variant="outline" className="rounded-full px-3 py-1 text-xs">
                                     {tag}
                                 </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Services */}
-                {hotel.services?.length > 0 && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Services</h2>
-                        <div className="flex flex-wrap gap-2">
-                            {hotel.services.map((service: any, idx: any) => (
-                                <div
-                                    key={idx}
-                                    className="flex items-center gap-1 text-muted-foreground text-sm bg-accent px-3 py-1 rounded-md"
-                                >
-                                    <CheckCircle className="w-4 h-4 text-green-500" />
-                                    {service}
-                                </div>
                             ))}
                         </div>
                     </div>

@@ -1,40 +1,68 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TRoles } from '@/types/auth.types';
-import { getChatMessages, getChattedVendors, getUnreadChats } from '@/services/userService';
+import { getUserChatMessages, getChattedVendors, getUserUnreadChats } from '@/services/userService';
 import { useEffect, useRef, useState } from 'react';
 import { socket } from '@/utils/socket';
 import { showError } from '@/utils/customToast';
-import { getChatUsers } from '@/services/vendorService';
+import { getChattedCustomers, getVendorChatMessages, getVendorUnreadChats } from '@/services/vendorService';
 import { IChat, SendMessagePayload, TypingPayload } from '@/types/chat.types';
-import { getAdminChatVendors } from '@/services/adminService';
+import { getAdminChatMessages, getAdminChatVendors, getAdminUnreadMsg } from '@/services/adminService';
 
-export const useGetChatMessages = (userId: string, enabled: boolean) => {
+//user
+export const useGetUserChatMessages = (userId: string, enabled: boolean) => {
     return useQuery({
-        queryKey: ['chat-history', userId],
-        queryFn: () => getChatMessages(userId),
+        queryKey: ['user-chat-history', userId],
+        queryFn: () => getUserChatMessages(userId),
         enabled,
         staleTime: 60 * 1000,
     });
 };
 
-export const useGetChattedUsers = (search: string) => {
+export const useGetUserUnreadChats = () => {
     return useQuery({
-        queryKey: ['vendor-chatted-users', search],
-        queryFn: () => getChatUsers(search),
+        queryKey: ['user-unread-chats'],
+        queryFn: getUserUnreadChats,
         staleTime: 60 * 1000,
-        enabled: typeof search === 'string',
-    });
-};
+    })
+}
 
-export const useGetChattedVendors = (search: string) => {
+export const useGetUserChatVendors = (search: string) => {
     return useQuery({
-        queryKey: ['user-chatted-vendors', search],
+        queryKey: ['user-chat-vendors', search],
         queryFn: () => getChattedVendors(search),
         staleTime: 60 * 1000,
         enabled: typeof search === 'string',
     });
 };
 
+//vendor
+export const useGetVendorChatCustomers = (search: string) => {
+    return useQuery({
+        queryKey: ['vendor-chat-users', search],
+        queryFn: () => getChattedCustomers(search),
+        staleTime: 60 * 1000,
+        enabled: typeof search === 'string',
+    });
+};
+
+export const useGetVendorChatMessages = (userId: string, enabled: boolean) => {
+    return useQuery({
+        queryKey: ['vendor-chat-history', userId],
+        queryFn: () => getVendorChatMessages(userId),
+        enabled,
+        staleTime: 60 * 1000,
+    })
+}
+
+export const useGetVendorUnreadChats = () => {
+    return useQuery({
+        queryKey: ['vendor-unread-chats'],
+        queryFn: getVendorUnreadChats,
+        staleTime: 60 * 1000,
+    })
+}
+
+//admin
 export const useGetVendorsChatAdmin = (search?: string) => {
     return useQuery({
         queryKey: ['admin-chatted-vendors', search],
@@ -44,14 +72,24 @@ export const useGetVendorsChatAdmin = (search?: string) => {
     });
 }
 
-export const useGetUnreadMsg = () => {
+export const useGetAdminChatMessages = (vendorId: string, enabled: boolean) => {
     return useQuery({
-        queryKey: ['unread-chats'],
-        queryFn: getUnreadChats,
+        queryKey: ['admin-chat-history'],
+        queryFn: () => getAdminChatMessages(vendorId),
+        enabled,
         staleTime: 60 * 1000,
     })
 }
 
+export const useGetAdminUnreadChats = () => {
+    return useQuery({
+        queryKey: ['admin-unread-chats'],
+        queryFn: getAdminUnreadMsg,
+        staleTime: 60 * 1000,
+    });
+}
+
+//socket setup
 export const useSocketChat = (selectedId?: string, userId?: string, userRole?: TRoles) => {
     const queryClient = useQueryClient();
     const [messages, setMessages] = useState<IChat[]>([]);

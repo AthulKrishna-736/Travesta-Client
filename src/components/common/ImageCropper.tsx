@@ -24,6 +24,7 @@ const ImageCropper: React.FC<ImageCropperProps> = ({ imageUrl, onCropDone, onCan
         if (!croppedArea) return;
 
         const image = new Image();
+        image.crossOrigin = "anonymous";
         image.src = imageUrl;
 
         await new Promise((res) => (image.onload = res));

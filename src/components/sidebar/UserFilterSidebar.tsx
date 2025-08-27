@@ -62,7 +62,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
             <div className="mb-6">
                 <Input
                     type="text"
-                    placeholder="Search rooms..."
+                    placeholder="Search hotels..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />

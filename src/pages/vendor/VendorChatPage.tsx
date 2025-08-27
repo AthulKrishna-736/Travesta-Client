@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetChatMessages, useGetChattedUsers, useGetUnreadMsg, useSocketChat } from '@/hooks/user/useChat';
+import { useGetVendorChatCustomers, useGetVendorChatMessages, useGetVendorUnreadChats, useSocketChat } from '@/hooks/user/useChat';
 import Header from '@/components/header/vendor/Header';
 import Sidebar from '@/components/sidebar/Sidebar';
 import { SendMessagePayload } from '@/types/chat.types';
@@ -23,10 +23,10 @@ const VendorChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
-    const { data: unReadMsgResponse } = useGetUnreadMsg();
-    const { data: chattedUsersResponse, isLoading } = useGetChattedUsers(debouncedSearch);
+    const { data: unReadMsgResponse } = useGetVendorUnreadChats();
+    const { data: chattedUsersResponse, isLoading } = useGetVendorChatCustomers(debouncedSearch);
     const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedUser?.id, currentVendorId, 'vendor');
-    const { data: oldMessagesData } = useGetChatMessages(selectedUser?.id || '', !!selectedUser);
+    const { data: oldMessagesData } = useGetVendorChatMessages(selectedUser?.id || '', !!selectedUser);
 
     const users = chattedUsersResponse || []
     const unreadMsg = unReadMsgResponse?.data;

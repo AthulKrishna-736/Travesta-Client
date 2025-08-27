@@ -55,12 +55,24 @@ export const useGetAllHotels = (page: number, limit: number, search?: string) =>
     });
 };
 
-export const useGetAllUserHotels = (page: number, limit: number, search?: string) => {
+export const useGetAllUserHotels = (
+    page: number,
+    limit: number,
+    filters: {
+        search?: string;
+        priceRange?: [number, number];
+        selectedAmenities?: string[];
+        roomType?: string[];
+        checkIn?: string;
+        checkOut?: string;
+        guests?: number;
+    } = {}
+) => {
     return useQuery({
-        queryKey: ['user-hotels', page, limit, search],
-        queryFn: () => getAllUserHotels(page, limit, search),
+        queryKey: ['user-hotels', page, limit, filters],
+        queryFn: () => getAllUserHotels(page, limit, filters),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        // placeholderData: keepPreviousData,
     });
 };
 

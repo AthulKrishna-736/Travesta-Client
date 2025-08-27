@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/header/user/Header';
-import { useGetChatMessages, useGetChattedVendors, useGetUnreadMsg, useSocketChat } from '@/hooks/user/useChat';
+import {  useGetUserChatMessages, useGetUserChatVendors, useGetUserUnreadChats, useSocketChat } from '@/hooks/user/useChat';
 import { useQueryClient } from '@tanstack/react-query';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
@@ -24,10 +24,10 @@ const UserChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
-    const { data: unReadMsgResponse } = useGetUnreadMsg();
-    const { data: chattedVendorsResponse, isLoading } = useGetChattedVendors(debouncedSearch);
+    const { data: unReadMsgResponse } = useGetUserUnreadChats();
+    const { data: chattedVendorsResponse, isLoading } = useGetUserChatVendors(debouncedSearch);
     const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedVendor?.id, currentUserId, 'user');
-    const { data: oldMessagesData } = useGetChatMessages(selectedVendor?.id || '', !!selectedVendor);
+    const { data: oldMessagesData } = useGetUserChatMessages(selectedVendor?.id || '', !!selectedVendor);
 
     const vendors = chattedVendorsResponse || [];
     const unreadMsg = unReadMsgResponse?.data;

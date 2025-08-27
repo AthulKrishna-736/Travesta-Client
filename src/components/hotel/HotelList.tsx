@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
 import { useGetAllHotels, useUpdateHotel } from "@/hooks/vendor/useHotel";
+import { Edit, InfoIcon } from "lucide-react";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
@@ -37,7 +38,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     }, [searchTerm]);
 
     useEffect(() => {
-        if (hotels > 0 && typeof onHotelsFetched === 'function') {
+        if (hotels && typeof onHotelsFetched === 'function') {
             onHotelsFetched(hotels);
         }
     }, [hotels, onHotelsFetched]);
@@ -91,12 +92,18 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
         {
             label: "Edit",
             variant: "default" as const,
+            showLabel: false,
+            tooltip: 'edit hotel',
+            icon: Edit,
             className: "bg-blue-50 text-blue-700 hover:bg-blue-100",
             onClick: handleEdit,
         },
         {
             label: "Details",
             variant: "outline" as const,
+            showLabel: false,
+            icon: InfoIcon,
+            tooltip: 'hotel details',
             className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: handleDetails,
         },
@@ -127,7 +134,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                     </div>
                 )}
 
-                {meta && meta.totalPages > 1 && (
+                {meta && meta.totalPages > 0 && (
                     <Pagination
                         currentPage={meta.currentPage}
                         totalPages={meta.totalPages}
