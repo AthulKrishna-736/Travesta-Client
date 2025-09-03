@@ -17,7 +17,8 @@ export enum USER_APIS {
     booking = '/users/bookings',
     wallet = '/users/wallet',
     amenities = '/users/amenites',
-    payement = '/users/payment'
+    payement = '/users/payment',
+    transactions = '/users/transactions',
 }
 
 export enum VENDOR_APIS {
@@ -27,6 +28,7 @@ export enum VENDOR_APIS {
     chat = '/vendor/chat',
     booking = '/vendor/bookings',
     amenities = '/vendor/amenities',
+    transactions = '/users/transactions',
 }
 
 export enum ADMIN_APIS {

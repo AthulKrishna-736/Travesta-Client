@@ -106,8 +106,8 @@ export const createPaymentIntent = async (data: { amount: number }) => {
     return response.data;
 };
 
-export const addWalletCredit = async (data: { type: 'credit', amount: number, description: string, transactionId: string, }) => {
-    const response = await axiosInstance.post(`${USER_APIS.wallet}/transaction`, data);
+export const addWalletCredit = async (amount: number) => {
+    const response = await axiosInstance.put(`${USER_APIS.wallet}`, { amount });
     return response.data;
 };
 
@@ -120,6 +120,13 @@ export const getWallet = async () => {
     const response = await axiosInstance.get(`${USER_APIS.wallet}`);
     return response.data;
 };
+
+export const getUserTransactions = async (page: number, limit: number) => {
+    const response = await axiosInstance.get(`${USER_APIS.transactions}`, {
+        params: { page, limit },
+    });
+    return response.data;
+}
 
 export const confirmBooking = async (
     vendorId: string,

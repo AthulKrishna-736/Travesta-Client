@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from "react";
+import { Component, ReactNode, ErrorInfo } from "react";
 
 interface ErrorBoundaryProps {
     children: ReactNode;
@@ -6,20 +6,25 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
     hasError: boolean;
+    error: Error | null;
+    errorInfo: ErrorInfo | null;
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+    state: ErrorBoundaryState;
+
     constructor(props: ErrorBoundaryProps) {
         super(props)
-        this.state = { hasError: false };
+        this.state = { hasError: false, error: null, errorInfo: null };
     }
 
-    static getDerivedStateFromError(_: Error): ErrorBoundaryState {
-        return { hasError: true };
-    }
-
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
         console.error('Uncaught error: ', error, errorInfo);
+        this.setState({
+            hasError: true,
+            error,
+            errorInfo,
+        })
     }
 
     render() {
@@ -28,7 +33,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <div className="flex items-center justify-center min-h-screen text-center">
                     <div>
                         <h1 className="text-3xl font-bold text-red-600 mb-4">Something went wrong</h1>
-                        <p className="text-gray-600">Please refresh the page or try again later.</p>
+                        <details>
+                            {this.state.error && this.state.error.toString()}
+                            <br />
+                            {this.state.errorInfo?.componentStack}
+                        </details>
                     </div>
                 </div>
             );

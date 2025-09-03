@@ -24,6 +24,14 @@ export const uplodKyc = async (formData: FormData) => {
     return response.data
 }
 
+//wallet
+export const getVendorTransactions = async (page: number, limit: number) => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.transactions}`, {
+        params: { page, limit },
+    });
+    return response.data;
+}
+
 //vendor hotels
 export const createHotel = async (formData: FormData) => {
     const response = await axiosInstance.post(`${VENDOR_APIS.hotels}`, formData, {
