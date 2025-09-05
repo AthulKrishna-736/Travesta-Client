@@ -22,13 +22,11 @@ export interface IUserFilterSidebarProps {
     setRoomType: (type: string) => void;
 }
 
-const PRICE_RANGES: { label: string; range: [number, number] }[] = [
-    { label: "₹0 - ₹2,000", range: [0, 2000] },
-    { label: "₹2,001 - ₹4,000", range: [2001, 4000] },
-    { label: "₹4,001 - ₹6,000", range: [4001, 6000] },
-    { label: "₹6,001 - ₹8,000", range: [6001, 8000] },
-    { label: "₹8,001 - ₹10,000", range: [8001, 10000] },
-    { label: "₹10,000+", range: [10001, Infinity] },
+export const PRICE_RANGES: { label: string; range: [number, number] }[] = [
+    { label: "₹0 - ₹1500", range: [0, 1500] },
+    { label: "₹1500 - ₹2500", range: [1500, 2500] },
+    { label: "₹2500 - ₹5000", range: [2500, 5000] },
+    { label: "₹5000+", range: [5000, Infinity] },
 ];
 
 const ROOM_TYPES: string[] = [

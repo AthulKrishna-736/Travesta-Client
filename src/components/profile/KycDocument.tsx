@@ -99,8 +99,12 @@ export const KycDocuments = () => {
                         disabled={bothAlreadyUploaded}
                     />
                     {/* display images */}
-                    <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? frontImage : URL.createObjectURL(frontFile!)} className="md:h-[250px] lg:h-[250px] w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="front-card" />
-                    <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? backImage : URL.createObjectURL(backFile!)} className="md:h-[250px] lg:h-[250px]  w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="back-card" />
+                    {bothAlreadyUploaded && (
+                        <>
+                            <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? frontImage : frontFile ? URL.createObjectURL(frontFile) : undefined} className="md:h-[250px] lg:h-[250px] w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="front-card" />
+                            <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? backImage : backFile ? URL.createObjectURL(backFile) : undefined} className="md:h-[250px] lg:h-[250px]  w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="back-card" />
+                        </>
+                    )}
                 </div>
                 <Button
                     type="button"

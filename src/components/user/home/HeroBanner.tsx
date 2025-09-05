@@ -11,21 +11,19 @@ const HeroBanner = () => {
                 }}
             >
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="absolute inset-0 bg-black/60"></div>
             </div>
 
             {/* Content */}
             <div className="relative text-center h-full">
                 <div className="flex justify-center items-center">
-                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white animate-fade-in my-30">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white my-20 lg:py-20">
                         Find Your Perfect Stay,
                         <p>Compare and Save</p>
                     </h1>
                 </div>
 
-                <div className="">
-                    <SearchForm />
-                </div>
+                <SearchForm />
             </div>
         </div>
     );
