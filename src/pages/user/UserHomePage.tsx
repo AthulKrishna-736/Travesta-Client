@@ -4,7 +4,8 @@ import Footer from '@/components/footer/Footer';
 import HeroBanner from '@/components/user/home/HeroBanner';
 import PopularDestinations from '@/components/user/home/PopularDestination';
 import Features from '@/components/user/home/Features';
-import Newsletter from '@/components/user/home/Newsletter';
+import Newsletter from '@/components/user/home/TravelLocations';
+import LuxuryProperties from '@/components/user/home/LuxuryProperties';
 
 
 const UserHomePage: React.FC = () => {
@@ -13,6 +14,7 @@ const UserHomePage: React.FC = () => {
             <Header />
             <main className="flex-1">
                 <HeroBanner />
+                <LuxuryProperties />
                 <PopularDestinations />
                 <Features />
                 <Newsletter />
