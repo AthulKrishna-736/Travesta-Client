@@ -12,29 +12,33 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { showError } from "@/utils/customToast";
 import { useNavigate } from "react-router-dom";
 import CheckoutForm from "@/components/wallet/CheckoutForm";
-import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetWallet } from "@/hooks/user/useWallet";
+import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetVendorTransactions, useGetWallet } from "@/hooks/user/useWallet";
 import WalletSection from "@/components/wallet/Wallet";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const VendorWalletPage = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [page, setPage] = useState(1);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [amount, setAmount] = useState('');
-    const [clientSecret, setClientSecret] = useState('');
-    const [showPayment, setShowPayment] = useState(false);
     const navigate = useNavigate();
+    const [page, setPage] = useState(1);
+    const [showPayment, setShowPayment] = useState(false);
+    const [clientSecret, setClientSecret] = useState('');
+    const [amount, setAmount] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const limit = 5;
 
+    //queries
     const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
-    const { mutateAsync: addWalletCredit } = useAddWalletCredit();
+    const { data: transactionDataResponse, isLoading: transactionLoading } = useGetVendorTransactions(page, limit)
 
+    //mutation functions
+    const { mutateAsync: addWalletCredit } = useAddWalletCredit();
     const { mutateAsync: createWallet } = useCreateWallet();
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
 
     const walletData = walletDataResponse?.data ?? null;
-    const meta = walletDataResponse?.meta;
+    const transactionData = transactionDataResponse?.data ?? null;
+    const meta = transactionDataResponse?.meta;
 
     useEffect(() => {
         if (walletDataResponse && walletDataResponse.success && !walletDataResponse.data) {
@@ -69,8 +73,8 @@ const VendorWalletPage = () => {
     };
 
     const handlePaymentSuccess = async () => {
-        
-            navigate("/vendor/wallet");
+        await addWalletCredit(Number(amount));
+        navigate("/vendor/wallet");
     };
 
     const stripeOptions: StripeElementsOptions = {
@@ -91,8 +95,9 @@ const VendorWalletPage = () => {
                         {!walletLoading && walletData && (
                             <WalletSection
                                 balance={walletData.balance}
-                                transactions={walletData.transactions || []}
+                                transactions={transactionData || []}
                                 userName={walletData.user?.name || "Vendor"}
+                                loading={transactionLoading}
                                 addMoney={() => setDialogOpen(true)}
                             />
                         )}
@@ -135,7 +140,7 @@ const VendorWalletPage = () => {
                         )}
 
                         {/* Pagination */}
-                        {meta && meta.totalPages > 1 && (
+                        {meta && meta.totalPages > 0 && (
                             <Pagination
                                 currentPage={meta.currentPage}
                                 totalPages={meta.totalPages}

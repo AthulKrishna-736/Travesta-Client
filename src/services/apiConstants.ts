@@ -17,7 +17,7 @@ export enum USER_APIS {
     booking = '/users/bookings',
     wallet = '/users/wallet',
     amenities = '/users/amenities',
-    payement = '/users/payment',
+    payment = '/users/payment',
     transactions = '/users/transactions',
 }
 

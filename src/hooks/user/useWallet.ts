@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { addWalletCredit, createPaymentIntent, createWallet, getWallet } from "@/services/userService";
+import { addWalletCredit, createPaymentIntent, createWallet, getUserTransactions, getWallet } from "@/services/userService";
 import { showSuccess, showError } from "@/utils/customToast";
+import { getVendorTransactions } from "@/services/vendorService";
 
 // Get Wallet
 export const useGetWallet = () => {
@@ -10,6 +11,22 @@ export const useGetWallet = () => {
         staleTime: 5 * 60 * 1000,
     });
 };
+
+export const useGetUserTransactions = (page: number, limit: number) => {
+    return useQuery({
+        queryKey: ['transactions', { page, limit }],
+        queryFn: () => getUserTransactions(page, limit),
+        staleTime: 5 * 60 * 1000,
+    });
+}
+
+export const useGetVendorTransactions = (page: number, limit: number) => {
+    return useQuery({
+        queryKey: ['transactions', { page, limit }],
+        queryFn: () => getVendorTransactions(page, limit),
+        staleTime: 5 * 60 * 1000,
+    })
+}
 
 // Create Wallet
 export const useCreateWallet = () => {
@@ -30,7 +47,7 @@ export const useCreateWallet = () => {
 export const useAddWalletCredit = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ amount, transactionId }: { amount: number, transactionId: string }) => addWalletCredit({ type: 'credit', amount, description: 'Wallet top-up via Stripe', transactionId }),
+        mutationFn: (amount: number) => addWalletCredit(amount),
         onSuccess: (res) => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
             queryClient.invalidateQueries({ queryKey: ['wallet'] });

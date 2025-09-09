@@ -2,7 +2,7 @@ import { WalletSectionProps } from '@/types/wallet.types';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
-const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, addMoney }) => {
+const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, addMoney, loading }) => {
     return (
         <div className="space-y-8">
             {/* Wallet Balance Section */}
@@ -26,7 +26,9 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
             {/* Transactions History Section */}
             <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Transaction History</h3>
-                {transactions.length === 0 ? (
+                {loading ? (
+                    <p className="text-gray-500">Loading transactions...</p>
+                ) : transactions.length === 0 ? (
                     <p className="text-gray-500">No transactions yet.</p>
                 ) : (
                     <ul className="space-y-3">

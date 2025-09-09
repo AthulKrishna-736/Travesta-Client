@@ -102,7 +102,7 @@ export const createBooking = async (payload: BookingPayload) => {
 
 //payment
 export const createPaymentIntent = async (data: { amount: number }) => {
-    const response = await axiosInstance.post(`${USER_APIS.payement}/online`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payment}/online`, data);
     return response.data;
 };
 
@@ -140,6 +140,6 @@ export const confirmBooking = async (
     },
     method: 'wallet' | 'online'
 ) => {
-    const response = await axiosInstance.post(`${USER_APIS.payement}/${vendorId}/booking?method=${method}`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payment}/${vendorId}/booking?method=${method}`, data);
     return response.data;
 };
