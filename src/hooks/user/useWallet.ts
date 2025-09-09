@@ -51,6 +51,7 @@ export const useAddWalletCredit = () => {
         onSuccess: (res) => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
         onError: (err: any) => {
             showError(err?.response?.data?.message || "Failed to credit wallet");

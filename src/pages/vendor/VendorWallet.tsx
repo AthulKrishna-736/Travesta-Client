@@ -63,7 +63,6 @@ const VendorWalletPage = () => {
             const secret = res?.data?.clientSecret;
             if (secret) {
                 setClientSecret(secret);
-                setAmount('');
                 setDialogOpen(false);
                 setShowPayment(true);
             }
