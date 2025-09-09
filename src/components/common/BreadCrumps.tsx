@@ -26,7 +26,7 @@ const Breadcrumbs: React.FC<{ items: BreadcrumbItem[] }> = ({ items }) => {
                             {item.label}
                         </span>
                         {!isLast && (
-                            <ChevronRightIcon className="w-4 h-4 mx-1 mt-0.5 text-black" />
+                            <ChevronRightIcon className="w-3 h-3 mx-1 mt-[3px] text-black" />
                         )}
                     </React.Fragment>
                 );

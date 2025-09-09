@@ -46,8 +46,8 @@ const LuxuryProperties: React.FC<ILuxuryProperties> = () => {
                     <div className='flex'>
                         {hotels && hotels.map((h) => {
                             return (
-                                <div className='w-57 h-70 pb-5 m-2 bg-white rounded-md shadow-[0_5px_10px_rgba(0,0,0,0.2)] cursor-pointer'>
-                                    <img src={h.image} alt='hotelImage' className='object-cover h-[70%] rounded-t-md' />
+                                <div className='w-57 h-70 pb-5 m-2 bg-white rounded-md shadow-[0_1px_10px_rgba(0,0,0,0.2)] cursor-pointer'>
+                                    <img src={h.image} alt='hotelImage' className='object-cover h-[70%] rounded-t-md transform transition duration-300 hover:scale-102' />
                                     <div className='pt-3 px-3'>
                                         <h3 className='font-bold text-lg'>{h.title}</h3>
                                         <p className=' text-[#4a4a4a] leading-tight text-sm line-clamp-2'>

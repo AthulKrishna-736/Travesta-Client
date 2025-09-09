@@ -55,7 +55,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
         priceRange[0] === range[0] && priceRange[1] === range[1];
 
     return (
-        <aside className="w-full lg:w-[350px] bg-white p-4 rounded-xl shadow-md">
+        <aside className="w-full lg:w-[350px] bg-white p-4 rounded-sm shadow-md">
             {/* Search */}
             <div className="mb-6">
                 <Input
@@ -76,7 +76,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                                 checked={isPriceSelected(price.range)}
                                 onCheckedChange={() => setPriceRange(price.range)}
                             />
-                            <span>{price.label}</span>
+                            <span className='text-[#4a4a4a]'>{price.label}</span>
                         </div>
                     ))}
                 </div>
@@ -92,7 +92,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                                 checked={selectedRoomTypes.includes(type)}
                                 onCheckedChange={() => setRoomType(type)}
                             />
-                            <span>{type}</span>
+                            <span className='text-[#4a4a4a]'>{type}</span>
                         </div>
                     ))}
                 </div>
@@ -113,7 +113,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                                 checked={selectedAmenities.includes(amenity._id)}
                                 onCheckedChange={() => toggleAmenity(amenity._id)}
                             />
-                            <span>{amenity.name}</span>
+                            <span className='text-[#4a4a4a]'>{amenity.name}</span>
                         </div>
                     ))
                 )}
