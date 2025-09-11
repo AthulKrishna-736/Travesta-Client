@@ -49,8 +49,8 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
                                         <span className="text-gray-800 capitalize">{data.bedType}</span>
                                     </p>
                                     <p className="flex justify-between">
-                                        <span className="text-gray-600 font-medium">Capacity:</span>
-                                        <span className="text-gray-800">{data.capacity} person(s)</span>
+                                        <span className="text-gray-600 font-medium">Guest:</span>
+                                        <span className="text-gray-800">{data.roomCount > 1 ? `${data.roomCount} person(s)` : `${data.roomCount} person`}</span>
                                     </p>
                                 </div>
                             </div>
@@ -75,12 +75,12 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
                         <div className="bg-gray-50 p-4 rounded-lg">
                             <h3 className="text-lg font-semibold text-gray-700 mb-3">Amenities</h3>
                             <div className="flex flex-wrap gap-2">
-                                {data.amenities.map((amenity, index) => (
+                                {data.amenities.map((amenity: any) => (
                                     <span
-                                        key={index}
+                                        key={amenity._id}
                                         className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 border border-gray-200 shadow-sm"
                                     >
-                                        {amenity}
+                                        {amenity.name}
                                     </span>
                                 ))}
                             </div>

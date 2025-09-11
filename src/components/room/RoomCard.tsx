@@ -43,11 +43,17 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
                 <div className="flex items-center gap-1">
                     <Users className="w-4 h-4 text-blue-500" />
-                    <span>{room.capacity} Guests</span>
+                    <span>{room.guest} Guests</span>
                 </div>
                 <div className="flex items-center gap-1">
                     <BedDouble className="w-4 h-4 text-purple-500" />
                     <span>{room.bedType}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <span className="font-medium">Room Type: {room.roomType}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                    <span className="font-medium">Room Count: {room.roomCount}</span>
                 </div>
             </div>
 
@@ -85,6 +91,7 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
                                 type="date"
                                 id="checkIn"
                                 name="checkIn"
+                                min={new Date().toLocaleDateString('en-CA')}
                                 value={formData.checkIn}
                                 onChange={handleInputChange}
                                 required
@@ -97,6 +104,7 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
                             <input
                                 type="date"
                                 id="checkOut"
+                                min={formData.checkOut ? new Date(new Date(formData.checkOut).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString('en-CA') : new Date().toLocaleDateString('en-CA')}
                                 name="checkOut"
                                 value={formData.checkOut}
                                 onChange={handleInputChange}

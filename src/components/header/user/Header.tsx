@@ -23,7 +23,7 @@ const Header = () => {
         <header className={`${isHotelsPage ? "relative z-50" : "sticky top-0 z-50"} bg-white/70 backdrop-blur-md shadow-md`}>
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                 {/* Logo */}
-                <div className="text-2xl font-bold bg-gradient-to-r from-traveste-500 to-traveste-700 bg-clip-text">
+                <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">
                     Travesta
                 </div>
 
@@ -33,12 +33,6 @@ const Header = () => {
                         <NavigationMenuItem>
                             <Link to="/user/home" className={navigationMenuTriggerStyle()}>
                                 Home
-                            </Link>
-                        </NavigationMenuItem>
-
-                        <NavigationMenuItem>
-                            <Link to="/user/hotels" className={navigationMenuTriggerStyle()}>
-                                Hotels
                             </Link>
                         </NavigationMenuItem>
 

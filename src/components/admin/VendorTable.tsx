@@ -4,6 +4,7 @@ import { VendorRequestTableProps } from '@/types/user.types'
 import ConfirmationModal from '../common/ConfirmationModa'
 import ShowDetailsModal from '../common/ShowDetailsModal'
 import { useVendorVerify } from '@/hooks/vendor/useVendor'
+import { BadgeInfo, CheckCircle2, XCircle } from 'lucide-react'
 
 const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit, search }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +85,11 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Accept',
             variant: 'ghost' as const,
-            className: "bg-green-50 text-green-700 hover:bg-green-100",
+            icon: CheckCircle2,
+            tooltip: 'Accept verification',
+            showLabel: false,
+            hidden: (row: any) => row.isVerified === true,
+            className: "text-green-700 hover:bg-green-100",
             onClick: (row: any) => {
                 setSelectedVendor(row);
                 setIsAcceptModalOpen(true);
@@ -93,7 +98,11 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Reject',
             variant: 'ghost' as const,
-            className: "bg-red-50 text-red-700 hover:bg-red-100",
+            icon: XCircle,
+            tooltip: 'Reject verification',
+            showLabel: false,
+            hidden: (row: any) => row.isVerified === true,
+            className: "text-red-700 hover:bg-red-100",
             onClick: (row: any) => {
                 openRejectModal(row);
             }
@@ -101,7 +110,10 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         {
             label: 'Details',
             variant: 'ghost' as const,
-            className: 'bg-gray-800 text-white hover:bg-white hover:border',
+            icon: BadgeInfo,
+            tooltip: 'Show Details',
+            showLabel: false,
+            className: 'cursor-pointer text-blue-700 hover:bg-blue-100 mx-2',
             onClick: (row: any) => {
                 openVendorDetailModal(row)
             }
@@ -110,12 +122,15 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
 
     return (
         <>
-            <DataTable
-                columns={columns}
-                data={vendors}
-                actions={actions}
-                loading={loading}
-            />
+            <div className="rounded-lg border-1 overflow-hidden">
+                <DataTable
+                    columns={columns}
+                    data={vendors}
+                    actions={actions}
+                    loading={loading}
+                />
+            </div>
+
             <ConfirmationModal
                 open={isModalOpen}
                 title="Reject Vendor"

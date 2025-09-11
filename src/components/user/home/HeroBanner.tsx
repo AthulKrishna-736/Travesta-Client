@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import SearchForm from "./SearchForm";
 
 const HeroBanner = () => {
     return (
@@ -11,20 +11,19 @@ const HeroBanner = () => {
                 }}
             >
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/40"></div>
+                <div className="absolute inset-0 bg-black/60"></div>
             </div>
 
             {/* Content */}
-            <div className="relative container mx-auto h-full flex flex-col justify-center items-center text-center px-4">
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 max-w-4xl animate-fade-in">
-                    Find Your Perfect Stay, <span className="text-traveste-300">Compare and Save</span>
-                </h1>
-                <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl animate-slide-in">
-                    Compare prices from over 200+ booking sites to find the best deals on hotels worldwide
-                </p>
-                <Button className="bg-traveste-500 hover:bg-traveste-600 text-white px-8 py-6 text-lg rounded-full">
-                    Start Exploring
-                </Button>
+            <div className="relative text-center h-full">
+                <div className="flex justify-center items-center">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white my-20 lg:py-20">
+                        Find Your Perfect Stay,
+                        <p>Compare and Save</p>
+                    </h1>
+                </div>
+
+                <SearchForm />
             </div>
         </div>
     );

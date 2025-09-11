@@ -4,8 +4,16 @@ import ConfirmationModal from "../common/ConfirmationModa";
 import { Booking, BookingTableProps } from "@/types/booking.types";
 import { useCancelBooking } from "@/hooks/user/useBooking";
 import BookingDetailDialog from "./BookingDetailsModal";
+import { FileText, Info, XCircle } from "lucide-react";
+import { pdf } from "@react-pdf/renderer";
+import fileDownload from "js-file-download";
+import InvoiceDoc from "../common/InvoiceDoc";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
 
 const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
+    const user = useSelector((state: RootState) => state.user.user);
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -36,7 +44,6 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
 
     const columns = [
         { key: "roomName", label: "Room" },
-        { key: "basePrice", label: "Base Price" },
         { key: "checkIn", label: "Check-In" },
         { key: "checkOut", label: "Check-Out" },
         { key: "guests", label: "Guests" },
@@ -48,7 +55,11 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const actions = [
         {
             label: "Details",
-            variant: "default" as const,
+            variant: "ghost" as const,
+            icon: Info,
+            showLabel: false,
+            tooltip: 'Show Details',
+            className: 'text-black',
             onClick: (booking: Booking) => {
                 setSelectedBooking(booking);
                 setIsDetailsModalOpen(true);
@@ -56,12 +67,28 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
         },
         {
             label: "Cancel",
-            variant: "destructive" as const,
+            variant: "ghost" as const,
+            showLabel: false,
+            tooltip: 'Cancel booking',
+            icon: XCircle,
+            className: 'text-red-500',
             onClick: (booking: Booking) => {
                 setSelectedBooking(booking);
                 setIsCancelModalOpen(true);
             },
         },
+        {
+            label: "Invoice",
+            variant: "ghost" as const,
+            tooltip: 'Download invoice',
+            className: 'text-blue-500',
+            icon: FileText,
+            onClick: async (booking: Booking) => {
+                const blob = await pdf(<InvoiceDoc booking={booking} user={user} />).toBlob();
+                fileDownload(blob, `invoice_${booking._id}.pdf`);
+            },
+        },
+
     ];
 
     return (

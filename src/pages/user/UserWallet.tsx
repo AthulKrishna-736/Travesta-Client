@@ -5,8 +5,8 @@ import Pagination from "@/components/common/Pagination";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { env } from "@/config/config";
-import CheckoutForm, { PaymentSuccessData } from "@/components/wallet/CheckoutForm";
-import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetWallet } from "@/hooks/user/useWallet";
+import CheckoutForm from "@/components/wallet/CheckoutForm";
+import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetUserTransactions, useGetWallet } from "@/hooks/user/useWallet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -28,14 +28,18 @@ const UserWallet: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const limit = 5;
 
-    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(page, limit);
-    const { mutateAsync: addWalletCredit } = useAddWalletCredit();
+    // queries
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
+    const { data: transactionDataResponse, isLoading: transactionLoading } = useGetUserTransactions(page, limit)
 
+    // mutation functions
+    const { mutateAsync: addWalletCredit } = useAddWalletCredit();
     const { mutateAsync: createWallet } = useCreateWallet();
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
 
     const walletData = walletDataResponse?.data ?? null;
-    const meta = walletDataResponse?.meta ?? null;
+    const transactionData = transactionDataResponse?.data ?? null;
+    const meta = transactionDataResponse?.meta ?? null;
 
     useEffect(() => {
         if (walletDataResponse && walletDataResponse.success && !walletDataResponse.data) {
@@ -43,15 +47,9 @@ const UserWallet: React.FC = () => {
         }
     }, [walletDataResponse, createWallet]);
 
-    const handleWalletPaymentSuccess = async (data: PaymentSuccessData) => {
-        if (data.type === "wallet") {
-            await addWalletCredit({
-                amount: data.amount,
-                transactionId: data.transactionId,
-            });
-
-            navigate('/user/wallet');
-        }
+    const handleWalletPaymentSuccess = async () => {
+        await addWalletCredit(Number(amount));
+        navigate('/user/wallet');
     };
 
     const handleAddMoney = async () => {
@@ -71,7 +69,6 @@ const UserWallet: React.FC = () => {
             const clientSecret = res?.data?.clientSecret;
             if (clientSecret) {
                 setClientSecret(clientSecret);
-                setAmount('');
                 setShowPayment(true);
                 setDialogOpen(false);
             }
@@ -114,8 +111,9 @@ const UserWallet: React.FC = () => {
                         {!walletLoading && walletData && (
                             <WalletSection
                                 balance={walletData.balance}
-                                transactions={walletData.transactions || []}
+                                transactions={transactionData || []}
                                 userName={walletData.user?.name || "User"}
+                                loading={transactionLoading}
                                 addMoney={() => setDialogOpen(true)}
                             />
                         )}
@@ -151,7 +149,6 @@ const UserWallet: React.FC = () => {
                                 open={showPayment}
                                 onClose={() => setShowPayment(false)}
                                 onPaymentSuccess={handleWalletPaymentSuccess}
-                                isForBooking={false}
                             />
                         </Elements>
                     )}

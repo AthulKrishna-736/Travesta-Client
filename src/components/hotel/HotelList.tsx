@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "@/components/common/Table";
-import { IHotel } from "@/types/user.types";
+import { IHotel } from "@/types/hotel.types";
 import ShowHotelDetailsModal from "../hotel/ShowHotelDetails";
 import { IHotelTableProps } from "@/types/component.types";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
-import { useGetAllHotels, useUpdateHotel } from "@/hooks/vendor/useHotel";
+import { useHotelsByVendor, useUpdateHotel } from "@/hooks/vendor/useHotel";
+import { Edit, InfoIcon } from "lucide-react";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
@@ -24,7 +25,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     const [page, setPage] = useState(1);
     const limit = 10;
 
-    const { data: hotelsData, isLoading } = useGetAllHotels(page, limit, debouncedSearch);
+    const { data: hotelsData, isLoading } = useHotelsByVendor(page, limit, debouncedSearch);
     const hotels = hotelsData?.data;
     const meta = hotelsData?.meta;
 
@@ -37,7 +38,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     }, [searchTerm]);
 
     useEffect(() => {
-        if (hotels > 0 && typeof onHotelsFetched === 'function') {
+        if (hotels && typeof onHotelsFetched === 'function') {
             onHotelsFetched(hotels);
         }
     }, [hotels, onHotelsFetched]);
@@ -91,12 +92,18 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
         {
             label: "Edit",
             variant: "default" as const,
+            showLabel: false,
+            tooltip: 'edit hotel',
+            icon: Edit,
             className: "bg-blue-50 text-blue-700 hover:bg-blue-100",
             onClick: handleEdit,
         },
         {
             label: "Details",
             variant: "outline" as const,
+            showLabel: false,
+            icon: InfoIcon,
+            tooltip: 'hotel details',
             className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: handleDetails,
         },
@@ -113,19 +120,21 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                 />
 
                 {hotels ? (
-                    <DataTable
-                        columns={columns}
-                        data={hotels}
-                        actions={actions}
-                        loading={isLoading}
-                    />
+                    <div className="rounded-lg border-1 overflow-hidden">
+                        <DataTable
+                            columns={columns}
+                            data={hotels}
+                            actions={actions}
+                            loading={isLoading}
+                        />
+                    </div>
                 ) : (
                     <div className="flex justify-center items-center">
                         <p className="text-semibold text-lg text-red-500">No hotels found. Please create one</p>
                     </div>
                 )}
 
-                {meta && meta.totalPages > 1 && (
+                {meta && meta.totalPages > 0 && (
                     <Pagination
                         currentPage={meta.currentPage}
                         totalPages={meta.totalPages}

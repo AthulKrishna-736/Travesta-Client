@@ -73,7 +73,7 @@ export const KycDocuments = () => {
                 </p>
 
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm">
-                    <span className="text-yellow-800 font-semibold mb-1">Notes: </span>
+                    <span className="text-yellow-800 font-semibold mb-1">Note: </span>
                     <span className="text-yellow-700 text-sm leading-relaxed">
                         Please upload your documents and wait for verification by the admin.
                         Only <span className="font-medium">verified vendors</span> can create hotels and rooms.
@@ -99,8 +99,12 @@ export const KycDocuments = () => {
                         disabled={bothAlreadyUploaded}
                     />
                     {/* display images */}
-                    <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? frontImage : URL.createObjectURL(frontFile!)} className="md:h-[250px] lg:h-[250px] w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="front-card" />
-                    <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? backImage : URL.createObjectURL(backFile!)} className="md:h-[250px] lg:h-[250px]  w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="back-card" />
+                    {bothAlreadyUploaded && (
+                        <>
+                            <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? frontImage : frontFile ? URL.createObjectURL(frontFile) : undefined} className="md:h-[250px] lg:h-[250px] w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="front-card" />
+                            <img onClick={(e) => handleImagePreviewModal(e)} src={bothAlreadyUploaded ? backImage : backFile ? URL.createObjectURL(backFile) : undefined} className="md:h-[250px] lg:h-[250px]  w-full object-cover border-2 border-blue-500 border-dashed rounded-lg cursor-pointer" alt="back-card" />
+                        </>
+                    )}
                 </div>
                 <Button
                     type="button"

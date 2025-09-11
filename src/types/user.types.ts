@@ -25,7 +25,7 @@ export interface IUser {
   lastName: string,
   isGoogle: boolean,
   email: string,
-  password?: string, 
+  password?: string,
   role: Exclude<TRoles, 'admin'>,
   phone: number,
   isBlocked: boolean,
@@ -41,10 +41,6 @@ export interface IUser {
 export interface UserTableProps {
   users: User[]
   loading: boolean
-  page: number
-  limit: number
-  role: TRoles
-  search: string
 }
 
 export type TSubscriptionType = 'basic' | 'medium' | 'vip';

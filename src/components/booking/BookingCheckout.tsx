@@ -4,24 +4,34 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Users, MapPin, Clock } from 'lucide-react';
-import { useConfirmBooking, useCreateBooking } from '@/hooks/user/useBooking';
+import { useConfirmBooking } from '@/hooks/user/useBooking';
 import { useCreatePaymentIntent } from '@/hooks/user/useWallet';
+import { CreditCard, Wallet } from 'lucide-react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
-import CheckoutForm, { PaymentSuccessData } from '@/components/wallet/CheckoutForm';
+import CheckoutForm from '@/components/wallet/CheckoutForm';
 import { env } from '@/config/config';
+import { showError } from '@/utils/customToast';
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const BookingCheckout: React.FC = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
-    const [bookingId, setBookingId] = useState<string | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
-    const { mutateAsync: createBooking, isPending } = useCreateBooking();
+    const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet' | null>(null);
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
-    const { mutateAsync: confirmBooking } = useConfirmBooking();
 
+    useEffect(() => {
+        console.log('state: ', state);
+    }, [state]);
+
+    const { hotel, room, formData, totalPrice, days } = state;
+
+    const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(
+        hotel.vendorId,
+        paymentMethod || 'wallet',
+    );
 
     if (!state) {
         return (
@@ -31,28 +41,27 @@ const BookingCheckout: React.FC = () => {
         );
     }
 
-    useEffect(() => {
-        console.log('state: ', state);
-    }, [state]);
-
-    const { hotel, room, formData, totalPrice, days } = state;
-
-    const handleBookingPaymentSuccess = async (data: PaymentSuccessData) => {
-        if (data.type === "booking") {
-            await confirmBooking({
-                receiverId: data.receiverId,
-                amount: data.amount,
-                transactionId: data.transactionId,
-                description: data.description,
-                relatedBookingId: data.relatedBookingId,
-            });
-            navigate('/user/booking')
-        }
+    const handleBookingPaymentSuccess = async () => {
+        const payload = {
+            hotelId: hotel._id,
+            roomId: room._id,
+            checkIn: formData.checkIn,
+            checkOut: formData.checkOut,
+            guests: formData.guests,
+            totalPrice: totalPrice,
+        };
+        await confirmBooking(payload);
+        navigate('/user/booking');
     };
 
 
     const handleConfirm = async () => {
         try {
+            if (!paymentMethod) {
+                showError('Select any of the payment method');
+                return;
+            }
+
             const payload = {
                 hotelId: hotel._id,
                 roomId: room._id,
@@ -62,19 +71,18 @@ const BookingCheckout: React.FC = () => {
                 totalPrice: totalPrice,
             };
 
-            const res = await createBooking(payload);
+            if (paymentMethod === 'wallet') {
+                await confirmBooking(payload);
+                navigate('/user/bookings');
+                return;
+            }
 
-            if (res?.data) {
-                const bookingId = res.data._id;
-                const amount = res.data.totalPrice;
-
-                setBookingId(bookingId);
-
-                const paymentRes = await createPaymentIntent(amount);
-
+            if (paymentMethod === 'online') {
+                const paymentRes = await createPaymentIntent(totalPrice * 100);
                 if (paymentRes?.data?.clientSecret) {
                     setClientSecret(paymentRes.data.clientSecret);
                 }
+                return;
             }
         } catch (err: any) {
             console.error('Error in booking or payment intent:', err);
@@ -162,6 +170,37 @@ const BookingCheckout: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Payment Method Selection */}
+                        <div className="flex gap-4 items-center pt-4">
+                            <label className={`flex-1 flex items-center gap-2 p-3 border rounded-lg cursor-pointer 
+                                ${paymentMethod === 'online' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
+                                <input
+                                    type="radio"
+                                    name="paymentMethod"
+                                    value="online"
+                                    className="hidden"
+                                    checked={paymentMethod === 'online'}
+                                    onChange={() => setPaymentMethod('online')}
+                                />
+                                <CreditCard className="w-6 h-6" />
+                                Online Payment
+                            </label>
+
+                            <label className={`flex-1 flex items-center gap-2 p-3 border rounded-lg cursor-pointer 
+                                ${paymentMethod === 'wallet' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
+                                <input
+                                    type="radio"
+                                    name="paymentMethod"
+                                    value="wallet"
+                                    className="hidden"
+                                    checked={paymentMethod === 'wallet'}
+                                    onChange={() => setPaymentMethod('wallet')}
+                                />
+                                <Wallet className="w-6 h-6" />
+                                Wallet
+                            </label>
+                        </div>
+
                         {/* Confirm Button */}
                         <div className="pt-6">
                             {!clientSecret ? (
@@ -174,9 +213,6 @@ const BookingCheckout: React.FC = () => {
                                         open={!!clientSecret}
                                         onClose={() => setClientSecret(null)}
                                         onPaymentSuccess={handleBookingPaymentSuccess}
-                                        isForBooking
-                                        receiverId={hotel.vendorId}
-                                        bookingId={bookingId!}
                                     />
                                 </Elements>
                             )}

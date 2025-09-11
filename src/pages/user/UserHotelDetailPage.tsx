@@ -7,7 +7,7 @@ const UserHotelDetailPage: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-grow">
+            <main className="flex-grow bg-[#f2f2f2]">
                 <HotelDetail />
             </main>
             <Footer />

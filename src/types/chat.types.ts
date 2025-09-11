@@ -26,7 +26,8 @@ export interface IChatPageProps {
     selectedUser: Pick<User, 'id' | 'firstName' | 'role'>;
     msg: string;
     setMsg: (data: string) => void;
-    unreadFrom: Set<string>;
+    liveUnreadCounts: Record<string, number>;
+    unreadCounts?: { id: string; count: number }[];
     handleSend: () => void;
     handleTyping: () => void;
     typingStatus: boolean;

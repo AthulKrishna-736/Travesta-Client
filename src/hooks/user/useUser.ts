@@ -5,7 +5,7 @@ import { showError, showSuccess } from "@/utils/customToast"
 import { setUser } from "@/store/slices/userSlice"
 import { getAllUsers, toggleBlockUser } from "@/services/adminService"
 import { TGetAllUsersResponse } from "@/types/response.types"
-import { TRoles } from "@/types/auth.types"
+import { TSortOption } from "@/types/custom.types"
 
 export const useGetUser = () => {
     return useQuery({
@@ -38,37 +38,35 @@ export const useUpdateUser = () => {
     })
 }
 
-export const useGetAllUsers = (page: number, limit: number, role: string, search?: string) => {
+export const useGetAllUsers = (page: number, limit: number, role: string, search?: string, sortOption?: TSortOption) => {
     return useQuery({
-        queryKey: ['admin-users', page, limit, role, search],
-        queryFn: () => getAllUsers(page, limit, role, search),
+        queryKey: ['admin-users', { page, limit, role, search, sortOption }],
+        queryFn: () => getAllUsers(page, limit, role, search, sortOption),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
     });
 };
 
-export const useBlockUser = (page: number, limit: number, role: TRoles, search: string) => {
+export const useBlockUser = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (userId: string) => toggleBlockUser(userId),
         onMutate: async (userId: string) => {
-            await queryClient.cancelQueries({ queryKey: ['admin-users', page, limit, role, search] });
+            await queryClient.cancelQueries({ queryKey: ['admin-users'], exact: false });
 
-            const prevUsers = queryClient.getQueryData(['admin-users', page, limit, role, search]);
+            const allQueries = queryClient.getQueriesData<TGetAllUsersResponse>({ queryKey: ['admin-users'] });
 
-            queryClient.setQueryData(['admin-users', page, limit, role, search], (oldData: TGetAllUsersResponse) => {
-                return {
-                    ...oldData,
-                    data: oldData?.data?.map((user) => {
-                        if (user.id == userId) {
-                            user.isBlocked = !user.isBlocked
-                        }
-                        return user
-                    })
-                }
+
+            allQueries.forEach(([key, _]) => {
+                queryClient.setQueryData(key, (prev: TGetAllUsersResponse) => ({
+                    ...prev,
+                    data: prev?.data?.map(user =>
+                        user.id === userId ? { ...user, isBlocked: !user.isBlocked } : user
+                    ),
+                }));
             });
 
-            return { prevUsers }
+            return { allQueries };
         },
         onSuccess: (res) => {
             if (res.success) {
@@ -78,8 +76,10 @@ export const useBlockUser = (page: number, limit: number, role: TRoles, search: 
             }
         },
         onError: (error: any, _userId, context) => {
-            if (context?.prevUsers) {
-                queryClient.setQueryData(['admin-users', page, limit, role, search], context.prevUsers);
+            if (context?.allQueries) {
+                context.allQueries.forEach(([key, oldData]) => {
+                    queryClient.setQueryData(key, oldData);
+                });
             }
 
             console.log('error logging: ', error)

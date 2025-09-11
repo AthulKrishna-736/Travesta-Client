@@ -2,30 +2,43 @@ import React, { useEffect, useState } from 'react';
 import Header from '@/components/header/user/Header';
 import Footer from '@/components/footer/Footer';
 import Pagination from '@/components/common/Pagination';
-import RoomCard from '@/components/user/Hotelslist';
-import { useGetAvailableRooms } from '@/hooks/vendor/useRoom';
-import { IRoom } from '@/types/room.types';
 import { useSearchParams } from 'react-router-dom';
 import CustomSearch from '@/components/common/CustomSearch';
 import Breadcrumbs from '@/components/common/BreadCrumps';
 import UserFilterSidebar from '@/components/sidebar/UserFilterSidebar';
 import { Loader2 } from 'lucide-react';
-import { useGetUsedActiveAmenities } from '@/hooks/admin/useAmenities';
+import { useGetUserAmenities } from '@/hooks/admin/useAmenities';
+import { useGetAllUserHotels } from '@/hooks/vendor/useHotel';
+import HotelCard from '@/components/hotel/HotelCard';
+import CustomSort from '@/components/common/CustomSort';
+
+const breadCrumpItems = [
+    { label: 'Home', path: '/user/home' },
+    { label: 'Hotels', path: '/user/hotels' }
+]
 
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
 
-    const destination = params.get('destination') || '';
-    const checkIn = params.get('checkIn') || '';
-    const checkOut = params.get('checkOut') || '';
-    const guests = parseInt(params.get('guests') || '1', 10);
+    const searchValue = params.get('searchTerm') || '';
+    const checkInParam = params.get('checkIn') || '';
+    const checkOutParam = params.get('checkOut') || '';
+    const guestsParam = parseInt(params.get('guests') || '1', 10);
+    const minPrice = parseInt(params.get('minPrice') as string, 10);
+    const maxPrice = parseInt(params.get('maxPrice') as string, 10) || Infinity;
 
-    const [searchTerm, setSearchTerm] = useState(destination);
+    const [searchTerm, setSearchTerm] = useState(searchValue);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+    const [checkIn, setCheckIn] = useState(checkInParam);
+    const [checkOut, setCheckOut] = useState(checkOutParam);
+    const [guests, setGuests] = useState(guestsParam);
     const [page, setPage] = useState(1);
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, Infinity]);
+    const limit = 9;
+
+    const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [roomType, setRoomType] = useState<string[]>([]);
+    const [sortOption, setSortOption] = useState<string>('');
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -35,22 +48,21 @@ const UserHotelPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const limit = 9;
-    const { data, isLoading: isRoomLoading } = useGetAvailableRooms(
-        page,
-        limit,
+    const { data: hotelResponseData, isLoading: isHotelLoading } = useGetAllUserHotels(page, limit, {
+        search: debouncedSearchTerm,
         priceRange,
         selectedAmenities,
         roomType,
-        debouncedSearchTerm,
         checkIn,
         checkOut,
-        guests
-    );
-    const rooms = data?.data || [];
-    const meta = data?.meta;
+        guests,
+        sort: sortOption,
+    });
 
-    const { data: amenities, isLoading: isAmenitiesLoading } = useGetUsedActiveAmenities();
+    const hotels = hotelResponseData?.data?.length ? hotelResponseData.data : [];
+    const meta = hotelResponseData?.meta;
+
+    const { data: amenities, isLoading: isAmenitiesLoading } = useGetUserAmenities();
     const amenitiesData = amenities?.data || [];
 
     const toggleAmenity = (amenity: string) => {
@@ -76,14 +88,33 @@ const UserHotelPage: React.FC = () => {
         setPage(1);
     };
 
+    const handleSearch = () => {
+        setPage(1);
+    };
+
+    const sortOptions = [
+        { name: 'Price: High to Low', tooltip: 'Sort price in descending order', onClickHandler: () => setSortOption('price_desc') },
+        { name: 'Price: Low to High', tooltip: 'Sort price in ascending order', onClickHandler: () => setSortOption('price_asc') },
+        { name: 'Name: A to Z', tooltip: 'Sort alphabetically (ascending)', onClickHandler: () => setSortOption('name_asc') },
+        { name: 'Name: Z to A', tooltip: 'Sort alphabetically (descending)', onClickHandler: () => setSortOption('name_desc') }
+    ];
+
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <CustomSearch />
-
-            <main className="flex-grow py-10 bg-gray-50">
+            <CustomSearch
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                checkIn={checkIn}
+                setCheckIn={setCheckIn}
+                checkOut={checkOut}
+                setCheckOut={setCheckOut}
+                guests={guests}
+                setGuests={setGuests}
+                onSearch={handleSearch}
+            />
+            <main className="flex-grow py-10 bg-[#f2f2f2]">
                 <div className="container mx-auto px-4">
-
                     <div className="flex flex-col lg:flex-row gap-6">
                         {/* Filter Sidebar */}
                         <UserFilterSidebar
@@ -100,22 +131,43 @@ const UserHotelPage: React.FC = () => {
                             isAmenitiesLoading={isAmenitiesLoading}
                         />
 
-                        {/* Rooms Listing */}
-                        <section className="w-full lg:w-3/4">
-                            {isRoomLoading ? (
-                                <div className='flex items-center justify-center gap-4'>
-                                    <Loader2 className='w-10 h-10 animate-spin' />
-                                    <p className="text-center text-2xl font-semibold">Loading rooms...</p>
+                        {/* Hotels Listing */}
+                        <section className="w-full rounded-sm lg:w-3/4 p-2">
+                            <Breadcrumbs items={breadCrumpItems} />
+                            <div>
+                                {isHotelLoading ? null : meta && meta.totalData > 0 ? (
+                                    <h1 className='text-black text-2xl font-bold mt-4 mb-3'>
+                                        {meta.totalData} {meta.totalData <= 1 ? 'Property' : 'Properties'} Found
+                                    </h1>
+                                ) : (
+                                    <h1 className='text-black text-2xl font-bold mt-4 mb-3'>
+                                        No Properties Found
+                                    </h1>
+                                )}
+
+                                {/* sort options */}
+                                <div>
+                                    <CustomSort data={sortOptions} />
                                 </div>
-                            ) : rooms.length === 0 ? (
-                                <p className="text-center text-gray-500 text-2xl">No rooms found.</p>
-                            ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    {rooms.map((room: IRoom) => (
-                                        <RoomCard key={room.id} room={room} />
-                                    ))}
+
+                                {/* hotel list */}
+                                <div className='mt-5 py-5'>
+                                    {isHotelLoading ? (
+                                        <div className='flex items-center justify-center gap-4'>
+                                            <Loader2 className='w-10 h-10 animate-spin' />
+                                            <p className="text-center text-2xl font-semibold">Loading Hotels...</p>
+                                        </div>
+                                    ) : hotels.length === 0 ? (
+                                        <p className="text-center text-gray-500 text-2xl">No hotels found.</p>
+                                    ) : (
+                                        <div className='py-2'>
+                                            {hotels.map((hotel: any) => (
+                                                <HotelCard key={hotel.id} hotel={hotel} />
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            </div>
 
                             {meta && meta.totalPages > 0 && (
                                 <div className="mt-10 flex justify-center">
@@ -129,11 +181,11 @@ const UserHotelPage: React.FC = () => {
                         </section>
 
                     </div>
-                </div>
-            </main>
+                </div >
+            </main >
 
             <Footer />
-        </div>
+        </div >
     );
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import Footer from '@/components/footer/Footer';
 import HeroBanner from '@/components/user/home/HeroBanner';
-import SearchForm from '@/components/user/home/SearchForm';
 import PopularDestinations from '@/components/user/home/PopularDestination';
 import Features from '@/components/user/home/Features';
-import Newsletter from '@/components/user/home/Newsletter';
+import TravelLocation from '@/components/user/home/TravelLocations';
 import LandingHeader from '@/components/header/user/LandingHeader';
+import LuxuryProperties from '@/components/user/home/LuxuryProperties';
 
 const LandingPage: React.FC = () => {
     return (
@@ -13,12 +13,10 @@ const LandingPage: React.FC = () => {
             <LandingHeader />
             <main className="flex-grow">
                 <HeroBanner />
-                <div className="container mx-auto px-4">
-                    <SearchForm />
-                </div>
+                <LuxuryProperties />
                 <PopularDestinations />
                 <Features />
-                <Newsletter />
+                <TravelLocation />
             </main>
             <Footer />
         </div>

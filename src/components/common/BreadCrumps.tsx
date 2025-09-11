@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRightIcon } from "@heroicons/react/24/solid"; 
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
 interface BreadcrumbItem {
     label: string;
@@ -18,15 +18,15 @@ const Breadcrumbs: React.FC<{ items: BreadcrumbItem[] }> = ({ items }) => {
                     <React.Fragment key={index}>
                         <span
                             className={`${isLast
-                                    ? "text-blue-600 font-semibold"
-                                    : "text-black hover:text-blue-600 cursor-pointer"
+                                ? "text-blue-600 font-semibold"
+                                : "text-black hover:text-blue-600 cursor-pointer"
                                 }`}
                             onClick={() => !isLast && item.path && navigate(item.path)}
                         >
                             {item.label}
                         </span>
                         {!isLast && (
-                            <ChevronRightIcon className="w-4 h-4 mx-2 text-gray-400" />
+                            <ChevronRightIcon className="w-3 h-3 mx-1 mt-[3px] text-black" />
                         )}
                     </React.Fragment>
                 );

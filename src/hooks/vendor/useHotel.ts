@@ -1,5 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createHotel, getAllHotels, updateHotel } from "@/services/vendorService";
+import { createHotel, getHotelByVendor, getHotelsByVendor, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { getAllUserHotels, getUserHotelById } from '@/services/userService';
 
@@ -46,21 +46,43 @@ export const useUpdateHotel = (cbFn: () => void) => {
 };
 
 
-export const useGetAllHotels = (page: number, limit: number, search?: string) => {
+export const useHotelsByVendor = (page: number, limit: number, search?: string) => {
     return useQuery({
-        queryKey: ['vendor-hotels', page, limit, search],
-        queryFn: () => getAllHotels(page, limit, search),
+        queryKey: ['vendor-hotels', { page, limit, search }],
+        queryFn: () => getHotelsByVendor(page, limit, search),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
     });
 };
 
-export const useGetAllUserHotels = (page: number, limit: number, search?: string) => {
+export const useHotelByVendor = (hotelId: string) => {
     return useQuery({
-        queryKey: ['user-hotels', page, limit, search],
-        queryFn: () => getAllUserHotels(page, limit, search),
+        queryKey: ['vendor-hotel', hotelId],
+        queryFn: () => getHotelByVendor(hotelId),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+    })
+}
+
+export const useGetAllUserHotels = (
+    page: number,
+    limit: number,
+    filters: {
+        search?: string;
+        priceRange?: [number, number];
+        selectedAmenities?: string[];
+        roomType?: string[];
+        checkIn?: string;
+        checkOut?: string;
+        guests?: number;
+        sort?: string;
+    } = {}
+) => {
+    return useQuery({
+        queryKey: ['user-hotels', { page, limit, filters }],
+        queryFn: () => getAllUserHotels(page, limit, filters),
+        staleTime: 5 * 60 * 1000,
+        // placeholderData: keepPreviousData,
     });
 };
 

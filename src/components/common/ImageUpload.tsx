@@ -5,7 +5,7 @@ import { IMutilImageUploadProps } from '@/types/component.types';
 import { EditIcon } from 'lucide-react';
 
 
-const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages , onImagesChange, initialImageUrls = [] }) => {
+const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages, onImagesChange, initialImageUrls = [] }) => {
     const [previewImages, setPreviewImages] = useState<(string | null)[]>([]);
     const [originalFiles, setOriginalFiles] = useState<(File | null)[]>([]);
     const [croppedFiles, setCroppedFiles] = useState<(File | null)[]>([]);
@@ -15,8 +15,10 @@ const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages , onIm
 
     useEffect(() => {
         if (initialImageUrls.length > 0) {
+            const diff = Math.max(0, maxImages - initialImageUrls.length);
+
             const padded = [...initialImageUrls].concat(
-                Array(maxImages - initialImageUrls.length).fill(null)
+                Array(diff).fill(null)
             );
             setPreviewImages(padded);
             setOriginalFiles(Array(maxImages).fill(null));
@@ -136,7 +138,7 @@ const MultiImageUploader: React.FC<IMutilImageUploadProps> = ({ maxImages , onIm
                                     className="bg-yellow-100 text-yellow-700 rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold hover:bg-yellow-200"
                                     aria-label="Crop Image"
                                 >
-                                    <EditIcon className='w-4 h-4'/>
+                                    <EditIcon className='w-4 h-4' />
                                 </button>
                                 <button
                                     type="button"

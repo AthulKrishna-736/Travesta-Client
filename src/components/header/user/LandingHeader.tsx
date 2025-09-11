@@ -13,7 +13,7 @@ const LandingHeader = () => {
                 {/* Logo */}
                 <div className="flex items-center">
                     <Link to="/" className="flex items-center">
-                        <span className="text-2xl font-bold bg-gradient-to-r from-traveste-500 to-traveste-700 bg-clip-text">
+                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">
                             Travesta
                         </span>
                     </Link>
@@ -37,14 +37,9 @@ const LandingHeader = () => {
 
                 {/* Action Buttons - Desktop */}
                 <div className="hidden md:flex items-center gap-2">
-                    <Link to="/user/login">
-                        <Button variant="outline" className="bg-white text-black border border-black hover:bg-gray-100 text-sm">
-                            Become a User ?
-                        </Button>
-                    </Link>
                     <Link to="/vendor/login">
                         <Button className="bg-yellow-400 text-black hover:bg-yellow-300 text-sm">
-                            Become a Vendor ?
+                            Become a Vendor
                         </Button>
                     </Link>
                 </div>

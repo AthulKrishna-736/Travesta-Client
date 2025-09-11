@@ -4,13 +4,14 @@ import { AmenityTableProps, IAmenity } from "@/types/component.types";
 import { useBlockAmenity, useUpdateAmenity } from "@/hooks/admin/useAmenities";
 import AmenitiesModal from "./AmenitiesModal";
 import ConfirmationModal from "../common/ConfirmationModa";
+import { Ban, Edit, Unlock } from "lucide-react";
 
 const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, limit }) => {
     const [editAmenity, setEditAmenity] = useState<IAmenity | null>(null);
     const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
     const [selectedAmenity, setSelectedAmenity] = useState<IAmenity | null>(null);
 
-    const { mutate: toggleBlock, isPending } = useBlockAmenity(page, limit, () => {
+    const { mutate: toggleBlock, isPending } = useBlockAmenity(() => {
         setIsToggleModalOpen(false);
         setSelectedAmenity(null);
     });
@@ -27,10 +28,10 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
         {
             label: (amenity: IAmenity) => (amenity.isActive ? "Block" : "Unblock"),
             variant: "ghost" as const,
-            className: (amenity: IAmenity) =>
-                amenity.isActive
-                    ? "bg-red-50 text-red-700 hover:bg-red-100 mx-2"
-                    : "bg-green-50 text-green-700 hover:bg-green-100 mx-2",
+            icon: (amenity: IAmenity) => (amenity.isActive ? Ban : Unlock),
+            showLabel: false,
+            tooltip: (amenity: IAmenity) => (amenity.isActive ? "Block Amenity" : "Unblock Amenity"),
+            className: (amenity: IAmenity) => amenity.isActive ? "cursor-pointer text-red-700 hover:bg-red-100 mx-2" : "cursor-pointer text-green-700 hover:bg-green-100 mx-2",
             onClick: (amenity: IAmenity) => {
                 setSelectedAmenity(amenity);
                 setIsToggleModalOpen(true);
@@ -39,7 +40,10 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
         {
             label: "Edit",
             variant: "ghost" as const,
-            className: "bg-blue-50 text-blue-700 hover:bg-blue-100 mx-2",
+            tooltip: 'Edit Amenity',
+            icon: Edit,
+            showLabel: false,
+            className: "cursor-pointer text-blue-700 hover:bg-blue-100 mx-2",
             onClick: (amenity: IAmenity) => setEditAmenity(amenity),
         },
     ];
@@ -58,13 +62,14 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
 
     return (
         <>
-            <DataTable
-                columns={columns}
-                data={amenities}
-                actions={actions}
-                loading={loading || isPending}
-            />
-
+            <div className="rounded-lg border-1 overflow-hidden">
+                <DataTable
+                    columns={columns}
+                    data={amenities}
+                    actions={actions}
+                    loading={loading || isPending}
+                />
+            </div>
             <AmenitiesModal
                 open={!!editAmenity}
                 title="Edit Amenity"

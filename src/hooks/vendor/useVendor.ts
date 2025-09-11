@@ -2,6 +2,7 @@ import { getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
 import { setVendor } from "@/store/slices/vendorSlice"
 import { TUpdateVendorReqValues } from "@/types/auth.types"
+import { TSortOption } from "@/types/custom.types"
 import { TGetVendorsResponse } from "@/types/response.types"
 import { showError, showSuccess } from "@/utils/customToast"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -59,10 +60,10 @@ export const useKycUpload = () => {
     })
 }
 
-export const useGetVendors = (page: number, limit: number, search?: string) => {
+export const useGetVendors = (page: number, limit: number, search?: string, sortOption?: TSortOption) => {
     return useQuery({
-        queryKey: ['admin-vendor', page, limit, search],
-        queryFn: () => getVendors(page, limit, search),
+        queryKey: ['admin-vendor', page, limit, search, sortOption],
+        queryFn: () => getVendors(page, limit, search, sortOption),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData
     })

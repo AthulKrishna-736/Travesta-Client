@@ -1,36 +1,16 @@
 import React, { useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useNavigate } from "react-router-dom";
 
 interface CheckoutFormProps {
     open: boolean;
     onClose: () => void;
-    onPaymentSuccess: (data: PaymentSuccessData) => Promise<void>;
-    isForBooking?: boolean;
-    receiverId?: string;
-    bookingId?: string;
+    onPaymentSuccess: () => Promise<void>;
 }
 
-export type PaymentSuccessData =
-    | {
-        type: "wallet";
-        amount: number;
-        transactionId: string;
-    } | {
-        type: "booking";
-        amount: number;
-        transactionId: string;
-        receiverId: string;
-        description: string;
-        relatedBookingId: string;
-    };
-
-
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ open, onClose, onPaymentSuccess, isForBooking, receiverId, bookingId }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ open, onClose, onPaymentSuccess }) => {
     const stripe = useStripe();
     const elements = useElements();
-    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,23 +32,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ open, onClose, onPaymentSuc
             setIsSubmitting(false);
         } else if (paymentIntent?.status === "succeeded") {
             try {
-                const paymentData: PaymentSuccessData =
-                    isForBooking
-                        ? {
-                            type: "booking",
-                            amount: paymentIntent.amount / 100,
-                            transactionId: paymentIntent.id,
-                            receiverId: receiverId!,
-                            description: "Payment for booking successfull",
-                            relatedBookingId: bookingId!,
-                        }
-                        : {
-                            type: "wallet",
-                            amount: paymentIntent.amount / 100,
-                            transactionId: paymentIntent.id,
-                        };
-
-                await onPaymentSuccess(paymentData);
+                await onPaymentSuccess();
                 onClose();
             } catch (err) {
                 console.error("Custom success handler failed:", err);

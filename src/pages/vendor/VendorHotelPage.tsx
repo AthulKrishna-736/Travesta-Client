@@ -104,16 +104,25 @@ const VendorHotelsPage: React.FC = () => {
                         </div>
 
                         <p className="text-muted-foreground">
-                            Manage your listed {view === 'hotel' ? 'hotels' : 'rooms'}. You can add, edit, or delete {view}s from here.
+                            Manage your listed {view === 'hotel' ? 'hotels' : 'rooms'}. You can add, edit {view}s from here.
                         </p>
 
-                        <ToggleGroup type="single" className="w-fit"
-                            value={view}
-                            onValueChange={(val) => val && setView(val as 'hotel' | 'room')}
-                        >
-                            <ToggleGroupItem value="hotel">Hotels</ToggleGroupItem>
-                            <ToggleGroupItem value="room">Rooms</ToggleGroupItem>
+                        <ToggleGroup type="single" className="w-fit" value={view} onValueChange={(val) => val && setView(val as 'hotel' | 'room')}>
+                            <ToggleGroupItem value="hotel" className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white">
+                                Hotels
+                            </ToggleGroupItem>
+                            <ToggleGroupItem value="room" className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white">
+                                Rooms
+                            </ToggleGroupItem>
                         </ToggleGroup>
+
+                        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-3 rounded-sm">
+                            <span className="text-yellow-800 font-medium">Note: </span>
+                            <span className="text-yellow-700 text-sm">
+                                Please create well-detailed and genuine hotel and room listings. Accurate
+                                information helps guests trust your property and improves visibility.
+                            </span>
+                        </div>
 
                         <div className="overflow-x-auto space-y-4">
                             {view === 'hotel' ? (
