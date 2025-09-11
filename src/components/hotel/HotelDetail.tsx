@@ -58,7 +58,7 @@ const HotelDetail: React.FC = () => {
     };
 
     const handleBookingSubmit = async (roomId: string) => {
-        const now = new Date(); // exact moment when user clicks
+        const now = new Date(); 
         const currentHours = now.getHours();
         const currentMinutes = now.getMinutes();
         const currentSeconds = now.getSeconds();
@@ -134,7 +134,7 @@ const HotelDetail: React.FC = () => {
     return (
         <main className="p-6 max-w-5xl mx-auto space-y-6">
             {/* Hotel Main Image and Thumbnails */}
-            <div>
+            <div className='bg-white p-2'>
                 <div className="h-80 w-full overflow-hidden rounded-lg shadow-md mb-2">
                     {hotel.images && hotel.images.length > 0 ? (
                         <img src={hotel.images[0]} alt={hotel.name} className="object-cover w-full h-full" />
@@ -184,6 +184,24 @@ const HotelDetail: React.FC = () => {
                             {hotel.tags.map((tag: any, idx: any) => (
                                 <Badge key={idx} variant="outline" className="rounded-full px-3 py-1 text-xs">
                                     {tag}
+                                </Badge>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Amenities */}
+                {hotel.amenities && hotel.amenities.length > 0 && (
+                    <div>
+                        <h2 className="text-lg font-semibold mb-2">Amenities</h2>
+                        <div className="flex flex-wrap gap-2">
+                            {hotel.amenities.map((amenity: any) => (
+                                <Badge
+                                    key={amenity._id}
+                                    variant="secondary"
+                                    className="rounded-full px-3 py-1 text-xs"
+                                >
+                                    {amenity.name}
                                 </Badge>
                             ))}
                         </div>

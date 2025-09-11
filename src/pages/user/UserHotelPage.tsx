@@ -38,6 +38,7 @@ const UserHotelPage: React.FC = () => {
     const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [roomType, setRoomType] = useState<string[]>([]);
+    const [sortOption, setSortOption] = useState<string>('');
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -47,7 +48,7 @@ const UserHotelPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data, isLoading: isHotelLoading } = useGetAllUserHotels(page, limit, {
+    const { data: hotelResponseData, isLoading: isHotelLoading } = useGetAllUserHotels(page, limit, {
         search: debouncedSearchTerm,
         priceRange,
         selectedAmenities,
@@ -55,10 +56,11 @@ const UserHotelPage: React.FC = () => {
         checkIn,
         checkOut,
         guests,
+        sort: sortOption,
     });
 
-    const hotels = data?.data?.length ? data.data : [];
-    const meta = data?.meta;
+    const hotels = hotelResponseData?.data?.length ? hotelResponseData.data : [];
+    const meta = hotelResponseData?.meta;
 
     const { data: amenities, isLoading: isAmenitiesLoading } = useGetUserAmenities();
     const amenitiesData = amenities?.data || [];
@@ -91,10 +93,10 @@ const UserHotelPage: React.FC = () => {
     };
 
     const sortOptions = [
-        { name: 'Price: High to Low', tooltip: 'Sort price in descending order', onClickHandler: () => { } },
-        { name: 'Price: Low to High', tooltip: 'Sort price in ascending order', onClickHandler: () => { } },
-        { name: 'Name: A to Z', tooltip: 'Sort alphabetically (ascending)', onClickHandler: () => { } },
-        { name: 'Name: Z to A', tooltip: 'Sort alphabetically (descending)', onClickHandler: () => { } }
+        { name: 'Price: High to Low', tooltip: 'Sort price in descending order', onClickHandler: () => setSortOption('price_desc') },
+        { name: 'Price: Low to High', tooltip: 'Sort price in ascending order', onClickHandler: () => setSortOption('price_asc') },
+        { name: 'Name: A to Z', tooltip: 'Sort alphabetically (ascending)', onClickHandler: () => setSortOption('name_asc') },
+        { name: 'Name: Z to A', tooltip: 'Sort alphabetically (descending)', onClickHandler: () => setSortOption('name_desc') }
     ];
 
     return (

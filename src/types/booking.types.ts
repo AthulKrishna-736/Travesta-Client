@@ -14,9 +14,7 @@ export interface Booking {
     guests: number;
     totalPrice: number;
     status: "confirmed" | "cancelled" | "pending";
-    payment?: {
-        status: "pending" | "success" | "failed" | "refunded";
-    };
+    payment?: "pending" | "success" | "failed" | "refunded";
     createdAt?: string;
     updatedAt?: string;
 }
@@ -36,7 +34,7 @@ export interface BookingDetailProps {
 export interface BookingPayload {
     hotelId: string;
     roomId: string;
-    checkIn: string; // or Date, but you're sending ISO strings from frontend
+    checkIn: string;
     checkOut: string;
     guests: number;
     totalPrice: number;
@@ -62,9 +60,7 @@ export interface BookingRes {
     guests: number;
     totalPrice: number;
     status: 'pending' | 'confirmed' | 'cancelled';
-    payment: {
-        status: 'pending' | 'success' | 'refunded';
-    };
+    payment: "pending" | "success" | "failed" | "refunded";
     createdAt: string;
     updatedAt: string;
 }

@@ -6,7 +6,7 @@ import { IHotelTableProps } from "@/types/component.types";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
-import { useGetAllHotels, useUpdateHotel } from "@/hooks/vendor/useHotel";
+import { useHotelsByVendor, useUpdateHotel } from "@/hooks/vendor/useHotel";
 import { Edit, InfoIcon } from "lucide-react";
 
 const columns = [
@@ -25,7 +25,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     const [page, setPage] = useState(1);
     const limit = 10;
 
-    const { data: hotelsData, isLoading } = useGetAllHotels(page, limit, debouncedSearch);
+    const { data: hotelsData, isLoading } = useHotelsByVendor(page, limit, debouncedSearch);
     const hotels = hotelsData?.data;
     const meta = hotelsData?.meta;
 

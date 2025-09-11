@@ -93,7 +93,7 @@ const BookingDetailModalVendor: React.FC<BookingDetailVendorProps> = ({
                             <p>
                                 <strong className="text-gray-600">Payment Status:</strong>{" "}
                                 <span className="capitalize">
-                                    {booking.payment?.status ?? "N/A"}
+                                    {booking.payment ?? "N/A"}
                                 </span>
                             </p>
                             <p>

@@ -71,7 +71,7 @@ const BookingDetailDialog: React.FC<BookingDetailProps> = ({ open, onClose, book
                         <p>
                             <strong className="text-gray-600">Payment Status:</strong>{" "}
                             <span className="capitalize">
-                                {booking.payment?.status ?? "N/A"}
+                                {booking.payment ?? "N/A"}
                             </span>
                         </p>
                         <p>

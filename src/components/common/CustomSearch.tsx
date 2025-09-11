@@ -1,11 +1,12 @@
 import React from 'react';
 
-const FloatingLabelDate: React.FC<{ label: string; value: string; onChange: (val: string) => void }> = ({ label, value, onChange }) => (
+const FloatingLabelDate: React.FC<{ label: string; value: string; onChange: (val: string) => void, min?: string }> = ({ label, value, onChange, min }) => (
     <div className="relative flex-1 max-w-45">
         <span className="absolute font-semibold top-1 left-4 text-[#757575] text-[10px] pointer-events-none">{label}</span>
         <input
             type="date"
             value={value}
+            min={min || new Date().toLocaleDateString("en-CA")}
             onChange={(e) => onChange(e.target.value)}
             onClick={(e) => e.currentTarget.showPicker?.()}
             className="bg-gray-100 text-black font-semibold rounded px-3 pt-4 w-full border border-gray-300"
@@ -47,7 +48,10 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
                 />
             </div>
             <FloatingLabelDate label="CHECK-IN" value={checkIn} onChange={setCheckIn} />
-            <FloatingLabelDate label="CHECK-OUT" value={checkOut} onChange={setCheckOut} />
+            <FloatingLabelDate label="CHECK-OUT" value={checkOut} onChange={setCheckOut}
+                min={checkIn ? new Date(new Date(checkIn).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString("en-CA") : new Date().toLocaleDateString("en-CA")}
+            />
+            
             <input
                 type="number"
                 placeholder="Guests"

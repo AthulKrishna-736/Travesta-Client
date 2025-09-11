@@ -29,9 +29,10 @@ export const getAllUserHotels = async (
         checkIn?: string;
         checkOut?: string;
         guests?: number;
+        sort?: string;
     } = {}
 ) => {
-    const { search, priceRange, selectedAmenities, roomType, checkIn, checkOut, guests } = filters;
+    const { search, priceRange, selectedAmenities, roomType, checkIn, checkOut, guests, sort } = filters;
 
     const params: any = { page, limit, search, checkIn, checkOut, guests, };
 
@@ -46,6 +47,10 @@ export const getAllUserHotels = async (
 
     if (roomType?.length) {
         params.roomType = roomType.join(',');
+    }
+
+    if (sort) {
+        params.sort = sort;
     }
 
     const response = await axiosInstance.get(`${USER_APIS.hotels}`, { params });

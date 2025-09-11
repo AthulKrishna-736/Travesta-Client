@@ -52,6 +52,9 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
                 <div className="flex items-center gap-1">
                     <span className="font-medium">Room Type: {room.roomType}</span>
                 </div>
+                <div className="flex items-center gap-1">
+                    <span className="font-medium">Room Count: {room.roomCount}</span>
+                </div>
             </div>
 
             {/* Amenities */}
@@ -88,6 +91,7 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
                                 type="date"
                                 id="checkIn"
                                 name="checkIn"
+                                min={new Date().toLocaleDateString('en-CA')}
                                 value={formData.checkIn}
                                 onChange={handleInputChange}
                                 required
@@ -100,6 +104,7 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
                             <input
                                 type="date"
                                 id="checkOut"
+                                min={formData.checkOut ? new Date(new Date(formData.checkOut).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString('en-CA') : new Date().toLocaleDateString('en-CA')}
                                 name="checkOut"
                                 value={formData.checkOut}
                                 onChange={handleInputChange}

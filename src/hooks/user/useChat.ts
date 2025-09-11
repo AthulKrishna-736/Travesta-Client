@@ -95,6 +95,7 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
     const [messages, setMessages] = useState<IChat[]>([]);
     const [liveUnreadCounts, setLiveUnreadCounts] = useState<Record<string, number>>({});
     const [typingStatus, setTypingStatus] = useState(false);
+    const [bookingError, setBookingError] = useState<string | null>(null);
     const isConnected = useRef(false);
 
     useEffect(() => {
@@ -132,6 +133,12 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
                 showError("Socket connection error: " + err.message);
             });
 
+            socket.on("booking_error", (err: { message: string }) => {
+                setBookingError(err.message);
+                showError(err.message);
+                socket.disconnect();
+            });
+
             isConnected.current = true;
         }
 
@@ -139,6 +146,7 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
             socket.off("receive_message");
             socket.off("typing");
             socket.off("message_read");
+            socket.off("booking_error");
             socket.off("connect_error");
             isConnected.current = false;
         };
@@ -187,6 +195,7 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
         typingStatus,
         socketConnected: socket.connected,
         liveUnreadCounts,
+        bookingError,
     };
 };
 

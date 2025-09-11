@@ -24,6 +24,7 @@ export enum USER_APIS {
 export enum VENDOR_APIS {
     profile = '/vendor/profile',
     hotels = '/vendor/hotels',
+    hotel = '/vendor/hotel',
     rooms = '/vendor/rooms',
     chat = '/vendor/chat',
     booking = '/vendor/bookings',

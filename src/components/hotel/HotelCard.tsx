@@ -12,6 +12,7 @@ interface IHotel {
     city: string;
     state: string;
     address: string;
+    startingPrice: number;
     isBlocked: boolean;
 }
 
@@ -21,7 +22,7 @@ interface HotelCardProps {
 
 const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
     const navigate = useNavigate();
-    const { id, name, description, images, amenities, rating, state, city } = hotel;
+    const { id, name, description, images, amenities, rating, state, city, startingPrice } = hotel;
 
     return (
         <div className="bg-white rounded-sm w-full h-45 flex p-4 hover:outline-1 outline-[#0084ff]">
@@ -43,7 +44,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
                     </h6>
                 </div>
 
-                <p className="text-[#8b572a] text-sm">{description}</p>
+                <p className="text-[#8b572a] text-sm truncate">  {description.length > 50 ? description.slice(0, 50) + "..." : description}</p>
 
                 {/* amenities */}
                 <div className="mt-auto flex gap-4 py-2">
@@ -63,12 +64,12 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
                 {/* rating */}
                 <div className="flex gap-2">
                     <h3 className="text-[#0b58b4] font-bold">Excellent</h3>
-                    <h6 className="bg-[#0b58b4] font-bold px-1 rounded-sm text-white">{rating}.5</h6>
+                    <h6 className="bg-[#0b58b4] font-bold px-1 rounded-sm text-white">{rating}</h6>
                 </div>
 
                 <div>
                     <h1 className="font-bold text-2xl">
-                        ₹1,000
+                        ₹{startingPrice}
                     </h1>
                     <p className="text-sm font-semibold text-[#4a4a4a] text-right">Per Night</p>
                 </div>
