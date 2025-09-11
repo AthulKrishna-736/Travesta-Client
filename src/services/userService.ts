@@ -88,11 +88,11 @@ export const getUserUnreadChats = async () => {
 }
 
 //booking
-export const getUserBookings = async (page: number, limit: number) => {
+export const getUserBookings = async (page: number, limit: number, search?: string, sort?: string) => {
     const response = await axiosInstance.get(`${USER_APIS.booking}`, {
-        params: { page, limit }
+        params: { page, limit, search, sort },
     });
-    return response.data
+    return response.data;
 };
 
 export const cancelBooking = async (bookingId: string) => {

@@ -3,10 +3,10 @@ import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@
 import { showError, showSuccess } from '@/utils/customToast';
 import { getBookingsToVendor } from '@/services/vendorService';
 
-export const useGetUserBookings = (page: number, limit: number) => {
+export const useGetUserBookings = (page: number, limit: number, search?: string, sort?: string) => {
     return useQuery({
-        queryKey: ['user-bookings', page],
-        queryFn: () => getUserBookings(page, limit),
+        queryKey: ["user-bookings", { page, search, sort }],
+        queryFn: () => getUserBookings(page, limit, search, sort),
         placeholderData: keepPreviousData,
         staleTime: 60 * 1000,
     });
