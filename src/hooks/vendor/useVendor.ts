@@ -27,7 +27,7 @@ export const useUpdateVendor = () => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setVendor(res.data.user))
+                dispatch(setVendor(res.data))
                 queryClient.invalidateQueries({ queryKey: ['vendor'] })
             } else {
                 showError(res.message || 'Something went wrong')

@@ -15,7 +15,7 @@ export interface IUserFilterSidebarProps {
     toggleAmenity: (amenityId: string) => void;
     resetFilters: () => void;
 
-    amenitiesData: { _id: string; name: string }[];
+    amenitiesData: { id: string; name: string }[];
     isAmenitiesLoading: boolean;
 
     selectedRoomTypes: string[];
@@ -108,10 +108,10 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                     </div>
                 ) : (
                     amenitiesData.map((amenity) => (
-                        <div key={amenity._id} className="flex items-center gap-2 mb-2">
+                        <div key={amenity.id} className="flex items-center gap-2 mb-2">
                             <Checkbox
-                                checked={selectedAmenities.includes(amenity._id)}
-                                onCheckedChange={() => toggleAmenity(amenity._id)}
+                                checked={selectedAmenities.includes(amenity.id)}
+                                onCheckedChange={() => toggleAmenity(amenity.id)}
                             />
                             <span className='text-[#4a4a4a]'>{amenity.name}</span>
                         </div>

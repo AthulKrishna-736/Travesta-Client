@@ -17,15 +17,15 @@ export const useGetUser = () => {
 }
 
 export const useUpdateUser = () => {
-    const dispatch = useDispatch()
-    const queryClient = useQueryClient()
+    const dispatch = useDispatch();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (values: { data: FormData }) => updateUser(values.data),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setUser(res.data.user))
+                dispatch(setUser(res.data))
                 queryClient.invalidateQueries({ queryKey: ['user'] });
             } else {
                 showError(res.message || 'Something went wrong')

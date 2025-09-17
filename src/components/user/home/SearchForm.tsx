@@ -92,12 +92,12 @@ const SearchForm = () => {
     };
 
     return (
-        <Card className="mx-auto max-w-5xl w-full -mt-24 z-10 relative shadow-lg border border-gray-200 bg-white animate-slide-in">
+        <Card className="mx-auto max-w-5xl w-full -mt-24 z-10 relative shadow-lg border border-gray-200 bg-white rounded-sm">
             <CardContent className="p-6 md:p-8 lg:pb-10">
                 <form
                     id="searchForm"
                     onSubmit={handleSearch}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 lg:gap-0 border border-[#e7e7e7] rounded-md divide-y md:divide-y-0 md:divide-x"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 lg:gap-0 border border-[#e7e7e7] rounded-sm divide-y md:divide-y-0 md:divide-x"
                 >
                     {/* searchTerm */}
                     <div className="lg:col-span-2 flex flex-col justify-start pt-1 hover:bg-[#eaf5ff] transition-colors duration-300 ease-in-out">

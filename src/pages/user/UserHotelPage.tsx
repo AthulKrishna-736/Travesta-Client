@@ -151,7 +151,7 @@ const UserHotelPage: React.FC = () => {
                                 </div>
 
                                 {/* hotel list */}
-                                <div className='mt-5 py-5'>
+                                <div className='mt-3 py-4'>
                                     {isHotelLoading ? (
                                         <div className='flex items-center justify-center gap-4'>
                                             <Loader2 className='w-10 h-10 animate-spin' />
@@ -160,7 +160,7 @@ const UserHotelPage: React.FC = () => {
                                     ) : hotels.length === 0 ? (
                                         <p className="text-center text-gray-500 text-2xl">No hotels found.</p>
                                     ) : (
-                                        <div className='py-2'>
+                                        <div>
                                             {hotels.map((hotel: any) => (
                                                 <HotelCard key={hotel.id} hotel={hotel} />
                                             ))}

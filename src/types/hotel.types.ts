@@ -9,6 +9,9 @@ export interface IHotel {
   city: string
   tags: string[]
   amenities: string[]
+  isBlocked?:boolean;
+  rating?: number
+  startingPrice?:number
   geoLocation?: [number, number]
   images?: File[] | string[]
 }
