@@ -21,7 +21,7 @@ const UserChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
-    const { data: chatAccess, isLoading: chatAccessLoading, error: chatAccessError } = useGetUserChatAccess();
+    const { isLoading: chatAccessLoading, error: chatAccessError } = useGetUserChatAccess();
     const { data: unReadMsgResponse } = useGetUserUnreadChats();
     const { data: chattedVendorsResponse, isLoading } = useGetUserChatVendors(debouncedSearch);
     const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError } = useSocketChat(selectedVendor?.id, currentUserId, 'user');

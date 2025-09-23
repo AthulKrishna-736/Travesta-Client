@@ -24,7 +24,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
             </div>
 
             {/* Transactions History Section */}
-            <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+            <div className="bg-blue-100 shadow-md rounded-xl p-6 border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Transaction History</h3>
                 {loading ? (
                     <p className="text-gray-500">Loading transactions...</p>
