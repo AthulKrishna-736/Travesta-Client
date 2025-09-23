@@ -1,8 +1,6 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, MapPin } from "lucide-react";
 
 export interface IUserFilterSidebarProps {
     searchTerm: string;
@@ -55,7 +53,18 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
         priceRange[0] === range[0] && priceRange[1] === range[1];
 
     return (
-        <aside className="w-full lg:w-[350px] bg-white p-4 rounded-sm shadow-md">
+        <aside className="w-full lg:w-[250px] bg-white p-3 rounded-xs shadow-md">
+            {/* Map implementation */}
+            <div
+                className="py-2 mb-4 rounded-sm h-27 flex items-end justify-center w-full shadow-sm bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: 'url("https://imgak.mmtcdn.com/pwa_v3/pwa_hotel_assets/mapEntry.png")' }}
+            >
+                <div className="flex justify-center border-1 border-[#0c8cec] py-1.5 rounded-md w-[90%] gap-1 bg-white">
+                    <button className="uppercase text-[#0c8cec] text-xs font-bold">Explore on maps </button>
+                    <MapPin className="w-3 h-4 text-[#0c8cec]" />
+                </div>
+            </div>
+
             {/* Search */}
             <div className="mb-6">
                 <Input
@@ -69,15 +78,17 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
             {/* Price Range */}
             <div className="mb-6">
                 <label className="font-semibold block mb-2">Price Range</label>
-                <div className="grid grid-cols-2 gap-2.4">
-                    {PRICE_RANGES.map((price, idx) => (
+                <div className="grid grid-cols-1">
+                    {PRICE_RANGES.map((price, idx) => ( 
                         <div key={idx} className="flex items-center gap-2 mb-2">
-                            <Checkbox
+                            <input
+                                type="checkbox"
+                                className="w-4 h-4"
                                 checked={isPriceSelected(price.range)}
-                                onCheckedChange={() => setPriceRange(price.range)}
+                                onClick={() => setPriceRange(price.range)}
                             />
                             <span className='text-[#4a4a4a]'>{price.label}</span>
-                        </div>
+                        </div> 
                     ))}
                 </div>
             </div>
@@ -88,9 +99,11 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                 <div className="grid grid-cols-2 gap-1">
                     {ROOM_TYPES.map((type, idx) => (
                         <div key={idx} className="flex items-center gap-2">
-                            <Checkbox
+                            <input
+                                type="checkbox"
+                                className="w-4 h-4"
                                 checked={selectedRoomTypes.includes(type)}
-                                onCheckedChange={() => setRoomType(type)}
+                                onClick={() => setRoomType(type)}
                             />
                             <span className='text-[#4a4a4a]'>{type}</span>
                         </div>
@@ -109,9 +122,11 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                 ) : (
                     amenitiesData.map((amenity) => (
                         <div key={amenity.id} className="flex items-center gap-2 mb-2">
-                            <Checkbox
+                            <input
+                                type='checkbox'
+                                className="w-4 h-4"
                                 checked={selectedAmenities.includes(amenity.id)}
-                                onCheckedChange={() => toggleAmenity(amenity.id)}
+                                onClick={() => toggleAmenity(amenity.id)}
                             />
                             <span className='text-[#4a4a4a]'>{amenity.name}</span>
                         </div>
@@ -120,9 +135,9 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
             </div>
 
             {/* Reset Button */}
-            <Button variant="outline" className="w-full" onClick={resetFilters}>
+            <button className="w-full" onClick={resetFilters}>
                 Reset Filters
-            </Button>
+            </button>
         </aside>
     );
 };

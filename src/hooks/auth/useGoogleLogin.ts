@@ -3,6 +3,7 @@ import { setUser } from "@/store/slices/userSlice";
 import { setVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch } from "@/store/store";
 import { TGoogleLoginValues } from "@/types/auth.types";
+import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
@@ -28,7 +29,7 @@ export const useGoogleLogin = (role: string) => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
             showError(error.response?.data?.message || 'Something went wrong');
         }

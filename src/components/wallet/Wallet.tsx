@@ -40,7 +40,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
                                 <div>
                                     <p className="font-semibold text-gray-800">{tx.description}</p>
                                     <p className="text-sm text-gray-500">
-                                        {new Date(tx.date).toUTCString()}
+                                        {new Date(tx.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                                     </p>
                                 </div>
                                 <span

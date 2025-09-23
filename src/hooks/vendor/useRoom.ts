@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createRoom, updateRoom, getRoomById, getRoomsByHotel, getAvailableRoomsByHotel, getAllRooms, getAvailableRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
+import { ICustomError } from '@/types/custom.types';
 
 export const useCreateRoom = (cbFn: () => void) => {
     const queryClient = useQueryClient();
@@ -16,20 +17,10 @@ export const useCreateRoom = (cbFn: () => void) => {
                 showError(res.message || 'Room creation failed');
             }
         },
-        onError: (err: any) => {
-            const res = err.response?.data;
+        onError: (err: ICustomError) => {
+            const res = err.response.data;
             if (res?.message) {
                 showError(res.message);
-            }
-
-            if (res?.error && typeof res.error === 'object') {
-                Object.entries(res.error).forEach(([field, messages]) => {
-                    if (Array.isArray(messages)) {
-                        messages.forEach((msg) => showError(`${field}: ${msg}`));
-                    } else {
-                        showError(`${field}: ${messages}`);
-                    }
-                });
             }
         },
     });
@@ -50,7 +41,7 @@ export const useUpdateRoom = (cbFn: () => void) => {
                 showError(res.message || 'Room update failed');
             }
         },
-        onError: (err: any) => {
+        onError: (err: ICustomError) => {
             showError(err.response?.data?.message || 'Something went wrong');
         }
     });

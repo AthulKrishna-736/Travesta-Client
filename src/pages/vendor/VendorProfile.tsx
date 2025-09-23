@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ImageUpload from "@/components/profile/ProfileImage";
 import ProfileSection from "@/components/profile/ProfileSection";
@@ -8,10 +8,13 @@ import { useSelector } from "react-redux";
 import { KycDocuments } from "@/components/profile/KycDocument";
 import Header from "@/components/header/vendor/Header";
 import Sidebar from "@/components/sidebar/Sidebar";
-import { useUpdateVendor } from "@/hooks/vendor/useVendor";
+import { useGetVendor, useUpdateVendor } from "@/hooks/vendor/useVendor";
 import { showError } from "@/utils/customToast";
+import { useDispatch } from "react-redux";
+import { setVendor } from "@/store/slices/vendorSlice";
 
 const VendorProfile: React.FC = () => {
+    const dispatch = useDispatch();
     const vendor = useSelector((state: RootState) => state.vendor.vendor);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,7 +22,15 @@ const VendorProfile: React.FC = () => {
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
     };
+
+    const { data: vendorProfileResponse } = useGetVendor();
     const { mutate: updateVendor } = useUpdateVendor();
+
+    useEffect(() => {
+        if (vendorProfileResponse) {
+            dispatch(setVendor(vendorProfileResponse.data))
+        }
+    }, [vendorProfileResponse, dispatch]);
 
     const handleProfileUpdate = (userData: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => {
         const formData = new FormData()
@@ -63,13 +74,9 @@ const VendorProfile: React.FC = () => {
                         </TabsList>
 
                         <TabsContent value="profile" className="space-y-6">
-                            <div className="grid gap-6 lg:grid-cols-3 bg-yellow-100 border border-yellow-200 rounded-xl p-4">
-                                <div className="lg:col-span-1">
-                                    <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="vendor" />
-                                </div>
-                                <div className="lg:col-span-2">
-                                    <ProfileSection user={vendor!} onUpdate={handleProfileUpdate} />
-                                </div>
+                            <div className="flex flex-col h-full gap-6 bg-white rounded-sm p-4">
+                                <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="vendor" />
+                                <ProfileSection user={vendor!} onUpdate={handleProfileUpdate} />
                             </div>
                         </TabsContent>
 

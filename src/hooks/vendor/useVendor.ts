@@ -2,7 +2,7 @@ import { getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
 import { setVendor } from "@/store/slices/vendorSlice"
 import { TUpdateVendorReqValues } from "@/types/auth.types"
-import { TSortOption } from "@/types/custom.types"
+import { ICustomError, TSortOption } from "@/types/custom.types"
 import { TGetVendorsResponse } from "@/types/response.types"
 import { showError, showSuccess } from "@/utils/customToast"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -11,10 +11,11 @@ import { useDispatch } from "react-redux"
 
 export const useGetVendor = () => {
     return useQuery({
-        queryKey: ['vendor'],
-        queryFn: () => getVendor(),
+        queryKey: ['vendor-profile'],
+        queryFn: getVendor,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     })
 }
 
@@ -33,9 +34,9 @@ export const useUpdateVendor = () => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error?.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
@@ -53,9 +54,9 @@ export const useKycUpload = () => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error?.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
@@ -77,7 +78,7 @@ export const useVendorVerify = (page: number, limit: number, search: string, onS
         onMutate: async (values) => {
             await queryClient.cancelQueries({ queryKey: ['admin-vendor', page, limit, search] });
 
-            const previousVendors = queryClient.getQueryData<any[]>(['admin-vendor', page, limit, search]);
+            const previousVendors = queryClient.getQueryData<ICustomError[]>(['admin-vendor', page, limit, search]);
 
             queryClient.setQueryData(['admin-vendor', page, limit, search], (oldData: TGetVendorsResponse) => {
                 return {
@@ -104,13 +105,13 @@ export const useVendorVerify = (page: number, limit: number, search: string, onS
             }
         },
 
-        onError: (error: any, _values, context) => {
+        onError: (error: ICustomError, _values, context) => {
             if (context?.previousVendors) {
                 queryClient.setQueryData(['admin-vendor', page, limit, search], context.previousVendors);
             }
 
             console.error('error logging: ', error);
-            showError(error.response?.data?.message || 'Something went wrong');
+            showError(error.response.data.message || 'Something went wrong');
         },
     });
 };

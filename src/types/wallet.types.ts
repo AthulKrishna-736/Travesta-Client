@@ -2,7 +2,7 @@ export interface WalletTransaction {
     type: 'credit' | 'debit';
     amount: number;
     description: string;
-    date: string;
+    createdAt: Date;
 }
 
 export interface WalletSectionProps {

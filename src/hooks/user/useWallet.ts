@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { addWalletCredit, createPaymentIntent, createWallet, getUserTransactions, getWallet } from "@/services/userService";
 import { showSuccess, showError } from "@/utils/customToast";
 import { getVendorTransactions } from "@/services/vendorService";
+import { ICustomError } from "@/types/custom.types";
 
 // Get Wallet
 export const useGetWallet = () => {
@@ -37,8 +38,8 @@ export const useCreateWallet = () => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
         },
-        onError: (err: any) => {
-            showError(err?.response?.data?.message || "Failed to create wallet");
+        onError: (err: ICustomError) => {
+            showError(err.response.data.message || "Failed to create wallet");
         }
     });
 };
@@ -53,8 +54,8 @@ export const useAddWalletCredit = () => {
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
-        onError: (err: any) => {
-            showError(err?.response?.data?.message || "Failed to credit wallet");
+        onError: (err: ICustomError) => {
+            showError(err.response.data.message || "Failed to credit wallet");
         }
     });
 };
@@ -66,8 +67,8 @@ export const useCreatePaymentIntent = () => {
         onSuccess: (res) => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
         },
-        onError: (err: any) => {
-            showError(err?.response?.data?.message || "Failed to create payment intent");
+        onError: (err: ICustomError) => {
+            showError(err.response.data.message || "Failed to create payment intent");
         }
     });
 };

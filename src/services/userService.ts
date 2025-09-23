@@ -75,7 +75,7 @@ export const getChattedVendors = async (search?: string): Promise<Pick<User, 'id
         params: { search }
     })
     return response.data?.data
-}
+};
 
 export const getUserChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
     const response = await axiosInstance.get(`${USER_APIS.chat}/${userId}/messages`);
@@ -84,6 +84,11 @@ export const getUserChatMessages = async (userId: string): Promise<TResponseChat
 
 export const getUserUnreadChats = async () => {
     const response = await axiosInstance.get(`${USER_APIS.chat}/unread`);
+    return response.data;
+};
+
+export const getUserChatAccess = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.access}`);
     return response.data;
 }
 
@@ -148,3 +153,4 @@ export const confirmBooking = async (
     const response = await axiosInstance.post(`${USER_APIS.payment}/${vendorId}/booking?method=${method}`, data);
     return response.data;
 };
+

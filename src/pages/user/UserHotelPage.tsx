@@ -113,9 +113,9 @@ const UserHotelPage: React.FC = () => {
                 setGuests={setGuests}
                 onSearch={handleSearch}
             />
-            <main className="flex-grow py-10 bg-[#f2f2f2]">
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col lg:flex-row gap-6">
+            <main className="flex-grow py-4 bg-[#f2f2f2]">
+                <div className="container mx-auto px-4 lg:max-w-6xl">
+                    <div className="flex flex-col lg:flex-row gap-2">
                         {/* Filter Sidebar */}
                         <UserFilterSidebar
                             searchTerm={searchTerm}

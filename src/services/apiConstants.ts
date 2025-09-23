@@ -19,6 +19,7 @@ export enum USER_APIS {
     amenities = '/users/amenities',
     payment = '/users/payment',
     transactions = '/users/transactions',
+    access = '/users/chat/access',
 }
 
 export enum VENDOR_APIS {

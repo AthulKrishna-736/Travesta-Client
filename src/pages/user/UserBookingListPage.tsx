@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Header from "@/components/header/user/Header";
 import BookingTable from "@/components/booking/UserListBooking";
 import Pagination from "@/components/common/Pagination";
 import { useGetUserBookings } from "@/hooks/user/useBooking";
-import UserSidebar from "@/components/sidebar/UserSidebar";
-import { Menu, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import CustomSort from "@/components/common/CustomSort";
+import UserLayout from "@/components/layouts/UserLayout";
 
 const UserBookingListPage: React.FC = () => {
     const limit = 6;
     const [page, setPage] = useState(1);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedValue, setDebouncedValue] = useState<string>("");
     const [sortOption, setSortOption] = useState('');
@@ -80,24 +78,12 @@ const UserBookingListPage: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <Header />
-
-            <UserSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            {!sidebarOpen && (
-                <button
-                    className="fixed top-18 left-1 z-40 bg-yellow-200 p-2 rounded-md shadow-lg lg:hidden"
-                    onClick={() => setSidebarOpen(true)}
-                >
-                    <Menu className="w-5 h-5" />
-                </button>
-            )}
-
-            <main className="flex-grow bg-background px-4 py-6 mt-4 lg:ml-64">
-                <div className="mx-auto max-w-6xl space-y-6">
+        <UserLayout>
+            <>
+                <div className="mx-auto max-w-6xl space-y-6 bg-white p-6 rounded-md">
                     <h1 className="text-3xl font-bold">Your Bookings</h1>
 
-                    {/* ✅ search box */}
+                    {/* search box */}
                     <div className="relative w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-800" />
                         <Input
@@ -109,13 +95,13 @@ const UserBookingListPage: React.FC = () => {
                         />
                     </div>
 
-                    {/* ✅ sorting */}
+                    {/* sorting */}
                     <CustomSort data={sortOptions} />
 
-                    {/* ✅ table */}
+                    {/* table */}
                     <BookingTable bookings={bookings} loading={isLoading} />
 
-                    {/* ✅ pagination */}
+                    {/* pagination */}
                     {meta.totalPages > 0 && (
                         <div className="mt-4">
                             <Pagination
@@ -126,8 +112,8 @@ const UserBookingListPage: React.FC = () => {
                         </div>
                     )}
                 </div>
-            </main>
-        </div>
+            </>
+        </UserLayout>
     );
 };
 

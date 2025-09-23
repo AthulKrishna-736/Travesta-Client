@@ -2,7 +2,7 @@ import { createAmenity, getAllAmenities, toggleBlockAmenity, updateAmenity } fro
 import { getUserAmenities } from "@/services/userService";
 import { getVendorAmenities } from "@/services/vendorService";
 import { TCreateAmenityData } from "@/types/component.types";
-import { TSortOption } from "@/types/custom.types";
+import { ICustomError, TSortOption } from "@/types/custom.types";
 import { TGetAmenityResponse } from "@/types/response.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -66,9 +66,9 @@ export const useCreateAmentiy = (page: number, limit: number) => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
@@ -86,9 +86,9 @@ export const useUpdateAmenity = (page: number, limit: number) => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
@@ -122,7 +122,7 @@ export const useBlockAmenity = (cbFn: () => void) => {
                 showError(res.message || 'Something went wrong');
             }
         },
-        onError: (error: any, _amenityId, context) => {
+        onError: (error: ICustomError, _amenityId, context) => {
             if (context?.allQueries) {
                 context.allQueries.forEach(([key, oldData]) => {
                     queryClient.setQueryData(key, oldData);
@@ -130,7 +130,7 @@ export const useBlockAmenity = (cbFn: () => void) => {
             }
 
             console.error('Error:', error);
-            showError(error.response?.data?.message || 'Something went wrong');
+            showError(error.response.data.message || 'Something went wrong');
         },
     });
 };

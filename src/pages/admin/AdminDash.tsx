@@ -1,4 +1,4 @@
-import { AdminLayout } from "@/components/header/admin/AdminLayout"
+import { AdminLayout } from "@/components/layouts/AdminLayout"
 
 const AdminDash = () => {
     return (
@@ -10,8 +10,6 @@ const AdminDash = () => {
                         Welcome back, Admin! Here's what's happening with your platform today.
                     </p>
                 </div>
-
-
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 </div>
             </div>
@@ -19,4 +17,4 @@ const AdminDash = () => {
     )
 }
 
-export default AdminDash
+export default AdminDash;

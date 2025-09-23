@@ -21,9 +21,9 @@ export type Action = {
 };
 
 
-export interface DataTableProps {
+export interface DataTableProps<T = any[]> {
     columns: { key: string; label: string }[]
-    data: any[]
+    data: T
     actions?: Action[]
     loading?: boolean
 }

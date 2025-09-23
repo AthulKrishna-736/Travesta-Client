@@ -6,7 +6,7 @@ import { useGetAdminChatMessages, useGetAdminUnreadChats, useGetVendorsChatAdmin
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
-import { AdminLayout } from '@/components/header/admin/AdminLayout';
+import { AdminLayout } from '@/components/layouts/AdminLayout';
 
 const AdminChatPage: React.FC = () => {
     const queryClient = useQueryClient();

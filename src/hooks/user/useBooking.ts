@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@/services/userService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { getBookingsToVendor } from '@/services/vendorService';
+import { ICustomError } from '@/types/custom.types';
 
 export const useGetUserBookings = (page: number, limit: number, search?: string, sort?: string) => {
     return useQuery({
@@ -34,9 +35,9 @@ export const useCancelBooking = () => {
             }
             queryClient.invalidateQueries({ queryKey: ['user-bookings'] });
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.error('Cancel booking error:', error);
-            showError(error?.response?.data?.message || 'Failed to cancel booking');
+            showError(error.response.data.message || 'Failed to cancel booking');
         },
     });
 };
@@ -47,8 +48,8 @@ export const useCreateBooking = () => {
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking successful!');
         },
-        onError: (error: any) => {
-            const msg = error?.response?.data?.message || 'Booking failed. Try again.';
+        onError: (error: ICustomError) => {
+            const msg = error.response.data.message || 'Booking failed. Try again.';
             showError(msg);
         },
     });
@@ -62,8 +63,8 @@ export const useConfirmBooking = (
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
         },
-        onError: (error: any) => {
-            const msg = error?.response?.data?.message || 'Booking failed. Try again.';
+        onError: (error: ICustomError) => {
+            const msg = error.response.data.message || 'Booking failed. Try again.';
             showError(msg);
         },
     });

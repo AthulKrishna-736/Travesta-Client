@@ -5,14 +5,15 @@ import { showError, showSuccess } from "@/utils/customToast"
 import { setUser } from "@/store/slices/userSlice"
 import { getAllUsers, toggleBlockUser } from "@/services/adminService"
 import { TGetAllUsersResponse } from "@/types/response.types"
-import { TSortOption } from "@/types/custom.types"
+import { ICustomError, TSortOption } from "@/types/custom.types"
 
 export const useGetUser = () => {
     return useQuery({
-        queryKey: ['user'],
-        queryFn: () => getUser(),
+        queryKey: ['user-profile'],
+        queryFn: getUser,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     })
 }
 
@@ -31,9 +32,9 @@ export const useUpdateUser = () => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error?.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
@@ -75,7 +76,7 @@ export const useBlockUser = () => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any, _userId, context) => {
+        onError: (error: ICustomError, _userId, context) => {
             if (context?.allQueries) {
                 context.allQueries.forEach(([key, oldData]) => {
                     queryClient.setQueryData(key, oldData);
@@ -83,7 +84,7 @@ export const useBlockUser = () => {
             }
 
             console.log('error logging: ', error)
-            showError(error.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         },
     })
 }

@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { createHotel, getHotelByVendor, getHotelsByVendor, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { getAllUserHotels, getUserHotelById } from '@/services/userService';
+import { ICustomError } from '@/types/custom.types';
 
 export const UseCreateHotel = (cbFn: () => void) => {
     const queryClient = useQueryClient();
@@ -17,9 +18,9 @@ export const UseCreateHotel = (cbFn: () => void) => {
                 showError(res.message || 'Something went wrong');
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error);
-            showError(error.response?.data?.message || 'Something went wrong');
+            showError(error.response.data.message || 'Something went wrong');
         }
     });
 };
@@ -38,9 +39,9 @@ export const useUpdateHotel = (cbFn: () => void) => {
                 showError(res.message || 'Update failed');
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.error('Update hotel error:', error);
-            showError(error.response?.data?.message || 'Something went wrong');
+            showError(error.response.data.message || 'Something went wrong');
         },
     });
 };
@@ -82,7 +83,8 @@ export const useGetAllUserHotels = (
         queryKey: ['user-hotels', { page, limit, filters }],
         queryFn: () => getAllUserHotels(page, limit, filters),
         staleTime: 5 * 60 * 1000,
-        // placeholderData: keepPreviousData,
+        placeholderData: keepPreviousData,
+        retry: false,
     });
 };
 

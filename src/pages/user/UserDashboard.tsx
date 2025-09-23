@@ -1,22 +1,28 @@
-import React, { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useEffect, useState } from "react";
 import ImageUpload from "@/components/profile/ProfileImage";
 import ProfileSection from "@/components/profile/ProfileSection";
 import { UpdateUser } from "@/types/user.types";
-import Header from "@/components/header/user/Header";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
-import { useUpdateUser } from "@/hooks/user/useUser";
+import { useGetUser, useUpdateUser } from "@/hooks/user/useUser";
 import { showError } from "@/utils/customToast";
-import UserSidebar from "@/components/sidebar/UserSidebar";
-import { Menu } from "lucide-react";
+import UserLayout from "../../components/layouts/UserLayout";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/store/slices/userSlice";
 
 const UserDashboard: React.FC = () => {
+    const dispatch = useDispatch()
     const user = useSelector((state: RootState) => state.user.user);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
 
+    const { data: UserProfileResponse } = useGetUser()
     const { mutate: updateUser } = useUpdateUser();
+
+    useEffect(() => {
+        if (UserProfileResponse) {
+            dispatch(setUser(UserProfileResponse.data));
+        }
+    }, [UserProfileResponse, dispatch]);
 
     const handleProfileUpdate = (userData: Omit<UpdateUser, "isVerified" | "id" | "email">) => {
         const formData = new FormData();
@@ -39,45 +45,14 @@ const UserDashboard: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <Header />
-
-            {/* Sidebar */}
-            <UserSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-            {/* Toggle Button */}
-            {!sidebarOpen && (
-                <button
-                    className="fixed top-18 left-1 z-40 bg-yellow-200 p-2 rounded-md shadow-lg lg:hidden"
-                    onClick={() => setSidebarOpen(true)}
-                >
-                    <Menu className="w-5 h-5" />
-                </button>
-            )}
-
-            <main className="flex-grow bg-background px-4 py-6 lg:ml-64">
-                <div className="mx-auto max-w-6xl">
-                    <h1 className="mb-6 text-3xl font-bold">User Dashboard</h1>
-
-                    <Tabs defaultValue="profile" className="w-full">
-                        <TabsList className="mb-4 w-full justify-start">
-                            <TabsTrigger value="profile">Profile</TabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="profile" className="space-y-6">
-                            <div className="grid gap-6 lg:grid-cols-3 bg-yellow-100 border border-yellow-200 rounded-xl p-4">
-                                <div className="lg:col-span-1">
-                                    <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="user" />
-                                </div>
-                                <div className="lg:col-span-2">
-                                    <ProfileSection user={user!} onUpdate={handleProfileUpdate} />
-                                </div>
-                            </div>
-                        </TabsContent>
-                    </Tabs>
+        <UserLayout>
+            <>
+                <div className="flex flex-col h-full gap-6 bg-white rounded-sm p-4">
+                    <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="user" />
+                    <ProfileSection user={user!} onUpdate={handleProfileUpdate} />
                 </div>
-            </main>
-        </div>
+            </>
+        </UserLayout>
     );
 };
 

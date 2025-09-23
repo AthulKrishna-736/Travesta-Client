@@ -5,10 +5,14 @@ const nameRegex = /^[A-Za-z\s]+$/;
 export const validationSchema = Yup.object().shape({
     firstName: Yup.string()
         .matches(nameRegex, "First name can only contain letters and spaces")
+        .max(20, "First name must be at most 20 characters")
         .required("First name is required"),
+
     lastName: Yup.string()
-        .matches(nameRegex, "First name can only contain letters and spaces")
+        .matches(nameRegex, "Last name can only contain letters and spaces")
+        .max(20, "Last name must be at most 20 characters")
         .required("Last name is required"),
+
     phone: Yup.string()
         .matches(/^\+?[0-9\s()-]{10}$/, "Phone number must be 10 digits")
         .required("Phone number is required"),
@@ -17,22 +21,27 @@ export const validationSchema = Yup.object().shape({
 export const hotelSchema = Yup.object().shape({
     name: Yup.string()
         .matches(nameRegex, 'Name must contain only letters and spaces')
+        .max(30, "Hotel name must be at most 30 characters")
         .required('Hotel name is required'),
 
     description: Yup.string()
         .min(10, 'Description must be at least 10 characters')
+        .max(300, "Description must be at most 300 characters")
         .required('Description is required'),
 
     address: Yup.string()
         .min(5, 'Address must be at least 5 characters')
+        .max(40, "Address must be at most 40 characters")
         .required('Address is required'),
 
     state: Yup.string()
         .matches(nameRegex, 'State must contain only letters and spaces')
+        .max(20, "State must be at most 20 characters")
         .required('State is required'),
 
     city: Yup.string()
         .matches(nameRegex, 'City must contain only letters and spaces')
+        .max(20, "City must be at most 20 characters")
         .required('City is required'),
 });
 

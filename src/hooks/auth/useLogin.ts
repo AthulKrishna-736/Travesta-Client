@@ -8,6 +8,7 @@ import { TLoginFormValues } from '@/types/auth.types';
 import { useNavigate } from 'react-router-dom';
 import { setAdmin } from '@/store/slices/adminSlice';
 import { setVendor } from '@/store/slices/vendorSlice';
+import { ICustomError } from '@/types/custom.types';
 
 
 export const useLogin = (role: string) => {
@@ -32,9 +33,9 @@ export const useLogin = (role: string) => {
             }
             showSuccess(res.message || 'Login successful')
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error?.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
