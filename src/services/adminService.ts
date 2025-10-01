@@ -88,3 +88,9 @@ export const getAdminUnreadMsg = async () => {
     const response = await axiosInstance.get(`${ADMIN_APIS.chat}/unread`);
     return response.data;
 }
+
+//subscription
+export const getAllPlans = async () => {
+    const response = await axiosInstance.get(`${ADMIN_APIS.plans}`);
+    return response.data;
+}

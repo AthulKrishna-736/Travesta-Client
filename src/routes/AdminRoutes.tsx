@@ -3,6 +3,7 @@ import AdminAmenities from '@/pages/admin/AdminAmenities'
 import AdminChatPage from '@/pages/admin/AdminChatPage'
 import AdminDash from '@/pages/admin/AdminDash'
 import AdminLoginPage from '@/pages/admin/AdminLoginPage'
+import AdminPlansPage from '@/pages/admin/AdminPlansPage'
 import AdminUsers from '@/pages/admin/AdminUsers'
 import VendorRequestPage from '@/pages/admin/VendorRequestPage'
 import ProtectAdminGuest from '@/ProtectRoutes/GuestAdmin'
@@ -55,6 +56,13 @@ const AdminRoutes: React.FC = () => {
       }
       />
 
+      <Route path='subscription' element={
+        <ProtectedAdmin>
+          <AdminPlansPage />
+        </ProtectedAdmin>
+      }
+      />
+      
     </Routes>
   )
 }

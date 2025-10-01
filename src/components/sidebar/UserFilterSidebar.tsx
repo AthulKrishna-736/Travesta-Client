@@ -79,7 +79,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
             <div className="mb-6">
                 <label className="font-semibold block mb-2">Price Range</label>
                 <div className="grid grid-cols-1">
-                    {PRICE_RANGES.map((price, idx) => ( 
+                    {PRICE_RANGES.map((price, idx) => (
                         <div key={idx} className="flex items-center gap-2 mb-2">
                             <input
                                 type="checkbox"
@@ -88,7 +88,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                                 onClick={() => setPriceRange(price.range)}
                             />
                             <span className='text-[#4a4a4a]'>{price.label}</span>
-                        </div> 
+                        </div>
                     ))}
                 </div>
             </div>
@@ -135,7 +135,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
             </div>
 
             {/* Reset Button */}
-            <button className="w-full" onClick={resetFilters}>
+            <button className="w-full cursor-pointer hover:bg-blue-500 py-1 hover:text-white rounded-md" onClick={resetFilters}>
                 Reset Filters
             </button>
         </aside>

@@ -82,6 +82,7 @@ export const useGetRoomsByHotel = (hotelId: string) => {
         queryFn: () => getRoomsByHotel(hotelId),
         enabled: !!hotelId,
         staleTime: 5 * 60 * 1000,
+        retry: 1,
     });
 };
 

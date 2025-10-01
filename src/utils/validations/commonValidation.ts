@@ -56,3 +56,19 @@ export const createAmenitySchema = Yup.object({
         .matches(/^[A-Za-z0-9\s,.'"-?!()&]+$/, "Description can contain letters, numbers, spaces, and basic punctuation")
         .min(5, "Description must be at least 5 characters"),
 });
+
+
+//plan create/edit 
+export const planFormSchema = Yup.object().shape({
+    name: Yup.string().required("Plan name is required").trim(),
+    description: Yup.string().required("Description is required").trim(),
+    price: Yup.number().required("Price is required").min(1, "Price must be positive"),
+    duration: Yup.number().required("Duration is required").min(1, "Duration must be at least 1 day"),
+    features: Yup.array(
+        Yup.object({
+            value: Yup.string().required("Feature cannot be empty").trim(),
+        })
+    )
+        .required("At least one feature is required")
+        .min(1, "At least one feature is required"),
+});

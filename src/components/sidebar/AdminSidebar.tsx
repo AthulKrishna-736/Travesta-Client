@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { Calendar, ChevronRight, Layers, LayoutDashboard, MessageSquare, Users } from "lucide-react"
+import { Calendar, ChevronRight, Layers, LayoutDashboard, MessageSquare, PlayIcon, Users } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
@@ -43,6 +43,12 @@ export function AdminSidebar() {
             href: "/admin/chat",
             isActive: pathname === "/admin/chat",
         },
+        {
+            title: "Subscription",
+            icon: PlayIcon,
+            href: "/admin/subscription",
+            isActive: pathname === "/admin/subscription",
+        },
     ]
 
     return (
@@ -65,14 +71,14 @@ export function AdminSidebar() {
                                         asChild
                                         isActive={item.isActive}
                                         className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors border-l-4 ${item.isActive
-                                                ? "!bg-blue-100 text-blue-600 font-medium border-blue-600"
-                                                : "text-gray-700 hover:bg-gray-100 hover:text-blue-500 border-transparent" 
+                                            ? "!bg-blue-100 text-blue-600 font-medium border-blue-600"
+                                            : "text-gray-700 hover:bg-gray-100 hover:text-blue-500 border-transparent"
                                             }`}
                                     >
                                         <button onClick={() => navigate(item.href)}>
                                             <item.icon className="h-4 w-4 shrink-0" />
                                             <span>{item.title}</span>
-                                            <ChevronRight className="h-4 w-4 shrink-0 ml-auto"/>
+                                            <ChevronRight className="h-4 w-4 shrink-0 ml-auto" />
                                         </button>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>

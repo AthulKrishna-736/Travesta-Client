@@ -4,6 +4,7 @@ export const env = {
     SOCKET_URL: import.meta.env.VITE_SOCKET_URL,
     GOOGLE_ID: import.meta.env.VITE_CLIENT_ID,
     STRIPE_SECRET: import.meta.env.VITE_STRIPE_SECRET,
+    OLA_API_SECRET: import.meta.env.VITE_OLA_API_SECRET,
 }
 
 export enum HttpStatusCode {

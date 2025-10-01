@@ -13,14 +13,14 @@ const Header = () => {
     const profileImage = useSelector((state: RootState) => state.user.user?.profileImage);
     const userName = useSelector((state: RootState) => state.user.user?.firstName);
 
-    const isHotelsPage = location.pathname === '/user/hotels'
+    const isHotelPath = location.pathname.startsWith("/user/hotels");
 
     const handleLogout = () => {
         logoutUserFn();
     };
 
     return (
-        <header className={`${isHotelsPage ? "relative z-50" : "sticky top-0 z-50"} bg-white/70 backdrop-blur-md shadow-md`}>
+        <header className={`${isHotelPath ? "relative z-50" : "sticky top-0 z-50"} bg-white/70 backdrop-blur-md shadow-md`}>
             <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                 {/* Logo */}
                 <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">
@@ -39,6 +39,11 @@ const Header = () => {
                         <NavigationMenuItem>
                             <Link to="/user/about-us" className={navigationMenuTriggerStyle()}>
                                 About us
+                            </Link>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <Link to="/user/subscription" className={navigationMenuTriggerStyle()}>
+                                Subscription
                             </Link>
                         </NavigationMenuItem>
                     </NavigationMenuList>

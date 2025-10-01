@@ -63,6 +63,14 @@ export const getUserHotelById = async (hotelId: string) => {
     return response.data;
 };
 
+//room
+export const getCustomDates = async (roomId: string, checkIn: string, checkOut: string, limit: number) => {
+    const response = await axiosInstance.get(`${USER_APIS.customRoomDates}`, {
+        params: { roomId, checkIn, checkOut, limit }
+    })
+    return response.data;
+}
+
 //amenities
 export const getUserAmenities = async () => {
     const response = await axiosInstance.get(`${USER_APIS.amenities}`);
@@ -153,4 +161,10 @@ export const confirmBooking = async (
     const response = await axiosInstance.post(`${USER_APIS.payment}/${vendorId}/booking?method=${method}`, data);
     return response.data;
 };
+
+//subscription
+export const getUserSubscriptions = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.plans}`);
+    return response.data;
+}
 

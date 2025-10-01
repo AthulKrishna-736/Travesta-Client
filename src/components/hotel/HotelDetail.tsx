@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Star, MapPin } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
 import { showError } from '@/utils/customToast';
 import RoomCardLayout from '../room/RoomCard';
+import Breadcrumbs from '../common/BreadCrumps';
+import HotelWithRoom from './HotelWithRoom';
+import MyOlaMap from '../common/OlaMap';
+import { MapIcon } from 'lucide-react';
 
 interface BookingFormData {
     checkIn: string;
@@ -12,20 +14,50 @@ interface BookingFormData {
     guests: number;
 }
 
+export type THotelResponse = {
+    _id?: string;
+    vendorId: string;
+    name: string;
+    description: string;
+    images: string[];
+    rating: number;
+    amenities: { _id: string, name: string }[];
+    tags: string[];
+    state: string;
+    city: string;
+    address: string;
+    geoLocation: [number, number];
+}
+
+export type TRoomResponse = {
+    id: string;
+    name: string;
+    hotelId: string | THotelResponse
+    roomType: string;
+    roomCount: number;
+    bedType: string;
+    guest: number;
+    amenities: { _id: string, name: string }[];
+    images: string[];
+    basePrice: number;
+    isAvailable: boolean;
+}
+
 const HotelDetail: React.FC = () => {
     const { hotelId } = useParams();
-    const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '');
-    const hotel = hotelResponse?.data?.[0]?.hotelId;
-
-    const rooms = hotelResponse?.data || [];
-
+    const mapRef = useRef<HTMLDivElement | null>(null);
+    const reviewRef = useRef<HTMLDivElement | null>(null);
+    const navigate = useNavigate();
     const [bookingRoomId, setBookingRoomId] = useState<string | null>(null);
     const [formData, setFormData] = useState<BookingFormData>({
         checkIn: '',
         checkOut: '',
         guests: 1,
     });
-    const navigate = useNavigate();
+
+    const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '');
+    const hotel = hotelResponse?.data?.[0]?.hotelId as THotelResponse;
+    const rooms = hotelResponse?.data as TRoomResponse[] || [];
 
     if (hotelLoading)
         return (
@@ -44,6 +76,12 @@ const HotelDetail: React.FC = () => {
             </div>
         );
 
+    const BREADCRUMPS_ITEMS = [
+        { label: 'Home', path: '/user/home' },
+        { label: 'Hotels', path: '/user/hotels' },
+        { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
+    ]
+
     const handleBookClick = (roomId: string) => {
         setBookingRoomId(roomId);
         setFormData({ checkIn: '', checkOut: '', guests: 1 });
@@ -58,7 +96,7 @@ const HotelDetail: React.FC = () => {
     };
 
     const handleBookingSubmit = async (roomId: string) => {
-        const now = new Date(); 
+        const now = new Date();
         const currentHours = now.getHours();
         const currentMinutes = now.getMinutes();
         const currentSeconds = now.getSeconds();
@@ -100,7 +138,7 @@ const HotelDetail: React.FC = () => {
         // Optional: round up days for hourly differences
         const days = Math.ceil(diffInDays);
 
-        const room = rooms.find((r: any) => r._id === roomId);
+        const room = rooms.find((r) => r.id === roomId);
         if (!room) {
             showError('Room not found.');
             return;
@@ -132,84 +170,51 @@ const HotelDetail: React.FC = () => {
     };
 
     return (
-        <main className="p-6 max-w-5xl mx-auto space-y-6">
-            {/* Hotel Main Image and Thumbnails */}
-            <div className='bg-white p-2'>
-                <div className="h-80 w-full overflow-hidden rounded-lg shadow-md mb-2">
-                    {hotel.images && hotel.images.length > 0 ? (
-                        <img src={hotel.images[0]} alt={hotel.name} className="object-cover w-full h-full" />
-                    ) : (
-                        <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-600 text-sm">
-                            No Image Available
-                        </div>
-                    )}
+        <main className="p-6 max-w-6xl mx-auto space-y-4">
+            {/* BreadCrumps */}
+            <Breadcrumbs items={BREADCRUMPS_ITEMS} />
+
+            {/* Hotel with room Details */}
+            <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} />
+
+            {/* Calender Availabilities */}
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                Calender availability section
+            </div>
+
+            {/* Photo by guests */}
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                Guest photos section
+            </div>
+
+            {/* Map Section */}
+            <div ref={mapRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <div className='flex justify-between '>
+                    <h1 className='text-xl font-semibold mb-2'>Location</h1>
+                    <button className='px-4 py-1.5 bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white font-semibold text-lg rounded-md shadow-md cursor-pointer' onClick={() => {
+                        window.open(
+                            `https://www.google.com/maps/dir/?api=1&destination=${hotel.geoLocation[0]},${hotel.geoLocation[1]}`,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+                    }}>
+                        <span className='flex justify-center items-center gap-2'>
+                            <MapIcon className='text-white w-5 h-5 ' />
+                            Get Direction
+                        </span>
+                    </button>
                 </div>
-                <div className="flex gap-2 overflow-x-auto">
-                    {hotel.images?.slice(0, 4).map((img: string, idx: number) => (
-                        <img
-                            key={idx}
-                            src={img}
-                            alt={`Hotel Preview ${idx}`}
-                            className="w-20 h-20 object-cover rounded border shadow-sm"
-                        />
-                    ))}
+                <div>
+                    <MyOlaMap lat={hotel.geoLocation[0]} long={hotel.geoLocation[1]} />
                 </div>
             </div>
 
-            {/* Hotel Details */}
-            <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <h1 className="text-3xl font-bold text-primary">{hotel.name}</h1>
-                    <div className="flex items-center gap-1 text-yellow-500 text-sm">
-                        <Star className="w-5 h-5 fill-yellow-500" />
-                        <span className="font-medium">{hotel.rating?.toFixed(1)}</span>
-                    </div>
-                </div>
-
-                {/* Location */}
-                <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                    <MapPin className="w-4 h-4" />
-                    <span>{hotel.city}, {hotel.state} – {hotel.address}</span>
-                </div>
-
-                {/* Description */}
-                <p className="text-gray-700 text-base leading-relaxed">{hotel.description}</p>
-
-                {/* Tags */}
-                {hotel.tags?.length > 0 && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Tags</h2>
-                        <div className="flex flex-wrap gap-2">
-                            {hotel.tags.map((tag: any, idx: any) => (
-                                <Badge key={idx} variant="outline" className="rounded-full px-3 py-1 text-xs">
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Amenities */}
-                {hotel.amenities && hotel.amenities.length > 0 && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Amenities</h2>
-                        <div className="flex flex-wrap gap-2">
-                            {hotel.amenities.map((amenity: any) => (
-                                <Badge
-                                    key={amenity._id}
-                                    variant="secondary"
-                                    className="rounded-full px-3 py-1 text-xs"
-                                >
-                                    {amenity.name}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
+            {/* Reviews section */}
+            <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                Reviews section
             </div>
 
-            {/* Rooms */}
+            {/* Rooms recommended*/}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {rooms.map((room: any) => (
                     <RoomCardLayout

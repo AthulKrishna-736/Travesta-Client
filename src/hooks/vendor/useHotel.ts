@@ -83,7 +83,6 @@ export const useGetAllUserHotels = (
         queryKey: ['user-hotels', { page, limit, filters }],
         queryFn: () => getAllUserHotels(page, limit, filters),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
         retry: false,
     });
 };
