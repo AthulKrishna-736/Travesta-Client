@@ -4,14 +4,19 @@ import PlansList from "@/components/subscription/PlansList";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import PlanFormModal from "@/components/subscription/PlanFormModal";
+import { useCreatePlans } from "@/hooks/admin/useSubscription";
 
 const AdminPlansPage = () => {
     const [openModal, setOpenModal] = useState(false);
 
+    const { mutate: createPlan, isPending } = useCreatePlans();
+
     const handleCreatePlan = (data: any) => {
-        console.log("New Plan Submitted:", data);
-        // 🔹 Add your API call here to save plan
-        setOpenModal(false);
+        createPlan(data, {
+            onSuccess: () => {
+                setOpenModal(false);
+            },
+        });
     };
 
     return (
@@ -45,6 +50,7 @@ const AdminPlansPage = () => {
                     title="Create New Plan"
                     onCancel={() => setOpenModal(false)}
                     onSubmit={handleCreatePlan}
+                    loading={isPending}
                 />
             </div>
         </AdminLayout>

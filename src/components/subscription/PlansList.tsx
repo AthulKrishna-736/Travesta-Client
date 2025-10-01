@@ -3,7 +3,7 @@ import DataTable from '../common/Table';
 import { PricingPlan } from './PlanCard';
 import { Edit, Eye } from 'lucide-react';
 import { Action } from '@/types/component.types';
-import { useGetAllPlans } from '@/hooks/admin/useSubscription';
+import { useGetAllPlans, useUpdatePlans } from '@/hooks/admin/useSubscription';
 import PlanDetailModal from './PlanDetailModal';
 import PlanFormModal from './PlanFormModal';
 
@@ -14,6 +14,8 @@ const PlansList = () => {
     const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const { mutate: updatePlan, isPending } = useUpdatePlans();
 
     const columns = [
         { key: "name", label: "Plan Name" },
@@ -52,9 +54,19 @@ const PlansList = () => {
     ];
 
     const handleEditSubmit = (data: any) => {
-        console.log('Edit submitted:', data);
-        // Call your API here
-        setIsEditModalOpen(false);
+        if (!selectedPlan) return;
+
+        const formattedData = {
+            ...data,
+            features: data.features.map((f: { value: string }) => f.value),
+            planId: selectedPlan.id,
+        };
+
+        updatePlan(formattedData, {
+            onSuccess: () => {
+                setIsEditModalOpen(false);
+            },
+        });
     };
 
     return (
@@ -78,6 +90,7 @@ const PlansList = () => {
                 onCancel={() => setIsEditModalOpen(false)}
                 onSubmit={handleEditSubmit}
                 initialData={selectedPlan}
+                loading={isPending}
             />
         </>
     );

@@ -5,6 +5,7 @@ import { TCreateAmenityData } from "@/types/component.types";
 import { User } from "@/types/user.types";
 import { TSortOption } from "@/types/custom.types";
 import { ADMIN_APIS } from "./apiConstants";
+import { TCreatePlan, TUpdatePlan } from "@/types/plan.types";
 
 
 //customers manage
@@ -92,5 +93,15 @@ export const getAdminUnreadMsg = async () => {
 //subscription
 export const getAllPlans = async () => {
     const response = await axiosInstance.get(`${ADMIN_APIS.plans}`);
+    return response.data;
+}
+
+export const createPlan = async (data: TCreatePlan) => {
+    const response = await axiosInstance.post(`${ADMIN_APIS.plans}`, data)
+    return response.data;
+}
+
+export const updatePlan = async (data: TUpdatePlan, planId: string) => {
+    const response = await axiosInstance.put(`${ADMIN_APIS.plans}/${planId}`, data);
     return response.data;
 }
