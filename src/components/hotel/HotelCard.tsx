@@ -12,7 +12,7 @@ interface IHotel {
     city: string;
     state: string;
     address: string;
-    startingPrice: number;
+    room: { _id: string, basePrice: number, name: string };
     isBlocked: boolean;
 }
 
@@ -24,7 +24,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
     const navigate = useNavigate();
     const [imagePreview, setImagePreview] = useState<string>('');
 
-    const { id, name, description, images, amenities, rating, state, city, startingPrice } = hotel;
+    const { id, name, description, images, amenities, rating, state, city, room } = hotel;
 
     const handleSetPreviewImage = (img: string) => {
         setImagePreview(img);
@@ -105,7 +105,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
 
                 <div>
                     <h1 className="font-bold text-xl text-right">
-                        ₹ {startingPrice}
+                        ₹ {room.basePrice}
                     </h1>
                     <p className="text-sm text-[#4a4a4a] text-right">+₹ 1234 taxes & fees</p>
                     <p className="text-sm text-[#4a4a4a] text-right">Per Night</p>

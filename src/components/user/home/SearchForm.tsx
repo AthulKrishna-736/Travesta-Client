@@ -47,12 +47,12 @@ const SearchForm = () => {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const now = new Date();
         const checkIn = new Date(state.checkInDate);
-        checkIn.setHours(0, 0, 0, 0);
+        checkIn.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())
         const checkOut = new Date(state.checkOutDate);
-        checkOut.setHours(0, 0, 0, 0);
+        checkOut.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())
+        now.setHours(0, 0, 0, 0);
 
         if (!state.searchTerm) {
             showError('Please enter property name or location');
@@ -69,7 +69,7 @@ const SearchForm = () => {
             return;
         }
 
-        if (checkIn < today) {
+        if (checkIn < now) {
             showError("Check-in date cannot be in the past");
             return;
         }

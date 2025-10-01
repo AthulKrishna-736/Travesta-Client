@@ -33,12 +33,12 @@ const UserHotelPage: React.FC = () => {
     const [checkOut, setCheckOut] = useState(checkOutParam);
     const [guests, setGuests] = useState(guestsParam);
     const [page, setPage] = useState(1);
-    const limit = 9;
 
     const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [roomType, setRoomType] = useState<string[]>([]);
     const [sortOption, setSortOption] = useState<string>('');
+    const HOTEL_LIMIT = 9;
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -48,7 +48,7 @@ const UserHotelPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data: hotelResponseData, isLoading: isHotelLoading } = useGetAllUserHotels(page, limit, {
+    const { data: hotelResponseData, isLoading: isHotelLoading } = useGetAllUserHotels(page, HOTEL_LIMIT, {
         search: debouncedSearchTerm,
         priceRange,
         selectedAmenities,

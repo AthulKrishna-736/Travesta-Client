@@ -1,8 +1,9 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@/services/userService';
+import { cancelBooking, confirmBooking, createBooking, getCustomDates, getUserBookings } from '@/services/userService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { getBookingsToVendor } from '@/services/vendorService';
 import { ICustomError } from '@/types/custom.types';
+import { TCustomCalendarItem } from '@/components/common/CustomCalendar';
 
 export const useGetUserBookings = (page: number, limit: number, search?: string, sort?: string) => {
     return useQuery({
@@ -68,4 +69,14 @@ export const useConfirmBooking = (
             showError(msg);
         },
     });
+}
+
+export const useGetCustomDate = (roomId: string, checkIn: string, checkOut: string, limit: number) => {
+    return useQuery<TCustomCalendarItem[]>({
+        queryKey: ['custom-dates'],
+        queryFn: () => getCustomDates(roomId, checkIn, checkOut, limit),
+        staleTime: 60 * 1000,
+        placeholderData: keepPreviousData,
+        retry: 1,
+    })
 }

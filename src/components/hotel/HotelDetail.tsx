@@ -7,6 +7,8 @@ import Breadcrumbs from '../common/BreadCrumps';
 import HotelWithRoom from './HotelWithRoom';
 import MyOlaMap from '../common/OlaMap';
 import { MapIcon } from 'lucide-react';
+import CustomCalendar from '../common/CustomCalendar';
+
 
 interface BookingFormData {
     checkIn: string;
@@ -178,14 +180,14 @@ const HotelDetail: React.FC = () => {
             <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} />
 
             {/* Calender Availabilities */}
-            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                Calender availability section
-            </div>
+            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <CustomCalendar roomId={rooms[0].id} checkIn={formData.checkIn} checkOut={formData.checkOut} />
+            </div> */}
 
             {/* Photo by guests */}
-            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Guest photos section
-            </div>
+            </div> */}
 
             {/* Map Section */}
             <div ref={mapRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
@@ -210,9 +212,9 @@ const HotelDetail: React.FC = () => {
             </div>
 
             {/* Reviews section */}
-            <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            {/* <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Reviews section
-            </div>
+            </div> */}
 
             {/* Rooms recommended*/}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
