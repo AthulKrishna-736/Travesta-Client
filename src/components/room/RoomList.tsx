@@ -16,6 +16,7 @@ const columns = [
     { key: 'roomType', label: 'Room Type' },
     { key: 'guest', label: 'Guests' },
     { key: 'bedType', label: 'Bed Type' },
+    { key: 'roomCount', label: 'Room Count' },
     { key: 'isAvailable', label: 'Available' },
 ];
 

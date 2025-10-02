@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
 import { showError } from '@/utils/customToast';
 import RoomCardLayout from '../room/RoomCard';
@@ -8,13 +8,6 @@ import HotelWithRoom from './HotelWithRoom';
 import MyOlaMap from '../common/OlaMap';
 import { MapIcon } from 'lucide-react';
 import CustomCalendar from '../common/CustomCalendar';
-
-
-interface BookingFormData {
-    checkIn: string;
-    checkOut: string;
-    guests: number;
-}
 
 export type THotelResponse = {
     _id?: string;
@@ -47,17 +40,16 @@ export type TRoomResponse = {
 
 const HotelDetail: React.FC = () => {
     const { hotelId } = useParams();
+    const [params] = useSearchParams();
     const mapRef = useRef<HTMLDivElement | null>(null);
     const reviewRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
-    const [bookingRoomId, setBookingRoomId] = useState<string | null>(null);
-    const [formData, setFormData] = useState<BookingFormData>({
-        checkIn: '',
-        checkOut: '',
-        guests: 1,
-    });
 
-    const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '');
+    const checkInParam = params.get('checkIn') || '';
+    const checkOutParam = params.get('checkOut') || '';
+    const guestParam = params.get('guests');
+
+    const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '', checkInParam, checkOutParam);
     const hotel = hotelResponse?.data?.[0]?.hotelId as THotelResponse;
     const rooms = hotelResponse?.data as TRoomResponse[] || [];
 
@@ -84,19 +76,6 @@ const HotelDetail: React.FC = () => {
         { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
     ]
 
-    const handleBookClick = (roomId: string) => {
-        setBookingRoomId(roomId);
-        setFormData({ checkIn: '', checkOut: '', guests: 1 });
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: name === 'guests' ? parseInt(value) : value,
-        }));
-    };
-
     const handleBookingSubmit = async (roomId: string) => {
         const now = new Date();
         const currentHours = now.getHours();
@@ -104,22 +83,15 @@ const HotelDetail: React.FC = () => {
         const currentSeconds = now.getSeconds();
         const currentMilliseconds = now.getMilliseconds();
 
-        console.log('formdata', formData)
-
-        const checkInDate = new Date(formData.checkIn);
+        const checkInDate = new Date(checkInParam);
         checkInDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
 
-        const checkOutDate = new Date(formData.checkOut);
+        const checkOutDate = new Date(checkOutParam);
         checkOutDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
 
         console.log("Exact checkIn date-time:", checkInDate.toISOString());
         console.log("Exact checkOut date-time:", checkOutDate.toISOString());
 
-        // Check if either date is missing or guests is less than 1
-        if (!formData.checkIn || !formData.checkOut || formData.guests < 1) {
-            showError('Please fill all fields correctly.');
-            return;
-        }
 
         // Validate check-in is not in the past
         if (checkInDate < now) {
@@ -148,11 +120,6 @@ const HotelDetail: React.FC = () => {
 
         console.log('room: ', room);
 
-        if (formData.guests > room.guest) {
-            showError(`Maximum ${room.guest} guest${room.guest > 1 ? 's are' : ' is'} allowed per room`);
-            return
-        }
-
         const totalPrice = room.basePrice * days;
 
         navigate('/user/checkout', {
@@ -160,7 +127,7 @@ const HotelDetail: React.FC = () => {
                 hotel,
                 room,
                 formData: {
-                    ...formData,
+                    guests: guestParam,
                     checkIn: checkInDate.toISOString(),
                     checkOut: checkOutDate.toISOString(),
                 },
@@ -177,7 +144,7 @@ const HotelDetail: React.FC = () => {
             <Breadcrumbs items={BREADCRUMPS_ITEMS} />
 
             {/* Hotel with room Details */}
-            <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} />
+            <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} roomSubmit={handleBookingSubmit} />
 
             {/* Calender Availabilities */}
             {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
@@ -220,14 +187,9 @@ const HotelDetail: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {rooms.map((room: any) => (
                     <RoomCardLayout
-                        key={room._id}
+                        key={room.id}
                         room={room}
-                        bookingRoomId={bookingRoomId}
-                        setBookingRoomId={setBookingRoomId}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                        handleBookingSubmit={handleBookingSubmit}
-                        handleBookClick={handleBookClick}
+                        handleBookClick={handleBookingSubmit}
                     />
                 ))}
             </div>

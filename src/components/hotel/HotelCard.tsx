@@ -18,9 +18,12 @@ interface IHotel {
 
 interface HotelCardProps {
     hotel: IHotel;
+    checkIn: string;
+    checkOut: string;
+    guests: number;
 }
 
-const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
+const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests }) => {
     const navigate = useNavigate();
     const [imagePreview, setImagePreview] = useState<string>('');
 
@@ -114,7 +117,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
                 <div className="flex gap-1">
                     <button
                         className="text-[#0084ff] py-1 rounded-sm font-semibold cursor-pointer"
-                        onClick={() => navigate(`/user/hotels/${id}`)}
+                        onClick={() => navigate(`/user/hotels/${id}?checkIn=${encodeURIComponent(checkIn)}&checkOut=${encodeURIComponent(checkOut)}&guests=${encodeURIComponent(guests)}`)}
                     >
                         View Details
                     </button>

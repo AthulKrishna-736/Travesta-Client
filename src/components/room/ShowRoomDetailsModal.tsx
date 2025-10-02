@@ -50,7 +50,11 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-gray-600 font-medium">Guest:</span>
-                                        <span className="text-gray-800">{data.roomCount > 1 ? `${data.roomCount} person(s)` : `${data.roomCount} person`}</span>
+                                        <span className="text-gray-800">{data.guest > 1 ? `${data.guest} person(s)` : `${data.guest} person`}</span>
+                                    </p>
+                                    <p className="flex justify-between">
+                                        <span className="text-gray-600 font-medium">Room Count:</span>
+                                        <span className="text-gray-800">{data.roomCount}</span>
                                     </p>
                                 </div>
                             </div>

@@ -7,9 +7,10 @@ interface IHotelWithRoom {
     rooms: TRoomResponse[];
     mapRef: RefObject<HTMLDivElement | null>;
     reviewRef: RefObject<HTMLDivElement | null>;
+    roomSubmit: (roomId: string) => void;
 }
 
-const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewRef }) => {
+const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewRef, roomSubmit }) => {
     return (
         <div className='bg-white p-5 rounded-md shadow-xs'>
             {/* Name */}
@@ -84,7 +85,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
                         <h6 className='text-sm text-[#4a4a4a] mt-3 font-medium'>Per Night:</h6>
                         <h1 className='text-3xl font-bold mb-4'>₹ {rooms[0].basePrice} <span className='text-[14px] text-[#4a4a4a] font-medium'>+₹ 1234 taxes & fees</span></h1>
                         <button
-                            onClick={() => console.log('clicked')}
+                            onClick={() => roomSubmit(rooms[0].id)}
                             className="uppercase text-[16px] font-bold leading-[19px] cursor-pointer px-4 py-1.5 rounded-[8px] bg-gradient-to-r from-[#53b2fe] to-[#065af3] shadow-[0_1px_7px_0_#0003] text-white"
                         >
                             Book This Now

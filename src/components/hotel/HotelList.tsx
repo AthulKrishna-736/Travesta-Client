@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DataTable from "@/components/common/Table";
 import { IHotel } from "@/types/hotel.types";
 import ShowHotelDetailsModal from "../hotel/ShowHotelDetails";
@@ -7,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
 import { useHotelsByVendor, useUpdateHotel } from "@/hooks/vendor/useHotel";
-import { Edit, InfoIcon } from "lucide-react";
+import { Edit, InfoIcon, LineChartIcon } from "lucide-react";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
@@ -17,6 +18,7 @@ const columns = [
 ];
 
 const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) => {
+    const navigate = useNavigate();
     const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -57,6 +59,10 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
     const handleEditClose = () => {
         setSelectedHotel(null);
         setIsEdit(false);
+    }
+
+    const handleHotelAnalytics = (hotel: IHotel) => {
+        navigate(`/vendor/hotelDashboard/${hotel.id}`)
     }
 
     const { mutate: updateHotelfn, isPending } = useUpdateHotel(handleEditClose);
@@ -106,6 +112,15 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
             tooltip: 'hotel details',
             className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: handleDetails,
+        },
+        {
+            label: "View Analytics",
+            variant: "outline" as const,
+            showLabel: false,
+            icon: LineChartIcon,
+            tooltip: 'hotel analytics',
+            className: "bg-violet-50 text-violet-700 hover:bg-violet-100",
+            onClick: handleHotelAnalytics,
         },
     ];
 

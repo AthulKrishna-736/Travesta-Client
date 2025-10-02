@@ -22,57 +22,18 @@ const VendorHotelDashboard = () => {
     const roomPerformance = hotelAnalyticsResponse ? hotelAnalyticsResponse.data.roomPerformance : null
     const charts = hotelAnalyticsResponse ? hotelAnalyticsResponse.data.charts : null
 
-    // Mock data - would come from API in production
-    // const metrics = {
-    //     revenue: 1248500,
-    //     bookings: 342,
-    //     occupancy: 78,
-    //     averageRate: 3650,
-    // };
-
-    const revenueData = [
-        { date: "Jan 1", revenue: 45000 },
-        { date: "Jan 5", revenue: 52000 },
-        { date: "Jan 10", revenue: 48000 },
-        { date: "Jan 15", revenue: 61000 },
-        { date: "Jan 20", revenue: 55000 },
-        { date: "Jan 25", revenue: 68000 },
-        { date: "Jan 30", revenue: 72000 },
-    ];
-
-    const bookingsStatus = [
-        { name: "Confirmed", value: 245, color: "hsl(var(--success))" },
-        { name: "Pending", value: 67, color: "hsl(var(--primary))" },
-        { name: "Cancelled", value: 30, color: "hsl(var(--destructive))" },
-    ];
-
-    // const roomPerformance = [
-    //     { rank: 1, name: "Presidential Suite", type: "Suite", bookings: 45, revenue: 225000, occupancy: 92 },
-    //     { rank: 2, name: "Ocean View Deluxe", type: "Deluxe", bookings: 78, revenue: 195000, occupancy: 85 },
-    //     { rank: 3, name: "Garden Villa", type: "Villa", bookings: 52, revenue: 182000, occupancy: 81 },
-    //     { rank: 4, name: "Executive Room", type: "Executive", bookings: 89, revenue: 156000, occupancy: 76 },
-    //     { rank: 5, name: "Classic Double", type: "Standard", bookings: 112, revenue: 134000, occupancy: 71 },
-    // ];
-
-    const paymentStatus = [
-        { status: "Success", count: 285, color: "hsl(var(--success))" },
-        { status: "Pending", count: 42, color: "hsl(var(--primary))" },
-        { status: "Failed", count: 8, color: "hsl(var(--destructive))" },
-        { status: "Refunded", count: 7, color: "hsl(var(--muted-foreground))" },
-    ];
-
     const statusColors: Record<string, string> = {
         confirmed: "green",
         pending: "orange",
         cancelled: "red",
     };
 
-   const paymentColors: Record<string, string> = {
-  success: "#4ade80",  // brighter green
-  pending: "#facc15",  // brighter yellow
-  failed: "#f87171",   // brighter red
-  refunded: "#60a5fa", // brighter blue
-};
+    const paymentColors: Record<string, string> = {
+        success: "#4ade80",
+        pending: "#facc15",
+        failed: "#f87171",
+        refunded: "#60a5fa",
+    };
 
     return (
         <VendorLayout>

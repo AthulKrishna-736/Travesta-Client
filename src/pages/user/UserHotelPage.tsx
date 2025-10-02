@@ -162,7 +162,7 @@ const UserHotelPage: React.FC = () => {
                                     ) : (
                                         <div>
                                             {hotels.map((hotel: any) => (
-                                                <HotelCard key={hotel.id} hotel={hotel} />
+                                                <HotelCard key={hotel.id} hotel={hotel} checkIn={checkIn} checkOut={checkOut} guests={guests} />
                                             ))}
                                         </div>
                                     )}

@@ -3,10 +3,10 @@ import { Users, BedDouble } from "lucide-react";
 import { RoomCardLayoutProps } from "@/types/component.types";
 
 
-const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, setBookingRoomId, formData, handleInputChange, handleBookingSubmit, handleBookClick }) => {
+const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, handleBookClick }) => {
     return (
         <div
-            key={room._id}
+            key={room.id}
             className="bg-white rounded-xl border border-gray-200 shadow-md hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col"
         >
             {/* Main Room Image */}
@@ -75,81 +75,12 @@ const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, se
             )}
 
             {/* Booking Section */}
-            {bookingRoomId === room._id ? (
-                <div className="mt-4 pt-4 border-t">
-                    <h4 className="font-medium mb-2 text-sm text-gray-800">Book this room</h4>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleBookingSubmit(room._id);
-                        }}
-                        className="space-y-3 text-sm"
-                    >
-                        <div>
-                            <label className="block mb-1 font-medium" htmlFor="checkIn">Check-In</label>
-                            <input
-                                type="date"
-                                id="checkIn"
-                                name="checkIn"
-                                min={new Date().toLocaleDateString('en-CA')}
-                                value={formData.checkIn}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full border rounded-md px-3 py-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 font-medium" htmlFor="checkOut">Check-Out</label>
-                            <input
-                                type="date"
-                                id="checkOut"
-                                min={formData.checkOut ? new Date(new Date(formData.checkOut).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString('en-CA') : new Date().toLocaleDateString('en-CA')}
-                                name="checkOut"
-                                value={formData.checkOut}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full border rounded-md px-3 py-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 font-medium" htmlFor="guests">Guests</label>
-                            <input
-                                type="number"
-                                id="guests"
-                                name="guests"
-                                min={1}
-                                max={room.capacity}
-                                value={formData.guests}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full border rounded-md px-3 py-2"
-                            />
-                        </div>
-
-                        <div className="flex gap-2 mt-2">
-                            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                Confirm Booking
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setBookingRoomId(null)}
-                                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                            >
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            ) : (
-                <button
-                    onClick={() => handleBookClick(room._id)}
-                    className="mt-auto bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                >
-                    Book this room
-                </button>
-            )}
+            <button
+                onClick={() => handleBookClick(room.id)}
+                className="mt-auto bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+                Book this room
+            </button>
         </div>
     );
 };

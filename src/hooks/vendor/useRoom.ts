@@ -76,10 +76,10 @@ export const useGetRoomById = (roomId: string) => {
 };
 
 
-export const useGetRoomsByHotel = (hotelId: string) => {
+export const useGetRoomsByHotel = (hotelId: string, checkIn: string, checkOut: string) => {
     return useQuery({
         queryKey: ['hotel-rooms', hotelId],
-        queryFn: () => getRoomsByHotel(hotelId),
+        queryFn: () => getRoomsByHotel(hotelId, checkIn , checkOut),
         enabled: !!hotelId,
         staleTime: 5 * 60 * 1000,
         retry: 1,
