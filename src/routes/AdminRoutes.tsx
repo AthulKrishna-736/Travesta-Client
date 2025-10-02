@@ -5,6 +5,7 @@ import AdminDash from '@/pages/admin/AdminDash'
 import AdminLoginPage from '@/pages/admin/AdminLoginPage'
 import AdminPlansPage from '@/pages/admin/AdminPlansPage'
 import AdminUsers from '@/pages/admin/AdminUsers'
+import AdminWalletPage from '@/pages/admin/AdminWalletPage'
 import VendorRequestPage from '@/pages/admin/VendorRequestPage'
 import ProtectAdminGuest from '@/ProtectRoutes/GuestAdmin'
 import ProtectedAdmin from '@/ProtectRoutes/ProtectAdmin'
@@ -62,7 +63,14 @@ const AdminRoutes: React.FC = () => {
         </ProtectedAdmin>
       }
       />
-      
+
+      <Route path='wallet' element={
+        <ProtectedAdmin>
+          <AdminWalletPage />
+        </ProtectedAdmin>
+      }
+      />
+
     </Routes>
   )
 }

@@ -55,7 +55,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
     return (
         <aside className="w-full lg:w-[250px] bg-white p-3 rounded-xs shadow-md">
             {/* Map implementation */}
-            <div
+            {/* <div
                 className="py-2 mb-4 rounded-sm h-27 flex items-end justify-center w-full shadow-sm bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: 'url("https://imgak.mmtcdn.com/pwa_v3/pwa_hotel_assets/mapEntry.png")' }}
             >
@@ -63,7 +63,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
                     <button className="uppercase text-[#0c8cec] text-xs font-bold">Explore on maps </button>
                     <MapPin className="w-3 h-4 text-[#0c8cec]" />
                 </div>
-            </div>
+            </div> */}
 
             {/* Search */}
             <div className="mb-6">

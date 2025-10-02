@@ -1,0 +1,43 @@
+import { useState } from 'react'
+import Pagination from '@/components/common/Pagination';
+import { AdminLayout } from '@/components/layouts/AdminLayout'
+import WalletSection from '@/components/wallet/Wallet';
+import { useGetUserTransactions, useGetWallet } from '@/hooks/user/useWallet';
+import { TPagination } from '@/types/custom.types';
+
+const AdminWalletPage = () => {
+    const [page, setPage] = useState(1);
+    const limit = 5;
+
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
+    const { data: transactionDataResponse, isLoading: transactionLoading } = useGetUserTransactions(page, limit);
+
+    const walletData = walletDataResponse?.data ?? null;
+    const transactionData = transactionDataResponse?.data ?? null;
+    const meta = transactionDataResponse?.meta as TPagination ?? null;
+
+    return (
+        <AdminLayout>
+            <div>
+                {!walletLoading && walletData && (
+                    <WalletSection
+                        balance={walletData.balance}
+                        transactions={transactionData || []}
+                        userName={walletData.user?.name || "User"}
+                        loading={transactionLoading}
+                    />
+                )}
+
+                {meta && meta.totalPages > 0 && (
+                    <Pagination
+                        currentPage={meta.currentPage}
+                        totalPages={meta.totalPages}
+                        onPageChange={setPage}
+                    />
+                )}
+            </div>
+        </AdminLayout>
+    )
+}
+
+export default AdminWalletPage

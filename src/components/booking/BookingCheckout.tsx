@@ -44,10 +44,10 @@ const BookingCheckout: React.FC = () => {
     const handleBookingPaymentSuccess = async () => {
         const payload = {
             hotelId: hotel._id,
-            roomId: room._id,
+            roomId: room.id,
             checkIn: formData.checkIn,
             checkOut: formData.checkOut,
-            guests: formData.guests,
+            guests: Number(formData.guests),
             totalPrice: totalPrice,
         };
         await confirmBooking(payload);
@@ -64,10 +64,10 @@ const BookingCheckout: React.FC = () => {
 
             const payload = {
                 hotelId: hotel._id,
-                roomId: room._id,
+                roomId: room.id,
                 checkIn: formData.checkIn,
                 checkOut: formData.checkOut,
-                guests: formData.guests,
+                guests: Number(formData.guests),
                 totalPrice: totalPrice,
             };
 

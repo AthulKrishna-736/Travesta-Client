@@ -14,13 +14,15 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
                     <p className="text-sm text-[#ef9d05] mt-1">Current Wallet Balance</p>
                 </div>
 
-                <button
-                    className="bg-[#f59f00] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#e08900] transition flex items-center gap-2"
-                    onClick={addMoney}
-                >
-                    <Plus size={18} />
-                    <span>Add Money</span>
-                </button>
+                {addMoney && (
+                    <button
+                        className="bg-[#f59f00] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#e08900] transition flex items-center gap-2"
+                        onClick={addMoney}
+                    >
+                        <Plus size={18} />
+                        <span>Add Money</span>
+                    </button>
+                )}
             </div>
 
             {/* Transactions History Section */}

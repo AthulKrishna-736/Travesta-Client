@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"
-import { Calendar, ChevronRight, Layers, LayoutDashboard, MessageSquare, PlayIcon, Users } from "lucide-react"
+import { Calendar, ChevronRight, Layers, LayoutDashboard, MessageSquare, PlayIcon, Users, Wallet2 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
@@ -48,6 +48,12 @@ export function AdminSidebar() {
             icon: PlayIcon,
             href: "/admin/subscription",
             isActive: pathname === "/admin/subscription",
+        },
+        {
+            title: "Wallet",
+            icon: Wallet2,
+            href: "/admin/wallet",
+            isActive: pathname === "/admin/wallet",
         },
     ]
 

@@ -10,5 +10,5 @@ export interface WalletSectionProps {
     transactions: WalletTransaction[];
     loading?: boolean;
     userName?: string;
-    addMoney: () => void;
+    addMoney?: () => void;
 }

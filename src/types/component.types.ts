@@ -150,14 +150,5 @@ export interface IAmenitiesModalProps {
 
 export interface RoomCardLayoutProps {
     room: any;
-    bookingRoomId: string | null;
-    setBookingRoomId: (id: string | null) => void;
-    formData: {
-        checkIn: string;
-        checkOut: string;
-        guests: number;
-    };
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleBookingSubmit: (roomId: string) => void;
     handleBookClick: (roomId: string) => void;
 }

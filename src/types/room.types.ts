@@ -9,7 +9,7 @@ export interface IRoom {
     roomType: string;
     bedType: string;
     guest: number;
-    amenities: string[] | IAmenity[];
+    amenities: string[] | Partial<IAmenity>[];
     images: (string | File)[];
     basePrice: number;
     isAvailable?: boolean;
