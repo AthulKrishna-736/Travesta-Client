@@ -3,6 +3,7 @@ import VendorBookingListPage from '@/pages/vendor/VendorBookingList'
 import VendorChatPage from '@/pages/vendor/VendorChatPage'
 import VendorDashboard from '@/pages/vendor/VendorDash'
 import VendorForgotPassPage from '@/pages/vendor/VendorForgotPassPage'
+import VendorHotelDashboard from '@/pages/vendor/VendorHotelDashboard'
 import VendorHotelsPage from '@/pages/vendor/VendorHotelPage'
 import VendorLoginPage from '@/pages/vendor/VendorLoginPage'
 import VendorProfile from '@/pages/vendor/VendorProfile'
@@ -77,6 +78,14 @@ const VendorRoutes: React.FC = () => {
                 </ProtectVendor>
             }
             />
+
+            <Route path='hotelDashboard/:hotelId' element={
+                <ProtectVendor>
+                    <VendorHotelDashboard />
+                </ProtectVendor>
+            }
+            />
+
 
         </Routes>
     )

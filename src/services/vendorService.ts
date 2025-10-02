@@ -59,6 +59,14 @@ export const updateHotel = async (id: string, formData: FormData) => {
     return response.data;
 };
 
+export const getHotelAnalytics = async (hotelId: string, period: 'week' | 'month' | 'year') => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.hotel}/${hotelId}/analytics`, {
+        params: { period: period }
+    });
+    return response.data;
+}
+
+//rooms
 export const getAllRooms = async (page: number, limit: number, search?: string) => {
     const response = await axiosInstance.get(`${VENDOR_APIS.rooms}`, {
         params: { page, limit, search }
@@ -85,8 +93,10 @@ export const getRoomById = async (roomId: string) => {
     return response.data;
 };
 
-export const getRoomsByHotel = async (hotelId: string) => {
-    const response = await axiosInstance.get(`${VENDOR_APIS.rooms}/by-hotel/${hotelId}`);
+export const getRoomsByHotel = async (hotelId: string, checkIn: string, checkOut: string) => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.rooms}/by-hotel/${hotelId}`, {
+        params: { checkIn, checkOut },
+    });
     return response.data;
 };
 

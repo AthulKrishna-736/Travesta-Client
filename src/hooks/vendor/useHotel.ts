@@ -1,5 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createHotel, getHotelByVendor, getHotelsByVendor, updateHotel } from "@/services/vendorService";
+import { createHotel, getHotelAnalytics, getHotelByVendor, getHotelsByVendor, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { getAllUserHotels, getUserHotelById } from '@/services/userService';
 import { ICustomError } from '@/types/custom.types';
@@ -95,3 +95,13 @@ export const useGetUserHotel = (hotelId: string) => {
         enabled: !!hotelId,
     });
 };
+
+export const useGetHotelAnalytics = (hotelId: string, period: 'week' | 'month' | 'year') => {
+    return useQuery({
+        queryKey: ['hotel-analytics', { hotelId, period }],
+        queryFn: () => getHotelAnalytics(hotelId, period),
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
+        retry: 2,
+    })
+}
