@@ -107,10 +107,18 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
                 extraNote={
                     <div className="mt-4 space-y-2">
                         <div className="rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
-                            <strong>Note:</strong> Cancelling this booking will result in a <strong>10%</strong> deduction from your refund.
+                            <strong>Note:</strong> Refunds depend on how close your cancellation is to the check-in time.
                         </div>
                         <div className="rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
-                            <strong>Policy:</strong> Bookings can only be cancelled within <strong>3 hours</strong> of making the reservation. After that, cancellations are no longer allowed.
+                            <strong>Cancellation Policy:</strong>
+                            <ul className="list-disc list-inside mt-1 space-y-1">
+                                <li><strong>48+ hours before check-in:</strong> Full refund (0% charge)</li>
+                                <li><strong>24–48 hours:</strong> 5% charge (95% refund)</li>
+                                <li><strong>5–24 hours:</strong> 15% charge (85% refund)</li>
+                                <li><strong>3–5 hours:</strong> 30% charge (70% refund)</li>
+                                <li><strong>1–3 hours:</strong> 50% charge (50% refund)</li>
+                                <li><strong>Less than 1 hour:</strong> 75% charge (25% refund)</li>
+                            </ul>
                         </div>
                     </div>
                 }

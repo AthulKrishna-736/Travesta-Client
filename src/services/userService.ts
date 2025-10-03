@@ -109,7 +109,7 @@ export const getUserBookings = async (page: number, limit: number, search?: stri
 };
 
 export const cancelBooking = async (bookingId: string) => {
-    const response = await axiosInstance.delete(`${USER_APIS.booking}/${bookingId}`);
+    const response = await axiosInstance.delete(`${USER_APIS.cancelBooking}/${bookingId}`);
     return response.data;
 };
 

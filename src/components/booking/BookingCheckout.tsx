@@ -73,7 +73,7 @@ const BookingCheckout: React.FC = () => {
 
             if (paymentMethod === 'wallet') {
                 await confirmBooking(payload);
-                navigate('/user/bookings');
+                navigate('/user/booking');
                 return;
             }
 
