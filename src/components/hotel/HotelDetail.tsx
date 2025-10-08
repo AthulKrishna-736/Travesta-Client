@@ -122,20 +122,17 @@ const HotelDetail: React.FC = () => {
 
         const totalPrice = room.basePrice * days;
 
-        navigate('/user/checkout', {
-            state: {
-                hotel,
-                room,
-                formData: {
-                    guests: guestParam,
-                    checkIn: checkInDate.toISOString(),
-                    checkOut: checkOutDate.toISOString(),
-                },
-                totalPrice,
-                days,
-            }
+        const queryParams = new URLSearchParams({
+            hotelId: hotelId!,
+            vendorId: hotel.vendorId!,
+            roomId: room.id,
+            guests: guestParam!.toString(),
+            checkIn: checkInDate.toISOString(),
+            checkOut: checkOutDate.toISOString(),
+            totalPrice: totalPrice.toString(),
+            days: days.toString(),
         });
-
+        navigate(`/user/checkout?${queryParams.toString()}`);
     };
 
     return (

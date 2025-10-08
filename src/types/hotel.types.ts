@@ -3,6 +3,7 @@ export interface IHotel {
   _id?: string
   id?: string
   name: string
+  vendorId?: string;
   description: string
   address: string
   state: string
@@ -10,7 +11,6 @@ export interface IHotel {
   tags: string[]
   amenities: string[]
   isBlocked?:boolean;
-  rating?: number
   startingPrice?:number
   geoLocation?: [number, number]
   images?: File[] | string[]

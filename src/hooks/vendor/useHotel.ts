@@ -96,6 +96,15 @@ export const useGetUserHotel = (hotelId: string) => {
     });
 };
 
+export const useGetHotelById = (hotelId: string) => {
+    return useQuery({
+        queryKey: ['hotel', hotelId],
+        queryFn: () => getUserHotelById(hotelId),
+        enabled: !!hotelId,
+        placeholderData: keepPreviousData,
+    })
+}
+
 export const useGetHotelAnalytics = (hotelId: string, period: 'week' | 'month' | 'year') => {
     return useQuery({
         queryKey: ['hotel-analytics', { hotelId, period }],

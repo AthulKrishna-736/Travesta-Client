@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,42 +12,83 @@ import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import CheckoutForm from '@/components/wallet/CheckoutForm';
 import { env } from '@/config/config';
 import { showError } from '@/utils/customToast';
+import { useGetHotelById } from '@/hooks/vendor/useHotel';
+import { useGetUserRoomById } from '@/hooks/vendor/useRoom';
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
+type THotel = {
+    id: string;
+    name: string;
+    images?: string[];
+    address: string;
+    vendorId: string;
+};
+
+type TRoom = {
+    id: string;
+    name: string;
+    bedType: string;
+    images?: string[];
+    description: string;
+    basePrice: number;
+};
+
 const BookingCheckout: React.FC = () => {
-    const { state } = useLocation();
     const navigate = useNavigate();
+    const [params] = useSearchParams();
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet' | null>(null);
+
+    const hotelId = params.get('hotelId');
+    const vendorId = params.get('vendorId');
+    const roomId = params.get('roomId');
+    const guests = Number(params.get('guests'));
+    const checkIn = params.get('checkIn');
+    const checkOut = params.get('checkOut');
+    const totalPrice = Number(params.get('totalPrice'));
+    const days = Number(params.get('days'));
+
+    const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelById(hotelId!);
+    const { data: roomResponse, isLoading: isRoomLoading } = useGetUserRoomById(roomId!);
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
-
-    useEffect(() => {
-        console.log('state: ', state);
-    }, [state]);
-
-    const { hotel, room, formData, totalPrice, days } = state;
+    const hotel = hotelResponse ? hotelResponse.data as THotel : null;
+    const room = roomResponse ? roomResponse.data as TRoom : null;
 
     const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(
-        hotel.vendorId,
+        vendorId || 'random',
         paymentMethod || 'wallet',
     );
 
-    if (!state) {
+
+    if (isHotelLoading || isRoomLoading) {
         return (
-            <div className="text-center mt-16 text-red-600 text-lg">
-                No booking data found. Please go back and select a room.
+            <div className="mt-16 mx-auto max-w-xl px-6 py-10 bg-gray-50 border border-gray-300 text-gray-700 rounded-xl text-center shadow-sm animate-pulse">
+                <h2 className="text-xl font-semibold mb-2">Loading Booking Details...</h2>
+                <p className="text-base">Please wait while we fetch hotel and room information.</p>
+            </div>
+        );
+    }
+
+    if (!hotel || !room) {
+        return (
+            <div className="mt-16 mx-auto max-w-xl px-6 py-10 bg-red-50 border border-red-400 text-red-700 rounded-xl text-center shadow-sm">
+                <h2 className="text-xl font-semibold mb-2">Hotel or Room Not Found</h2>
+                <p className="text-base">
+                    We couldn’t find the hotel or room you selected. <br />
+                    Please go back and select again.
+                </p>
             </div>
         );
     }
 
     const handleBookingPaymentSuccess = async () => {
         const payload = {
-            hotelId: hotel._id,
+            hotelId: hotel.id,
             roomId: room.id,
-            checkIn: formData.checkIn,
-            checkOut: formData.checkOut,
-            guests: Number(formData.guests),
+            checkIn: checkIn!,
+            checkOut: checkOut!,
+            guests: Number(guests),
             totalPrice: totalPrice,
         };
         await confirmBooking(payload);
@@ -63,11 +104,11 @@ const BookingCheckout: React.FC = () => {
             }
 
             const payload = {
-                hotelId: hotel._id,
+                hotelId: hotel.id,
                 roomId: room.id,
-                checkIn: formData.checkIn,
-                checkOut: formData.checkOut,
-                guests: Number(formData.guests),
+                checkIn: checkIn!,
+                checkOut: checkOut!,
+                guests: Number(guests),
                 totalPrice: totalPrice,
             };
 
@@ -101,12 +142,13 @@ const BookingCheckout: React.FC = () => {
             <Card>
                 <CardContent className="p-6 space-y-4">
                     {/* Hotel Image */}
-                    <img
-                        src={hotel.images?.[0]}
-                        alt={hotel.name}
-                        className="w-full h-64 object-cover rounded-xl"
-                    />
-
+                    {hotel.images && hotel.images.length > 0 && (
+                        <img
+                            src={hotel.images?.[0]}
+                            alt={hotel.name}
+                            className="w-full h-64 object-cover rounded-xl"
+                        />
+                    )}
                     <div className="space-y-2">
                         {/* Hotel Name & Address */}
                         <div>
@@ -119,11 +161,13 @@ const BookingCheckout: React.FC = () => {
 
                         {/* Room Image & Name */}
                         <div className="flex gap-4 items-start">
-                            <img
-                                src={room.images?.[0]}
-                                alt={room.name}
-                                className="w-32 h-24 object-cover rounded-md"
-                            />
+                            {room.images && room.images.length > 0 && (
+                                <img
+                                    src={room.images?.[0]}
+                                    alt={room.name}
+                                    className="w-32 h-24 object-cover rounded-md"
+                                />
+                            )}
                             <div className="flex flex-col gap-1">
                                 <Badge variant="secondary">{room.bedType}</Badge>
                                 <p className="text-sm font-medium">{room.name}</p>
@@ -135,21 +179,21 @@ const BookingCheckout: React.FC = () => {
                         <div className="grid grid-cols-2 gap-4 text-sm pt-4">
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
-                                Check-In:  {new Date(formData.checkIn).toLocaleString('en-US', {
+                                Check-In:  {new Date(checkIn!).toLocaleString('en-US', {
                                     dateStyle: 'medium',
                                     timeStyle: 'short',
                                 })}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
-                                Check-Out: {new Date(formData.checkOut).toLocaleString('en-US', {
+                                Check-Out: {new Date(checkOut!).toLocaleString('en-US', {
                                     dateStyle: 'medium',
                                     timeStyle: 'short',
                                 })}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Users className="h-4 w-4" />
-                                Guests: {formData.guests}
+                                Guests: {guests}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Clock className="h-4 w-4" />

@@ -71,6 +71,11 @@ export const getCustomDates = async (roomId: string, checkIn: string, checkOut: 
     return response.data;
 }
 
+export const getUserRoomById = async (roomId: string) => {
+    const response = await axiosInstance.get(`${USER_APIS.room}/${roomId}`);
+    return response.data;
+}
+
 //amenities
 export const getUserAmenities = async () => {
     const response = await axiosInstance.get(`${USER_APIS.amenities}`);

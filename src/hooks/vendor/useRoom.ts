@@ -2,6 +2,7 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tansta
 import { createRoom, updateRoom, getRoomById, getRoomsByHotel, getAvailableRoomsByHotel, getAllRooms, getAvailableRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { ICustomError } from '@/types/custom.types';
+import { getUserRoomById } from '@/services/userService';
 
 export const useCreateRoom = (cbFn: () => void) => {
     const queryClient = useQueryClient();
@@ -69,17 +70,28 @@ export const useGetAllRooms = (page: number, limit: number, search?: string) => 
 
 export const useGetRoomById = (roomId: string) => {
     return useQuery({
-        queryKey: ['room', roomId],
+        queryKey: ['room-vendor', roomId],
         queryFn: () => getRoomById(roomId),
-        enabled: !!roomId
+        enabled: !!roomId,
+        placeholderData: keepPreviousData,
+        retry: 1,
     });
 };
+
+export const useGetUserRoomById = (roomId: string) => {
+    return useQuery({
+        queryKey: ['room', roomId],
+        queryFn: () => getUserRoomById(roomId),
+        enabled: !!roomId,
+        placeholderData: keepPreviousData,
+    })
+}
 
 
 export const useGetRoomsByHotel = (hotelId: string, checkIn: string, checkOut: string) => {
     return useQuery({
         queryKey: ['hotel-rooms', hotelId],
-        queryFn: () => getRoomsByHotel(hotelId, checkIn , checkOut),
+        queryFn: () => getRoomsByHotel(hotelId, checkIn, checkOut),
         enabled: !!hotelId,
         staleTime: 5 * 60 * 1000,
         retry: 1,
