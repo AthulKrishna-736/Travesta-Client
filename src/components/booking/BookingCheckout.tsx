@@ -138,7 +138,7 @@ const BookingCheckout: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
+        <div className="w-full max-w-5xl mx-auto p-6 space-y-6">
             <Card>
                 <CardContent className="p-6 space-y-4">
                     {/* Hotel Image */}

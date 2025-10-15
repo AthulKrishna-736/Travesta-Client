@@ -1,5 +1,5 @@
 import { createPlan, getAllPlans, updatePlan } from "@/services/adminService"
-import { getUserSubscriptions } from "@/services/userService"
+import { getUserSubscriptions, subscribePlan } from "@/services/userService"
 import { ICustomError } from "@/types/custom.types"
 import { TCreatePlan, TUpdatePlan } from "@/types/plan.types"
 import { showError, showSuccess } from "@/utils/customToast"
@@ -60,3 +60,20 @@ export const useUpdatePlans = () => {
         }
     })
 }
+
+export const useSubscribePlan = () => {
+    return useMutation({
+        mutationFn: ({ planId, method }: { planId: string; method: 'wallet' | 'online' }) => subscribePlan(planId, method),
+        onSuccess: (res) => {
+            if (res.success) {
+                showSuccess(res.message || "Subscription successful!");
+            } else {
+                showError(res.message || "Something went wrong");
+            }
+        },
+        onError: (error: ICustomError) => {
+            console.error("Subscription error:", error);
+            showError(error.response?.data?.message || "Subscription failed");
+        },
+    });
+};

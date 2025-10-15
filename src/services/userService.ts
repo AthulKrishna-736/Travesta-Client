@@ -173,3 +173,7 @@ export const getUserSubscriptions = async () => {
     return response.data;
 }
 
+export const subscribePlan = async (planId: string, method: 'wallet' | 'online') => {
+    const response = await axiosInstance.post(`${USER_APIS.payment}/${planId}/subscribe?method=${method}`);
+    return response.data;
+};

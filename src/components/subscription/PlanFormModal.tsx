@@ -15,7 +15,7 @@ interface PlanFormModalProps {
     open: boolean;
     title: string;
     onCancel: () => void;
-    onSubmit: (data: PlanFormData) => void;
+    onSubmit: (data: PlanSubmitData) => void;
     loading?: boolean;
     initialData?: PricingPlan | null;
 }
@@ -28,6 +28,14 @@ type PlanFormData = {
     features: { value: string }[];
 };
 
+type PlanSubmitData = {
+    name: string;
+    description: string;
+    price: number;
+    duration: number;
+    type: 'basic' | 'medium' | 'vip';
+    features: string[];
+};
 
 const PlanFormModal: React.FC<PlanFormModalProps> = ({ open, title, onCancel, onSubmit, loading = false, initialData }) => {
     const [type, setType] = React.useState<"basic" | "medium" | "vip">("basic");
@@ -73,7 +81,12 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ open, title, onCancel, on
     }, [open, initialData, reset]);
 
     const handleFormSubmit = (data: PlanFormData) => {
-        onSubmit({ ...data });
+        const finalPlanData: PlanSubmitData = {
+            ...data,
+            type,
+            features: data.features.map(f => f.value),
+        }
+        onSubmit(finalPlanData);
     };
 
     return (

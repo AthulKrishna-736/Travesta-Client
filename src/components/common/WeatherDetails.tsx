@@ -108,7 +108,7 @@ const WeatherDetails: React.FC<WeatherDetailsProps> = ({ latitude, longitude, ch
                         return (
                             <div
                                 key={date}
-                                className="bg-gradient-to-br from-sky-100 via-blue-150 to-indigo-100 rounded-xs p-6 border border-gray-200 hover:shadow-md transition-shadow"
+                                className="bg-gradient-to-br from-sky-100 via-blue-150 to-indigo-100 rounded-xl p-6 border border-gray-200 hover:shadow-md transition-shadow"
                             >
                                 {/* Date Header */}
                                 <div className="flex items-center justify-between mb-4">

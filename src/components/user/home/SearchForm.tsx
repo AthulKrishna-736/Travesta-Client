@@ -14,7 +14,7 @@ type TState = {
     priceRange: [number, number];
 }
 
-type TAction = { type: 'SET_FIELD'; field: keyof TState; value: any } | { type: 'RESET' };
+type TAction = { type: 'SET_FIELD'; field: keyof TState; value: TState[keyof TState] } | { type: 'RESET' };
 
 const initialState: TState = {
     searchTerm: '',
@@ -204,7 +204,7 @@ const SearchForm = () => {
             <Button
                 type="submit"
                 form='searchForm'
-                className="w-40 absolute bottom-[-18px] right-0 left-0 mx-auto bg-gradient-to-r from-blue-400 to-blue-700 text-white text-lg rounded-4xl font-bold hover:from-blue-600 hover:to-blue-800 transition uppercase cursor-pointer"
+                className="w-40 absolute bottom-[-18px] right-0 left-0 mx-auto bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-lg rounded-4xl font-bold hover:from-blue-600 hover:to-blue-800 transition uppercase cursor-pointer"
             >
                 Search
             </Button>
