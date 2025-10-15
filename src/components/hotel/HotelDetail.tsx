@@ -8,6 +8,7 @@ import HotelWithRoom from './HotelWithRoom';
 import MyOlaMap from '../common/OlaMap';
 import { MapIcon } from 'lucide-react';
 import CustomCalendar from '../common/CustomCalendar';
+import WeatherDetails from '../common/WeatherDetails';
 
 export type THotelResponse = {
     _id?: string;
@@ -144,14 +145,24 @@ const HotelDetail: React.FC = () => {
             <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} roomSubmit={handleBookingSubmit} />
 
             {/* Calender Availabilities */}
-            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                <CustomCalendar roomId={rooms[0].id} checkIn={formData.checkIn} checkOut={formData.checkOut} />
-            </div> */}
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <CustomCalendar roomId={rooms[0].id} checkIn={checkInParam} checkOut={checkOutParam} />
+            </div>
 
             {/* Photo by guests */}
-            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Guest photos section
-            </div> */}
+            </div>
+
+            {/* Weather Details */}
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <WeatherDetails
+                    latitude={hotel.geoLocation[0]}
+                    longitude={hotel.geoLocation[1]}
+                    checkIn={checkInParam}
+                    checkOut={checkOutParam}
+                />
+            </div>
 
             {/* Map Section */}
             <div ref={mapRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
@@ -176,9 +187,9 @@ const HotelDetail: React.FC = () => {
             </div>
 
             {/* Reviews section */}
-            {/* <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Reviews section
-            </div> */}
+            </div>
 
             {/* Rooms recommended*/}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

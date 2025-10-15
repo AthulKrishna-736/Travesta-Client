@@ -128,7 +128,8 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
                     </div>
                 </div>
             </div>
-        </div>)
+        </div>
+    )
 }
 
 export default HotelWithRoom

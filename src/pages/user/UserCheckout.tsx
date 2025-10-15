@@ -7,7 +7,7 @@ const UserCheckoutPage: React.FC = () => {
     return (
         <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-grow bg-gray-50">
+            <main className="flex-grow bg-[#f2f2f2]">
                 <BookingCheckout />
             </main>
             <Footer />
