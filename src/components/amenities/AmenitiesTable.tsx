@@ -6,7 +6,7 @@ import AmenitiesModal from "./AmenitiesModal";
 import ConfirmationModal from "../common/ConfirmationModa";
 import { Ban, Edit, Unlock } from "lucide-react";
 
-const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, limit }) => {
+const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
     const [editAmenity, setEditAmenity] = useState<IAmenity | null>(null);
     const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
     const [selectedAmenity, setSelectedAmenity] = useState<IAmenity | null>(null);
@@ -15,7 +15,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
         setIsToggleModalOpen(false);
         setSelectedAmenity(null);
     });
-    const { mutate: updateAmenity, isPending: isUpdating } = useUpdateAmenity(page, limit);
+    const { mutate: updateAmenity, isPending: isUpdating } = useUpdateAmenity();
 
     const columns = [
         { key: "name", label: "Name" },
@@ -51,7 +51,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
 
     const handleToggleConfirm = () => {
         if (selectedAmenity) {
-            toggleBlock(selectedAmenity._id);
+            toggleBlock(selectedAmenity.id);
         }
     };
 
@@ -85,7 +85,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading, page, l
                 onCancel={() => setEditAmenity(null)}
                 onSubmit={(data) => {
                     if (editAmenity) {
-                        updateAmenity({ ...data, id: editAmenity._id });
+                        updateAmenity({ ...data, id: editAmenity.id });
                     }
                     setEditAmenity(null);
                 }}

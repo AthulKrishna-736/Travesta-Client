@@ -33,13 +33,12 @@ const AdminAmenities = () => {
     }, [searchTerm]);
 
     const { data, isLoading } = useGetAllAmenities(page, limit, role, debouncedValue, sortOption);
-    const { mutate: createAmenityfn, isPending } = useCreateAmentiy(page, limit);
+    const { mutate: createAmenityfn, isPending } = useCreateAmentiy();
 
     const amenities = data?.data || [];
     const meta = data?.meta;
 
     const handleCreateAmenity = (data: TCreateAmenityData) => {
-        console.log("Creating amenity:", data);
         createAmenityfn(data);
         setOpenModal(false);
     };
@@ -145,12 +144,7 @@ const AdminAmenities = () => {
                     <CustomSort data={sortOptions} />
 
                     {amenities && amenities.length > 0 ? (
-                        <AmenityTable
-                            amenities={amenities}
-                            loading={isLoading}
-                            page={page}
-                            limit={limit}
-                        />
+                        <AmenityTable amenities={amenities} loading={isLoading} />
                     ) : (
                         <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500">
                             <p className="mb-2 text-lg font-medium">No amenities found</p>

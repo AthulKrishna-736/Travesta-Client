@@ -117,7 +117,7 @@ export interface IRoomTableProps {
 
 
 export interface IAmenity {
-    _id: string
+    id: string
     name: string
     description: string
     type: 'hotel' | 'room'
@@ -129,8 +129,6 @@ export interface IAmenity {
 export interface AmenityTableProps {
     amenities: IAmenity[]
     loading: boolean
-    page: number
-    limit: number
 }
 
 export interface TCreateAmenityData {

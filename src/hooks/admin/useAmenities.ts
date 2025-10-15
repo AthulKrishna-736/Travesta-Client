@@ -17,15 +17,6 @@ export const useGetAllAmenities = (page: number, limit: number, type: 'hotel' | 
     });
 };
 
-// export const useGetUsedActiveAmenities = () => {
-//     return useQuery({
-//         queryKey: ['used-amenities'],
-//         queryFn: () => getUsedActiveAmenities(),
-//         staleTime: 5 * 60 * 1000,
-//         placeholderData: keepPreviousData,
-//     });
-// }
-
 export const useGetUserAmenities = () => {
     return useQuery({
         queryKey: ['user-amenities'],
@@ -44,24 +35,14 @@ export const useGetVendorAmenities = () => {
     });
 }
 
-
-// export const useGetActiveAmenities = () => {
-//     return useQuery({
-//         queryKey: ['active-amenities'],
-//         queryFn: () => getActiveAmenities(),
-//         staleTime: 5 * 60 * 1000,
-//         placeholderData: keepPreviousData,
-//     })
-// }
-
-export const useCreateAmentiy = (page: number, limit: number) => {
+export const useCreateAmentiy = () => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (data: TCreateAmenityData) => createAmenity(data),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
-                queryClient.invalidateQueries({ queryKey: ['amenities', page, limit, ''] });
+                queryClient.invalidateQueries({ queryKey: ['amenities'], exact: false });
             } else {
                 showError(res.message || 'Something went wrong')
             }
@@ -74,14 +55,14 @@ export const useCreateAmentiy = (page: number, limit: number) => {
 }
 
 
-export const useUpdateAmenity = (page: number, limit: number) => {
+export const useUpdateAmenity = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (data: Partial<TCreateAmenityData> & { id: string }) => updateAmenity(data),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
-                queryClient.invalidateQueries({ queryKey: ['amenities', page, limit, ''] });
+                queryClient.invalidateQueries({ queryKey: ['amenities'], exact: false });
             } else {
                 showError(res.message || 'Something went wrong')
             }
@@ -107,7 +88,7 @@ export const useBlockAmenity = (cbFn: () => void) => {
                 queryClient.setQueryData(key, (prev: TGetAmenityResponse) => ({
                     ...prev,
                     data: prev?.data?.map(amenity =>
-                        amenity._id == amenityId ? { ...amenity, isActive: !amenity.isActive } : amenity
+                        amenity.id == amenityId ? { ...amenity, isActive: !amenity.isActive } : amenity
                     )
                 }))
             })
