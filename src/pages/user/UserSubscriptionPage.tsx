@@ -19,7 +19,7 @@ const SubscriptionPage = () => {
                             Choose Your Plan
                         </h1>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Select the perfect plan for your needs. All plans include a 14-day money-back guarantee.
+                            Select the perfect plan for your needs. All plans include a 7-day money-back guarantee.
                         </p>
                     </header>
 

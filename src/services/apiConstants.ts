@@ -24,6 +24,8 @@ export const USER_APIS = {
     access: '/users/chat/access',
     customRoomDates: '/users/room/custom',
     plans: '/users/plans',
+    activePlan: '/users/plans/active',
+    cancelPlan: '/usres/plans/cancel',
 }
 
 export const VENDOR_APIS = {
@@ -43,4 +45,5 @@ export const ADMIN_APIS = {
     amenities: '/admin/amenities',
     chat: '/admin/chat',
     plans: '/admin/plans',
+    planHistory: '/admin/plans/history',
 }

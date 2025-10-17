@@ -1,5 +1,5 @@
-import { createPlan, getAllPlans, updatePlan } from "@/services/adminService"
-import { getUserSubscriptions, subscribePlan } from "@/services/userService"
+import { createPlan, getAllPlanHistory, getAllPlans, updatePlan } from "@/services/adminService"
+import { cancelSubscription, getActivePlan, getUserSubscriptions, subscribePlan } from "@/services/userService"
 import { ICustomError } from "@/types/custom.types"
 import { TCreatePlan, TUpdatePlan } from "@/types/plan.types"
 import { showError, showSuccess } from "@/utils/customToast"
@@ -22,6 +22,26 @@ export const useGetAllPlans = () => {
         placeholderData: keepPreviousData,
     })
 }
+
+export const useGetUserActivePlan = () => {
+    return useQuery({
+        queryKey: ['user-plan'],
+        queryFn: getActivePlan,
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
+        retry: 1,
+    })
+}
+
+export const useGetPlanHistory = (page: number, limit: number, type: 'basic' | 'medium' | 'vip') => {
+    return useQuery({
+        queryKey: ['planHistory', page, limit, type],
+        queryFn: () => getAllPlanHistory(page, limit, type),
+        placeholderData: keepPreviousData,
+        staleTime: 5 * 60 * 1000,
+        retry: 1,
+    });
+};
 
 export const useCreatePlans = () => {
     const queryClient = useQueryClient();
@@ -77,3 +97,20 @@ export const useSubscribePlan = () => {
         },
     });
 };
+
+export const useCancelSubscription = () => {
+    return useMutation({
+        mutationFn: cancelSubscription,
+        onSuccess: (res) => {
+            if (res.success) {
+                showSuccess(res.message || "Subscription successful!");
+            } else {
+                showError(res.message || "Something went wrong");
+            }
+        },
+        onError: (error: ICustomError) => {
+            console.error("Subscription error:", error);
+            showError(error.response?.data?.message || "Subscription failed");
+        },
+    });
+}

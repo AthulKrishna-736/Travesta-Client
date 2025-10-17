@@ -6,9 +6,11 @@ import RoomCardLayout from '../room/RoomCard';
 import Breadcrumbs from '../common/BreadCrumps';
 import HotelWithRoom from './HotelWithRoom';
 import MyOlaMap from '../common/OlaMap';
-import { MapIcon } from 'lucide-react';
+import { Lock, MapIcon } from 'lucide-react';
 import CustomCalendar from '../common/CustomCalendar';
 import WeatherDetails from '../common/WeatherDetails';
+import NearbyAttractions from '../common/NearbyAttractions';
+import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
 
 export type THotelResponse = {
     _id?: string;
@@ -53,6 +55,9 @@ const HotelDetail: React.FC = () => {
     const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '', checkInParam, checkOutParam);
     const hotel = hotelResponse?.data?.[0]?.hotelId as THotelResponse;
     const rooms = hotelResponse?.data as TRoomResponse[] || [];
+
+    const { data: planResponse } = useGetUserActivePlan();
+    const planHistory = planResponse ? planResponse?.data : null;
 
     if (hotelLoading)
         return (
@@ -145,23 +150,36 @@ const HotelDetail: React.FC = () => {
             <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} roomSubmit={handleBookingSubmit} />
 
             {/* Calender Availabilities */}
-            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 <CustomCalendar roomId={rooms[0].id} checkIn={checkInParam} checkOut={checkOutParam} />
-            </div>
+            </div> */}
 
             {/* Photo by guests */}
-            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Guest photos section
-            </div>
+            </div> */}
 
             {/* Weather Details */}
             <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                <WeatherDetails
-                    latitude={hotel.geoLocation[0]}
-                    longitude={hotel.geoLocation[1]}
-                    checkIn={checkInParam}
-                    checkOut={checkOutParam}
-                />
+                {planHistory.isActive ? (
+                    <WeatherDetails
+                        latitude={hotel.geoLocation[0]}
+                        longitude={hotel.geoLocation[1]}
+                        checkIn={checkInParam}
+                        checkOut={checkOutParam}
+                    />
+                ) : (
+                    <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
+                        <Lock className="mb-2 w-8 h-8 text-gray-400" />
+                        <p className="text-lg mb-4">Unlock this feature to access weather details</p>
+                        <button
+                            onClick={() => navigate('/user/subscription')}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Go to Subscription
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Map Section */}
@@ -186,10 +204,27 @@ const HotelDetail: React.FC = () => {
                 </div>
             </div>
 
-            {/* Reviews section */}
-            <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                Reviews section
+            <div className="space-y-6 bg-white p-4 rounded-md shadow-xs border border-gray-200">
+                {planHistory.isActive && planHistory.subscriptionId.type === 'vip' ? (
+                    <NearbyAttractions lat={hotel.geoLocation[0]} long={hotel.geoLocation[1]} />
+                ) : (
+                    <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
+                        <Lock className="mb-2 w-8 h-8 text-gray-400" />
+                        <p className="text-lg mb-4">Unlock this feature to access Nearby Attractions</p>
+                        <button
+                            onClick={() => navigate('/user/subscription')}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Go to Subscription
+                        </button>
+                    </div>
+                )}
             </div>
+
+            {/* Reviews section */}
+            {/* <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                Reviews section
+            </div> */}
 
             {/* Rooms recommended*/}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

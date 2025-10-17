@@ -5,8 +5,9 @@ import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { env } from "@/config/config";
 import PaymentSelectionModal from "./PlanPaymentOption";
 import SubscriptionCheckoutForm from "./PlanCheckout";
-import { useSubscribePlan } from "@/hooks/admin/useSubscription";
+import { useCancelSubscription, useGetUserActivePlan, useSubscribePlan } from "@/hooks/admin/useSubscription";
 import { useCreatePaymentIntent } from "@/hooks/user/useWallet";
+import ConfirmationModal from "../common/ConfirmationModa";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
@@ -29,10 +30,28 @@ interface PricingCardProps {
 
 const PlanCard = ({ plan }: PricingCardProps) => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
 
+    const { data: activePlanRes } = useGetUserActivePlan();
+    const activePlan = activePlanRes?.data;
     const { mutateAsync: subscribePlan } = useSubscribePlan();
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
+    const { mutateAsync: cancelSubscription, isPending } = useCancelSubscription();
+
+    const handleSelectPlan = () => {
+        if (activePlan?.isActive) {
+            setShowConfirmModal(true);
+        } else {
+            setShowPaymentModal(true);
+        }
+    };
+
+    const handleConfirmProceed = () => {
+        setShowConfirmModal(false);
+        setShowPaymentModal(true);
+    };
 
     const handlePaymentSelect = async (method: "wallet" | "online") => {
         setShowPaymentModal(false);
@@ -92,7 +111,9 @@ const PlanCard = ({ plan }: PricingCardProps) => {
                         <div className="mb-6">
                             <div className="flex items-end gap-1">
                                 <span className="text-3xl font-semibold text-gray-900">₹{plan.price}</span>
-                                {plan.type !== 'basic' && (<span className="text-gray-400 text-sm mb-1">/{durationText}</span>)}
+                                {plan.type !== "basic" && (
+                                    <span className="text-gray-400 text-sm mb-1">/{durationText}</span>
+                                )}
                             </div>
                         </div>
 
@@ -117,30 +138,82 @@ const PlanCard = ({ plan }: PricingCardProps) => {
                             ))}
                         </ul>
 
-                        {plan.type !== 'basic' && (
-                            <button
-                                onClick={() => setShowPaymentModal(true)}
-                                className={`w-full rounded-xl py-2.5 font-medium text-sm tracking-wide shadow-sm transition-all duration-200 
-                                ${isPopular ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-90" : ""} 
-                                ${isPremium ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90" : ""} 
-                                ${!isPopular && !isPremium ? "bg-gray-900 text-white hover:bg-gray-800" : ""}`}
-                            >
-                                {isPopular ? "Start Now" : "Select Plan"}
-                            </button>
+                        {plan.type !== "basic" && (
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    onClick={handleSelectPlan}
+                                    disabled={activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type}
+                                    className={`w-full rounded-md py-2 text-sm font-medium transition ${activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type
+                                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                                        : "bg-black text-white hover:bg-gray-800"
+                                        }`}
+                                >
+                                    {activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type
+                                        ? "Active Plan"
+                                        : "Select Plan"}
+                                </button>
+
+                                {/* Cancel button only if active plan matches */}
+                                {activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type && (
+                                    <button
+                                        onClick={() => setShowCancelModal(true)}
+                                        className="w-full rounded-md py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+                                    >
+                                        Cancel
+                                    </button>
+                                )}
+                            </div>
                         )}
+
+                        <ConfirmationModal
+                            open={showCancelModal}
+                            title="Cancel Subscription Plan"
+                            description={`You have an active ${activePlan?.subscriptionId?.name} plan until ${new Date(activePlan?.validUntil).toLocaleDateString()}.`}
+                            extraNote={
+                                <div className="mt-4 rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
+                                    <p>By canceling this plan:</p>
+                                    <ul className="list-disc list-inside">
+                                        <li>Full refund is available if canceled within 7 days of subscription.</li>
+                                        <li>Partial refund may be applied if canceled after 7 days.</li>
+                                    </ul>
+                                </div>
+                            }
+                            showInput={false}
+                            onConfirm={async () => {
+                                setShowCancelModal(false);
+                                cancelSubscription();
+                            }}
+                            onCancel={() => setShowCancelModal(false)}
+                            isLoading={isPending}
+                        />
                     </div>
                 </div>
             </div>
 
+            <ConfirmationModal
+                open={showConfirmModal}
+                title="Active Subscription Detected"
+                description={`You already have an active ${activePlan?.subscriptionId?.name} plan until ${new Date(activePlan?.validUntil).toLocaleDateString()}.`}
+                extraNote={
+                    <div className="mt-4 rounded-md bg-yellow-100 px-4 py-2 text-sm text-yellow-800 border border-yellow-300">
+                        <strong>Note:</strong> Subscribing to a new plan will replace your current one immediately.
+                        Any remaining days from your current plan will not be refunded.
+                    </div>
+                }
+                showInput={false}
+                onConfirm={handleConfirmProceed}
+                onCancel={() => setShowConfirmModal(false)}
+                isLoading={false}
+            />
 
-            {/* Payment selection modal */}
+            {/* 💳 Payment selection modal */}
             <PaymentSelectionModal
                 open={showPaymentModal}
                 onClose={() => setShowPaymentModal(false)}
                 onSelect={handlePaymentSelect}
             />
 
-            {/* Stripe checkout modal */}
+            {/* 💰 Stripe checkout modal */}
             {clientSecret && (
                 <Elements stripe={stripePromise} options={stripeOptions}>
                     <SubscriptionCheckoutForm

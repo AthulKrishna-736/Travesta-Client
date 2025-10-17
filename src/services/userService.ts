@@ -177,3 +177,13 @@ export const subscribePlan = async (planId: string, method: 'wallet' | 'online')
     const response = await axiosInstance.post(`${USER_APIS.payment}/${planId}/subscribe?method=${method}`);
     return response.data;
 };
+
+export const getActivePlan = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.activePlan}`);
+    return response.data;
+}
+
+export const cancelSubscription = async () => {
+    const response = await axiosInstance.post(`${USER_APIS.cancelPlan}`);
+    return response.data;
+}

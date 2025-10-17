@@ -105,3 +105,10 @@ export const updatePlan = async (data: TUpdatePlan, planId: string) => {
     const response = await axiosInstance.put(`${ADMIN_APIS.plans}/${planId}`, data);
     return response.data;
 }
+
+export const getAllPlanHistory = async (page: number, limit: number, type: 'basic' | 'medium' | 'vip') => {
+    const response = await axiosInstance.get(`${ADMIN_APIS.planHistory}`, {
+        params: { page, limit, type }
+    });
+    return response.data;
+}
