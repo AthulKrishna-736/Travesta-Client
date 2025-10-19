@@ -14,16 +14,21 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white px-4 py-8 overflow-hidden flex items-center justify-center">
-            <div className='flex w-full max-w-4xl h-[650px] rounded-2xl shadow-lg bg-white border overflow-hidden'>
+        <div className="h-screen bg-gradient-to-br to-blue-200 from-white flex justify-center items-center">
+            <div className="flex flex-col md:flex-row w-full max-w-4xl rounded-xl shadow-lg bg-white overflow-hidden">
 
-                <div className='hidden md:flex w-1/2 bg-gray-100 items-center justify-center text-center text-gray-500 p-6'>
-                    <p>Image will be added later</p>
+                {/* Left Image Side */}
+                <div className="hidden md:flex w-full md:w-1/2 h-full">
+                    <img
+                        className='w-full h-full object-cover'
+                        src="https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=735"
+                        alt="signupImage"
+                    />
                 </div>
 
                 <div className="hidden md:block w-px bg-gray-300" />
 
-                <div className='w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-8 md:px-12 overflow-y-auto max-h-[650px]'>
+                <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-12">
                     <Formik
                         initialValues={{
                             firstName: '',
@@ -40,8 +45,8 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                         }}
                     >
                         {() => (
-                            <Form className="space-y-4 w-full">
-                                <div className="text-center space-y-1">
+                            <Form className="space-y-1.5">
+                                <div className="text-center">
                                     <h1 className="text-3xl font-extrabold text-blue-600 font-[Poppins] tracking-tight">
                                         Welcome to <span className="text-blue-700">Travesta</span>
                                     </h1>
@@ -70,7 +75,7 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                 ))}
 
                                 {/* Password */}
-                                <div className="space-y-[2px]">
+                                <div className="space-y-[1px]">
                                     <Label htmlFor="password">Password</Label>
                                     <div className="relative">
                                         <Field name="password">
@@ -99,7 +104,7 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                 </div>
 
                                 {/* Confirm Password */}
-                                <div className="space-y-[2px]">
+                                <div className="space-y-[1px]">
                                     <Label htmlFor="confirmPassword">Confirm Password</Label>
                                     <div className="relative">
                                         <Field name="confirmPassword">

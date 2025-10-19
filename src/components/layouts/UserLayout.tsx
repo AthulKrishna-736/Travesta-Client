@@ -2,6 +2,7 @@ import React, { ReactElement, useState } from 'react'
 import Header from '../header/user/Header'
 import UserSidebar from '../sidebar/UserSidebar'
 import { Menu } from 'lucide-react';
+import Footer from '../footer/Footer';
 
 interface IUserLayoutProps {
     children: ReactElement;
@@ -32,6 +33,8 @@ const UserLayout: React.FC<IUserLayoutProps> = ({ children }) => {
                     <Menu className="w-5 h-5" />
                 </button>
             )}
+
+            <Footer />
         </div>
     )
 }

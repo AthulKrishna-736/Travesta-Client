@@ -1,76 +1,40 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Facebook, Instagram, Twitter, Linkedin, Mail } from "lucide-react";
-import { Link } from 'react-router-dom';
+import { Facebook, Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
 
 const Footer = () => {
     return (
-        <footer className="bg-gray-800 text-gray-300">
-            <div className="container mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {/* Company Info */}
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-bold text-white">Travesta</h3>
-                        <p className="text-gray-400 max-w-xs">
-                            Find the perfect hotel at the best price. Compare rates from all major booking sites.
-                        </p>
-                        <div className="flex space-x-4">
-                            <Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                                <Facebook className="h-5 w-5" />
-                            </Link>
-                            <Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                                <Instagram className="h-5 w-5" />
-                            </Link>
-                            <Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                                <Twitter className="h-5 w-5" />
-                            </Link>
-                            <Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                                <Linkedin className="h-5 w-5" />
-                            </Link>
-                        </div>
+        <footer className="bg-slate-900 text-white">
+            <div className="container mx-auto px-4 py-10">
+                <div className="flex flex-col items-center space-y-6">
+                    <div className="text-center">
+                        <h2 className="text-4xl font-bold text-blue-400">Travesta</h2>
+                        <p className="text-gray-400 text-sm mt-2">Your Journey, Our Priority</p>
                     </div>
-
-                    {/* Quick Links */}
-                    <div className="space-y-4">
-                        <h4 className="font-semibold text-white">Company</h4>
-                        <ul className="space-y-2">
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">About Us</Link></li>
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Careers</Link></li>
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Blog</Link></li>
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Press</Link></li>
-                        </ul>
+                    <div className="flex items-center space-x-3">
+                        <a href="#" className="w-10 h-10 flex items-center justify-center border-2 border-gray-700 rounded-md hover:border-blue-400 hover:bg-blue-400/10 transition-all duration-300">
+                            <Facebook className="w-5 h-5" />
+                        </a>
+                        <a href="#" className="w-10 h-10 flex items-center justify-center border-2 border-gray-700 rounded-md hover:border-pink-400 hover:bg-pink-400/10 transition-all duration-300">
+                            <Instagram className="w-5 h-5" />
+                        </a>
+                        <a href="#" className="w-10 h-10 flex items-center justify-center border-2 border-gray-700 rounded-md hover:border-blue-300 hover:bg-blue-300/10 transition-all duration-300">
+                            <Twitter className="w-5 h-5" />
+                        </a>
+                        <a href="#" className="w-10 h-10 flex items-center justify-center border-2 border-gray-700 rounded-md hover:border-blue-500 hover:bg-blue-500/10 transition-all duration-300">
+                            <Linkedin className="w-5 h-5" />
+                        </a>
+                        <a href="#" className="w-10 h-10 flex items-center justify-center border-2 border-gray-700 rounded-md hover:border-red-500 hover:bg-red-500/10 transition-all duration-300">
+                            <Youtube className="w-5 h-5" />
+                        </a>
                     </div>
-
-                    {/* Support */}
-                    <div className="space-y-4">
-                        <h4 className="font-semibold text-white">Support</h4>
-                        <ul className="space-y-2">
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Contact Us</Link></li>
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Help Center</Link></li>
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Terms of Service</Link></li>
-                            <li><Link to="#" className="text-gray-400 hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Newsletter */}
-                    <div className="space-y-4">
-                        <h4 className="font-semibold text-white">Stay Updated</h4>
-                        <p className="text-gray-400">Subscribe to our newsletter for exclusive deals</p>
-                        <div className="flex">
-                            <Input
-                                type="email"
-                                placeholder="Your email"
-                                className="rounded-r-none focus-visible:ring-blue-400"
-                            />
-                            <Button className="rounded-l-none bg-blue-500 hover:bg-blue-600">
-                                <Mail className="h-4 w-4 text-white" />
-                            </Button>
-                        </div>
+                    <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
+                        <a href="#" className="hover:text-blue-400 transition-colors">About Us</a>
+                        <a href="#" className="hover:text-blue-400 transition-colors">Contact</a>
+                        <a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a>
+                        <a href="#" className="hover:text-blue-400 transition-colors">Terms</a>
                     </div>
                 </div>
-
-                <div className="border-t border-gray-700 mt-12 pt-6 text-center text-gray-400">
-                    <p>© {new Date().getFullYear()} Travesta. All rights reserved.</p>
+                <div className="border-t border-gray-800 mt-8 pt-6 text-center">
+                    <p className="text-gray-400 text-sm">© 2025 Travesta. All rights reserved.</p>
                 </div>
             </div>
         </footer>

@@ -14,12 +14,15 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4 py-6">
-            <div className="flex flex-col md:flex-row w-full max-w-4xl rounded-2xl shadow-lg bg-white border overflow-hidden">
+        <div className="h-screen flex items-center justify-center bg-gradient-to-br to-blue-200 from-white">
+            <div className="flex flex-col md:flex-row w-full max-w-4xl rounded-xl shadow-lg bg-white overflow-hidden">
                 {/* Left Side - Hidden on small screens */}
-                <div className="hidden md:flex w-full md:w-1/2 bg-gray-100 flex-col items-center justify-center p-10 text-center text-gray-500">
-                    <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
-                    <p className="text-base">Here will be an image or something cool 🙂</p>
+                <div className="hidden md:flex w-full md:w-1/2">
+                    <img
+                        className='w-full h-full object-'
+                        src='https://images.unsplash.com/photo-1549294413-26f195200c16?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=764'
+                        alt='loginImage'
+                    />
                 </div>
 
                 {/* Vertical Divider - Hidden on small screens */}
