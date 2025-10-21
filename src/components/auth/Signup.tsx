@@ -15,20 +15,18 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
 
     return (
         <div className="h-screen bg-gradient-to-br to-blue-200 from-white flex justify-center items-center">
-            <div className="flex flex-col md:flex-row w-full max-w-4xl rounded-xl shadow-lg bg-white overflow-hidden">
+            <div className="flex flex-col md:flex-row h-140 w-full max-w-4xl rounded-xl shadow-lg bg-white">
 
                 {/* Left Image Side */}
-                <div className="hidden md:flex w-full md:w-1/2 h-full">
+                <div className="hidden md:flex h-full md:w-1/2 overflow-hidden">
                     <img
-                        className='w-full h-full object-cover'
+                        className='w-full h-full object-cover rounded-l-xl transition-transform duration-400 hover:scale-105'
                         src="https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=735"
                         alt="signupImage"
                     />
                 </div>
 
-                <div className="hidden md:block w-px bg-gray-300" />
-
-                <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-12">
+                <div className="w-full md:w-1/2 px-10 py-8 overflow-y-auto">
                     <Formik
                         initialValues={{
                             firstName: '',
@@ -45,7 +43,7 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                         }}
                     >
                         {() => (
-                            <Form className="space-y-1.5">
+                            <Form className="space-y-2">
                                 <div className="text-center">
                                     <h1 className="text-3xl font-extrabold text-blue-600 font-[Poppins] tracking-tight">
                                         Welcome to <span className="text-blue-700">Travesta</span>

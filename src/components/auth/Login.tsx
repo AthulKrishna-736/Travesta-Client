@@ -15,25 +15,25 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
 
     return (
         <div className="h-screen flex items-center justify-center bg-gradient-to-br to-blue-200 from-white">
-            <div className="flex flex-col md:flex-row h-140 w-full max-w-4xl rounded-xl shadow-lg bg-white overflow-y-auto">
+            <div className="flex flex-col md:flex-row h-140 w-full max-w-4xl rounded-xl shadow-lg bg-white">
                 {/* Left Side - Hidden on small screens */}
-                <div className="hidden md:flex h-full md:w-1/2">
+                <div className="hidden md:flex h-full md:w-1/2 overflow-hidden">
                     <img
-                        className='w-full h-full object-cover'
+                        className='w-full h-full object-cover rounded-l-xl transition-transform duration-400 hover:scale-105'
                         src='https://images.unsplash.com/photo-1549294413-26f195200c16?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=764'
                         alt='loginImage'
                     />
                 </div>
 
                 {/* Form Side */}
-                <div className="w-full md:w-1/2 px-10 py-8">
+                <div className="w-full md:w-1/2 px-10 py-8 overflow-y-auto">
                     <Formik
                         initialValues={{ email: '', password: '' }}
                         validationSchema={loginValidationSchema}
                         onSubmit={(values) => onSubmit({ ...values })}
                     >
                         {() => (
-                            <Form className="space-y-3 flex flex-col h-full justify-between">
+                            <Form className={`space-y-3 flex flex-col h-full ${role !== 'admin' ? 'justify-between' : 'justify-center'}`}>
                                 <div className="text-center space-y-1">
                                     <h1 className="text-3xl font-extrabold text-blue-600 font-[Poppins] tracking-tight">
                                         Welcome to <span className="text-blue-700">Travesta</span>
