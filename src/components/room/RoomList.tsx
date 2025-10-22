@@ -105,20 +105,28 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                {rooms ? (
-                    <div className="rounded-lg border-1 overflow-hidden">
-                        <DataTable
-                            columns={columns}
-                            data={rooms}
-                            actions={actions}
-                            loading={isLoading}
-                        />
-                    </div>
-                ) : (
-                    <div className="flex justify-center items-center">
-                        <p className="text-semibold text-lg text-red-500">No rooms found. Please create one</p>
-                    </div>
-                )}
+                {isLoading ?
+                    (
+                        <div className="flex justify-center items-center py-10">
+                            <div className="flex flex-col items-center">
+                                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                <p className="mt-3 text-blue-600 font-medium">Loading rooms...</p>
+                            </div>
+                        </div>
+                    ) : rooms && rooms.length > 0 ? (
+                        <div className="rounded-lg border-1 overflow-hidden">
+                            <DataTable
+                                columns={columns}
+                                data={rooms}
+                                actions={actions}
+                                loading={isLoading}
+                            />
+                        </div>
+                    ) : (
+                        <div className="flex justify-center items-center">
+                            <p className="text-semibold text-lg text-red-500">No rooms found. Please create one</p>
+                        </div>
+                    )}
 
                 {meta && meta.totalPages > 0 && (
                     <Pagination

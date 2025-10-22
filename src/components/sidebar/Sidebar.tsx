@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Building, Calendar, BarChart3, Star, MessageSquare, Settings, LogOut, TagIcon, Wallet } from 'lucide-react';
+import { LayoutDashboard, Building, Calendar, Star, MessageSquare, LogOut, Wallet } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useLogout } from '@/hooks/auth/useLogout';
@@ -13,11 +13,9 @@ const navItems = [
     { name: 'Dashboard', path: '/vendor/home', icon: LayoutDashboard },
     { name: 'Hotels', path: '/vendor/hotels', icon: Building },
     { name: 'Bookings', path: '/vendor/bookings', icon: Calendar },
-    { name: 'HotelDashboard', path: '/vendor/hotelDashboard', icon: BarChart3 },
     // { name: 'Reviews', path: '/vendor/reviews', icon: Star, badge: '3' },
     { name: 'Messages', path: '/vendor/messages', icon: MessageSquare },
     { name: 'Wallet', path: '/vendor/wallet', icon: Wallet },
-    // { name: 'Settings', path: '/vendor/settings', icon: Settings },
 ];
 
 const Sidebar = ({ isOpen }: SidebarProps) => {

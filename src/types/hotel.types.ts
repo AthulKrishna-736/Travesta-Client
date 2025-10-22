@@ -10,8 +10,11 @@ export interface IHotel {
   city: string
   tags: string[]
   amenities: string[]
-  isBlocked?:boolean;
-  startingPrice?:number
-  geoLocation?: [number, number]
+  isBlocked?: boolean;
+  startingPrice?: number
+  geoLocation?: {
+    type: string,
+    coordinates: [number, number],
+  }
   images?: File[] | string[]
 }
