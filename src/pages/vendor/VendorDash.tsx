@@ -1,11 +1,11 @@
+import VendorAnalyticsDashboard from '@/components/common/VendorDashAnalytics';
 import VendorLayout from '@/components/layouts/VendorLayout';
-import { Outlet } from 'react-router-dom';
 
 const VendorDashboard = () => {
     return (
-        <VendorLayout title='Dashboard'>
+        <VendorLayout>
             <>
-                <Outlet />
+                <VendorAnalyticsDashboard />
             </>
         </VendorLayout >
     );

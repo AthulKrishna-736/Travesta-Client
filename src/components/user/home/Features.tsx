@@ -1,49 +1,89 @@
-import React from 'react';
-import { Search, Hotel, Star } from "lucide-react";
-
-interface FeatureProps {
-    icon: React.ReactNode;
-    title: string;
-    description: string;
-}
-
-const Feature = ({ icon, title, description }: FeatureProps) => (
-    <div className="text-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-50 to-white rounded-full flex items-center justify-center mb-4">
-            <div className="w-10 h-10 text-blue-500">{icon}</div>
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
-        <p className="text-gray-500">{description}</p>
-    </div>
-);
+import { Search, Percent, Shield } from "lucide-react";
 
 const Features = () => {
     return (
-        <section className="py-16 bg-gradient-to-t from-white via-gray-50 to-blue-50">
-            <div className="container mx-auto px-4">
-                <div className="mb-10 text-center">
-                    <h2 className="text-3xl font-bold text-gray-900">Why Book with Travesta</h2>
-                    <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
-                        We make finding your perfect stay easy, affordable, and hassle-free.
+        <section className="py-10 bg-white mx-20">
+            <div className="container mx-auto px-4 max-w-6xl">
+                {/* Header */}
+                <div className="mb-16 text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                        Why Book with Us
+                    </h2>
+                    <p className="text-gray-600 text-lg">
+                        Simple, reliable, and designed for travelers like you
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <Feature
-                        icon={<Search className="w-full h-full" />}
-                        title="Compare Prices"
-                        description="Search and compare hotel prices across hundreds of travel sites at once"
-                    />
-                    <Feature
-                        icon={<Hotel className="w-full h-full" />}
-                        title="Extensive Selection"
-                        description="Choose from over 2 million accommodations worldwide"
-                    />
-                    <Feature
-                        icon={<Star className="w-full h-full" />}
-                        title="Verified Reviews"
-                        description="Read genuine reviews from millions of verified guests"
-                    />
+                {/* Feature 1 - Image Left */}
+                <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 mb-16">
+                    <div className="w-full md:w-1/2">
+                        <div className="rounded-md overflow-hidden shadow-lg">
+                            <img
+                                src="https://images.unsplash.com/photo-1506059612708-99d6c258160e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1169https://images.unsplash.com/photo-1506059612708-99d6c258160e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1169"
+                                alt="Search hotels"
+                                className="w-full h-72 object-cover"
+                            />
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/2">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-14 h-14 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                                <Search className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-3xl font-bold text-gray-900">Compare & Save</h3>
+                        </div>
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                            Search thousands of hotels and compare prices from multiple booking sites instantly. We help you find the best deal without the hassle of checking each site separately.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 2 - Image Right */}
+                <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12 mb-16">
+                    <div className="w-full md:w-1/2">
+                        <div className="rounded-md overflow-hidden shadow-lg">
+                            <img
+                                src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGhvdGVsfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=600"
+                                alt="Best prices"
+                                className="w-full h-72 object-cover"
+                            />
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/2">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-14 h-14 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                                <Percent className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-3xl font-bold text-gray-900">Best Prices Always</h3>
+                        </div>
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                            Get guaranteed lowest prices on your bookings. No hidden fees, no surprise charges. What you see is what you pay, with exclusive deals and discounts available daily.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Feature 3 - Image Left */}
+                <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 mb-16">
+                    <div className="w-full md:w-1/2">
+                        <div className="rounded-md overflow-hidden shadow-lg">
+                            <img
+                                src="https://images.unsplash.com/photo-1562790351-d273a961e0e9?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=765"
+                                alt="Secure booking"
+                                className="w-full h-72 object-cover"
+                            />
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/2">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-14 h-14 bg-blue-500 rounded-lg flex items-center justify-center text-white">
+                                <Shield className="w-8 h-8" />
+                            </div>
+                            <h3 className="text-3xl font-bold text-gray-900">Safe & Secure</h3>
+                        </div>
+                        <p className="text-gray-600 text-lg leading-relaxed">
+                            Your information is protected with industry-leading security. Read verified reviews from real travelers and get 24/7 customer support whenever you need help.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>

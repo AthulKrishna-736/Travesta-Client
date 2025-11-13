@@ -37,20 +37,16 @@ const VendorHotelsPage: React.FC = () => {
     const { mutate: createRoomfn, isPending: isCreatingRoom } = useCreateRoom(closeRoomModal);
 
     //submit handlers
-    const handleCreateHotel = async (hotelData: IHotel & { oldImages?: string[] }) => {
+    const handleCreateHotel = async (hotelData: IHotel) => {
         const formData = new FormData();
-        formData.append('name', hotelData.name);
-        formData.append('description', hotelData.description);
-        formData.append('address', hotelData.address);
-        formData.append('city', hotelData.city);
-        formData.append('state', hotelData.state);
+        formData.append('name', hotelData.name.trim());
+        formData.append('description', hotelData.description.trim());
+        formData.append('address', hotelData.address.trim());
+        formData.append('city', hotelData.city.trim());
+        formData.append('state', hotelData.state.trim());
         formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
         formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
-
-        if (hotelData.geoLocation?.length === 2) {
-            formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
-        }
-
+        formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
         formData.append('images', JSON.stringify([]));
 
         if (hotelData.images && hotelData.images.length > 0) {
@@ -58,6 +54,22 @@ const VendorHotelsPage: React.FC = () => {
                 formData.append('imageFile', file);
             });
         }
+
+        formData.append('checkInTime', hotelData.checkInTime);
+        formData.append('checkOutTime', hotelData.checkOutTime);
+        formData.append('minGuestAge', hotelData.minGuestAge.toString());
+
+        if (hotelData.breakfastFee) {
+            formData.append('breakfastFee', hotelData.breakfastFee.toString())
+        }
+
+        formData.append('petsAllowed', hotelData.petsAllowed === true ? 'true' : 'false');
+        formData.append('outsideFoodAllowed', hotelData.outsideFoodAllowed === true ? 'true' : 'false');
+        formData.append('idProofAccepted', JSON.stringify(hotelData.idProofAccepted))
+        if (hotelData.specialNotes) {
+            formData.append('specialNotes', hotelData.specialNotes.trim());
+        };
+
         createHotelfn(formData);
     };
 
@@ -87,7 +99,7 @@ const VendorHotelsPage: React.FC = () => {
                     {/* Add Room button only if viewing rooms */}
                     {view === 'room' && (
                         <button
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
                             onClick={openRoomModalForCreate}
                         >
                             Add Room

@@ -79,13 +79,12 @@ const VendorRoutes: React.FC = () => {
             }
             />
 
-            <Route path='hotelDashboard/:hotelId' element={
+            <Route path='hotel-dashboard/:hotelId' element={
                 <ProtectVendor>
                     <VendorHotelDashboard />
                 </ProtectVendor>
             }
             />
-
 
         </Routes>
     )

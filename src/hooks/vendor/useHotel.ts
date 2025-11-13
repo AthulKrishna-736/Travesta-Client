@@ -92,7 +92,7 @@ export const useGetUserHotel = (hotelId: string) => {
     return useQuery({
         queryKey: ['userHotel', hotelId],
         queryFn: () => getUserHotelById(hotelId),
-        enabled: !!hotelId,
+        // enabled: !!hotelId,
     });
 };
 

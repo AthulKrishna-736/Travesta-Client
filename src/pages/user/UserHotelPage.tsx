@@ -6,11 +6,11 @@ import { useSearchParams } from 'react-router-dom';
 import CustomSearch from '@/components/common/CustomSearch';
 import Breadcrumbs from '@/components/common/BreadCrumps';
 import UserFilterSidebar from '@/components/sidebar/UserFilterSidebar';
-import { Loader2 } from 'lucide-react';
 import { useGetUserAmenities } from '@/hooks/admin/useAmenities';
 import { useGetAllUserHotels } from '@/hooks/vendor/useHotel';
 import HotelCard from '@/components/hotel/HotelCard';
 import CustomSort from '@/components/common/CustomSort';
+import HotelCardSkelton from '@/components/hotel/HotelCardSkelton';
 
 const breadCrumpItems = [
     { label: 'Home', path: '/user/home' },
@@ -153,10 +153,7 @@ const UserHotelPage: React.FC = () => {
                                 {/* hotel list */}
                                 <div className='mt-3 py-4'>
                                     {isHotelLoading ? (
-                                        <div className='flex items-center justify-center gap-4'>
-                                            <Loader2 className='w-10 h-10 animate-spin' />
-                                            <p className="text-center text-2xl font-semibold">Loading Hotels...</p>
-                                        </div>
+                                        <HotelCardSkelton />
                                     ) : hotels.length === 0 ? (
                                         <p className="text-center text-gray-500 text-2xl">No hotels found.</p>
                                     ) : (

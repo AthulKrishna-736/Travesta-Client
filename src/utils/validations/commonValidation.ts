@@ -21,28 +21,55 @@ export const validationSchema = Yup.object().shape({
 export const hotelSchema = Yup.object().shape({
     name: Yup.string()
         .matches(nameRegex, 'Name must contain only letters and spaces')
-        .max(30, "Hotel name must be at most 30 characters")
+        .max(30, 'Hotel name must be at most 30 characters')
         .required('Hotel name is required'),
 
     description: Yup.string()
         .min(10, 'Description must be at least 10 characters')
-        .max(300, "Description must be at most 300 characters")
+        .max(3000, 'Description must be at most 1000 characters')
         .required('Description is required'),
 
     address: Yup.string()
         .min(5, 'Address must be at least 5 characters')
-        .max(40, "Address must be at most 40 characters")
+        .max(50, 'Address must be at most 50 characters')
         .required('Address is required'),
 
     state: Yup.string()
         .matches(nameRegex, 'State must contain only letters and spaces')
-        .max(20, "State must be at most 20 characters")
+        .max(20, 'State must be at most 20 characters')
         .required('State is required'),
 
     city: Yup.string()
         .matches(nameRegex, 'City must contain only letters and spaces')
-        .max(20, "City must be at most 20 characters")
+        .max(20, 'City must be at most 20 characters')
         .required('City is required'),
+
+    checkInTime: Yup.string()
+        .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (use 24-hour, e.g., 14:00)')
+        .required('Check-in time is required'),
+
+    checkOutTime: Yup.string()
+        .matches(/^([01]\d|2[0-3]):([0-5]\d)$/, 'Invalid time format (use 24-hour, e.g., 12:00)')
+        .required('Check-out time is required'),
+
+    minGuestAge: Yup.number()
+        .typeError('Must be a number')
+        .min(18, 'Guest age must be at least 18')
+        .max(100, 'Guest age seems invalid')
+        .required('Minimum guest age is required'),
+
+    petsAllowed: Yup.boolean()
+        .required('Pets allowed field is required')
+        .transform((_, v) => v === 'true'),
+
+    outsideFoodAllowed: Yup.boolean()
+        .required('Outside food allowed field is required')
+        .transform((_, v) => v === 'true'),
+
+    specialNotes: Yup.string()
+        .min(10, 'Special notes must be at least 10 characters')
+        .max(3000, 'Special notes must be at most 2000 characters')
+        .required('Special notes is required'),
 });
 
 export const createAmenitySchema = Yup.object({
@@ -54,7 +81,8 @@ export const createAmenitySchema = Yup.object({
     description: Yup.string()
         .required("Description is required")
         .matches(/^[A-Za-z0-9\s,.'"-?!()&]+$/, "Description can contain letters, numbers, spaces, and basic punctuation")
-        .min(5, "Description must be at least 5 characters"),
+        .min(5, "Description must be at least 5 characters")
+        .max(100, "Description must be less than 100 characters"),
 });
 
 

@@ -44,12 +44,26 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
 
     return (
         <>
-            <DataTable
-                columns={columns}
-                data={flattenedBookings}
-                actions={actions}
-                loading={loading}
-            />
+            {loading ?
+                (
+                    <div className="flex justify-center items-center py-10">
+                        <div className="flex flex-col items-center">
+                            <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            <p className="mt-3 text-blue-600 font-medium">Loading rooms...</p>
+                        </div>
+                    </div>
+                ) : flattenedBookings && flattenedBookings.length > 0 ? (
+                    <DataTable
+                        columns={columns}
+                        data={flattenedBookings}
+                        actions={actions}
+                        loading={loading}
+                    />
+                ) : (
+                    <div className="flex justify-center items-center">
+                        <p className="text-semibold text-lg text-red-500">No Bookings found</p>
+                    </div>
+                )}
 
             <BookingDetailModalVendor
                 open={isDetailsModalOpen}

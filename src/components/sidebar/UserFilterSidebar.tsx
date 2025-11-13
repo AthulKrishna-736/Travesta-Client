@@ -24,7 +24,11 @@ export const PRICE_RANGES: { label: string; range: [number, number] }[] = [
     { label: "₹0 - ₹1500", range: [0, 1500] },
     { label: "₹1500 - ₹2500", range: [1500, 2500] },
     { label: "₹2500 - ₹5000", range: [2500, 5000] },
-    { label: "₹5000+", range: [5000, Infinity] },
+    { label: "₹5000 - ₹10000", range: [5000, 10000] },
+    { label: "₹10000 - ₹30000", range: [10000, 30000] },
+    { label: "₹30000 - ₹50000", range: [30000, 50000] },
+    { label: "₹50000 - ₹100000", range: [50000, 100000] },
+    { label: "₹100000+", range: [100000, Infinity] },
 ];
 
 const ROOM_TYPES: string[] = [
@@ -135,7 +139,7 @@ const UserFilterSidebar: React.FC<IUserFilterSidebarProps> = ({
             </div>
 
             {/* Reset Button */}
-            <button className="w-full cursor-pointer hover:bg-blue-500 py-1 hover:text-white rounded-md" onClick={resetFilters}>
+            <button className="w-full cursor-pointer outline-1 hover:outline-none hover:bg-blue-500 py-1 hover:text-white rounded-md" onClick={resetFilters}>
                 Reset Filters
             </button>
         </aside>

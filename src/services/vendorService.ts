@@ -53,7 +53,7 @@ export const getHotelsByVendor = async (page: number, limit: number, search?: st
 };
 
 export const updateHotel = async (id: string, formData: FormData) => {
-    const response = await axiosInstance.patch(`${VENDOR_APIS.hotels}/${id}`, formData, {
+    const response = await axiosInstance.put(`${VENDOR_APIS.hotels}/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
@@ -67,9 +67,9 @@ export const getHotelAnalytics = async (hotelId: string, period: 'week' | 'month
 }
 
 //rooms
-export const getAllRooms = async (page: number, limit: number, search?: string) => {
+export const getAllRooms = async (page: number, limit: number, search?: string, hotelId?: string) => {
     const response = await axiosInstance.get(`${VENDOR_APIS.rooms}`, {
-        params: { page, limit, search }
+        params: { page, limit, search, hotelId }
     });
     return response.data;
 };
@@ -166,9 +166,17 @@ export const getVendorUnreadChats = async () => {
 };
 
 
-export const getBookingsToVendor = async (page: number, limit: number) => {
+export const getBookingsToVendor = async (page: number, limit: number, hotelId?: string, startDate?: string, endDate?: string) => {
     const response = await axiosInstance.get(`${VENDOR_APIS.booking}`, {
-        params: { page, limit },
+        params: { page, limit, hotelId, startDate, endDate },
     });
     return response.data;
 };
+
+
+export const getVendorAnalytics = async (startDate?: string, endDate?: string) => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.analytics}`, {
+        params: { startDate, endDate },
+    });
+    return response.data;
+}

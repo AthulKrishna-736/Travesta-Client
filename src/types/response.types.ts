@@ -47,3 +47,36 @@ export type TGetAmenityResponse = {
     data: IAmenity[],
     meta: TPagination,
 }
+
+export type THotelResponse = {
+    _id?: string;
+    vendorId: string;
+    name: string;
+    description: string;
+    images: string[];
+    rating: number;
+    amenities: { _id: string, name: string }[];
+    tags: string[];
+    state: string;
+    city: string;
+    address: string;
+    geoLocation: {
+        type: String,
+        coordinates: [number, number],
+    };
+}
+
+export type TRoomResponse = {
+    id: string;
+    name: string;
+    hotelId: string | THotelResponse
+    roomType: string;
+    roomCount: number;
+    bedType: string;
+    guest: number;
+    amenities: { _id: string, name: string }[];
+    images: string[];
+    basePrice: number;
+    gstPrice: number;
+    isAvailable: boolean;
+}

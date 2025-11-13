@@ -49,12 +49,12 @@ export const useUpdateRoom = (cbFn: () => void) => {
 };
 
 
-export const useGetAllRooms = (page: number, limit: number, search?: string) => {
+export const useGetAllRooms = (page: number, limit: number, search?: string, hotelId?: string) => {
     return useQuery({
-        queryKey: ['hotel-rooms', page, limit, search],
+        queryKey: ['hotel-rooms', { page, limit, search, hotelId }],
         queryFn: async () => {
             try {
-                return await getAllRooms(page, limit, search);
+                return await getAllRooms(page, limit, search, hotelId);
             } catch (error: any) {
                 const msg = error?.response?.data?.message || 'Failed to fetch rooms';
                 showError(msg);

@@ -11,6 +11,7 @@ export const useGetSubscriptionPlans = () => {
         queryFn: getUserSubscriptions,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     })
 }
 

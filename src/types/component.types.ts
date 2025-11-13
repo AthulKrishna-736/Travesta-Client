@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { IUser, UpdateUser } from "./user.types";
-import { IUserType } from "./response.types";
-import { IHotel } from "./hotel.types";
+import { IUserType, TRoomResponse } from "./response.types";
+import { IHotel, TResponseHotel } from "./hotel.types";
 import { IRoom } from "./room.types";
 import { LucideIcon } from "lucide-react";
 
@@ -79,8 +79,8 @@ export interface ICreateHotelModalProps {
     open: boolean;
     onClose: () => void;
     isLoading: boolean;
-    onSubmit: (data: IHotel & { oldImages: string[] }) => void;
-    hotelData?: IHotel | null;
+    onSubmit: (data: any) => void;
+    hotelData?: TResponseHotel | null;
     isEdit?: boolean;
 }
 
@@ -146,7 +146,7 @@ export interface IAmenitiesModalProps {
     loading?: boolean;
 }
 
-export interface RoomCardLayoutProps {
-    room: any;
+export interface RoomCardProps {
+    room: TRoomResponse;
     handleBookClick: (roomId: string) => void;
 }

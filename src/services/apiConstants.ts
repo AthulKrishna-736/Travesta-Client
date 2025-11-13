@@ -25,7 +25,7 @@ export const USER_APIS = {
     customRoomDates: '/users/room/custom',
     plans: '/users/plans',
     activePlan: '/users/plans/active',
-    cancelPlan: '/usres/plans/cancel',
+    cancelPlan: '/users/plans/cancel',
 }
 
 export const VENDOR_APIS = {
@@ -37,6 +37,7 @@ export const VENDOR_APIS = {
     booking: '/vendor/bookings',
     amenities: '/vendor/amenities',
     transactions: '/users/transactions',
+    analytics: '/vendor/analytics',
 }
 
 export const ADMIN_APIS = {

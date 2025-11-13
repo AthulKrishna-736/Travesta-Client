@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link } from 'react-router-dom';
@@ -19,28 +18,22 @@ const LandingHeader = () => {
                     </Link>
                 </div>
 
-                {/* Navigation - Desktop */}
-                <NavigationMenu className="hidden md:flex">
-                    <NavigationMenuList>
-                        {["Home", "About Us"].map((label, index) => (
-                            <NavigationMenuItem key={index}>
-                                <Link
-                                    to={`/user/${label.toLowerCase().replace(/\s/g, '-')}`}
-                                    className={navigationMenuTriggerStyle()}
-                                >
-                                    {label}
-                                </Link>
-                            </NavigationMenuItem>
-                        ))}
-                    </NavigationMenuList>
-                </NavigationMenu>
-
                 {/* Action Buttons - Desktop */}
                 <div className="hidden md:flex items-center gap-2">
+                    <Link to='/user/login'>
+                        <button
+                            className="text-left text-xs font-semibold px-2 py-1 rounded-md hover:text-white hover:bg-blue-500 cursor-pointer"
+                        >
+                            Login or <br />Create Account
+                        </button>
+                    </Link>
+
                     <Link to="/vendor/login">
-                        <Button className="bg-yellow-400 text-black hover:bg-yellow-300 text-sm">
-                            Become a Vendor
-                        </Button>
+                        <button
+                            className="text-left text-xs font-semibold px-2 py-1 rounded-md text-black bg-yellow-400 hover:text-white hover:bg-yellow-500 cursor-pointer"
+                        >
+                            Become a <br />Vendor
+                        </button>
                     </Link>
                 </div>
 
@@ -61,7 +54,7 @@ const LandingHeader = () => {
                     <div className="mt-6 flex flex-col gap-2">
                         <Link to="/user/login" onClick={() => setOpen(false)}>
                             <Button variant="outline" className="bg-white text-black border border-black w-full text-sm">
-                                Become a User ?
+                                Login
                             </Button>
                         </Link>
                         <Link to="/vendor/login" onClick={() => setOpen(false)}>
