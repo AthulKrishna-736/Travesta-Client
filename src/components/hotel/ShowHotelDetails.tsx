@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
+import StaticMap from '../maps/StaticMap';
 
 interface ShowHotelDetailsModalProps {
     open: boolean;
@@ -13,11 +14,6 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
 
     const mainImage = data.images?.[0];
     const otherImages = data.images?.slice(1) || [];
-
-    const formatKey = (key: string) =>
-        key
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, (str) => str.toUpperCase());
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
@@ -34,20 +30,30 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                 <div className="space-y-4 sm:space-y-6">
                     {/* Main Image */}
                     {mainImage && (
-                        <div className="w-full h-48 sm:h-64 md:h-80 rounded-lg overflow-hidden shadow-md">
+                        <div className="w-full h-48 sm:h-64 md:h-80 rounded-lg overflow-hidden shadow-md bg-gray-300 relative flex items-center justify-center">
+                            {/* Spinner */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-500 rounded-full animate-spin"></div>
+                            </div>
+
                             <img
                                 src={mainImage}
                                 alt="Main Hotel Image"
-                                className="w-full h-full object-cover"
+                                onLoad={(e) => {
+                                    e.currentTarget.style.opacity = '1';
+                                    const spinner = e.currentTarget.previousElementSibling;
+                                    if (spinner) spinner.setAttribute('hidden', 'true');
+                                }}
+                                className="w-full h-full object-cover opacity-0 transition-opacity duration-500"
                             />
                         </div>
                     )}
 
                     {/* Details Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div className="flex flex-col gap-4">
                         <div className="space-y-4">
-                            <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
+                            <div className="bg-gray-300 p-3 sm:p-4 rounded-lg">
+                                <h3 className="text-base sm:text-lg font-semibold  mb-2 sm:mb-3">
                                     Basic Information
                                 </h3>
                                 <div className="space-y-2 text-sm sm:text-base">
@@ -58,10 +64,10 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                                                     key={key}
                                                     className="flex flex-col sm:flex-row sm:justify-between"
                                                 >
-                                                    <span className="text-gray-600 font-medium">
-                                                        {formatKey(key)}:
+                                                    <span className="text-gray-600 font-medium uppercase">
+                                                        {key}:
                                                     </span>
-                                                    <span className="text-gray-800 mt-1 sm:mt-0">
+                                                    <span className="font-semibold mt-1 sm:mt-0">
                                                         {String(data[key])}
                                                     </span>
                                                 </p>
@@ -72,28 +78,24 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                         </div>
 
                         <div className="space-y-4">
-                            <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                            <div className="bg-green-200 p-3 sm:p-4 rounded-lg">
                                 <div className="space-y-2 text-sm sm:text-base">
-                                    {['rating', 'amenities', 'tags'].map((key) => {
+                                    {['amenities', 'tags'].map((key) => {
                                         if (!data[key]) return null;
 
                                         if (['amenities', 'tags'].includes(key)) {
-                                            const values = Array.isArray(data[key])
-                                                ? data[key].map((item: any) =>
-                                                    key === 'amenities' ? item.name : item
-                                                )
-                                                : [];
+                                            const values = Array.isArray(data[key]) ? data[key].map((item: any) => key === 'amenities' ? item.name : item) : [];
 
                                             return (
                                                 <div key={key} className="flex flex-col">
-                                                    <span className="text-gray-600 font-medium">
-                                                        {formatKey(key)}:
+                                                    <span className="font-medium uppercase">
+                                                        {key}:
                                                     </span>
                                                     <div className="flex flex-wrap gap-2 mt-1">
                                                         {values.map((item: string, idx: number) => (
                                                             <span
                                                                 key={idx}
-                                                                className="bg-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm text-gray-700 border border-gray-200 shadow-sm"
+                                                                className="bg-white px-3 py-1 rounded-full text-xs sm:text-sm font-medium"
                                                             >
                                                                 {item.trim()}
                                                             </span>
@@ -102,46 +104,68 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                                                 </div>
                                             );
                                         }
-
-                                        return (
-                                            <p
-                                                key={key}
-                                                className="flex flex-col sm:flex-row sm:justify-between"
-                                            >
-                                                <span className="text-gray-600 font-medium">
-                                                    {formatKey(key)}:
-                                                </span>
-                                                <span className="text-gray-800 mt-1 sm:mt-0">
-                                                    {String(data[key])}
-                                                </span>
-                                            </p>
-                                        );
                                     })}
-
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    {/* Property Rules Section */}
+                    {data.propertyRules && (
+                        <div className="bg-yellow-100 p-3 sm:p-4 rounded-lg mb-4">
+                            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 uppercase">
+                                Property Rules
+                            </h3>
+
+                            <div className="space-y-1 text-sm sm:text-base">
+                                <p><strong>Check-in Time:</strong> {data.propertyRules.checkInTime || "N/A"}</p>
+                                <p><strong>Check-out Time:</strong> {data.propertyRules.checkOutTime || "N/A"}</p>
+                                <p><strong>Minimum Guest Age:</strong> {data.propertyRules.minGuestAge || "N/A"}</p>
+                                <p><strong>Pets Allowed:</strong> {data.propertyRules.petsAllowed ? "Yes" : "No"}</p>
+                                <p><strong>Outside Food Allowed:</strong> {data.propertyRules.outsideFoodAllowed ? "Yes" : "No"}</p>
+
+                                {data.propertyRules.idProofAccepted?.length > 0 && (
+                                    <p>
+                                        <strong>ID Proofs Accepted:</strong> {data.propertyRules.idProofAccepted.join(", ")}
+                                    </p>
+                                )}
+
+                                {data.propertyRules.specialNotes && (
+                                    <div className="mt-2">
+                                        <strong>Special Notes:</strong>
+                                        <p className="whitespace-pre-line mt-1 text-gray-700">
+                                            {data.propertyRules.specialNotes}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Geo Location */}
                     {data.geoLocation && (
-                        <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3">
+                        <div className="bg-blue-200 p-3 sm:p-4 rounded-lg">
+                            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-3 uppercase">
                                 Location
                             </h3>
-                            <p className="text-gray-800 text-sm sm:text-base">
-                                {data.geoLocation.join(', ')}
-                            </p>
+                            <div className='flex justify-around font-semibold'>
+                                <span>Long: {data.geoLocation.coordinates[0]}</span>
+                                <span>Lat: {data.geoLocation.coordinates[1]}</span>
+                            </div>
+
+                            <div>
+                                <StaticMap long={data.geoLocation.coordinates[0]} lat={data.geoLocation.coordinates[1]} />
+                            </div>
                         </div>
                     )}
 
                     {/* Additional Images */}
                     {otherImages.length > 0 && (
                         <div className="mt-4 sm:mt-6">
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-4">
+                            <h3 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4">
                                 More Images
                             </h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 {otherImages.map((img: string, index: number) => (
                                     <div
                                         key={index}

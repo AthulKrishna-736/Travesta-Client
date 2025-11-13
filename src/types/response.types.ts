@@ -64,6 +64,16 @@ export type THotelResponse = {
         type: String,
         coordinates: [number, number],
     };
+    propertyRules: {
+        checkInTime: string
+        checkOutTime: string
+        minGuestAge: number
+        breakfastFee?: number
+        petsAllowed: boolean
+        outsideFoodAllowed: boolean
+        idProofAccepted: string[]
+        specialNotes: string
+    }
 }
 
 export type TRoomResponse = {

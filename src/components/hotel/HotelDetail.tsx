@@ -2,50 +2,24 @@ import React, { useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
 import { showError } from '@/utils/customToast';
-import RoomCardLayout from '../room/RoomCard';
+import RoomCard from '../room/RoomCard';
 import Breadcrumbs from '../common/BreadCrumps';
 import HotelWithRoom from './HotelWithRoom';
-import MyOlaMap from '../common/OlaMap';
+import MyOlaMap from '../maps/OlaMap';
 import { Lock, MapIcon } from 'lucide-react';
-import CustomCalendar from '../common/CustomCalendar';
 import WeatherDetails from '../common/WeatherDetails';
 import NearbyAttractions from '../common/NearbyAttractions';
 import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
+import { THotelResponse, TRoomResponse } from '@/types/response.types';
+import PropertyRules from './PropertyRules';
 
-export type THotelResponse = {
-    _id?: string;
-    vendorId: string;
-    name: string;
-    description: string;
-    images: string[];
-    rating: number;
-    amenities: { _id: string, name: string }[];
-    tags: string[];
-    state: string;
-    city: string;
-    address: string;
-    geoLocation: [number, number];
-}
-
-export type TRoomResponse = {
-    id: string;
-    name: string;
-    hotelId: string | THotelResponse
-    roomType: string;
-    roomCount: number;
-    bedType: string;
-    guest: number;
-    amenities: { _id: string, name: string }[];
-    images: string[];
-    basePrice: number;
-    isAvailable: boolean;
-}
 
 const HotelDetail: React.FC = () => {
     const { hotelId } = useParams();
     const [params] = useSearchParams();
     const mapRef = useRef<HTMLDivElement | null>(null);
     const reviewRef = useRef<HTMLDivElement | null>(null);
+    const roomsRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
 
     const checkInParam = params.get('checkIn') || '';
@@ -84,20 +58,21 @@ const HotelDetail: React.FC = () => {
 
     const handleBookingSubmit = async (roomId: string) => {
         const now = new Date();
-        const currentHours = now.getHours();
-        const currentMinutes = now.getMinutes();
-        const currentSeconds = now.getSeconds();
-        const currentMilliseconds = now.getMilliseconds();
 
         const checkInDate = new Date(checkInParam);
-        checkInDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
-
         const checkOutDate = new Date(checkOutParam);
-        checkOutDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
+
+        const checkInTime = hotel?.propertyRules?.checkInTime || "13:00";
+        const checkOutTime = hotel?.propertyRules?.checkOutTime || "12:00";
+
+        const [checkInHours, checkInMinutes] = checkInTime.split(":").map(Number);
+        const [checkOutHours, checkOutMinutes] = checkOutTime.split(":").map(Number);
+
+        checkInDate.setHours(checkInHours, checkInMinutes, 0, 0);
+        checkOutDate.setHours(checkOutHours, checkOutMinutes, 0, 0);
 
         console.log("Exact checkIn date-time:", checkInDate.toISOString());
         console.log("Exact checkOut date-time:", checkOutDate.toISOString());
-
 
         // Validate check-in is not in the past
         if (checkInDate < now) {
@@ -124,8 +99,6 @@ const HotelDetail: React.FC = () => {
             return;
         }
 
-        console.log('room: ', room);
-
         const totalPrice = room.basePrice * days;
 
         const queryParams = new URLSearchParams({
@@ -147,12 +120,29 @@ const HotelDetail: React.FC = () => {
             <Breadcrumbs items={BREADCRUMPS_ITEMS} />
 
             {/* Hotel with room Details */}
-            <HotelWithRoom hotel={hotel} rooms={rooms} mapRef={mapRef} reviewRef={reviewRef} roomSubmit={handleBookingSubmit} />
+            <HotelWithRoom
+                hotel={hotel}
+                rooms={rooms}
+                mapRef={mapRef}
+                roomsRef={roomsRef}
+                reviewRef={reviewRef}
+                roomSubmit={handleBookingSubmit}
+            />
 
-            {/* Calender Availabilities */}
-            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                <CustomCalendar roomId={rooms[0].id} checkIn={checkInParam} checkOut={checkOutParam} />
-            </div> */}
+            {/* Other related rooms */}
+            <div ref={roomsRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                {rooms.map((room: TRoomResponse) => (
+                    <RoomCard
+                        key={room.id}
+                        room={room}
+                        handleBookClick={handleBookingSubmit}
+                    />
+                ))}
+            </div>
+
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <PropertyRules propertyRules={hotel.propertyRules} />
+            </div>
 
             {/* Photo by guests */}
             {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
@@ -161,10 +151,10 @@ const HotelDetail: React.FC = () => {
 
             {/* Weather Details */}
             <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                {planHistory.isActive ? (
+                {planHistory && planHistory.isActive ? (
                     <WeatherDetails
-                        latitude={hotel.geoLocation[0]}
-                        longitude={hotel.geoLocation[1]}
+                        latitude={hotel.geoLocation.coordinates[1]}
+                        longitude={hotel.geoLocation.coordinates[0]}
                         checkIn={checkInParam}
                         checkOut={checkOutParam}
                     />
@@ -188,7 +178,7 @@ const HotelDetail: React.FC = () => {
                     <h1 className='text-xl font-semibold mb-2'>Location</h1>
                     <button className='px-4 py-1.5 bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white font-semibold text-lg rounded-md shadow-md cursor-pointer' onClick={() => {
                         window.open(
-                            `https://www.google.com/maps/dir/?api=1&destination=${hotel.geoLocation[0]},${hotel.geoLocation[1]}`,
+                            `https://www.google.com/maps/dir/?api=1&destination=${hotel.geoLocation.coordinates[1]},${hotel.geoLocation.coordinates[0]}`,
                             "_blank",
                             "noopener,noreferrer"
                         );
@@ -200,13 +190,19 @@ const HotelDetail: React.FC = () => {
                     </button>
                 </div>
                 <div>
-                    <MyOlaMap lat={hotel.geoLocation[0]} long={hotel.geoLocation[1]} />
+                    <MyOlaMap
+                        lat={hotel.geoLocation.coordinates[1]}
+                        long={hotel.geoLocation.coordinates[0]}
+                    />
                 </div>
             </div>
 
             <div className="space-y-6 bg-white p-4 rounded-md shadow-xs border border-gray-200">
-                {planHistory.isActive && planHistory.subscriptionId.type === 'vip' ? (
-                    <NearbyAttractions lat={hotel.geoLocation[0]} long={hotel.geoLocation[1]} />
+                {planHistory && planHistory.isActive && planHistory.subscriptionId.type === 'vip' ? (
+                    <NearbyAttractions
+                        lat={hotel.geoLocation.coordinates[1]}
+                        long={hotel.geoLocation.coordinates[0]}
+                    />
                 ) : (
                     <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
                         <Lock className="mb-2 w-8 h-8 text-gray-400" />
@@ -222,19 +218,8 @@ const HotelDetail: React.FC = () => {
             </div>
 
             {/* Reviews section */}
-            {/* <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Reviews section
-            </div> */}
-
-            {/* Rooms recommended*/}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {rooms.map((room: any) => (
-                    <RoomCardLayout
-                        key={room.id}
-                        room={room}
-                        handleBookClick={handleBookingSubmit}
-                    />
-                ))}
             </div>
 
         </main>

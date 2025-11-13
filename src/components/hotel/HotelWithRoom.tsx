@@ -1,16 +1,17 @@
 import React, { RefObject } from 'react'
-import { THotelResponse, TRoomResponse } from './HotelDetail'
-import { MapPin } from 'lucide-react';
+import { MapPin, Users } from 'lucide-react';
+import { THotelResponse, TRoomResponse } from '@/types/response.types';
 
 interface IHotelWithRoom {
     hotel: THotelResponse;
     rooms: TRoomResponse[];
     mapRef: RefObject<HTMLDivElement | null>;
     reviewRef: RefObject<HTMLDivElement | null>;
+    roomsRef: RefObject<HTMLDivElement | null>;
     roomSubmit: (roomId: string) => void;
 }
 
-const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewRef, roomSubmit }) => {
+const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewRef, roomsRef, roomSubmit }) => {
     return (
         <div className='bg-white p-5 rounded-md shadow-xs'>
             {/* Name */}
@@ -43,7 +44,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
                         <h1 className='text-lg font-bold'>
                             About Property
                         </h1>
-                        <p className='font-semibold text-sm text-[#4a4a4a]'>
+                        <p className='whitespace-pre-line font-semibold text-sm text-[#4a4a4a]'>
                             {hotel.description}
                         </p>
                     </div>
@@ -80,18 +81,59 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
                 {/* Room details, Ratings & Location */}
                 <div className='flex flex-col h-full w-full gap-4'>
                     <div className='p-4 rounded-lg border-[1px] border-[#d8d8d8]'>
-                        <h1 className='text-lg font-bold'>{rooms[0].name}</h1>
-                        <h3>Guests {rooms[0].guest}</h3>
-                        <h6 className='text-sm text-[#4a4a4a] mt-3 font-medium'>Per Night:</h6>
-                        <h1 className='text-3xl font-bold mb-4'>₹ {rooms[0].basePrice} <span className='text-[14px] text-[#4a4a4a] font-medium'>+₹ 1234 taxes & fees</span></h1>
-                        <button
-                            onClick={() => roomSubmit(rooms[0].id)}
-                            className="uppercase text-[16px] font-bold leading-[19px] cursor-pointer px-4 py-1.5 rounded-[8px] bg-gradient-to-r from-[#53b2fe] to-[#065af3] shadow-[0_1px_7px_0_#0003] text-white"
-                        >
-                            Book This Now
-                        </button>
+                        <div className='flex gap-4 mb-4'>
+                            <div className='flex-1'>
+                                <h1 className='text-lg font-bold mb-2'>{rooms[0].name}</h1>
+                                <div className='flex items-center gap-2 mb-2'>
+                                    <div className='bg-blue-50 p-1.5 rounded-sm'>
+                                        <Users className='w-4 h-4 text-blue-600' />
+                                    </div>
+                                    <span className='text-sm font-medium text-gray-700'>
+                                        Up to {rooms[0].guest} {rooms[0].guest === 1 ? 'Guest' : 'Guests'}
+                                    </span>
+                                </div>
+                                <h3 className='inline-block bg-gradient-to-r from-purple-50 to-blue-50 text-purple-700 text-sm font-semibold px-3 py-1.5 rounded-sm border border-purple-200'>
+                                    Room Type: {rooms[0].roomType}
+                                </h3>
+                            </div>
+                            <div className='w-32 h-32 flex-shrink-0'>
+                                {rooms[0].images && rooms[0].images.length > 0 && (
+                                    <img
+                                        className='w-full h-full object-cover rounded-lg'
+                                        src={rooms[0].images[0]}
+                                        alt="roomImage"
+                                    />
+                                )}
+                            </div>
+                        </div>
+                        <h6 className='text-sm text-[#4a4a4a] font-medium'>Per Night:</h6>
+                        <h1 className="text-3xl font-bold mb-4">
+                            ₹ {rooms[0].basePrice}
+                            <span className="ml-2 text-[14px] text-[#4a4a4a] font-medium">
+                                {rooms[0].gstPrice === 0 ? "No taxes & fees" : `+₹ ${rooms[0].gstPrice} taxes & fees`}
+                            </span>
+                        </h1>
+
+                        <div className='flex w-full justify-between'>
+                            <button
+                                onClick={() => roomSubmit(rooms[0].id)}
+                                className="uppercase text-[16px] font-bold leading-[19px] cursor-pointer px-4 py-1.5 rounded-[8px] bg-gradient-to-r from-[#53b2fe] to-[#065af3] shadow-sm text-white"
+                            >
+                                Book This Now
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (roomsRef.current) roomsRef.current.scrollIntoView({ behavior: "smooth" })
+                                }}
+                                className='text-[#038dff] font-semibold text-sm tracking-tight cursor-pointer'
+                            >
+                                See More Options
+                            </button>
+                        </div>
                     </div>
+
                     <div className='p-3 py-5 rounded-lg border-[1px] border-[#d8d8d8]'>
+
                         {/* Ratings */}
                         <div className='flex justify-between items-center'>
                             <div className='bg-[#2757ae] rounded-lg text-white mr-2 font-bold py-2 px-4'>
@@ -119,7 +161,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
                             <h1 className='text-xl font-bold'>{hotel.city}</h1>
                             <button
                                 onClick={() => {
-                                    if (mapRef.current) mapRef.current.scrollIntoView({ behavior: "smooth" })
+                                    if (mapRef.current) mapRef.current.scrollIntoView({ behavior: "smooth" });
                                 }}
                                 className='text-[#0d92ff] font-semibold cursor-pointer text-[14px] tracking-tight'>
                                 See on Map
