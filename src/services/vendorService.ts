@@ -165,7 +165,6 @@ export const getVendorUnreadChats = async () => {
     return response.data;
 };
 
-
 export const getBookingsToVendor = async (page: number, limit: number, hotelId?: string, startDate?: string, endDate?: string) => {
     const response = await axiosInstance.get(`${VENDOR_APIS.booking}`, {
         params: { page, limit, hotelId, startDate, endDate },
@@ -173,10 +172,16 @@ export const getBookingsToVendor = async (page: number, limit: number, hotelId?:
     return response.data;
 };
 
-
+//analytics
 export const getVendorAnalytics = async (startDate?: string, endDate?: string) => {
     const response = await axiosInstance.get(`${VENDOR_APIS.analytics}`, {
         params: { startDate, endDate },
     });
+    return response.data;
+}
+
+//ratings
+export const getHotelRatings = async (hotelId: string) => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.rating}/${hotelId}`);
     return response.data;
 }

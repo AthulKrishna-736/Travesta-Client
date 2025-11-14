@@ -12,6 +12,9 @@ import NearbyAttractions from '../common/NearbyAttractions';
 import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
 import { THotelResponse, TRoomResponse } from '@/types/response.types';
 import PropertyRules from './PropertyRules';
+import { useGetHotelRatings } from '@/hooks/vendor/useRating';
+import { TRatingResponse } from '@/types/rating.types';
+import RatingDetails from './RatingDetails';
 
 
 const HotelDetail: React.FC = () => {
@@ -27,8 +30,11 @@ const HotelDetail: React.FC = () => {
     const guestParam = params.get('guests');
 
     const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '', checkInParam, checkOutParam);
+    const { data: ratingResponse } = useGetHotelRatings(hotelId!);
+
     const hotel = hotelResponse?.data?.[0]?.hotelId as THotelResponse;
     const rooms = hotelResponse?.data as TRoomResponse[] || [];
+    const ratings = ratingResponse?.data as TRatingResponse[] || [];
 
     const { data: planResponse } = useGetUserActivePlan();
     const planHistory = planResponse ? planResponse?.data : null;
@@ -70,9 +76,6 @@ const HotelDetail: React.FC = () => {
 
         checkInDate.setHours(checkInHours, checkInMinutes, 0, 0);
         checkOutDate.setHours(checkOutHours, checkOutMinutes, 0, 0);
-
-        console.log("Exact checkIn date-time:", checkInDate.toISOString());
-        console.log("Exact checkOut date-time:", checkOutDate.toISOString());
 
         // Validate check-in is not in the past
         if (checkInDate < now) {
@@ -126,6 +129,7 @@ const HotelDetail: React.FC = () => {
                 mapRef={mapRef}
                 roomsRef={roomsRef}
                 reviewRef={reviewRef}
+                ratings={ratings}
                 roomSubmit={handleBookingSubmit}
             />
 
@@ -219,7 +223,7 @@ const HotelDetail: React.FC = () => {
 
             {/* Reviews section */}
             <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                Reviews section
+                <RatingDetails ratings={ratings} />
             </div>
 
         </main>

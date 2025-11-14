@@ -100,3 +100,37 @@ export const planFormSchema = Yup.object().shape({
         .required("At least one feature is required")
         .min(1, "At least one feature is required"),
 });
+
+
+//ratings
+export const ratingSchema = Yup.object({
+    hospitality: Yup.number()
+        .required("Hospitality rating is required")
+        .min(1, "Minimum rating is 1 star")
+        .max(5, "Maximum rating is 5 stars"),
+
+    cleanliness: Yup.number()
+        .required("Cleanliness rating is required")
+        .min(1, "Minimum rating is 1 star")
+        .max(5, "Maximum rating is 5 stars"),
+
+    facilities: Yup.number()
+        .required("Facilities rating is required")
+        .min(1, "Minimum rating is 1 star")
+        .max(5, "Maximum rating is 5 stars"),
+
+    room: Yup.number()
+        .required("Room rating is required")
+        .min(1, "Minimum rating is 1 star")
+        .max(5, "Maximum rating is 5 stars"),
+
+    moneyValue: Yup.number()
+        .required("Value for money rating is required")
+        .min(1, "Minimum rating is 1 star")
+        .max(5, "Maximum rating is 5 stars"),
+
+    review: Yup.string()
+        .required("Review is required")
+        .min(20, "Review must be at least 20 characters")
+        .max(400, "Review cannot exceed 400 characters"),
+});

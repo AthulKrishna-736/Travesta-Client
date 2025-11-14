@@ -8,10 +8,61 @@ interface IHotelWithRoom {
     mapRef: RefObject<HTMLDivElement | null>;
     reviewRef: RefObject<HTMLDivElement | null>;
     roomsRef: RefObject<HTMLDivElement | null>;
+    ratings: any;
     roomSubmit: (roomId: string) => void;
 }
 
-const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewRef, roomsRef, roomSubmit }) => {
+const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewRef, roomsRef, ratings, roomSubmit }) => {
+
+    const totalRatings = ratings?.length || 0;
+    const averages = totalRatings > 0
+        ? {
+            hospitality:
+                ratings.reduce((acc: number, r: any) => acc + r.hospitality, 0) / totalRatings,
+            cleanliness:
+                ratings.reduce((acc: number, r: any) => acc + r.cleanliness, 0) / totalRatings,
+            facilities:
+                ratings.reduce((acc: number, r: any) => acc + r.facilities, 0) / totalRatings,
+            room:
+                ratings.reduce((acc: number, r: any) => acc + r.room, 0) / totalRatings,
+            moneyValue:
+                ratings.reduce((acc: number, r: any) => acc + r.moneyValue, 0) / totalRatings,
+        }
+        : {
+            hospitality: 0,
+            cleanliness: 0,
+            facilities: 0,
+            room: 0,
+            moneyValue: 0,
+        };
+
+    const overallAvg = totalRatings > 0
+        ? (
+            (averages.hospitality +
+                averages.cleanliness +
+                averages.facilities +
+                averages.room +
+                averages.moneyValue) /
+            5
+        ).toFixed(1)
+        : "0.0";
+
+
+    const RATINGS = [
+        { min: 4.5, label: "Excellent" },
+        { min: 4.0, label: "Very Good" },
+        { min: 3.5, label: "Good" },
+        { min: 3.0, label: "Average" },
+        { min: 2.0, label: "Poor" },
+        { min: 0, label: "Very Poor" },
+    ];
+
+    const getRatingLabel = (rating: number): string => {
+        const match = RATINGS.find(r => rating >= r.min);
+        return match ? match.label : "Unrated";
+    };
+
+
     return (
         <div className='bg-white p-5 rounded-md shadow-xs'>
             {/* Name */}
@@ -137,11 +188,11 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
                         {/* Ratings */}
                         <div className='flex justify-between items-center'>
                             <div className='bg-[#2757ae] rounded-lg text-white mr-2 font-bold py-2 px-4'>
-                                1.1
+                                {overallAvg}
                             </div>
                             <div>
-                                <span className='text-[#2757ae] font-bold'>Excellent</span>
-                                <span className='text-[#4a4a4a] text-sm ml-1.5'>{`(1234 ratings)`}</span>
+                                <span className='text-[#2757ae] font-bold'>{getRatingLabel(Number(overallAvg))}</span>
+                                <span className='text-[#4a4a4a] text-sm ml-1.5'>{`(${totalRatings} ratings)`}</span>
                             </div>
                             <button
                                 onClick={() => {

@@ -12,6 +12,17 @@ interface IHotel {
     state: string;
     address: string;
     room: { _id: string, basePrice: number, name: string, gstPrice: number };
+    rating: {
+        totalRatings: number
+        averageRating: number
+        averages: {
+            hospitality: number,
+            cleanliness: number,
+            facilities: number,
+            room: number,
+            moneyValue: number,
+        }
+    }
     isBlocked: boolean;
 }
 
@@ -25,8 +36,9 @@ interface HotelCardProps {
 const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests }) => {
     const navigate = useNavigate();
     const [imagePreview, setImagePreview] = useState<string>('');
+    const [showBreakdown, setShowBreakdown] = useState(false);
 
-    const { id, name, description, images, amenities, state, city, room } = hotel;
+    const { id, name, description, images, amenities, state, rating, city, room } = hotel;
 
     const RATINGS: { min: number; label: string }[] = [
         { min: 4.5, label: "Excellent" },
@@ -35,6 +47,14 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
         { min: 3.0, label: "Average" },
         { min: 2.0, label: "Poor" },
         { min: 0, label: "Very Poor" },
+    ];
+
+    const ratingMetrics = [
+        { label: "Hospitality", value: rating.averages.hospitality },
+        { label: "Cleanliness", value: rating.averages.cleanliness },
+        { label: "Facilities", value: rating.averages.facilities },
+        { label: "Room Quality", value: rating.averages.room },
+        { label: "Value for Money", value: rating.averages.moneyValue }
     ];
 
     const getRatingLabel = (rating: number): string => {
@@ -54,7 +74,6 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
         }
         return () => setImagePreview('');
     }, []);
-
 
     return (
         <div className="bg-white rounded-xs w-full h-55 flex p-4 my-4 outline-1 outline-[#e1e1e1] hover:outline-[#0084ff]">
@@ -121,12 +140,43 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
             {/* price, detail and rating */}
             <div className="px-2 ml-4 flex flex-col justify-between items-end">
                 {/* rating */}
-                <div className="flex flex-col items-end">
-                    <div className="flex gap-2">
-                        <h3 className="text-[#0b58b4] font-bold">{getRatingLabel(4.0)}</h3>
-                        <h6 className="bg-[#0b58b4] font-bold px-1 rounded-sm text-white">4.0</h6>
+                <div className="relative flex flex-col items-end"
+                    onMouseEnter={() => setShowBreakdown(true)}
+                    onMouseLeave={() => setShowBreakdown(false)}
+                >
+                    <div className="flex gap-2 cursor-pointer">
+                        <h3 className="text-[#0b58b4] font-bold">{getRatingLabel(rating.averageRating)}</h3>
+                        <h6 className="bg-[#0b58b4] font-bold px-1 rounded-sm text-white">
+                            {rating.averageRating.toFixed(1)}
+                        </h6>
                     </div>
-                    <p className="text-[#4a4a4a] text-sm">{`(12345 Ratings)`}</p>
+
+                    <p className="text-[#4a4a4a] text-sm">{`(${rating.totalRatings} Ratings)`}</p>
+
+                    {/* hover popup rating */}
+                    {showBreakdown && (
+                        <div className="absolute top-10 right-0 z-20 bg-white border shadow-lg rounded-lg p-4 w-70 text-xs">
+                            <h3 className="font-semibold mb-3 text-sm text-black">User Rating Breakdown</h3>
+
+                            {ratingMetrics.map(({ label, value }) => (
+                                <div key={label} className="flex justify-between items-center mb-2">
+                                    <span className="text-gray-600">{label}</span>
+
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-[#0d92ff]"
+                                                style={{ width: `${(value / 5) * 100}%` }}
+                                            />
+                                        </div>
+                                        <span className="font-medium w-8 text-black">
+                                            {value.toFixed(1)}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div>

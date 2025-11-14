@@ -3,6 +3,7 @@ import { axiosInstance } from "./axiosInstance"
 import { User } from "@/types/user.types";
 import { BookingPayload } from "@/types/booking.types";
 import { USER_APIS } from "./apiConstants";
+import { TRatingFormData } from "@/components/hotel/RatingModal";
 
 //user profile
 export const getUser = async () => {
@@ -187,3 +188,14 @@ export const cancelSubscription = async () => {
     const response = await axiosInstance.post(`${USER_APIS.cancelPlan}`);
     return response.data;
 }
+
+//ratings
+export const createRating = async (data: TRatingFormData & { hotelId: string }) => {
+    const response = await axiosInstance.post(`${USER_APIS.rating}`, data);
+    return response.data;
+};
+
+export const updateRating = async (data: TRatingFormData & { ratingId: string }) => {
+    const response = await axiosInstance.put(`${USER_APIS.rating}`, data);
+    return response.data;
+};

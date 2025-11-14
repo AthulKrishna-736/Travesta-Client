@@ -26,6 +26,7 @@ export const USER_APIS = {
     plans: '/users/plans',
     activePlan: '/users/plans/active',
     cancelPlan: '/users/plans/cancel',
+    rating: '/users/rating',
 }
 
 export const VENDOR_APIS = {
@@ -38,6 +39,7 @@ export const VENDOR_APIS = {
     amenities: '/vendor/amenities',
     transactions: '/users/transactions',
     analytics: '/vendor/analytics',
+    rating: '/vendor/ratings',
 }
 
 export const ADMIN_APIS = {

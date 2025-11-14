@@ -4,26 +4,44 @@ import ConfirmationModal from "../common/ConfirmationModa";
 import { Booking, BookingTableProps } from "@/types/booking.types";
 import { useCancelBooking } from "@/hooks/user/useBooking";
 import BookingDetailDialog from "./BookingDetailsModal";
-import { FileText, Info, XCircle } from "lucide-react";
+import { FileText, Info, Star, XCircle } from "lucide-react";
 import { pdf } from "@react-pdf/renderer";
 import fileDownload from "js-file-download";
 import InvoiceDoc from "../common/InvoiceDoc";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-
+import RatingModal, { TRatingFormData } from "../hotel/RatingModal";
+import { useCreateRating } from "@/hooks/vendor/useRating";
+import { showError } from "@/utils/customToast";
 
 const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const user = useSelector((state: RootState) => state.user.user);
     const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+
+    const { mutate: cancelBookingMutate, isPending: isCancelling } = useCancelBooking();
+    const { mutate: createRatingMutate } = useCreateRating(() => { setIsRatingModalOpen(false); });
+
+    const handleRatingSubmit = (data: TRatingFormData) => {
+        const hotelId =
+            typeof selectedBooking?.hotelId === "string"
+                ? selectedBooking.hotelId
+                : selectedBooking?.hotelId?._id;
+
+        if (!hotelId) {
+            showError("Hotel ID missing");
+            return;
+
+        }
+        createRatingMutate({ ...data, hotelId });
+    };
 
     const handleCancel = () => {
         setIsCancelModalOpen(false);
         setSelectedBooking(null);
     };
-
-    const { mutate: cancelBookingMutate, isPending: isCancelling } = useCancelBooking();
 
     const handleConfirmCancel = () => {
         if (selectedBooking) {
@@ -88,7 +106,18 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
                 fileDownload(blob, `invoice_${booking._id}.pdf`);
             },
         },
-
+        {
+            label: "Review",
+            variant: "ghost" as const,
+            showLabel: false,
+            tooltip: "Rate hotel",
+            icon: Star,
+            className: "text-yellow-600",
+            onClick: (booking: Booking) => {
+                setSelectedBooking(booking);
+                setIsRatingModalOpen(true);
+            },
+        },
     ];
 
     return (
@@ -132,6 +161,12 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
                 open={isDetailsModalOpen}
                 onClose={() => setIsDetailsModalOpen(false)}
                 booking={selectedBooking}
+            />
+
+            <RatingModal
+                open={isRatingModalOpen}
+                onClose={() => setIsRatingModalOpen(false)}
+                onSubmit={handleRatingSubmit}
             />
         </>
     );
