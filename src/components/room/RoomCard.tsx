@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Users, BedDouble, Check } from "lucide-react";
-import { RoomCardProps } from "@/types/component.types";
+import { RoomCardProps } from "@/types/room.types";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -128,7 +128,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                                 Amenities & Services
                             </h4>
                             <div className="flex flex-wrap gap-2">
-                                {room.amenities.map((item: any) => (
+                                {room.amenities.map((item) => (
                                     <span
                                         key={item._id}
                                         className="inline-flex items-center gap-1 text-xs bg-gray-50 text-gray-700 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"

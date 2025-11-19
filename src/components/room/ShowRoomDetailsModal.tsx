@@ -1,12 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { IRoom } from "@/types/room.types";
+import { TRoomDetailProps } from "@/types/room.types";
 
-type TRoomDetailProps = {
-    open: boolean;
-    data: IRoom;
-    onClose: () => void;
-};
 
 const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose }) => {
     const mainImage = data.images?.[0];
@@ -77,7 +72,7 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
                         <div className="bg-blue-200 p-4 rounded-lg">
                             <h3 className="text-lg font-semibold text-gray-700 mb-3">Amenities</h3>
                             <div className="flex flex-wrap gap-2">
-                                {data.amenities.map((amenity: any) => (
+                                {data.amenities.map((amenity) => (
                                     <span
                                         key={amenity._id}
                                         className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 border border-gray-200 shadow-sm"

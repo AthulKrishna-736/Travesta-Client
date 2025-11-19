@@ -4,7 +4,7 @@ import { IHotel } from '@/types/hotel.types';
 import { IRoom } from '@/types/room.types';
 import ShowRoomDetailsModal from './ShowRoomDetailsModal';
 import CreateRoomModal from './CreateRoomModal';
-import { IRoomTableProps } from '@/types/component.types';
+import { IRoomTableProps } from '@/types/room.types';
 import { useGetAllRooms } from '@/hooks/vendor/useRoom';
 import { useUpdateRoom } from '@/hooks/vendor/useRoom';
 import { Input } from '@/components/ui/input';

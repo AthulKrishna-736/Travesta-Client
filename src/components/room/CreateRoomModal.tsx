@@ -4,13 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import MultiImageUploader from '../common/ImageUpload';
-import { ICreateRoomProps, IAmenity } from '@/types/component.types';
+import { ICreateRoomProps, } from '@/types/room.types';
 import { IHotel } from '@/types/hotel.types';
 import { X } from 'lucide-react';
 import { useGetVendorAmenities } from '@/hooks/admin/useAmenities';
 import { BED_TYPE_CAPACITY, BedType } from '@/types/room.types';
 import { Label } from '../ui/label';
 import { showError } from '@/utils/customToast';
+import { IAmenity } from '@/types/amenities.types';
 
 type RoomFormValues = {
     name: string;

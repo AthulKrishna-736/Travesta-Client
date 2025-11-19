@@ -1,21 +1,5 @@
-import { IAmenity } from "./component.types";
-
-export interface IRoom {
-    id?: string
-    _id?: string;
-    hotelId: string;
-    name: string;
-    roomCount: number;
-    roomType: string;
-    bedType: string;
-    guest: number;
-    amenities: string[] | Partial<IAmenity>[];
-    images: (string | File)[];
-    basePrice: number;
-    isAvailable?: boolean;
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+import { IAmenity } from "./amenities.types";
+import { IHotel } from "./hotel.types";
 
 export enum BedType {
     KING = "King",
@@ -36,3 +20,50 @@ export const BED_TYPE_CAPACITY: Record<BedType, number> = {
     [BedType.SOFA]: 1,
     [BedType.BUNK]: 1,
 };
+
+
+//type
+export interface IRoom {
+    id: string
+    hotelId: string;
+    name: string;
+    roomCount: number;
+    roomType: string;
+    bedType: string;
+    guest: number;
+    amenities: (Partial<IAmenity> & { _id: string })[];
+    images: string[];
+    basePrice: number;
+    gstPrice?: number;
+    isAvailable: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+//component props types
+export interface ICreateRoomProps {
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (data: FormData | { id: string, data: FormData }) => void;
+    isLoading: boolean;
+    roomData?: IRoom | null;
+    isEdit?: boolean;
+    hotelId?: string;
+}
+
+export interface IRoomTableProps {
+    hotels: IHotel[]
+    rooms: IRoom[];
+    loading: boolean;
+}
+
+export interface TRoomDetailProps {
+    open: boolean;
+    data: IRoom;
+    onClose: () => void;
+};
+
+export interface RoomCardProps {
+    room: IRoom;
+    handleBookClick: (roomId: string) => void;
+}
