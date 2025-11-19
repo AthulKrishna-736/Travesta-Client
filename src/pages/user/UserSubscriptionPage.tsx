@@ -25,7 +25,7 @@ const SubscriptionPage = () => {
 
                     {/* Pricing Cards Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 lg:gap-8 items-start pt-8">
-                        {plans && plans.map((plan: any) => (
+                        {plans && plans.map((plan) => (
                             <PlanCard key={plan.name} plan={plan} />
                         ))}
                     </div>

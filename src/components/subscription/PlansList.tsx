@@ -2,14 +2,14 @@ import { useState } from 'react';
 import DataTable from '../common/Table';
 import { PricingPlan } from './PlanCard';
 import { Edit, Eye } from 'lucide-react';
-import { Action } from '@/types/component.types';
+import { Action } from '@/types/custom.types';
 import { useGetAllPlans, useUpdatePlans } from '@/hooks/admin/useSubscription';
 import PlanDetailModal from './PlanDetailModal';
 import PlanFormModal from './PlanFormModal';
 
 const PlansList = () => {
     const { data: plansResponseData, isLoading } = useGetAllPlans();
-    const plans = plansResponseData ? plansResponseData.data : null;
+    const plans = plansResponseData?.data;
 
     const [selectedPlan, setSelectedPlan] = useState<PricingPlan | null>(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -71,12 +71,20 @@ const PlansList = () => {
 
     return (
         <>
-            <DataTable
-                columns={columns}
-                data={plans}
-                actions={actions}
-                loading={isLoading}
-            />
+            {plans && plans.length > 0 ? (
+                <DataTable
+                    columns={columns}
+                    data={plans}
+                    actions={actions}
+                    loading={isLoading}
+                />
+            ) : (
+                <div className="flex justify-center items-center py-10">
+                    <p className="font-semibold text-lg text-red-500">
+                        No hotels found. Please create one.
+                    </p>
+                </div>
+            )}
 
             <PlanDetailModal
                 open={isDetailModalOpen}

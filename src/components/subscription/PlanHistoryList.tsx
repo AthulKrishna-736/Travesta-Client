@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DataTable from "@/components/common/Table";
 import { Eye } from "lucide-react";
-import { Action } from "@/types/component.types";
+import { Action } from "@/types/custom.types";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import PlanHistoryDetailModal from "./PlanHistoryDetail";
 import { useGetPlanHistory } from "@/hooks/admin/useSubscription";
@@ -11,6 +11,8 @@ import Pagination from "../common/Pagination";
 const PlanHistoryList = () => {
     const [page, setPage] = useState<number>(1);
     const [type, setType] = useState<"basic" | "medium" | "vip">("basic");
+    const [selectedHistory, setSelectedHistory] = useState<any | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const limit = 6;
     const { data: planHistoryResponse, isLoading } = useGetPlanHistory(page, limit, type);
@@ -29,8 +31,6 @@ const PlanHistoryList = () => {
         : [];
     const meta = planHistoryResponse ? planHistoryResponse.meta as TPagination : null;
 
-    const [selectedHistory, setSelectedHistory] = useState<any | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const columns = [
         { key: "firstName", label: "User Name" },
