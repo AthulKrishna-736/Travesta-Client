@@ -1,35 +1,41 @@
-export interface EntityRef {
-    _id: string;
-    name: string;
-    basePrice: number;
-}
+import { IHotel } from "./hotel.types";
+import { IRoom } from "./room.types";
 
-export interface Booking {
-    _id: string;
+export type TBookingStatus = 'confirmed' | 'cancelled' | 'pending';
+export type TPaymentStatus = 'pending' | 'success' | 'failed' | 'refunded';
+
+//type
+export interface IBooking {
+    id: string;
     userId: string;
-    hotelId: string | EntityRef;
-    roomId: string | EntityRef;
+    hotelId: Pick<IHotel, 'name'> & { _id: string };
+    roomId: Pick<IRoom, 'name' | 'basePrice'> & { _id: string };
     checkIn: string;
     checkOut: string;
     guests: number;
     totalPrice: number;
-    status: "confirmed" | "cancelled" | "pending";
-    payment?: "pending" | "success" | "failed" | "refunded";
-    createdAt?: string;
-    updatedAt?: string;
+    status: TBookingStatus;
+    payment: TPaymentStatus;
+    createdAt: string;
+    updatedAt: string;
 }
 
+//component props types
 export interface BookingTableProps {
-    bookings: Booking[];
+    bookings: IBooking[];
     loading: boolean;
 }
 
 export interface BookingDetailProps {
     open: boolean;
     onClose: () => void;
-    booking: Booking | null;
+    booking: IBooking | null;
 }
 
+export interface BookingTableProps {
+    bookings: IBooking[];
+    loading: boolean;
+}
 
 export interface BookingPayload {
     hotelId: string;
@@ -38,48 +44,5 @@ export interface BookingPayload {
     checkOut: string;
     guests: number;
     totalPrice: number;
-}
-
-
-
-export interface BookingRes {
-    _id: string;
-    userId: string;
-    hotelId: {
-        _id: string;
-        vendorId: string;
-        name: string;
-    };
-    roomId: {
-        _id: string;
-        name: string;
-        basePrice: number;
-    };
-    checkIn: string;
-    checkOut: string;
-    guests: number;
-    totalPrice: number;
-    status: 'pending' | 'confirmed' | 'cancelled';
-    payment: "pending" | "success" | "failed" | "refunded";
-    createdAt: string;
-    updatedAt: string;
-}
-
-export interface BookingResponse {
-    success: boolean;
-    message: string;
-    data: BookingRes[];
-    meta: {
-        currentPage: number;
-        pageSize: number;
-        totalData: number;
-        totalPages: number;
-    };
-    statusCode: number;
-}
-
-export interface BookingTableProps {
-    bookings: Booking[];
-    loading: boolean;
 }
 

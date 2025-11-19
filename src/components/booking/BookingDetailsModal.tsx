@@ -76,7 +76,7 @@ const BookingDetailDialog: React.FC<BookingDetailProps> = ({ open, onClose, book
                         </p>
                         <p>
                             <strong className="text-gray-600">Booking ID:</strong>{" "}
-                            <span className="text-gray-500 text-xs">{booking._id}</span>
+                            <span className="text-gray-500 text-xs">{booking.id}</span>
                         </p>
                     </div>
 

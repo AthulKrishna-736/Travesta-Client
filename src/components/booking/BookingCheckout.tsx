@@ -53,7 +53,7 @@ const BookingCheckout: React.FC = () => {
     const { data: roomResponse, isLoading: isRoomLoading } = useGetUserRoomById(roomId!);
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
     const hotel = hotelResponse ? hotelResponse.data as THotel : null;
-    const room = roomResponse ? roomResponse.data as TRoom : null;
+    const room = roomResponse ? roomResponse.data as TRoom : null; //needs to solve this properly fetch the room and hotel separately get their ids simple
 
     const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(
         vendorId || 'random',

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import DataTable from "../common/Table";
-import { Booking, BookingTableProps } from "@/types/booking.types";
+import { IBooking, BookingTableProps } from "@/types/booking.types";
 import BookingDetailModalVendor from "./BookingDetailVendor";
 
 const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
-    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+    const [selectedBooking, setSelectedBooking] = useState<IBooking | null>(null);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
     if (!Array.isArray(bookings)) return <div>No bookings available</div>;
@@ -35,7 +35,7 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
         {
             label: "Details",
             variant: "outline" as const,
-            onClick: (booking: Booking) => {
+            onClick: (booking: IBooking) => {
                 setSelectedBooking(booking);
                 setIsDetailsModalOpen(true);
             },

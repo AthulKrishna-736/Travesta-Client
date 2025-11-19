@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DataTable from "../common/Table";
 import ConfirmationModal from "../common/ConfirmationModa";
-import { Booking, BookingTableProps } from "@/types/booking.types";
+import { IBooking, BookingTableProps } from "@/types/booking.types";
 import { useCancelBooking } from "@/hooks/user/useBooking";
 import BookingDetailDialog from "./BookingDetailsModal";
 import { FileText, Info, Star, XCircle } from "lucide-react";
@@ -16,7 +16,7 @@ import { showError } from "@/utils/customToast";
 
 const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const user = useSelector((state: RootState) => state.user.user);
-    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+    const [selectedBooking, setSelectedBooking] = useState<IBooking | null>(null);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -45,7 +45,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
 
     const handleConfirmCancel = () => {
         if (selectedBooking) {
-            cancelBookingMutate(selectedBooking._id, {
+            cancelBookingMutate(selectedBooking.id, {
                 onSettled: () => {
                     handleCancel();
                 }
@@ -78,7 +78,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
             showLabel: false,
             tooltip: 'Show Details',
             className: 'text-black',
-            onClick: (booking: Booking) => {
+            onClick: (booking: IBooking) => {
                 setSelectedBooking(booking);
                 setIsDetailsModalOpen(true);
             },
@@ -90,7 +90,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
             tooltip: 'Cancel booking',
             icon: XCircle,
             className: 'text-red-500',
-            onClick: (booking: Booking) => {
+            onClick: (booking: IBooking) => {
                 setSelectedBooking(booking);
                 setIsCancelModalOpen(true);
             },
@@ -101,9 +101,9 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
             tooltip: 'Download invoice',
             className: 'text-blue-500',
             icon: FileText,
-            onClick: async (booking: Booking) => {
+            onClick: async (booking: IBooking) => {
                 const blob = await pdf(<InvoiceDoc booking={booking} user={user} />).toBlob();
-                fileDownload(blob, `invoice_${booking._id}.pdf`);
+                fileDownload(blob, `invoice_${booking.id}.pdf`);
             },
         },
         {
@@ -113,7 +113,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
             tooltip: "Rate hotel",
             icon: Star,
             className: "text-yellow-600",
-            onClick: (booking: Booking) => {
+            onClick: (booking: IBooking) => {
                 setSelectedBooking(booking);
                 setIsRatingModalOpen(true);
             },
