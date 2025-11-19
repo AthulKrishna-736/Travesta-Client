@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { env } from "@/config/config";
-import { MapPin, Clock, Sparkles, TrendingUp, Navigation2 } from "lucide-react";
+import { MapPin, Sparkles, TrendingUp, Navigation2 } from "lucide-react";
 
 interface NearbyAttractionsProps {
     lat: number;
@@ -10,13 +10,7 @@ interface NearbyAttractionsProps {
     types?: string;
 }
 
-
-const NearbyAttractions: React.FC<NearbyAttractionsProps> = ({
-    lat,
-    long,
-    layers = "venue",
-    types = "tourist_attraction",
-}) => {
+const NearbyAttractions: React.FC<NearbyAttractionsProps> = ({ lat, long, layers = "venue", types = "tourist_attraction", }) => {
     const [places, setPlaces] = useState<any[]>([]);
     const [selectedPlace, setSelectedPlace] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);

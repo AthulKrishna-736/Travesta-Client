@@ -1,4 +1,4 @@
-import { PaginationProps } from '@/types/component.types'
+import { PaginationProps } from '@/types/custom.types'
 import React from 'react'
 import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

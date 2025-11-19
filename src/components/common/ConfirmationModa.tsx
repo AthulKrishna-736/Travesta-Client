@@ -2,7 +2,7 @@ import React from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { ConfirmationModalProps } from '@/types/component.types'
+import { ConfirmationModalProps } from '@/types/custom.types'
 
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
