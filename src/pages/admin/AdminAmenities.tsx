@@ -7,7 +7,7 @@ import { useCreateAmentiy, useGetAllAmenities } from "@/hooks/admin/useAmenities
 import Pagination from "@/components/common/Pagination";
 import { AdminLayout } from "@/components/layouts/AdminLayout";
 import AmenitiesModal from "@/components/amenities/AmenitiesModal";
-import { TCreateAmenityData } from "@/types/component.types";
+import { TCreateAmenityData } from "@/types/amenities.types";
 import CustomSort from "@/components/common/CustomSort";
 import { ArrowUpAZ, ArrowDownAZ, Clock } from "lucide-react";
 import { TSortOption } from "@/types/custom.types";

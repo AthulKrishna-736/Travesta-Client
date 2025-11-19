@@ -1,9 +1,8 @@
 import { createAmenity, getAllAmenities, toggleBlockAmenity, updateAmenity } from "@/services/adminService";
 import { getUserAmenities } from "@/services/userService";
 import { getVendorAmenities } from "@/services/vendorService";
-import { TCreateAmenityData } from "@/types/component.types";
-import { ICustomError, TSortOption } from "@/types/custom.types";
-import { TGetAmenityResponse } from "@/types/response.types";
+import { IAmenity, TCreateAmenityData } from "@/types/amenities.types";
+import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -14,6 +13,7 @@ export const useGetAllAmenities = (page: number, limit: number, type: 'hotel' | 
         queryFn: () => getAllAmenities(page, limit, type, search, sortOption),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     });
 };
 
@@ -23,6 +23,7 @@ export const useGetUserAmenities = () => {
         queryFn: getUserAmenities,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     })
 }
 
@@ -32,6 +33,7 @@ export const useGetVendorAmenities = () => {
         queryFn: getVendorAmenities,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     });
 }
 
@@ -82,12 +84,12 @@ export const useBlockAmenity = (cbFn: () => void) => {
         onMutate: async (amenityId: string) => {
             await queryClient.cancelQueries({ queryKey: ['amenities'], exact: false });
 
-            const allQueries = queryClient.getQueriesData<TGetAmenityResponse>({ queryKey: ['amenities'] });
+            const allQueries = queryClient.getQueriesData({ queryKey: ['amenities'] });
 
             allQueries.forEach(([key, _]) => {
-                queryClient.setQueryData(key, (prev: TGetAmenityResponse) => ({
+                queryClient.setQueryData(key, (prev: TApiSuccessResponse<IAmenity[]>) => ({
                     ...prev,
-                    data: prev?.data?.map(amenity =>
+                    data: prev.data.map(amenity =>
                         amenity.id == amenityId ? { ...amenity, isActive: !amenity.isActive } : amenity
                     )
                 }))

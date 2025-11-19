@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import DataTable from "../common/Table";
-import { AmenityTableProps, IAmenity } from "@/types/component.types";
+import { AmenityTableProps, IAmenity } from "@/types/amenities.types";
 import { useBlockAmenity, useUpdateAmenity } from "@/hooks/admin/useAmenities";
 import AmenitiesModal from "./AmenitiesModal";
 import ConfirmationModal from "../common/ConfirmationModa";
@@ -79,8 +79,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
                             name: editAmenity.name,
                             description: editAmenity.description,
                             type: editAmenity.type,
-                        }
-                        : undefined
+                        } : undefined
                 }
                 onCancel={() => setEditAmenity(null)}
                 onSubmit={(data) => {
