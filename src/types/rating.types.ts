@@ -1,15 +1,9 @@
+import { IUser } from "./user.types";
 
-interface UserInfo {
-    _id: string;
-    firstName: string;
-    lastName: string;
-    profileImage: string;
-}
-
-export interface TRatingResponse {
+export interface IRating {
     id: string;
     hotelId: string;
-    userId: UserInfo;
+    userId: Pick<IUser, 'firstName' | 'lastName' | 'profileImage'> & { _id: string };
     hospitality: number;
     cleanliness: number;
     facilities: number;
