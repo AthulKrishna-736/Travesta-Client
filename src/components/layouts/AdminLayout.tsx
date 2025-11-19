@@ -1,10 +1,10 @@
+import React from "react"
+import Header from "../header/admin/Header"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AdminSidebar } from "../sidebar/AdminSidebar"
-import React from "react"
-import { AdminLayoutProps } from "@/types/component.types"
-import Header from "../header/admin/Header"
+import { ILayoutProps } from "@/types/custom.types"
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+export const AdminLayout: React.FC<ILayoutProps> = ({ children }) => {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">

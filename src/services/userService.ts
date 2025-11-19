@@ -1,17 +1,24 @@
 import { TResponseChat } from "@/types/chat.types";
 import { axiosInstance } from "./axiosInstance"
-import { User } from "@/types/user.types";
-import { BookingPayload } from "@/types/booking.types";
+import { IUser, User } from "@/types/user.types";
+import { BookingPayload, IBooking } from "@/types/booking.types";
 import { USER_APIS } from "./apiConstants";
 import { TRatingFormData } from "@/components/hotel/RatingModal";
+import { TApiSuccessResponse } from "@/types/custom.types";
+import { IAmenity } from "@/types/amenities.types";
+import { IHotel } from "@/types/hotel.types";
+import { IRoom } from "@/types/room.types";
+import { ITransaction, IWallet } from "@/types/wallet.types";
+import { IRating } from "@/types/rating.types";
+import { ISubscription } from "@/types/plan.types";
 
 //user profile
-export const getUser = async () => {
+export const getUser = async (): Promise<TApiSuccessResponse<IUser>> => {
     const response = await axiosInstance.get(`${USER_APIS.profile}`);
     return response.data;
 }
 
-export const updateUser = async (formData: FormData) => {
+export const updateUser = async (formData: FormData): Promise<TApiSuccessResponse<IUser>> => {
     const response = await axiosInstance.put(`${USER_APIS.profile}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     });
@@ -32,7 +39,7 @@ export const getAllUserHotels = async (
         guests?: number;
         sort?: string;
     } = {}
-) => {
+): Promise<TApiSuccessResponse<IHotel[]>> => {
     const { search, priceRange, selectedAmenities, roomType, checkIn, checkOut, guests, sort } = filters;
 
     const params: any = { page, limit, search, checkIn, checkOut, guests, };
@@ -59,7 +66,7 @@ export const getAllUserHotels = async (
 };
 
 
-export const getUserHotelById = async (hotelId: string) => {
+export const getUserHotelById = async (hotelId: string): Promise<TApiSuccessResponse<IHotel>> => {
     const response = await axiosInstance.get(`${USER_APIS.hotels}/${hotelId}`);
     return response.data;
 };
@@ -72,13 +79,13 @@ export const getCustomDates = async (roomId: string, checkIn: string, checkOut: 
     return response.data;
 }
 
-export const getUserRoomById = async (roomId: string) => {
+export const getUserRoomById = async (roomId: string): Promise<TApiSuccessResponse<IRoom>> => {
     const response = await axiosInstance.get(`${USER_APIS.room}/${roomId}`);
     return response.data;
 }
 
 //amenities
-export const getUserAmenities = async () => {
+export const getUserAmenities = async (): Promise<TApiSuccessResponse<IAmenity[]>> => {
     const response = await axiosInstance.get(`${USER_APIS.amenities}`);
     return response.data;
 }
@@ -107,19 +114,19 @@ export const getUserChatAccess = async () => {
 }
 
 //booking
-export const getUserBookings = async (page: number, limit: number, search?: string, sort?: string) => {
+export const getUserBookings = async (page: number, limit: number, search?: string, sort?: string): Promise<TApiSuccessResponse<IBooking[]>> => {
     const response = await axiosInstance.get(`${USER_APIS.booking}`, {
         params: { page, limit, search, sort },
     });
     return response.data;
 };
 
-export const cancelBooking = async (bookingId: string) => {
+export const cancelBooking = async (bookingId: string): Promise<TApiSuccessResponse<null>> => {
     const response = await axiosInstance.delete(`${USER_APIS.cancelBooking}/${bookingId}`);
     return response.data;
 };
 
-export const createBooking = async (payload: BookingPayload) => {
+export const createBooking = async (payload: BookingPayload): Promise<TApiSuccessResponse<null>> => {
     const response = await axiosInstance.post(`${USER_APIS.booking}`, payload);
     return response.data;
 };
@@ -135,17 +142,17 @@ export const addWalletCredit = async (amount: number) => {
     return response.data;
 };
 
-export const createWallet = async () => {
+export const createWallet = async (): Promise<TApiSuccessResponse<IWallet>> => {
     const response = await axiosInstance.post(`${USER_APIS.wallet}`);
     return response.data;
 };
 
-export const getWallet = async () => {
+export const getWallet = async (): Promise<TApiSuccessResponse<IWallet>> => {
     const response = await axiosInstance.get(`${USER_APIS.wallet}`);
     return response.data;
 };
 
-export const getUserTransactions = async (page: number, limit: number) => {
+export const getUserTransactions = async (page: number, limit: number): Promise<TApiSuccessResponse<ITransaction[]>> => {
     const response = await axiosInstance.get(`${USER_APIS.transactions}`, {
         params: { page, limit },
     });
@@ -163,13 +170,13 @@ export const confirmBooking = async (
         totalPrice: number;
     },
     method: 'wallet' | 'online'
-) => {
+): Promise<TApiSuccessResponse<null>> => {
     const response = await axiosInstance.post(`${USER_APIS.payment}/${vendorId}/booking?method=${method}`, data);
     return response.data;
 };
 
 //subscription
-export const getUserSubscriptions = async () => {
+export const getUserSubscriptions = async (): Promise<TApiSuccessResponse<ISubscription[]>> => {
     const response = await axiosInstance.get(`${USER_APIS.plans}`);
     return response.data;
 }
@@ -184,18 +191,18 @@ export const getActivePlan = async () => {
     return response.data;
 }
 
-export const cancelSubscription = async () => {
+export const cancelSubscription = async (): Promise<TApiSuccessResponse<null>> => {
     const response = await axiosInstance.post(`${USER_APIS.cancelPlan}`);
     return response.data;
 }
 
 //ratings
-export const createRating = async (data: TRatingFormData & { hotelId: string }) => {
+export const createRating = async (data: TRatingFormData & { hotelId: string }): Promise<TApiSuccessResponse<IRating>> => {
     const response = await axiosInstance.post(`${USER_APIS.rating}`, data);
     return response.data;
 };
 
-export const updateRating = async (data: TRatingFormData & { ratingId: string }) => {
+export const updateRating = async (data: TRatingFormData & { ratingId: string }): Promise<TApiSuccessResponse<IRating>> => {
     const response = await axiosInstance.put(`${USER_APIS.rating}`, data);
     return response.data;
 };

@@ -1,14 +1,11 @@
-import React, { ReactElement, useState } from 'react'
+import React, { useState } from 'react'
 import Header from '../header/user/Header'
 import UserSidebar from '../sidebar/UserSidebar'
 import { Menu } from 'lucide-react';
 import Footer from '../footer/Footer';
+import { ILayoutProps } from '@/types/custom.types';
 
-interface IUserLayoutProps {
-    children: ReactElement;
-}
-
-const UserLayout: React.FC<IUserLayoutProps> = ({ children }) => {
+const UserLayout: React.FC<ILayoutProps> = ({ children }) => {
     const [sidebarOpen, setSideBarOpen] = useState<boolean>(true);
     return (
         <div className='min-h-screen flex flex-col bg-[#f2f2f2]'>

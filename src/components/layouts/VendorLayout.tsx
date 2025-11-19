@@ -1,13 +1,9 @@
-import React, { ReactElement, useState } from 'react'
+import React, { useState } from 'react'
 import Header from '../header/vendor/Header'
 import Sidebar from '../sidebar/Sidebar';
+import { ILayoutProps } from '@/types/custom.types';
 
-interface VendorLayoutProps {
-    children: ReactElement;
-    title?: string;
-}
-
-const VendorLayout: React.FC<VendorLayoutProps> = ({ children, title }) => {
+const VendorLayout: React.FC<ILayoutProps> = ({ children, title }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
