@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
-import { ProfileSectionProps, UpdateUserFormValues } from "@/types/component.types";
+import { ProfileSectionProps, UpdateUserFormValues } from "@/types/user.types";
 import { validationSchema } from "@/utils/validations/commonValidation";
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
@@ -24,7 +24,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             email: user.email || "",
-            password: user.password || "",
+            password: "",
             phone: user.phone || 0,
         });
     }, [user]);

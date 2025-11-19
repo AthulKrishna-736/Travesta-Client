@@ -54,12 +54,12 @@ const LandingHeader = () => {
                     <div className="mt-6 flex flex-col gap-2">
                         <Link to="/user/login" onClick={() => setOpen(false)}>
                             <Button variant="outline" className="bg-white text-black border border-black w-full text-sm">
-                                Login
+                                Login or <br />Create Account
                             </Button>
                         </Link>
                         <Link to="/vendor/login" onClick={() => setOpen(false)}>
                             <Button className="bg-yellow-400 text-black hover:bg-yellow-300 w-full text-sm">
-                                Become a Vendor ?
+                                Become a Vendor
                             </Button>
                         </Link>
                     </div>

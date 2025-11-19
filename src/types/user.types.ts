@@ -20,27 +20,21 @@ export interface IAdmin {
 }
 
 export interface IUser {
-  id: string,
-  firstName: string,
-  lastName: string,
-  isGoogle: boolean,
-  email: string,
-  password?: string,
-  role: Exclude<TRoles, 'admin'>,
-  phone: number,
-  isBlocked: boolean,
-  profileImage?: string,
-  wishlist: string[],
-  isVerified: boolean,
-  verificationReason?: string,
-  kycDocuments?: string[],
-  createdAt: Date,
+  id: string
+  firstName: string
+  lastName: string
+  isGoogle: boolean
+  email: string
+  role: TRoles
+  phone: number
+  isBlocked: boolean
+  subscription: string | null;
+  profileImage?: string
+  isVerified: boolean
+  verificationReason?: string
+  kycDocuments?: []
+  createdAt: Date
   updatedAt: Date
-}
-
-export interface UserTableProps {
-  users: User[]
-  loading: boolean
 }
 
 export type TSubscriptionType = 'basic' | 'medium' | 'vip';
@@ -53,14 +47,6 @@ export type Vendor = {
   isVerified: boolean
 }
 
-export interface VendorRequestTableProps {
-  vendors: Vendor[]
-  loading: boolean
-  page: number
-  limit: number
-  search: string
-}
-
 export type UpdateUser = {
   id: string
   firstName: string
@@ -70,8 +56,36 @@ export type UpdateUser = {
   phone: number
   isVerified: boolean
 }
+export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified' | 'id'>;
 
-export interface WishlistItem {
-  id: string
-  image: string
+//component props types
+export interface UserTableProps {
+  users: User[]
+  loading: boolean
 }
+
+export interface VendorRequestTableProps {
+  vendors: Vendor[]
+  loading: boolean
+  page: number
+  limit: number
+  search: string
+}
+
+export interface KycDocumentsProps {
+  userId: string;
+  onUpdate: (payload: { userId: string; files: File[] }) => void;
+}
+
+export interface ProfileSectionProps {
+  user: IUser;
+  onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => void;
+}
+
+export interface ShowDetailModalProps {
+  open: boolean
+  title: string
+  data: IUser
+  onCancel: () => void
+}
+

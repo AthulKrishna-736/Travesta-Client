@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux"
 import { showError, showSuccess } from "@/utils/customToast"
 import { setUser } from "@/store/slices/userSlice"
 import { getAllUsers, toggleBlockUser } from "@/services/adminService"
-import { TGetAllUsersResponse } from "@/types/response.types"
-import { ICustomError, TSortOption } from "@/types/custom.types"
+import { IUser } from "@/types/user.types"
+import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
 
 export const useGetUser = () => {
     return useQuery({
@@ -55,11 +55,10 @@ export const useBlockUser = () => {
         onMutate: async (userId: string) => {
             await queryClient.cancelQueries({ queryKey: ['admin-users'], exact: false });
 
-            const allQueries = queryClient.getQueriesData<TGetAllUsersResponse>({ queryKey: ['admin-users'] });
-
+            const allQueries = queryClient.getQueriesData({ queryKey: ['admin-users'] });
 
             allQueries.forEach(([key, _]) => {
-                queryClient.setQueryData(key, (prev: TGetAllUsersResponse) => ({
+                queryClient.setQueryData(key, (prev: TApiSuccessResponse<IUser[]>) => ({
                     ...prev,
                     data: prev?.data?.map(user =>
                         user.id === userId ? { ...user, isBlocked: !user.isBlocked } : user

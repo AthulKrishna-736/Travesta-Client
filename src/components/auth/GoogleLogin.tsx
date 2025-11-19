@@ -1,13 +1,14 @@
 import React from "react";
-import { GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { IGoogleLoginProps } from "@/types/auth.types";
 import { useGoogleLogin } from "@/hooks/auth/useGoogleLogin";
+import { showError } from "@/utils/customToast";
 
-export const GoogleLoginButton: React.FC<IGoogleLoginProps> = ({ role })=> {
+export const GoogleLoginButton: React.FC<IGoogleLoginProps> = ({ role }) => {
 
     const { mutate: googleLoginFn } = useGoogleLogin(role)
-    const handleSuccess = (credentialRes: any) => {
-        if (credentialRes?.credential) {
+    const handleSuccess = (credentialRes: CredentialResponse) => {
+        if (credentialRes.credential) {
             googleLoginFn({ credential: credentialRes.credential, role });
         } else {
             console.log('No credential found')
@@ -15,18 +16,18 @@ export const GoogleLoginButton: React.FC<IGoogleLoginProps> = ({ role })=> {
     }
 
     const handleError = () => {
-        console.log('Google login failed: ')
+        showError('Google login failed')
     }
 
     return (
         <div className="w-full flex justify-center mt-4">
             <GoogleLogin
-            onSuccess={handleSuccess}
-            onError={handleError}
-            width={100}
-            size="large"
-            shape="rectangular"
-            text="continue_with"
+                onSuccess={handleSuccess}
+                onError={handleError}
+                width={100}
+                size="large"
+                shape="rectangular"
+                text="continue_with"
             />
         </div>
     )

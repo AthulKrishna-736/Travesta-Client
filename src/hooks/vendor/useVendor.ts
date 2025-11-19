@@ -2,8 +2,8 @@ import { getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
 import { setVendor } from "@/store/slices/vendorSlice"
 import { TUpdateVendorReqValues } from "@/types/auth.types"
-import { ICustomError, TSortOption } from "@/types/custom.types"
-import { TGetVendorsResponse } from "@/types/response.types"
+import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
+import { IUser } from "@/types/user.types"
 import { showError, showSuccess } from "@/utils/customToast"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useDispatch } from "react-redux"
@@ -63,7 +63,7 @@ export const useKycUpload = () => {
 
 export const useGetVendors = (page: number, limit: number, search?: string, sortOption?: TSortOption) => {
     return useQuery({
-        queryKey: ['admin-vendor', page, limit, search, sortOption],
+        queryKey: ['admin-vendor', { page, limit, search, sortOption }],
         queryFn: () => getVendors(page, limit, search, sortOption),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData
@@ -76,14 +76,14 @@ export const useVendorVerify = (page: number, limit: number, search: string, onS
     return useMutation({
         mutationFn: (values: TUpdateVendorReqValues) => updateVendorVerify(values),
         onMutate: async (values) => {
-            await queryClient.cancelQueries({ queryKey: ['admin-vendor', page, limit, search] });
+            await queryClient.cancelQueries({ queryKey: ['admin-vendor'], exact: false });
 
-            const previousVendors = queryClient.getQueryData<ICustomError[]>(['admin-vendor', page, limit, search]);
+            const previousVendors = queryClient.getQueriesData({ queryKey: ['admin-vendor'], exact: false });
 
-            queryClient.setQueryData(['admin-vendor', page, limit, search], (oldData: TGetVendorsResponse) => {
+            queryClient.setQueryData(['admin-vendor'], (prev: TApiSuccessResponse<IUser[]>) => {
                 return {
-                    ...oldData,
-                    data: oldData?.data?.map((vendor) => {
+                    ...prev,
+                    data: prev?.data?.map((vendor) => {
                         if (vendor.id == values.vendorId) {
                             vendor.isVerified = values.isVerified
                             vendor.verificationReason = values.reason

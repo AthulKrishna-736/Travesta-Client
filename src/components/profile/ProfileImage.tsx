@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { showError } from "@/utils/customToast";
-import { ImageUploadProps } from "@/types/component.types";
+import { ImageUploadProps } from "@/types/custom.types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
