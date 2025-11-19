@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Star, User } from 'lucide-react';
-import { TRatingResponse } from '@/types/rating.types';
+import { IRating } from '@/types/rating.types';
 
 interface RatingDetailsProps {
-    ratings: TRatingResponse[];
+    ratings: IRating[];
 }
 
 const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {

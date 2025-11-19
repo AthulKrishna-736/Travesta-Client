@@ -5,7 +5,7 @@ interface RevenueChartProps {
     data: Array<{ date: string; revenue: number }>;
 }
 
-export const RevenueChart = ({ data }: RevenueChartProps) => {
+const RevenueChart = ({ data }: RevenueChartProps) => {
     return (
         <Card className="p-6 shadow-card">
             <h3 className="text-lg font-semibold text-gray-800 mb-6">Revenue Overview</h3>

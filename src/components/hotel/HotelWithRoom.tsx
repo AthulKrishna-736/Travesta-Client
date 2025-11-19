@@ -1,14 +1,17 @@
 import React, { RefObject } from 'react'
 import { MapPin, Users } from 'lucide-react';
-import { THotelResponse, TRoomResponse } from '@/types/response.types';
+import { IRating } from '@/types/rating.types';
+import { RATINGS } from './HotelCard';
+import { IRoom } from '@/types/room.types';
+import { IHotel } from '@/types/hotel.types';
 
 interface IHotelWithRoom {
-    hotel: THotelResponse;
-    rooms: TRoomResponse[];
+    hotel: IHotel;
+    rooms: IRoom[];
     mapRef: RefObject<HTMLDivElement | null>;
     reviewRef: RefObject<HTMLDivElement | null>;
     roomsRef: RefObject<HTMLDivElement | null>;
-    ratings: any;
+    ratings: IRating[];
     roomSubmit: (roomId: string) => void;
 }
 
@@ -18,15 +21,15 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
     const averages = totalRatings > 0
         ? {
             hospitality:
-                ratings.reduce((acc: number, r: any) => acc + r.hospitality, 0) / totalRatings,
+                ratings.reduce((acc, r) => acc + r.hospitality, 0) / totalRatings,
             cleanliness:
-                ratings.reduce((acc: number, r: any) => acc + r.cleanliness, 0) / totalRatings,
+                ratings.reduce((acc, r) => acc + r.cleanliness, 0) / totalRatings,
             facilities:
-                ratings.reduce((acc: number, r: any) => acc + r.facilities, 0) / totalRatings,
+                ratings.reduce((acc, r) => acc + r.facilities, 0) / totalRatings,
             room:
-                ratings.reduce((acc: number, r: any) => acc + r.room, 0) / totalRatings,
+                ratings.reduce((acc, r) => acc + r.room, 0) / totalRatings,
             moneyValue:
-                ratings.reduce((acc: number, r: any) => acc + r.moneyValue, 0) / totalRatings,
+                ratings.reduce((acc, r) => acc + r.moneyValue, 0) / totalRatings,
         }
         : {
             hospitality: 0,
@@ -47,15 +50,6 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, rooms, mapRef, reviewR
         ).toFixed(1)
         : "0.0";
 
-
-    const RATINGS = [
-        { min: 4.5, label: "Excellent" },
-        { min: 4.0, label: "Very Good" },
-        { min: 3.5, label: "Good" },
-        { min: 3.0, label: "Average" },
-        { min: 2.0, label: "Poor" },
-        { min: 0, label: "Very Poor" },
-    ];
 
     const getRatingLabel = (rating: number): string => {
         const match = RATINGS.find(r => rating >= r.min);

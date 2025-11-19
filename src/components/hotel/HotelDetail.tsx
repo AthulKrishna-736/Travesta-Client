@@ -10,11 +10,12 @@ import { Lock, MapIcon } from 'lucide-react';
 import WeatherDetails from '../common/WeatherDetails';
 import NearbyAttractions from '../common/NearbyAttractions';
 import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
-import { THotelResponse, TRoomResponse } from '@/types/response.types';
+import { THotelResponse } from '@/types/response.types';
 import PropertyRules from './PropertyRules';
 import { useGetHotelRatings } from '@/hooks/vendor/useRating';
-import { TRatingResponse } from '@/types/rating.types';
+import { IRating } from '@/types/rating.types';
 import RatingDetails from './RatingDetails';
+import { IRoom } from '@/types/room.types';
 
 
 const HotelDetail: React.FC = () => {
@@ -32,9 +33,9 @@ const HotelDetail: React.FC = () => {
     const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '', checkInParam, checkOutParam);
     const { data: ratingResponse } = useGetHotelRatings(hotelId!);
 
-    const hotel = hotelResponse?.data?.[0]?.hotelId as THotelResponse;
-    const rooms = hotelResponse?.data as TRoomResponse[] || [];
-    const ratings = ratingResponse?.data as TRatingResponse[] || [];
+    const hotel = hotelResponse?.data?.[0]?.hotelId as ;//fix needed here
+    const rooms = hotelResponse?.data as IRoom[] || [];
+    const ratings = ratingResponse?.data as IRating[] || [];
 
     const { data: planResponse } = useGetUserActivePlan();
     const planHistory = planResponse ? planResponse?.data : null;
@@ -135,7 +136,7 @@ const HotelDetail: React.FC = () => {
 
             {/* Other related rooms */}
             <div ref={roomsRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                {rooms.map((room: TRoomResponse) => (
+                {rooms.map((room) => (
                     <RoomCard
                         key={room.id}
                         room={room}
@@ -149,9 +150,9 @@ const HotelDetail: React.FC = () => {
             </div>
 
             {/* Photo by guests */}
-            {/* <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 Guest photos section
-            </div> */}
+            </div>
 
             {/* Weather Details */}
             <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">

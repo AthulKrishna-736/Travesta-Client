@@ -5,7 +5,7 @@ interface PaymentStatusChartProps {
     data: Array<{ status: string; count: number; color: string }>;
 }
 
-export const PaymentStatusChart = ({ data }: PaymentStatusChartProps) => {
+const PaymentStatusChart = ({ data }: PaymentStatusChartProps) => {
     return (
         <Card className="p-6 shadow-card">
             <h3 className="text-lg font-semibold text-foreground mb-6">Payment Status Overview</h3>

@@ -5,7 +5,7 @@ interface BookingsStatusChartProps {
     data: Array<{ name: string; value: number; color: string }>;
 }
 
-export const BookingsStatusChart = ({ data }: BookingsStatusChartProps) => {
+const BookingsStatusChart = ({ data }: BookingsStatusChartProps) => {
     const total = data.reduce((sum, item) => sum + item.value, 0);
 
     return (

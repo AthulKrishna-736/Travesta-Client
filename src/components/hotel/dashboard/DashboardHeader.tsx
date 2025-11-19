@@ -8,7 +8,7 @@ interface DashboardHeaderProps {
     onPeriodChange: (period: 'week' | 'month' | 'year') => void;
 }
 
-export const DashboardHeader = ({ hotelName, location, selectedPeriod, onPeriodChange }: DashboardHeaderProps) => {
+const DashboardHeader = ({ hotelName, location, selectedPeriod, onPeriodChange }: DashboardHeaderProps) => {
     const periods = ["week", "month", "year"];
 
     return (

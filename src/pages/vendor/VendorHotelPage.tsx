@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import HotelTable from '@/components/hotel/HotelList';
 import RoomTable from '@/components/room/RoomList';
-import { IHotel } from '@/types/hotel.types';
+import { IHotel, TCreateHotel } from '@/types/hotel.types';
 import { UseCreateHotel } from '@/hooks/vendor/useHotel';
 import CreateHotelModal from '@/components/hotel/CreateHotelModal';
 import CreateRoomModal from '@/components/room/CreateRoomModal';
@@ -37,7 +37,7 @@ const VendorHotelsPage: React.FC = () => {
     const { mutate: createRoomfn, isPending: isCreatingRoom } = useCreateRoom(closeRoomModal);
 
     //submit handlers
-    const handleCreateHotel = async (hotelData: IHotel) => {
+    const handleCreateHotel = async (hotelData: TCreateHotel) => {
         const formData = new FormData();
         formData.append('name', hotelData.name.trim());
         formData.append('description', hotelData.description.trim());

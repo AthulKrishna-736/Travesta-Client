@@ -14,7 +14,7 @@ interface RoomPerformanceTableProps {
     data: RoomData[];
 }
 
-export const RoomPerformanceTable = ({ data }: RoomPerformanceTableProps) => {
+const RoomPerformanceTable = ({ data }: RoomPerformanceTableProps) => {
     return (
         <Card className="p-6 shadow-card">
             <h3 className="text-lg font-semibold text-foreground mb-6">Top Performing Rooms</h3>

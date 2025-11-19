@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { MapPin, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { IAmenity } from "@/types/amenities.types";
 
-interface IHotel {
+interface IHotelCard {
     id: string;
     name: string;
     description: string;
     images: string[];
-    amenities: { _id: string; name: string }[];
+    amenities: (Pick<IAmenity, 'name'> & { _id: string })[];
     city: string;
     state: string;
     address: string;
@@ -27,27 +28,24 @@ interface IHotel {
 }
 
 interface HotelCardProps {
-    hotel: IHotel;
-    checkIn: string;
-    checkOut: string;
-    guests: number;
+    hotel: IHotelCard;
 }
 
-const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests }) => {
+export const RATINGS: { min: number; label: string }[] = [
+    { min: 4.5, label: "Excellent" },
+    { min: 4.0, label: "Very Good" },
+    { min: 3.0, label: "Good" },
+    { min: 2.0, label: "Average" },
+    { min: 1.0, label: "Fair" },
+    { min: 0, label: "Unrated" },
+];
+
+const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
     const navigate = useNavigate();
     const [imagePreview, setImagePreview] = useState<string>('');
     const [showBreakdown, setShowBreakdown] = useState(false);
 
     const { id, name, description, images, amenities, state, rating, city, room } = hotel;
-
-    const RATINGS: { min: number; label: string }[] = [
-        { min: 4.5, label: "Excellent" },
-        { min: 4.0, label: "Very Good" },
-        { min: 3.5, label: "Good" },
-        { min: 3.0, label: "Average" },
-        { min: 2.0, label: "Poor" },
-        { min: 0, label: "Very Poor" },
-    ];
 
     const ratingMetrics = [
         { label: "Hospitality", value: rating.averages.hospitality },
@@ -83,7 +81,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
                 <img src={imagePreview} alt='HotelImage' loading="lazy" className="h-full w-full object-cover rounded-sm" />
                 <div className="h-11 w-full flex my-1 justify-between ">
                     {images && images.length > 0 && images.slice(0, 3).map((i, index) => {
-                        return <img className="h-full w-12 object-cover rounded-sm cursor-pointer" key={i} src={i} alt={`${index} Image`} onMouseEnter={() => handleSetPreviewImage(i)} />
+                        return <img className="h-full w-12 object-cover rounded-sm cursor-pointer" loading="lazy" key={i} src={i} alt={`${index} Image`} onMouseEnter={() => handleSetPreviewImage(i)} />
                     })}
                     {images && images.length > 3 && (
                         <div className="relative h-full w-12">
@@ -92,13 +90,8 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
                                 src={images[4]}
                                 loading="lazy"
                                 alt="extra images"
-                                onMouseEnter={() => handleSetPreviewImage(images[4])}
                             />
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-sm cursor-pointer"
-                                onMouseEnter={(e) => {
-                                    e.stopPropagation();
-                                }}
-                            >
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-sm cursor-pointer">
                                 <span className="text-white text-[10px] font-semibold">View All</span>
                             </div>
                         </div>
@@ -164,10 +157,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
 
                                     <div className="flex items-center gap-2">
                                         <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full bg-[#0d92ff]"
-                                                style={{ width: `${(value / 5) * 100}%` }}
-                                            />
+                                            <div className="h-full bg-[#0d92ff]" style={{ width: `${(value / 5) * 100}%` }} />
                                         </div>
                                         <span className="font-medium w-8 text-black">
                                             {value.toFixed(1)}
@@ -192,7 +182,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, checkIn, checkOut, guests 
                 <div className="flex gap-1 items-center">
                     <button
                         className="text-[#0084ff] rounded-sm font-semibold cursor-pointer"
-                        onClick={() => navigate(`/user/hotels/${id}?checkIn=${encodeURIComponent(checkIn)}&checkOut=${encodeURIComponent(checkOut)}&guests=${encodeURIComponent(guests)}`)}
+                        onClick={() => navigate(`/user/hotels/${id}`)}
                     >
                         View Details
                     </button>

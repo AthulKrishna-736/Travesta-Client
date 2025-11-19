@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DataTable from "@/components/common/Table";
-import { IHotel } from "@/types/hotel.types";
+import { IHotel, TUpdateHotel } from "@/types/hotel.types";
 import ShowHotelDetailsModal from "../hotel/ShowHotelDetails";
-import { IHotelTableProps } from "@/types/component.types";
+import { IHotelTableProps } from "@/types/hotel.types";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
@@ -67,16 +67,16 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
 
     const { mutate: updateHotelfn, isPending } = useUpdateHotel(handleEditClose);
 
-    const handleEditHotel = (hotelData: IHotel & { oldImages: string[] }) => {
+    const handleEditHotel = (hotelData: TUpdateHotel) => {
         const formData = new FormData();
-        formData.append('name', hotelData.name.trim());
-        formData.append('description', hotelData.description.trim());
-        formData.append('address', hotelData.address.trim());
-        formData.append('city', hotelData.city.trim());
-        formData.append('state', hotelData.state.trim());
-        formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
-        formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
-        formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
+        if (hotelData.name) formData.append('name', hotelData.name.trim());
+        if (hotelData.description) formData.append('description', hotelData.description.trim());
+        if (hotelData.address) formData.append('address', hotelData.address.trim());
+        if (hotelData.city) formData.append('city', hotelData.city.trim());
+        if (hotelData.state) formData.append('state', hotelData.state.trim());
+        if (hotelData.tags) formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
+        if (hotelData.amenities) formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
+        if (hotelData.geoLocation) formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
 
         const urls = hotelData.oldImages ? Array.isArray(hotelData.oldImages) ? hotelData.oldImages : [hotelData.oldImages] : [];
         formData.append('images', JSON.stringify(urls));
@@ -87,17 +87,17 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
             });
         }
 
-        formData.append('checkInTime', hotelData.checkInTime);
-        formData.append('checkOutTime', hotelData.checkOutTime);
-        formData.append('minGuestAge', hotelData.minGuestAge.toString());
+        if (hotelData.checkInTime) formData.append('checkInTime', hotelData.checkInTime);
+        if (hotelData.checkOutTime) formData.append('checkOutTime', hotelData.checkOutTime);
+        if (hotelData.minGuestAge) formData.append('minGuestAge', hotelData.minGuestAge.toString());
 
         if (hotelData.breakfastFee) {
             formData.append('breakfastFee', hotelData.breakfastFee.toString())
         }
 
-        formData.append('petsAllowed', hotelData.petsAllowed === true ? 'true' : 'false');
-        formData.append('outsideFoodAllowed', hotelData.outsideFoodAllowed === true ? 'true' : 'false');
-        formData.append('idProofAccepted', JSON.stringify(hotelData.idProofAccepted))
+        if (hotelData.petsAllowed) formData.append('petsAllowed', hotelData.petsAllowed === true ? 'true' : 'false');
+        if (hotelData.outsideFoodAllowed) formData.append('outsideFoodAllowed', hotelData.outsideFoodAllowed === true ? 'true' : 'false');
+        if (hotelData.idProofAccepted) formData.append('idProofAccepted', JSON.stringify(hotelData.idProofAccepted))
         if (hotelData.specialNotes) {
             formData.append('specialNotes', hotelData.specialNotes.trim());
         };
@@ -185,6 +185,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                     onClose={() => setDetailModalOpen(false)}
                 />
             )}
+
             {isEdit && selectedHotel && (
                 <CreateHotelModal
                     open={isEdit}

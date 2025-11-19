@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import React, { useEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IAmenity, ICreateHotelModalProps } from '@/types/component.types';
+import { ICreateHotelModalProps, TUpdateHotel } from '@/types/hotel.types';
 import { TCreateHotel, TIdProof } from '@/types/hotel.types';
 import { Loader2, X } from 'lucide-react';
 import { showError } from '@/utils/customToast';
@@ -14,6 +14,7 @@ import MultiImageUploader from '@/components/common/ImageUpload';
 import { hotelSchema } from '@/utils/validations/commonValidation';
 import { useGetVendorAmenities } from '@/hooks/admin/useAmenities';
 import GeoMap from '../maps/GeoMap';
+import { IAmenity } from '@/types/amenities.types';
 
 
 const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onSubmit, isLoading, hotelData = null, isEdit = false, }) => {
@@ -49,7 +50,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
     const { register, handleSubmit, formState: { errors }, reset } = useForm<TFormData>({
         resolver: yupResolver(hotelSchema),
     });
-
 
     useEffect(() => {
         if (hotelData) {
@@ -140,13 +140,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
     }
 
     const submitHandler: SubmitHandler<TFormData> = (data) => {
-
-        console.log('check data: ', JSON.stringify(data))
-        console.log('hotel data: ', hotelData)
-        console.log('geolocation: ', geoLocation)
-        console.log('id proofs: ', idProofs)
-        console.log('images files: ', imageFiles)
-
         if (!geoLocation || geoLocation !== null && geoLocation.length < 0) {
             showError('Please select the GeoLocation')
             return;
@@ -191,16 +184,15 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
             };
             onSubmit(payload);
         } else {
-            const payload = {
+            const payload: TUpdateHotel = {
                 ...data,
-                id: hotelData?.id,
+                id: hotelData ? hotelData.id : '',
                 tags,
                 amenities: selectedAmenities,
                 images: newFiles,
                 geoLocation: geoLocation,
                 breakfastFee: breakfastFee ?? undefined,
                 idProofAccepted: idProofs,
-                idProofError: idProofs,
                 oldImages: oldUrls,
             }
             onSubmit(payload)

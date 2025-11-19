@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { DollarSign, Calendar, Percent, TrendingUp } from "lucide-react";
-import { DashboardHeader } from "@/components/hotel/dashboard/DashboardHeader";
-import { MetricCard } from "@/components/hotel/dashboard/MetricCard";
-import { RevenueChart } from "@/components/hotel/dashboard/RevenueChart";
-import { BookingsStatusChart } from "@/components/hotel/dashboard/BookingStatusChart";
-import { PaymentStatusChart } from "@/components/hotel/dashboard/PaymentStatusChart";
-import { RoomPerformanceTable } from "@/components/hotel/dashboard/RoomPerformanceTable";
+import DashboardHeader from "@/components/hotel/dashboard/DashboardHeader";
+import MetricCard from "@/components/hotel/dashboard/MetricCard";
+import RevenueChart from "@/components/hotel/dashboard/RevenueChart";
+import BookingsStatusChart from "@/components/hotel/dashboard/BookingStatusChart";
+import PaymentStatusChart from "@/components/hotel/dashboard/PaymentStatusChart";
+import RoomPerformanceTable from "@/components/hotel/dashboard/RoomPerformanceTable";
 import VendorLayout from "@/components/layouts/VendorLayout";
 import { useGetHotelAnalytics } from "@/hooks/vendor/useHotel";
 import { useParams } from "react-router-dom";
