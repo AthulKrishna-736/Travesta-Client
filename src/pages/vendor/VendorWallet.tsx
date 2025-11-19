@@ -13,10 +13,13 @@ import CheckoutForm from "@/components/wallet/CheckoutForm";
 import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetVendorTransactions, useGetWallet } from "@/hooks/user/useWallet";
 import WalletSection from "@/components/wallet/Wallet";
 import VendorLayout from "@/components/layouts/VendorLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const VendorWalletPage = () => {
+    const vendorName = useSelector((state: RootState) => state.vendor.vendor?.firstName);
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [showPayment, setShowPayment] = useState(false);
@@ -87,7 +90,7 @@ const VendorWalletPage = () => {
                     <WalletSection
                         balance={walletData.balance}
                         transactions={transactionData || []}
-                        userName={walletData.user?.name || "Vendor"}
+                        userName={vendorName || "Vendor"}
                         loading={transactionLoading}
                         addMoney={() => setDialogOpen(true)}
                     />

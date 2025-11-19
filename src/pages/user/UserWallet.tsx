@@ -14,10 +14,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useNavigate } from "react-router-dom";
 import { TPagination } from "@/types/custom.types";
 import UserLayout from "@/components/layouts/UserLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const UserWallet: React.FC = () => {
+    const userName = useSelector((state: RootState) => state.user.user?.firstName);
     const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const [showPayment, setShowPayment] = useState(false);
@@ -92,7 +95,7 @@ const UserWallet: React.FC = () => {
                         <WalletSection
                             balance={walletData.balance}
                             transactions={transactionData || []}
-                            userName={walletData.user?.name || "User"}
+                            userName={userName || "User"}
                             loading={transactionLoading}
                             addMoney={() => setDialogOpen(true)}
                         />

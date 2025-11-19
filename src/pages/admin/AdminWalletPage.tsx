@@ -4,8 +4,11 @@ import { AdminLayout } from '@/components/layouts/AdminLayout'
 import WalletSection from '@/components/wallet/Wallet';
 import { useGetUserTransactions, useGetWallet } from '@/hooks/user/useWallet';
 import { TPagination } from '@/types/custom.types';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 const AdminWalletPage = () => {
+    const adminName = useSelector((state: RootState) => state.admin.admin?.firstName);
     const [page, setPage] = useState(1);
     const limit = 5;
 
@@ -23,7 +26,7 @@ const AdminWalletPage = () => {
                     <WalletSection
                         balance={walletData.balance}
                         transactions={transactionData || []}
-                        userName={walletData.user?.name || "User"}
+                        userName={adminName || "User"}
                         loading={transactionLoading}
                     />
                 )}
