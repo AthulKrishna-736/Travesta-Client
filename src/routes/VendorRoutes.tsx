@@ -1,6 +1,7 @@
 import NotFound from '@/components/auth/Page404'
 import VendorBookingListPage from '@/pages/vendor/VendorBookingList'
 import VendorChatPage from '@/pages/vendor/VendorChatPage'
+import VendorCouponPage from '@/pages/vendor/VendorCouponPage'
 import VendorDashboard from '@/pages/vendor/VendorDash'
 import VendorForgotPassPage from '@/pages/vendor/VendorForgotPassPage'
 import VendorHotelDashboard from '@/pages/vendor/VendorHotelDashboard'
@@ -82,6 +83,13 @@ const VendorRoutes: React.FC = () => {
             <Route path='hotel-dashboard/:hotelId' element={
                 <ProtectVendor>
                     <VendorHotelDashboard />
+                </ProtectVendor>
+            }
+            />
+
+            <Route path='coupons' element={
+                <ProtectVendor>
+                    <VendorCouponPage />
                 </ProtectVendor>
             }
             />

@@ -7,6 +7,7 @@ import { IAmenity } from "@/types/amenities.types";
 import { IHotel } from "@/types/hotel.types";
 import { IRoom } from "@/types/room.types";
 import { IRating } from "@/types/rating.types";
+import { ICoupon, TCreateCoupon, TUpdateCoupon } from "@/types/coupon.types";
 
 
 //vendor profile
@@ -186,7 +187,32 @@ export const getVendorAnalytics = async (startDate?: string, endDate?: string) =
 }
 
 //ratings
-export const getHotelRatings = async (hotelId: string): Promise<TApiSuccessResponse<IRating[]>> => {
-    const response = await axiosInstance.get(`${VENDOR_APIS.rating}/${hotelId}`);
+export const getHotelRatings = async (hotelId: string, page: number, limit: number): Promise<TApiSuccessResponse<IRating[]>> => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.rating}/${hotelId}`, {
+        params: { page, limit }
+    });
+    return response.data;
+}
+
+//coupons
+export const createCoupon = async (data: TCreateCoupon): Promise<TApiSuccessResponse<ICoupon>> => {
+    const response = await axiosInstance.post(`${VENDOR_APIS.coupon}`, data)
+    return response.data;
+}
+
+export const updateCoupon = async (couponId: string, data: TUpdateCoupon): Promise<TApiSuccessResponse<ICoupon>> => {
+    const response = await axiosInstance.put(`${VENDOR_APIS.coupon}/${couponId}`, data)
+    return response.data;
+}
+
+export const getVendorCoupon = async (page: number, limit: number, search?: string): Promise<TApiSuccessResponse<ICoupon[]>> => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.coupon}`, {
+        params: { page, limit, search }
+    });
+    return response.data;
+}
+
+export const toggleCouponStatus = async (couponId: string): Promise<TApiSuccessResponse<ICoupon>> => {
+    const response = await axiosInstance.patch(`${VENDOR_APIS.coupon}/${couponId}`);
     return response.data;
 }

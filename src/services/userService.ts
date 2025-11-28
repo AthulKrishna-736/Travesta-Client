@@ -11,6 +11,7 @@ import { IRoom } from "@/types/room.types";
 import { ITransaction, IWallet } from "@/types/wallet.types";
 import { IRating } from "@/types/rating.types";
 import { ISubscription } from "@/types/plan.types";
+import { ICoupon } from "@/types/coupon.types";
 
 //user profile
 export const getUser = async (): Promise<TApiSuccessResponse<IUser>> => {
@@ -224,3 +225,11 @@ export const updateRating = async (data: TRatingFormData & { ratingId: string })
     const response = await axiosInstance.put(`${USER_APIS.rating}`, data);
     return response.data;
 };
+
+//coupons
+export const getUserCoupons = async (vendorId: string, price: number): Promise<TApiSuccessResponse<ICoupon[]>> => {
+    const response = await axiosInstance.get(`${USER_APIS.coupons}/${vendorId}`, {
+        params: { price },
+    });
+    return response.data;
+}

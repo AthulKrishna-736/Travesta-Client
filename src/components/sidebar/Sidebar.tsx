@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Building, Calendar, Star, MessageSquare, LogOut, Wallet } from 'lucide-react';
+import { LayoutDashboard, Building, Calendar, Star, MessageSquare, LogOut, Wallet, Ticket } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useLogout } from '@/hooks/auth/useLogout';
@@ -14,6 +14,7 @@ const navItems = [
     { name: 'Hotels', path: '/vendor/hotels', icon: Building },
     { name: 'Bookings', path: '/vendor/bookings', icon: Calendar },
     // { name: 'Reviews', path: '/vendor/reviews', icon: Star, badge: '3' },
+    { name: 'Coupons', path: '/vendor/coupons', icon: Ticket },
     { name: 'Messages', path: '/vendor/messages', icon: MessageSquare },
     { name: 'Wallet', path: '/vendor/wallet', icon: Wallet },
 ];

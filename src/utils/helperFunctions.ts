@@ -20,3 +20,8 @@ export const useDebounce = (value: string, delay = 1500) => {
 
     return debounced;
 }
+
+export const formatDate = (date: string | Date): string => {
+    return new Date(date).toISOString().split("T")[0];
+};
+

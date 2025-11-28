@@ -39,10 +39,10 @@ export const useUpdateRating = (cbFn: () => void) => {
     });
 };
 
-export const useGetHotelRatings = (hotelId: string) => {
+export const useGetHotelRatings = (hotelId: string, page: number, limit: number) => {
     return useQuery({
         queryKey: ['hotel-rating'],
-        queryFn: () => getHotelRatings(hotelId),
+        queryFn: () => getHotelRatings(hotelId, page, limit),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
         retry: 2,

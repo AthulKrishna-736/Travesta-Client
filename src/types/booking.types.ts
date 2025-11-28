@@ -6,6 +6,7 @@ export type TPaymentStatus = 'pending' | 'success' | 'failed' | 'refunded';
 
 //type
 export interface IBooking {
+    _id: string;
     id: string;
     userId: string;
     hotelId: Pick<IHotel, 'name'> & { _id: string };

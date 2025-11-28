@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import RoomCard from '../room/RoomCard';
 import Breadcrumbs from '../common/BreadCrumps';
@@ -14,6 +14,7 @@ import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
 import { useGetHotelRatings } from '@/hooks/vendor/useRating';
 import { useGetHotelDetailsWithRoom } from '@/hooks/vendor/useHotel';
 import { IRoom } from '@/types/room.types';
+import Pagination from '../common/Pagination';
 
 
 const HotelDetail: React.FC = () => {
@@ -23,6 +24,8 @@ const HotelDetail: React.FC = () => {
     const reviewRef = useRef<HTMLDivElement | null>(null);
     const roomsRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
+    const [page, setPage] = useState(1);
+    const RATING_LIMT = 5;
 
     const location = params.get('location');
     const checkInParam = params.get('checkIn') || '';
@@ -32,12 +35,13 @@ const HotelDetail: React.FC = () => {
     const children = Number(params.get('children')) || 0;
 
     const { data: apiResponse, isLoading: hotelLoading, isError: hotelError } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkInParam, checkOutParam, rooms, adults, children);
-    const { data: ratingResponse } = useGetHotelRatings(hotelId!);
+    const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
 
     const hotel = apiResponse?.data.hotel;
     const room = apiResponse?.data.room;
     const otherRooms = apiResponse?.data.otherRooms;
     const ratings = ratingResponse?.data;
+    const meta = ratingResponse?.meta;
 
     const { data: planResponse } = useGetUserActivePlan();
     const planHistory = planResponse ? planResponse?.data : null;
@@ -221,7 +225,16 @@ const HotelDetail: React.FC = () => {
             {/* Reviews section */}
             <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 {ratings && ratings.length > 0 ? (
-                    <RatingDetails ratings={ratings} />
+                    <>
+                        <RatingDetails ratings={ratings} />
+                        {meta && meta.totalPages > 0 && (
+                            <Pagination
+                                currentPage={meta.currentPage}
+                                totalPages={meta.totalPages}
+                                onPageChange={setPage}
+                            />
+                        )}
+                    </>
                 ) : (
                     <div className='text-lg font-semibold'>
                         No Ratings Found.

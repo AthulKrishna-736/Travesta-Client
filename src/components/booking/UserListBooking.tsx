@@ -45,7 +45,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
 
     const handleConfirmCancel = () => {
         if (selectedBooking) {
-            cancelBookingMutate(selectedBooking.id, {
+            cancelBookingMutate(selectedBooking._id, {
                 onSettled: () => {
                     handleCancel();
                 }

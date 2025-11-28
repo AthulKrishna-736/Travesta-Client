@@ -1,3 +1,4 @@
+import { TCouponTypes } from '@/types/coupon.types';
 import * as Yup from 'yup';
 
 const nameRegex = /^[A-Za-z\s]+$/;
@@ -133,4 +134,38 @@ export const ratingSchema = Yup.object({
         .required("Review is required")
         .min(20, "Review must be at least 20 characters")
         .max(400, "Review cannot exceed 400 characters"),
+});
+
+
+//coupon
+export const couponSchema = Yup.object({
+    name: Yup.string()
+        .trim()
+        .min(3)
+        .max(50)
+        .required("Name is required"),
+    code: Yup.string()
+        .trim()
+        .min(3)
+        .max(20)
+        .required("Code is required"),
+    type: Yup.mixed<TCouponTypes>()
+        .oneOf(["flat", "percent"], "Invalid type")
+        .required(),
+    value: Yup.number()
+        .min(1)
+        .required("Value is required"),
+    count: Yup.number()
+        .min(1)
+        .required('Count is required'),
+    minPrice: Yup.number()
+        .min(0).
+        required("Minimum price required"),
+    maxPrice: Yup.number()
+        .min(Yup.ref("minPrice"), "Max price must be >= Min price")
+        .required("Maximum price required"),
+    startDate: Yup.string()
+        .required("Start date required"),
+    endDate: Yup.string()
+        .required("End date required"),
 });
