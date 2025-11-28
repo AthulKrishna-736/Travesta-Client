@@ -1,7 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createHotel, getHotelAnalytics, getHotelByVendor, getHotelsByVendor, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
-import { getAllUserHotels, getUserHotelById } from '@/services/userService';
+import { getAllUserHotels, getHotelDetailsWithRoom, getUserHotelById } from '@/services/userService';
 import { ICustomError } from '@/types/custom.types';
 
 export const UseCreateHotel = (cbFn: () => void) => {
@@ -65,9 +65,22 @@ export const useHotelByVendor = (hotelId: string) => {
     })
 }
 
+export const useGetHotelDetailsWithRoom = (hotelId: string, roomId: string, checkIn: string, checkOut: string, rooms: number, adults: number, children: number) => {
+    return useQuery({
+        queryKey: ['hotel-details', { hotelId, roomId, checkIn, checkOut, rooms, adults, children }],
+        queryFn: () => getHotelDetailsWithRoom(hotelId, roomId, checkIn, checkOut, rooms, adults, children),
+        staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
+        retry: 1,
+    });
+};
+
 export const useGetAllUserHotels = (
     page: number,
     limit: number,
+    lat: number,
+    long: number,
+    rooms: number,
     filters: {
         search?: string;
         priceRange?: [number, number];
@@ -80,8 +93,8 @@ export const useGetAllUserHotels = (
     } = {}
 ) => {
     return useQuery({
-        queryKey: ['user-hotels', { page, limit, filters }],
-        queryFn: () => getAllUserHotels(page, limit, filters),
+        queryKey: ['user-hotels', { page, limit, lat, long, rooms, filters }],
+        queryFn: () => getAllUserHotels(page, limit, lat, long, rooms, filters),
         staleTime: 5 * 60 * 1000,
         retry: false,
     });

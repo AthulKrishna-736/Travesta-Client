@@ -5,20 +5,18 @@ export enum BedType {
     KING = "King",
     QUEEN = "Queen",
     DOUBLE = "Double",
-    TWIN = "Twin",
     SINGLE = "Single",
-    SOFA = "Sofa",
-    BUNK = "Bunk",
+    TWIN_DOUBLE = "TwinDouble",
+    TWIN_QUEEN = "TwinQueen",
 }
 
 export const BED_TYPE_CAPACITY: Record<BedType, number> = {
-    [BedType.KING]: 2,
+    [BedType.KING]: 3,
     [BedType.QUEEN]: 2,
     [BedType.DOUBLE]: 2,
-    [BedType.TWIN]: 1,
     [BedType.SINGLE]: 1,
-    [BedType.SOFA]: 1,
-    [BedType.BUNK]: 1,
+    [BedType.TWIN_QUEEN]: 4,
+    [BedType.TWIN_DOUBLE]: 4,
 };
 
 
@@ -65,5 +63,5 @@ export interface TRoomDetailProps {
 
 export interface RoomCardProps {
     room: IRoom;
-    handleBookClick: (roomId: string) => void;
+    handleBookClick: (roomId: IRoom) => void;
 }

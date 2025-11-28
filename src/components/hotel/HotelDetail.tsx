@@ -1,41 +1,43 @@
 import React, { useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
-import { showError } from '@/utils/customToast';
 import RoomCard from '../room/RoomCard';
 import Breadcrumbs from '../common/BreadCrumps';
 import HotelWithRoom from './HotelWithRoom';
 import MyOlaMap from '../maps/OlaMap';
-import { Lock, MapIcon } from 'lucide-react';
-import WeatherDetails from '../common/WeatherDetails';
-import NearbyAttractions from '../common/NearbyAttractions';
-import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
-import { THotelResponse } from '@/types/response.types';
-import PropertyRules from './PropertyRules';
-import { useGetHotelRatings } from '@/hooks/vendor/useRating';
-import { IRating } from '@/types/rating.types';
 import RatingDetails from './RatingDetails';
+import NearbyAttractions from '../common/NearbyAttractions';
+import WeatherDetails from '../common/WeatherDetails';
+import PropertyRules from './PropertyRules';
+import { showError } from '@/utils/customToast';
+import { Lock, MapIcon } from 'lucide-react';
+import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
+import { useGetHotelRatings } from '@/hooks/vendor/useRating';
+import { useGetHotelDetailsWithRoom } from '@/hooks/vendor/useHotel';
 import { IRoom } from '@/types/room.types';
 
 
 const HotelDetail: React.FC = () => {
-    const { hotelId } = useParams();
+    const { hotelId, roomId } = useParams();
     const [params] = useSearchParams();
     const mapRef = useRef<HTMLDivElement | null>(null);
     const reviewRef = useRef<HTMLDivElement | null>(null);
     const roomsRef = useRef<HTMLDivElement | null>(null);
     const navigate = useNavigate();
 
+    const location = params.get('location');
     const checkInParam = params.get('checkIn') || '';
     const checkOutParam = params.get('checkOut') || '';
-    const guestParam = params.get('guests');
+    const rooms = Number(params.get('rooms'));
+    const adults = Number(params.get('adults')) || 1;
+    const children = Number(params.get('children')) || 0;
 
-    const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '', checkInParam, checkOutParam);
+    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkInParam, checkOutParam, rooms, adults, children);
     const { data: ratingResponse } = useGetHotelRatings(hotelId!);
 
-    const hotel = hotelResponse?.data?.[0]?.hotelId as ;//fix needed here
-    const rooms = hotelResponse?.data as IRoom[] || [];
-    const ratings = ratingResponse?.data as IRating[] || [];
+    const hotel = apiResponse?.data.hotel;
+    const room = apiResponse?.data.room;
+    const otherRooms = apiResponse?.data.otherRooms;
+    const ratings = ratingResponse?.data;
 
     const { data: planResponse } = useGetUserActivePlan();
     const planHistory = planResponse ? planResponse?.data : null;
@@ -60,12 +62,11 @@ const HotelDetail: React.FC = () => {
     const BREADCRUMPS_ITEMS = [
         { label: 'Home', path: '/user/home' },
         { label: 'Hotels', path: '/user/hotels' },
+        { label: `${location}` },
         { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
     ]
 
-    const handleBookingSubmit = async (roomId: string) => {
-        const now = new Date();
-
+    const handleBookingSubmit = async (room: IRoom) => {
         const checkInDate = new Date(checkInParam);
         const checkOutDate = new Date(checkOutParam);
 
@@ -78,9 +79,14 @@ const HotelDetail: React.FC = () => {
         checkInDate.setHours(checkInHours, checkInMinutes, 0, 0);
         checkOutDate.setHours(checkOutHours, checkOutMinutes, 0, 0);
 
-        // Validate check-in is not in the past
-        if (checkInDate < now) {
-            showError('Check-in date/time cannot be in the past.');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const checkInDateOnly = new Date(checkInDate);
+        checkInDateOnly.setHours(0, 0, 0, 0);
+
+        if (checkInDateOnly < today) {
+            showError('Check-in date cannot be in the past.');
             return;
         }
 
@@ -94,14 +100,7 @@ const HotelDetail: React.FC = () => {
         const diffInTime = checkOutDate.getTime() - checkInDate.getTime();
         const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
 
-        // Optional: round up days for hourly differences
         const days = Math.ceil(diffInDays);
-
-        const room = rooms.find((r) => r.id === roomId);
-        if (!room) {
-            showError('Room not found.');
-            return;
-        }
 
         const totalPrice = room.basePrice * days;
 
@@ -109,7 +108,9 @@ const HotelDetail: React.FC = () => {
             hotelId: hotelId!,
             vendorId: hotel.vendorId!,
             roomId: room.id,
-            guests: guestParam!.toString(),
+            rooms: rooms.toString(),
+            adults: adults.toString(),
+            children: children.toString(),
             checkIn: checkInDate.toISOString(),
             checkOut: checkOutDate.toISOString(),
             totalPrice: totalPrice.toString(),
@@ -126,17 +127,17 @@ const HotelDetail: React.FC = () => {
             {/* Hotel with room Details */}
             <HotelWithRoom
                 hotel={hotel}
-                rooms={rooms}
+                room={room!}
                 mapRef={mapRef}
                 roomsRef={roomsRef}
                 reviewRef={reviewRef}
-                ratings={ratings}
+                ratings={ratings!}
                 roomSubmit={handleBookingSubmit}
             />
 
             {/* Other related rooms */}
             <div ref={roomsRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                {rooms.map((room) => (
+                {otherRooms && otherRooms.map((room) => (
                     <RoomCard
                         key={room.id}
                         room={room}
@@ -147,11 +148,6 @@ const HotelDetail: React.FC = () => {
 
             <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 <PropertyRules propertyRules={hotel.propertyRules} />
-            </div>
-
-            {/* Photo by guests */}
-            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                Guest photos section
             </div>
 
             {/* Weather Details */}
@@ -224,7 +220,13 @@ const HotelDetail: React.FC = () => {
 
             {/* Reviews section */}
             <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                <RatingDetails ratings={ratings} />
+                {ratings && ratings.length > 0 ? (
+                    <RatingDetails ratings={ratings} />
+                ) : (
+                    <div className='text-lg font-semibold'>
+                        No Ratings Found.
+                    </div>
+                )}
             </div>
 
         </main>

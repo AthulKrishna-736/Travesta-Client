@@ -6,9 +6,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLogout } from '@/hooks/auth/useLogout';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import { useDispatch } from "react-redux";
+import { saveLastVisitedPath } from "@/store/slices/navigationSlice";
 
 const Header = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { mutate: logoutUserFn } = useLogout('user');
     const location = useLocation();
     const user = useSelector((state: RootState) => state.user.user?.id);
@@ -71,7 +74,10 @@ const Header = () => {
                     </div>
                 ) : (
                     <button
-                        onClick={() => navigate('/user/login')}
+                        onClick={() => {
+                            dispatch(saveLastVisitedPath(window.location.pathname + window.location.search));
+                            navigate('/user/login')
+                        }}
                         className="text-left text-xs font-semibold px-2 py-1 rounded-md hover:text-white hover:bg-blue-500 cursor-pointer"
                     >
                         Login or <br />Create Account

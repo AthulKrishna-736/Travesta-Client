@@ -11,34 +11,39 @@ import { useGetAllUserHotels } from '@/hooks/vendor/useHotel';
 import HotelCard from '@/components/hotel/HotelCard';
 import CustomSort from '@/components/common/CustomSort';
 import HotelCardSkelton from '@/components/hotel/HotelCardSkelton';
-
-const breadCrumpItems = [
-    { label: 'Home', path: '/user/home' },
-    { label: 'Hotels', path: '/user/hotels' }
-]
+import { useQueryClient } from '@tanstack/react-query';
 
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
+    const queryClient = useQueryClient()
 
     const searchValue = params.get('searchTerm') || '';
     const checkInParam = params.get('checkIn') || '';
     const checkOutParam = params.get('checkOut') || '';
-    const guestsParam = parseInt(params.get('guests') || '1', 10);
-    const minPrice = parseInt(params.get('minPrice') as string, 10);
-    const maxPrice = parseInt(params.get('maxPrice') as string, 10) || Infinity;
+    const latitude = Number(params.get('lat'));
+    const longitude = Number(params.get('long'));
+    const rooms = Number(params.get('rooms')) || 1;
+    const adults = Number(params.get('adults') || 1);
+    const children = Number(params.get('children')) || 0;
+    const minPrice = Number(params.get('minPrice') as string);
+    const maxPrice = Number(params.get('maxPrice') as string) || Infinity;
 
-    const [searchTerm, setSearchTerm] = useState(searchValue);
+    const [geoSearch, setGeoSearch] = useState(searchValue);
+    const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [checkIn, setCheckIn] = useState(checkInParam);
     const [checkOut, setCheckOut] = useState(checkOutParam);
-    const [guests, setGuests] = useState(guestsParam);
+    const [roomsCount, setRoomCount] = useState(rooms);
+    const [lat, setLat] = useState(latitude);
+    const [long, setLong] = useState(longitude);
+    const [guests, setGuests] = useState(adults + children);
     const [page, setPage] = useState(1);
 
     const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [roomType, setRoomType] = useState<string[]>([]);
     const [sortOption, setSortOption] = useState<string>('');
-    const HOTEL_LIMIT = 9;
+    const HOTEL_LIMIT = 6;
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -48,7 +53,7 @@ const UserHotelPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data: hotelResponseData, isLoading: isHotelLoading } = useGetAllUserHotels(page, HOTEL_LIMIT, {
+    const { data: hotelResponseData, isLoading: isHotelLoading } = useGetAllUserHotels(page, HOTEL_LIMIT, lat, long, roomsCount, {
         search: debouncedSearchTerm,
         priceRange,
         selectedAmenities,
@@ -90,7 +95,14 @@ const UserHotelPage: React.FC = () => {
 
     const handleSearch = () => {
         setPage(1);
+        queryClient.invalidateQueries({ queryKey: ['user-hotels'] });
     };
+
+    const breadCrumpItems = [
+        { label: 'Home', path: '/user/home' },
+        { label: 'Hotels', path: '/user/hotels' },
+        { label: geoSearch }
+    ]
 
     const sortOptions = [
         { name: 'Price: High to Low', tooltip: 'Sort price in descending order', onClickHandler: () => setSortOption('price_desc') },
@@ -103,12 +115,16 @@ const UserHotelPage: React.FC = () => {
         <div className="min-h-screen flex flex-col">
             <Header />
             <CustomSearch
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
+                searchTerm={geoSearch}
+                setSearchTerm={setGeoSearch}
+                setLat={setLat}
+                setLong={setLong}
                 checkIn={checkIn}
                 setCheckIn={setCheckIn}
                 checkOut={checkOut}
                 setCheckOut={setCheckOut}
+                roomCount={roomsCount}
+                setRoomCount={setRoomCount}
                 guests={guests}
                 setGuests={setGuests}
                 onSearch={handleSearch}
@@ -159,7 +175,7 @@ const UserHotelPage: React.FC = () => {
                                     ) : (
                                         <div>
                                             {hotels.map((hotel: any) => (
-                                                <HotelCard key={hotel.id} hotel={hotel} />
+                                                <HotelCard key={hotel.id} hotel={hotel} roomsCount={roomsCount} guests={guests} geoSearch={searchValue} />
                                             ))}
                                         </div>
                                     )}

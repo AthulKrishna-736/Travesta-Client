@@ -2,18 +2,21 @@ import { useMutation } from '@tanstack/react-query';
 import { login } from '@/services/authService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/store/store';
+import { AppDispatch, RootState } from '@/store/store';
 import { setUser } from '@/store/slices/userSlice';
 import { TLoginFormValues } from '@/types/auth.types';
 import { useNavigate } from 'react-router-dom';
 import { setAdmin } from '@/store/slices/adminSlice';
 import { setVendor } from '@/store/slices/vendorSlice';
 import { ICustomError } from '@/types/custom.types';
+import { useSelector } from 'react-redux';
+import { clearLastVisitedPath } from '@/store/slices/navigationSlice';
 
 
 export const useLogin = (role: string) => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate()
+    const lastVisitedPath = useSelector((state: RootState) => state.navigation.lastVisitedPath);
 
     return useMutation({
         mutationFn: (values: TLoginFormValues) => {
@@ -29,7 +32,14 @@ export const useLogin = (role: string) => {
                 navigate(`/${role}/home`)
             } else {
                 dispatch(setUser(res.data))
-                navigate(`/${role}/home`)
+                console.log(lastVisitedPath)
+                if (lastVisitedPath) {
+                    console.log('Redirecting to saved path:', lastVisitedPath);
+                    window.location.href = lastVisitedPath;
+                    dispatch(clearLastVisitedPath());
+                } else {
+                    navigate(`/${role}/home`)
+                }
             }
             showSuccess(res.message || 'Login successful')
         },

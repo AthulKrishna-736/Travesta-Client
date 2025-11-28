@@ -14,36 +14,27 @@ import { env } from '@/config/config';
 import { showError } from '@/utils/customToast';
 import { useGetHotelById } from '@/hooks/vendor/useHotel';
 import { useGetUserRoomById } from '@/hooks/vendor/useRoom';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useDispatch } from 'react-redux';
+import { saveLastVisitedPath } from '@/store/slices/navigationSlice';
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
-type THotel = {
-    id: string;
-    name: string;
-    images?: string[];
-    address: string;
-    vendorId: string;
-};
-
-type TRoom = {
-    id: string;
-    name: string;
-    bedType: string;
-    images?: string[];
-    description: string;
-    basePrice: number;
-};
-
 const BookingCheckout: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [params] = useSearchParams();
     const [clientSecret, setClientSecret] = useState<string | null>(null);
     const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet' | null>(null);
+    const user = useSelector((state: RootState) => state.user.user?.id);
 
     const hotelId = params.get('hotelId');
     const vendorId = params.get('vendorId');
     const roomId = params.get('roomId');
-    const guests = Number(params.get('guests'));
+    const rooms = Number(params.get('rooms')) || 1
+    const adults = Number(params.get('adults'));
+    const children = Number(params.get('children'));
     const checkIn = params.get('checkIn');
     const checkOut = params.get('checkOut');
     const totalPrice = Number(params.get('totalPrice'));
@@ -52,8 +43,8 @@ const BookingCheckout: React.FC = () => {
     const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelById(hotelId!);
     const { data: roomResponse, isLoading: isRoomLoading } = useGetUserRoomById(roomId!);
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
-    const hotel = hotelResponse ? hotelResponse.data as THotel : null;
-    const room = roomResponse ? roomResponse.data as TRoom : null; //needs to solve this properly fetch the room and hotel separately get their ids simple
+    const hotel = hotelResponse ? hotelResponse.data : null;
+    const room = roomResponse ? roomResponse.data : null; //needs to solve this properly fetch the room and hotel separately get their ids simple
 
     const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(
         vendorId || 'random',
@@ -88,7 +79,7 @@ const BookingCheckout: React.FC = () => {
             roomId: room.id,
             checkIn: checkIn!,
             checkOut: checkOut!,
-            guests: Number(guests),
+            guests: Number(adults + children),
             totalPrice: totalPrice,
         };
         await confirmBooking(payload);
@@ -108,7 +99,7 @@ const BookingCheckout: React.FC = () => {
                 roomId: room.id,
                 checkIn: checkIn!,
                 checkOut: checkOut!,
-                guests: Number(guests),
+                guests: Number(adults + children),
                 totalPrice: totalPrice,
             };
 
@@ -169,14 +160,14 @@ const BookingCheckout: React.FC = () => {
                                 />
                             )}
                             <div className="flex flex-col gap-1">
-                                <Badge variant="secondary">{room.bedType}</Badge>
+                                <Badge className='px-4 py-1 bg-blue-900'>{room.bedType}</Badge>
                                 <p className="text-sm font-medium">{room.name}</p>
-                                <p className="text-sm text-muted-foreground">{room.description}</p>
+                                <p className="text-sm font-medium">Type: {room.roomType}</p>
                             </div>
                         </div>
 
                         {/* Booking Details */}
-                        <div className="grid grid-cols-2 gap-4 text-sm pt-4">
+                        <div className="grid grid-cols-2 gap-4  pt-4">
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-4 w-4" />
                                 Check-In:  {new Date(checkIn!).toLocaleString('en-US', {
@@ -193,7 +184,7 @@ const BookingCheckout: React.FC = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Users className="h-4 w-4" />
-                                Guests: {guests}
+                                Guests: {adults + children}
                             </div>
                             <div className="flex items-center gap-2">
                                 <Clock className="h-4 w-4" />
@@ -204,67 +195,91 @@ const BookingCheckout: React.FC = () => {
                         {/* Price Breakdown */}
                         <div className="border-t pt-4 mt-4">
                             <h3 className="font-semibold mb-2">Price Breakdown</h3>
-                            <div className="flex justify-between text-sm">
-                                <span>₹{room.basePrice} x {days} nights</span>
+                            <div className="flex justify-between">
+                                <span>₹{room.basePrice} x {days} nights & {rooms} room(s)</span>
                                 <span>₹{room.basePrice * days}</span>
                             </div>
-                            <div className="flex justify-between text-sm font-medium mt-2">
+                            <div className="flex justify-between font-medium mt-2">
                                 <span>Total</span>
                                 <span>₹{totalPrice}</span>
                             </div>
                         </div>
 
-                        {/* Payment Method Selection */}
-                        <div className="flex gap-4 items-center pt-4">
-                            <label className={`flex-1 flex items-center gap-2 p-3 border rounded-lg cursor-pointer 
-                                ${paymentMethod === 'online' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="online"
-                                    className="hidden"
-                                    checked={paymentMethod === 'online'}
-                                    onChange={() => setPaymentMethod('online')}
-                                />
-                                <CreditCard className="w-6 h-6" />
-                                Online Payment
-                            </label>
 
-                            <label className={`flex-1 flex items-center gap-2 p-3 border rounded-lg cursor-pointer 
-                                ${paymentMethod === 'wallet' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="wallet"
-                                    className="hidden"
-                                    checked={paymentMethod === 'wallet'}
-                                    onChange={() => setPaymentMethod('wallet')}
-                                />
-                                <Wallet className="w-6 h-6" />
-                                Wallet
-                            </label>
-                        </div>
+                        {!user ? (
+                            <div className="pt-6 flex flex-col items-center gap-3">
 
-                        {/* Confirm Button */}
-                        <div className="pt-6">
-                            {!clientSecret ? (
-                                <Button onClick={handleConfirm} disabled={isPending}>
-                                    {isPending ? 'Booking...' : 'Confirm Booking'}
+                                <p className="text-gray-600 text-center">
+                                    Please login to continue with your booking
+                                </p>
+
+                                <Button
+                                    onClick={() => {
+                                        dispatch(saveLastVisitedPath(window.location.pathname + window.location.search));
+                                        navigate('/user/login')
+                                    }}
+                                    className="w-full bg-blue-600 text-white py-3 rounded-lg"
+                                >
+                                    Login to Continue
                                 </Button>
-                            ) : (
-                                <Elements stripe={stripePromise} options={stripeOptions}>
-                                    <CheckoutForm
-                                        open={!!clientSecret}
-                                        onClose={() => setClientSecret(null)}
-                                        onPaymentSuccess={handleBookingPaymentSuccess}
-                                    />
-                                </Elements>
-                            )}
-                        </div>
+
+                            </div>
+                        ) : (
+                            <>
+                                {/* Payment Method Selection */}
+                                <div className="flex flex-col gap-3 pt-4">
+
+                                    <label className={`w-full flex items-center gap-3 p-3 border rounded-lg cursor-pointer ${paymentMethod === 'online' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
+                                        <input
+                                            type="radio"
+                                            name="paymentMethod"
+                                            value="online"
+                                            className="hidden"
+                                            checked={paymentMethod === 'online'}
+                                            onChange={() => setPaymentMethod('online')}
+                                        />
+                                        <CreditCard className="w-6 h-6" />
+                                        <span>Online Payment</span>
+                                    </label>
+
+                                    <label className={`w-full flex items-center gap-3 p-3 border rounded-lg cursor-pointer ${paymentMethod === 'wallet' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
+                                        <input
+                                            type="radio"
+                                            name="paymentMethod"
+                                            value="wallet"
+                                            className="hidden"
+                                            checked={paymentMethod === 'wallet'}
+                                            onChange={() => setPaymentMethod('wallet')}
+                                        />
+                                        <Wallet className="w-6 h-6" />
+                                        <span>Wallet</span>
+                                    </label>
+
+                                </div>
+
+                                {/* Confirm Button */}
+                                <div className="pt-6">
+                                    {!clientSecret ? (
+                                        <Button onClick={handleConfirm} disabled={isPending}>
+                                            {isPending ? 'Booking...' : 'Confirm Booking'}
+                                        </Button>
+                                    ) : (
+                                        <Elements stripe={stripePromise} options={stripeOptions}>
+                                            <CheckoutForm
+                                                open={!!clientSecret}
+                                                onClose={() => setClientSecret(null)}
+                                                onPaymentSuccess={handleBookingPaymentSuccess}
+                                            />
+                                        </Elements>
+                                    )}
+                                </div>
+                            </>
+                        )}
                     </div>
+
                 </CardContent>
             </Card>
-        </div>
+        </div >
     );
 };
 

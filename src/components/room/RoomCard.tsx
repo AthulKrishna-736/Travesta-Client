@@ -4,10 +4,13 @@ import { RoomCardProps } from "@/types/room.types";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { saveLastVisitedPath } from "@/store/slices/navigationSlice";
+import { useDispatch } from "react-redux";
 
 
 const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.user.user?.id);
     const [imagePreview, setImagePreview] = useState<string>('');
 
@@ -133,7 +136,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                                         key={item._id}
                                         className="inline-flex items-center gap-1 text-xs bg-gray-50 text-gray-700 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
                                     >
-                                        <Check className="w-4 h-4 text-green-500"/>
+                                        <Check className="w-4 h-4 text-green-500" />
                                         {item.name}
                                     </span>
                                 ))}
@@ -145,7 +148,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                     <div className="flex justify-between items-center w-full gap-3">
                         {user ? (
                             <button
-                                onClick={() => handleBookClick(room.id)}
+                                onClick={() => handleBookClick(room)}
                                 className="w-full bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-xl font-bold px-6 py-3 rounded-lg shadow-sm cursor-pointer"
                             >
                                 Book This Room
@@ -153,13 +156,16 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                         ) : (
                             <>
                                 <button
-                                    onClick={() => navigate("/user/login")}
+                                    onClick={() => {
+                                        dispatch(saveLastVisitedPath(window.location.href.replace(window.location.origin, "")));
+                                        navigate("/user/login")
+                                    }}
                                     className="text-[#028dff] font-bold cursor-pointer outline outline-[#028dff] rounded-lg py-2 px-4"
                                 >
                                     Login Now
                                 </button>
                                 <button
-                                    onClick={() => handleBookClick(room.id)}
+                                    onClick={() => handleBookClick(room)}
                                     className="bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-xl font-bold px-6 py-2 rounded-lg shadow-sm cursor-pointer"
                                 >
                                     Book This Room

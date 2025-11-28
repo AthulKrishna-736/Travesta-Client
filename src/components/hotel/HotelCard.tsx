@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { MapPin, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { IAmenity } from "@/types/amenities.types";
+import { IRoom } from "@/types/room.types";
 
 interface IHotelCard {
     id: string;
@@ -12,7 +13,7 @@ interface IHotelCard {
     city: string;
     state: string;
     address: string;
-    room: { _id: string, basePrice: number, name: string, gstPrice: number };
+    room: IRoom;
     rating: {
         totalRatings: number
         averageRating: number
@@ -29,6 +30,9 @@ interface IHotelCard {
 
 interface HotelCardProps {
     hotel: IHotelCard;
+    roomsCount: number,
+    guests: number,
+    geoSearch: string,
 }
 
 export const RATINGS: { min: number; label: string }[] = [
@@ -40,10 +44,17 @@ export const RATINGS: { min: number; label: string }[] = [
     { min: 0, label: "Unrated" },
 ];
 
-const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
+const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSearch }) => {
     const navigate = useNavigate();
+    const [params] = useSearchParams();
     const [imagePreview, setImagePreview] = useState<string>('');
     const [showBreakdown, setShowBreakdown] = useState(false);
+
+    const checkIn = params.get('checkIn') || '';
+    const checkOut = params.get('checkOut') || '';
+    const rooms = Number(params.get('rooms')) || 1;
+    const adults = Number(params.get('adults')) || 1;
+    const children = Number(params.get('children')) || 0;
 
     const { id, name, description, images, amenities, state, rating, city, room } = hotel;
 
@@ -182,7 +193,18 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
                 <div className="flex gap-1 items-center">
                     <button
                         className="text-[#0084ff] rounded-sm font-semibold cursor-pointer"
-                        onClick={() => navigate(`/user/hotels/${id}`)}
+                        onClick={() => {
+                            const queryParams = new URLSearchParams({
+                                location: geoSearch,
+                                checkIn: checkIn,
+                                checkOut: checkOut,
+                                rooms: roomsCount ? roomsCount.toString() : rooms.toString(),
+                                adults: guests ? guests.toString() : adults.toString(),
+                                children: children.toString(),
+
+                            })
+                            navigate(`/user/hotels/${id}/${room.id}?${queryParams.toString()}`)
+                        }}
                     >
                         View Details
                     </button>

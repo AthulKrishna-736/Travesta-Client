@@ -1,8 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createRoom, updateRoom, getRoomById, getRoomsByHotel, getAvailableRoomsByHotel, getAllRooms, getAvailableRooms } from '@/services/vendorService';
+import { createRoom, updateRoom, getRoomById, getAvailableRoomsByHotel, getAllRooms, getAvailableRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { ICustomError } from '@/types/custom.types';
-import { getUserRoomById } from '@/services/userService';
+import {  getUserRoomById } from '@/services/userService';
 
 export const useCreateRoom = (cbFn: () => void) => {
     const queryClient = useQueryClient();
@@ -86,18 +86,6 @@ export const useGetUserRoomById = (roomId: string) => {
         placeholderData: keepPreviousData,
     })
 }
-
-
-export const useGetRoomsByHotel = (hotelId: string, checkIn: string, checkOut: string) => {
-    return useQuery({
-        queryKey: ['hotel-rooms', hotelId],
-        queryFn: () => getRoomsByHotel(hotelId, checkIn, checkOut),
-        enabled: !!hotelId,
-        staleTime: 5 * 60 * 1000,
-        retry: 1,
-    });
-};
-
 
 export const useGetAvailableRoomsByHotel = (hotelId: string) => {
     return useQuery({

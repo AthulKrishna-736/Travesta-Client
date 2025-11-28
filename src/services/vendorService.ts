@@ -6,6 +6,7 @@ import { TApiSuccessResponse } from "@/types/custom.types";
 import { IAmenity } from "@/types/amenities.types";
 import { IHotel } from "@/types/hotel.types";
 import { IRoom } from "@/types/room.types";
+import { IRating } from "@/types/rating.types";
 
 
 //vendor profile
@@ -185,7 +186,7 @@ export const getVendorAnalytics = async (startDate?: string, endDate?: string) =
 }
 
 //ratings
-export const getHotelRatings = async (hotelId: string) => {
+export const getHotelRatings = async (hotelId: string): Promise<TApiSuccessResponse<IRating[]>> => {
     const response = await axiosInstance.get(`${VENDOR_APIS.rating}/${hotelId}`);
     return response.data;
 }

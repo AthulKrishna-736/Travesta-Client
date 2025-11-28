@@ -3,8 +3,7 @@ import Header from '@/components/header/user/Header';
 import Footer from '@/components/footer/Footer';
 import HeroBanner from '@/components/user/home/HeroBanner';
 import Features from '@/components/user/home/Features';
-import Newsletter from '@/components/user/home/TravelLocations';
-import LuxuryProperties from '@/components/user/home/LuxuryProperties';
+import TravelLocation from '@/components/user/home/TravelLocations';
 
 
 const UserHomePage: React.FC = () => {
@@ -13,9 +12,8 @@ const UserHomePage: React.FC = () => {
             <Header />
             <main className="flex-1 bg-[#f1f1f1]">
                 <HeroBanner />
-                <LuxuryProperties />
                 <Features />
-                <Newsletter />
+                <TravelLocation />
             </main>
             <Footer />
         </div>

@@ -13,6 +13,7 @@ export const AUTH_APIS = {
 export const USER_APIS = {
     profile: '/users/profile',
     hotels: '/users/hotels',
+    hotel: '/users/hotel',
     room: '/users/room',
     chat: '/users/chat',
     booking: '/users/bookings',

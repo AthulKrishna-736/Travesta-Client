@@ -1,15 +1,19 @@
-import React, { useReducer, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronDown, Minus, Plus } from "lucide-react";
+import { ChevronDown, MapPinIcon, Minus, Plus } from "lucide-react";
 import { showError } from '@/utils/customToast';
 import { useNavigate } from 'react-router-dom';
 import { PRICE_RANGES } from '@/components/sidebar/UserFilterSidebar';
 import { Dialog } from '@/components/ui/dialog';
 import { DialogContent } from '@radix-ui/react-dialog';
+import { disablePastDates, useDebounce } from '@/utils/helperFunctions';
+import { env } from '@/config/config';
 
 type TState = {
-    searchTerm: string;
+    search: string,
+    lat: number | null,
+    long: number | null,
     checkInDate: string;
     checkOutDate: string;
     adults: number;
@@ -21,7 +25,9 @@ type TState = {
 type TAction = { type: 'SET_FIELD'; field: keyof TState; value: TState[keyof TState] } | { type: 'RESET' };
 
 const initialState: TState = {
-    searchTerm: '',
+    search: '',
+    lat: null,
+    long: null,
     checkInDate: '',
     checkOutDate: '',
     adults: 1,
@@ -42,12 +48,36 @@ const reducer = (state: TState, action: TAction): TState => {
 }
 
 const SearchForm = () => {
+    const [geoSearch, setGeoSearch] = useState('');
+    const debouncedSearch = useDebounce(geoSearch, 1500);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [state, dispatch] = useReducer(reducer, initialState);
     const checkInRef = useRef<HTMLInputElement | null>(null);
     const checkOutRef = useRef<HTMLInputElement | null>(null);
     const [showRoomGuestModal, setShowRoomGuestModal] = useState<boolean>(false);
     const priceRangeRef = useRef<HTMLSelectElement | null>(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!debouncedSearch.trim()) {
+            setSuggestions([]);
+            return;
+        }
+
+        const fetchSuggestions = async () => {
+            try {
+                const response = await fetch(`https://api.olamaps.io/places/v1/autocomplete?input=${encodeURIComponent(debouncedSearch)}&language=en&api_key=${env.OLA_API_SECRET}`);
+                const data = await response.json();
+                setSuggestions(data.predictions);
+            } catch (err) {
+                console.error("Location autocomplete failed:", err);
+            }
+        };
+
+        fetchSuggestions();
+    }, [debouncedSearch]);
+
 
     const handleAddButton = (field: 'rooms' | 'adults' | 'children', e: React.MouseEvent) => {
         e.preventDefault();
@@ -68,23 +98,36 @@ const SearchForm = () => {
     };
 
 
+    const handleGeoLocationSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setGeoSearch(e.target.value);
+        setShowSuggestions(true);
+    };
+
+    const handleSelectSuggestion = (item: any) => {
+        const mainText = item.structured_formatting?.main_text || "";
+        const lat = item.geometry.location.lat || null;
+        const lng = item.geometry.location.lng || null;
+
+        dispatch({ type: "SET_FIELD", field: "search", value: mainText });
+        dispatch({ type: "SET_FIELD", field: "lat", value: lat });
+        dispatch({ type: "SET_FIELD", field: "long", value: lng });
+
+        setGeoSearch(mainText);
+        setShowSuggestions(false);
+        setSuggestions([]);
+    };
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const MAX_GUESTS_PER_ROOM = 4;
+        const MAX_GUESTS_PER_ROOM = 2;
         const totalGuests = state.adults + state.children;
         const maxAllowedGuests = state.rooms * MAX_GUESTS_PER_ROOM;
-        const now = new Date();
         const checkIn = new Date(state.checkInDate);
-        checkIn.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())
         const checkOut = new Date(state.checkOutDate);
-        checkOut.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds())
-        now.setHours(0, 0, 0, 0);
+        checkIn.setHours(0, 0, 0, 0);
+        checkOut.setHours(0, 0, 0, 0);
 
-        if (!state.searchTerm) {
-            showError('Please enter property name or location');
-            return;
-        }
 
         if (!state.checkInDate) {
             showError('Please select check-in date')
@@ -93,11 +136,6 @@ const SearchForm = () => {
 
         if (!state.checkOutDate) {
             showError('Please select check-out date');
-            return;
-        }
-
-        if (checkIn < now) {
-            showError("Check-in date cannot be in the past");
             return;
         }
 
@@ -126,8 +164,38 @@ const SearchForm = () => {
             return;
         }
 
+        let finalLat = state.lat;
+        let finalLng = state.long;
+
+        if (finalLat == null || finalLng == null) {
+            if (!navigator.geolocation) {
+                showError("Your browser does not support location access.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    finalLat = pos.coords.latitude;
+                    finalLng = pos.coords.longitude;
+
+                    continueSearch(finalLat, finalLng);
+                },
+                () => {
+                    showError("Location access denied. Please enable it or select a place manually.");
+                }
+            );
+
+            return;
+        }
+
+        continueSearch(finalLat, finalLng);
+    };
+
+    const continueSearch = (lat: number, lng: number) => {
         const params = new URLSearchParams({
-            searchTerm: state.searchTerm,
+            searchTerm: state.search || "My Location",
+            lat: lat.toString(),
+            long: lng.toString(),
             checkIn: state.checkInDate,
             checkOut: state.checkOutDate,
             adults: state.adults.toString(),
@@ -149,15 +217,39 @@ const SearchForm = () => {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 lg:gap-0 border border-[#e7e7e7] rounded-sm divide-y md:divide-y-0 md:divide-x"
                 >
                     {/* searchTerm */}
-                    <div className="lg:col-span-2 flex flex-col justify-start pt-1 hover:bg-[#eaf5ff] transition-colors duration-300 ease-in-out">
-                        <span className="text-[#4a4a4a] text-start pl-3">Location or Hotel name</span>
+                    <div className="lg:col-span-2 relative flex flex-col justify-start pt-1 hover:bg-[#eaf5ff] transition-colors duration-300 ease-in-out">
+                        <span className="text-[#4a4a4a] text-start pl-3 font-medium">
+                            Location or Hotel name
+                        </span>
+
                         <input
                             id="searchTerm"
                             placeholder="Where you want to stay?"
                             className="text-black text-lg font-semibold placeholder:font-normal px-3 pt-4 pb-2 w-full focus:outline-none"
-                            value={state.searchTerm}
-                            onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'searchTerm', value: e.target.value })}
+                            value={geoSearch}
+                            onChange={handleGeoLocationSearch}
+                            onFocus={() => setShowSuggestions(true)}
                         />
+
+                        {/* Suggestions Dropdown */}
+                        {showSuggestions && suggestions.length > 0 && (
+                            <div className="absolute top-full left-0 w-full bg-white border border-gray-300 shadow-md rounded-b-sm z-20 max-h-54 overflow-y-auto">
+
+                                {suggestions.map((item: any, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-[#333]"
+                                        onClick={() => handleSelectSuggestion(item)}
+                                    >
+                                        <div className='flex gap-0.5 justify-start items-center text-sm font-semibold cursor-pointer py-0.5'>
+                                            <MapPinIcon className='h-4 w-4 text-blue-500' />
+                                            {item.structured_formatting.main_text}
+                                        </div>
+                                    </div>
+                                ))}
+
+                            </div>
+                        )}
                     </div>
 
                     {/* Check-in Date */}
@@ -165,7 +257,7 @@ const SearchForm = () => {
                         onClick={() => checkInRef.current?.focus()}
                     >
                         <div className='flex'>
-                            <span className='text-[#4a4a4a]'>Check-In</span>
+                            <span className='text-[#4a4a4a] font-medium'>Check-In</span>
                             <ChevronDown className='text-[#008cff] h-4 w-4 mt-1.5 ml-1' />
                         </div>
                         <input
@@ -173,7 +265,7 @@ const SearchForm = () => {
                             ref={checkInRef}
                             value={state.checkInDate}
                             onFocus={(e) => e.currentTarget.showPicker?.()}
-                            min={new Date().toLocaleDateString('en-CA')}
+                            min={disablePastDates(new Date())}
                             onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'checkInDate', value: e.target.value })}
                             className="w-full py-2 text-md font-bold placeholder:font-semibold placeholder:text-[#ffffff] focus:outline-none uppercase cursor-pointer"
                         />
@@ -184,7 +276,7 @@ const SearchForm = () => {
                         onClick={() => checkOutRef.current?.focus()}
                     >
                         <div className='flex'>
-                            <span className='text-[#4a4a4a]'>Check-Out</span>
+                            <span className='text-[#4a4a4a] font-medium'>Check-Out</span>
                             <ChevronDown className='text-[#008cff] h-4 w-4 mt-1.5 ml-1' />
                         </div>
                         <input
@@ -192,7 +284,7 @@ const SearchForm = () => {
                             ref={checkOutRef}
                             value={state.checkOutDate}
                             onFocus={(e) => e.currentTarget.showPicker?.()}
-                            min={state.checkInDate ? new Date(new Date(state.checkInDate).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString("en-CA") : new Date().toLocaleDateString('en-CA')}
+                            min={disablePastDates(state.checkInDate || new Date(), 1)}
                             onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'checkOutDate', value: e.target.value })}
                             className="w-full py-2 text-md font-bold placeholder:font-semibold placeholder:text-gray-500 focus:outline-none uppercase cursor-pointer"
                         />
@@ -204,12 +296,14 @@ const SearchForm = () => {
                         onClick={() => setShowRoomGuestModal(true)}
                     >
                         <div className='flex'>
-                            <span className='text-[#4a4a4a]'>Rooms & Guests</span>
+                            <span className='text-[#4a4a4a] font-medium'>Rooms & Guests</span>
                             <ChevronDown className='text-[#008cff] h-4 w-4 mt-1.5 ml-1' />
                         </div>
-                        <div className="font-semibold py-1">
-                            {state.rooms} Room{state.rooms > 1 ? "s" : ""},{" "}
-                            {state.adults + state.children} Guest{state.adults + state.children > 1 ? "s" : ""}
+                        <div className="space-x-0.5">
+                            <span className='font-bold text-2xl'>{state.rooms}</span>
+                            <span className='font-medium'>Room{state.rooms > 1 ? "s" : ""}</span>
+                            <span className='font-bold text-2xl'>{state.adults + state.children}</span>
+                            <span className='font-medium'>Guest{state.adults + state.children > 1 ? "s" : ""}</span>
                         </div>
 
                         <Dialog open={showRoomGuestModal} onOpenChange={setShowRoomGuestModal}>
@@ -257,7 +351,7 @@ const SearchForm = () => {
                         onClick={() => priceRangeRef.current?.focus()}
                     >
                         <div className='flex'>
-                            <span className='text-[#4a4a4a]'>Price Range</span>
+                            <span className='text-[#4a4a4a] font-medium'>Price Range</span>
                             <ChevronDown className='text-[#008cff] h-4 w-4 mt-1.5 ml-1' />
                         </div>
                         <select
@@ -265,14 +359,14 @@ const SearchForm = () => {
                             ref={priceRangeRef}
                             onFocus={(e) => e.currentTarget.showPicker?.()}
                             onChange={(e) => dispatch({ type: 'SET_FIELD', field: 'priceRange', value: JSON.parse(e.target.value) })}
-                            className='w-full outline-none shadow-none border-none p-2 appearance-none cursor-pointer font-semibold'
+                            className='w-full outline-none shadow-none border-none appearance-none cursor-pointer font-bold text-lg'
                         >
-                            {PRICE_RANGES.map((i) => {
+                            {PRICE_RANGES.slice(0, 4).map((i) => {
                                 return (
                                     <option
                                         key={i.label}
                                         value={JSON.stringify(i.range)}
-                                        className="font-normal"
+                                        className="font-medium"
                                     >
                                         {i.label}
                                     </option>
