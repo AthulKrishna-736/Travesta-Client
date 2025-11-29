@@ -43,6 +43,7 @@ export const VENDOR_APIS = {
     analytics: '/vendor/analytics',
     rating: '/vendor/ratings',
     coupon: '/vendor/coupon',
+    offers: '/vendor/offers'
 }
 
 export const ADMIN_APIS = {

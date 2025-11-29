@@ -64,10 +64,7 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
         };
 
         if (isEdit && couponData?.id) {
-            onSubmit(
-                { ...sanitizedData, id: couponData.id } as TUpdateCoupon,
-                true
-            );
+            onSubmit({ ...sanitizedData, id: couponData.id } as TUpdateCoupon, true);
         } else {
             onSubmit(sanitizedData, false);
         }

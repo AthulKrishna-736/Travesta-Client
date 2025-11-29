@@ -169,3 +169,27 @@ export const couponSchema = Yup.object({
     endDate: Yup.string()
         .required("End date required"),
 });
+
+
+//offer
+export const offerSchema = Yup.object().shape({
+    name: Yup.string()
+        .min(3, 'Minimum 3 character required')
+        .max(50, 'Maximum of 50 characters are allowed')
+        .required(),
+    hotelId: Yup.string().nullable().defined(),
+    roomType: Yup
+        .string()
+        .oneOf(["AC", "Non-AC", "Deluxe", "Suite", "Standard"])
+        .required("Room Type is required"),
+    discountType: Yup
+        .string()
+        .oneOf(["flat", "percent"])
+        .required("Discount type is required"),
+    discountValue: Yup
+        .number()
+        .min(1, "Discount must be at least 1")
+        .required("Discount value is required"),
+    startDate: Yup.string().required("Start date is required"),
+    expiryDate: Yup.string().required("End date is required"),
+});
