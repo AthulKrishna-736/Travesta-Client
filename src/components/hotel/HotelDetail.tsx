@@ -38,8 +38,9 @@ const HotelDetail: React.FC = () => {
     const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
 
     const hotel = apiResponse?.data.hotel;
-    const room = apiResponse?.data.room;
-    const otherRooms = apiResponse?.data.otherRooms;
+    const room = apiResponse?.data.room as IRoom & { discountedPrice: number, appliedOffer: any };
+
+    const otherRooms = apiResponse?.data.otherRooms as (IRoom & { discountedPrice: number, appliedOffer: any })[];
     const ratings = ratingResponse?.data;
     const meta = ratingResponse?.meta;
 
@@ -70,7 +71,7 @@ const HotelDetail: React.FC = () => {
         { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
     ]
 
-    const handleBookingSubmit = async (room: IRoom) => {
+    const handleBookingSubmit = async (room: IRoom & { discountedPrice: number, appliedOffer: any }) => {
         const checkInDate = new Date(checkInParam);
         const checkOutDate = new Date(checkOutParam);
 
@@ -106,7 +107,8 @@ const HotelDetail: React.FC = () => {
 
         const days = Math.ceil(diffInDays);
 
-        const totalPrice = room.basePrice * days;
+        const effectivePrice = room.discountedPrice ?? room.basePrice;
+        const totalPrice = effectivePrice * days;
 
         const queryParams = new URLSearchParams({
             hotelId: hotelId!,

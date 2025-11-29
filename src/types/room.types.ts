@@ -62,6 +62,6 @@ export interface TRoomDetailProps {
 };
 
 export interface RoomCardProps {
-    room: IRoom;
-    handleBookClick: (roomId: IRoom) => void;
+    room: IRoom & { discountedPrice: number, appliedOffer: any };
+    handleBookClick: (room: IRoom & { discountedPrice: number, appliedOffer: any }) => void;
 }

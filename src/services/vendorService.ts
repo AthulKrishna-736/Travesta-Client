@@ -73,6 +73,11 @@ export const getHotelAnalytics = async (hotelId: string, period: 'week' | 'month
     return response.data;
 }
 
+export const getTrendingHotels = async () => {
+    const response = await axiosInstance.get(`${VENDOR_APIS.hotels}/trending`);
+    return response.data;
+}
+
 //rooms
 export const getAllRooms = async (page: number, limit: number, search?: string, hotelId?: string): Promise<TApiSuccessResponse<IRoom[]>> => {
     const response = await axiosInstance.get(`${VENDOR_APIS.rooms}`, {

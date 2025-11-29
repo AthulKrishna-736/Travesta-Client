@@ -13,7 +13,7 @@ interface IHotelCard {
     city: string;
     state: string;
     address: string;
-    room: IRoom;
+    room: IRoom & { discountedPrice: number, appliedOffer: any };
     rating: {
         totalRatings: number
         averageRating: number
@@ -180,14 +180,28 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
                     )}
                 </div>
 
-                <div>
-                    <h1 className="font-bold text-xl text-right">
-                        ₹ {room.basePrice}
-                    </h1>
-                    <p className="text-sm text-[#4a4a4a] text-right">
+                <div className="text-right">
+                    {room.discountedPrice ? (
+                        <>
+                            <h1 className="text-lg text-gray-500 line-through">
+                                ₹ {room.basePrice}
+                            </h1>
+
+                            <h1 className="font-bold text-2xl text-green-600">
+                                ₹ {room.discountedPrice}
+                            </h1>
+                        </>
+                    ) : (
+                        <h1 className="font-bold text-xl">
+                            ₹ {room.basePrice}
+                        </h1>
+                    )}
+
+                    <p className="text-sm text-[#4a4a4a]">
                         {room.gstPrice === 0 ? "No taxes & fees" : `+₹ ${room.gstPrice} taxes & fees`}
                     </p>
-                    <p className="text-sm text-[#4a4a4a] text-right">Per Night</p>
+
+                    <p className="text-sm text-[#4a4a4a]">Per Night</p>
                 </div>
 
                 <div className="flex gap-1 items-center">
@@ -201,7 +215,6 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
                                 rooms: roomsCount ? roomsCount.toString() : rooms.toString(),
                                 adults: guests ? guests.toString() : adults.toString(),
                                 children: children.toString(),
-
                             })
                             navigate(`/user/hotels/${id}/${room.id}?${queryParams.toString()}`)
                         }}

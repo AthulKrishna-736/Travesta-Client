@@ -7,12 +7,12 @@ import { IHotel } from '@/types/hotel.types';
 
 interface IHotelWithRoom {
     hotel: IHotel;
-    room: IRoom;
+    room: IRoom & { discountedPrice: number, appliedOffer: any };
     mapRef: RefObject<HTMLDivElement | null>;
     reviewRef: RefObject<HTMLDivElement | null>;
     roomsRef: RefObject<HTMLDivElement | null>;
     ratings: IRating[];
-    roomSubmit: (room: IRoom) => void;
+    roomSubmit: (room: IRoom & { discountedPrice: number, appliedOffer: any }) => void;
 }
 
 const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRef, roomsRef, ratings, roomSubmit }) => {
@@ -151,13 +151,38 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                                 )}
                             </div>
                         </div>
-                        <h6 className='text-sm text-[#4a4a4a] font-medium'>Per Night:</h6>
-                        <h1 className="text-3xl font-bold mb-4">
-                            ₹ {room.basePrice}
-                            <span className="ml-2 text-[14px] text-[#4a4a4a] font-medium">
-                                {room.gstPrice === 0 ? "No taxes & fees" : `+₹ ${room.gstPrice} taxes & fees`}
-                            </span>
-                        </h1>
+
+                        <h6 className="text-sm text-[#4a4a4a] font-medium">Per Night:</h6>
+
+                        {/* If offer exists */}
+                        {room.discountedPrice ? (
+                            <div className="mb-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xl line-through text-gray-400 font-semibold">
+                                        ₹ {room.basePrice}
+                                    </span>
+
+                                    <span className="text-xl font-bold text-green-600">
+                                        ₹ {room.discountedPrice}
+                                    </span>
+                                </div>
+
+                                {/* GST price */}
+                                <div className="text-sm text-[#4a4a4a] font-medium mt-1">
+                                    +₹ {room.gstPrice} taxes & fees
+                                </div>
+                            </div>
+                        ) : (
+                            <h1 className="text-3xl font-bold mb-4">
+                                ₹ {room.basePrice}
+                                <span className="ml-2 text-[14px] text-[#4a4a4a] font-medium">
+                                    {room.gstPrice === 0
+                                        ? "No taxes & fees"
+                                        : `+₹ ${room.gstPrice} taxes & fees`}
+                                </span>
+                            </h1>
+                        )}
+
 
                         <div className='flex w-full justify-between'>
                             <button

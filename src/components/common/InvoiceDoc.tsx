@@ -67,11 +67,6 @@ const InvoiceDoc: React.FC<{ booking: any; user: any }> = ({
     const room =
         typeof booking.roomId === "object" ? booking.roomId : { name: "" };
 
-    // const hotelImage =
-    //     Array.isArray(hotel.images) && hotel.images.length > 0
-    //         ? hotel.images[0]
-    //         : "https://via.placeholder.com/600x200.png?text=Hotel+Image";
-
     return (
         <Document>
             <Page size="A4" style={styles.page}>
@@ -82,10 +77,6 @@ const InvoiceDoc: React.FC<{ booking: any; user: any }> = ({
 
                 {/* Invoice Info */}
                 <View style={styles.section}>
-                    <Text style={styles.row}>
-                        <Text style={styles.label}>Invoice ID: </Text>
-                        {booking._id}
-                    </Text>
                     <Text style={styles.row}>
                         <Text style={styles.label}>Date: </Text>
                         {new Date(booking.createdAt).toLocaleDateString()}
