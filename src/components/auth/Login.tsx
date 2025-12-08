@@ -14,46 +14,43 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4 py-6">
-            <div className="flex flex-col md:flex-row w-full max-w-4xl rounded-2xl shadow-lg bg-white border overflow-hidden">
+        <div className="h-screen flex items-center justify-center bg-gradient-to-br to-blue-200 from-white">
+            <div className="flex flex-col md:flex-row h-140 w-full max-w-4xl rounded-xl shadow-lg bg-white">
                 {/* Left Side - Hidden on small screens */}
-                <div className="hidden md:flex w-full md:w-1/2 bg-gray-100 flex-col items-center justify-center p-10 text-center text-gray-500">
-                    <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
-                    <p className="text-base">Here will be an image or something cool 🙂</p>
+                <div className="hidden md:flex h-full md:w-1/2 overflow-hidden">
+                    <img
+                        className='w-full h-full object-cover rounded-l-xl transition-transform duration-400 hover:scale-105'
+                        src='https://images.unsplash.com/photo-1549294413-26f195200c16?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=764'
+                        alt='loginImage'
+                    />
                 </div>
 
-                {/* Vertical Divider - Hidden on small screens */}
-                <div className="hidden md:block w-px bg-gray-300" />
-
                 {/* Form Side */}
-                <div className="w-full md:w-1/2 p-6 sm:p-8 md:p-12">
+                <div className="w-full md:w-1/2 px-10 py-8 overflow-y-auto">
                     <Formik
                         initialValues={{ email: '', password: '' }}
                         validationSchema={loginValidationSchema}
                         onSubmit={(values) => onSubmit({ ...values })}
                     >
                         {() => (
-                            <Form className="space-y-6">
+                            <Form className={`space-y-3 flex flex-col h-full ${role !== 'admin' ? 'justify-between' : 'justify-center'}`}>
                                 <div className="text-center space-y-1">
                                     <h1 className="text-3xl font-extrabold text-blue-600 font-[Poppins] tracking-tight">
                                         Welcome to <span className="text-blue-700">Travesta</span>
                                     </h1>
                                     <p className="text-sm text-gray-600">Please login to continue</p>
+                                    <h2 className="text-xl font-semibold text-center capitalize text-gray-800">
+                                        {role} Login
+                                    </h2>
                                 </div>
 
-                                <h2 className="text-xl font-semibold text-center capitalize text-gray-800">
-                                    {role} Login
-                                </h2>
-
-                                <div>
+                                <div className='space-y-2'>
                                     <Label htmlFor="email">Email</Label>
                                     <Field name="email">
                                         {({ field }: any) => <Input id="email" type="email" {...field} />}
                                     </Field>
                                     <ErrorMessage name="email" component="p" className="text-red-500 text-sm mt-1" />
-                                </div>
 
-                                <div>
                                     <Label htmlFor="password">Password</Label>
                                     <div className="relative">
                                         <Field name="password">
@@ -75,24 +72,24 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
                                         </button>
                                     </div>
                                     <ErrorMessage name="password" component="p" className="text-red-500 text-sm mt-1" />
+
+                                    {role !== 'admin' && (
+                                        <div className="text-right text-sm">
+                                            <button
+                                                type="button"
+                                                className="text-blue-600 hover:underline"
+                                                onClick={() => navigate(`/${role}/forgot-password`)}
+                                            >
+                                                Forgot Password?
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
+                                        {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
+                                        {isLoading ? 'Logging in...' : 'Login'}
+                                    </Button>
                                 </div>
-
-                                {role !== 'admin' && (
-                                    <div className="text-right text-sm">
-                                        <button
-                                            type="button"
-                                            className="text-blue-600 hover:underline"
-                                            onClick={() => navigate(`/${role}/forgot-password`)}
-                                        >
-                                            Forgot Password?
-                                        </button>
-                                    </div>
-                                )}
-
-                                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
-                                    {isLoading && <Loader2 className='animate-spin w-4 h-4' />}
-                                    {isLoading ? 'Logging in...' : 'Login'}
-                                </Button>
 
                                 {role !== 'admin' && (
                                     <>

@@ -4,10 +4,12 @@ export const loginValidationSchema = Yup.object().shape({
     email: Yup.string()
         .required("Email is required")
         .email("Must be a valid email address")
+        .max(30, "Email cannot exceed 30 characters")
         .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"),
     password: Yup.string()
         .required("Password is required")
         .min(8, "Password must be at least 8 characters long")
+        .max(30, "Password cannot exceed 30 characters")
         .matches(/[A-Z]/, "At least one uppercase letter required (A-Z)")
         .matches(/[a-z]/, "At least one lowercase letter required (a-z)")
         .matches(/[0-9]/, "At least one number required (0-9)")
@@ -16,17 +18,34 @@ export const loginValidationSchema = Yup.object().shape({
 
 
 export const signupValidationSchema = Yup.object().shape({
-    firstName: Yup.string().required("First name is required"),
-    lastName: Yup.string().required("Last name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    phone: Yup.string().matches(/^\d{10}$/, "Phone must be 10 digits").required("Phone is required"),
+    firstName: Yup.string()
+        .min(2, "First name must be at least 2 characters")
+        .max(30, "First name cannot exceed 30 characters")
+        .required("First name is required"),
+
+    lastName: Yup.string()
+        .min(2, "Last name must be at least 2 characters")
+        .max(30, "Last name cannot exceed 30 characters")
+        .required("Last name is required"),
+
+    email: Yup.string()
+        .email("Invalid email")
+        .max(50, "Email cannot exceed 50 characters")
+        .required("Email is required"),
+
+    phone: Yup.string()
+        .matches(/^\d{10}$/, "Phone must be 10 digits")
+        .required("Phone is required"),
+
     password: Yup.string()
-        .min(6, "Minimum 6 characters")
+        .min(6, "Password must be at least 6 characters")
+        .max(30, "Password cannot exceed 30 characters")
         .matches(/[A-Z]/, "Must include an uppercase letter")
         .matches(/[a-z]/, "Must include a lowercase letter")
         .matches(/\d/, "Must include a number")
         .matches(/[!@#$%^&*]/, "Must include a special character")
         .required("Password is required"),
+
     confirmPassword: Yup.string()
         .oneOf([Yup.ref("password")], "Passwords must match")
         .required("Confirm Password is required"),
@@ -56,6 +75,7 @@ export const resetPasswordValidationSchema = Yup.object().shape({
     password: Yup.string()
         .required('Password is required')
         .min(6, 'Password must be at least 6 characters long')
+        .max(30, "Password cannot exceed 30 characters")
         .matches(/[A-Z]/, "Must include an uppercase letter")
         .matches(/[a-z]/, "Must include a lowercase letter")
         .matches(/\d/, "Must include a number")

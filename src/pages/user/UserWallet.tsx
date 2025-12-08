@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Header from "@/components/header/user/Header";
 import WalletSection from "@/components/wallet/Wallet";
 import Pagination from "@/components/common/Pagination";
 import { Elements } from "@stripe/react-stripe-js";
@@ -13,19 +12,21 @@ import { Label } from "@/components/ui/label";
 import { showError } from "@/utils/customToast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-import UserSidebar from "@/components/sidebar/UserSidebar";
-import { Menu } from "lucide-react";
+import { TPagination } from "@/types/custom.types";
+import UserLayout from "@/components/layouts/UserLayout";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const UserWallet: React.FC = () => {
+    const userName = useSelector((state: RootState) => state.user.user?.firstName);
     const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const [showPayment, setShowPayment] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
     const [amount, setAmount] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const limit = 5;
 
     // queries
@@ -39,7 +40,7 @@ const UserWallet: React.FC = () => {
 
     const walletData = walletDataResponse?.data ?? null;
     const transactionData = transactionDataResponse?.data ?? null;
-    const meta = transactionDataResponse?.meta ?? null;
+    const meta = transactionDataResponse?.meta as TPagination ?? null;
 
     useEffect(() => {
         if (walletDataResponse && walletDataResponse.success && !walletDataResponse.data) {
@@ -85,85 +86,65 @@ const UserWallet: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <Header />
-
-            {/* Sidebar */}
-            <UserSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
-            {/* Toggle Button */}
-            {!sidebarOpen && (
-                <button
-                    className="fixed top-18 left-1 z-40 bg-yellow-200 p-2 rounded-md shadow-lg lg:hidden"
-                    onClick={() => setSidebarOpen(true)}
-                >
-                    <Menu className="w-5 h-5" />
-                </button>
-            )}
-
-            <main className="flex-grow bg-gray-100 px-4 py-6 mt-4 lg:ml-64">
-                <div className="mx-auto max-w-6xl space-y-6">
-                    <h1 className="text-3xl font-bold text-gray-800">Your Wallet</h1>
-
-                    {/* Dialog shared between components */}
-                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                        {/* Wallet Section */}
-                        {!walletLoading && walletData && (
-                            <WalletSection
-                                balance={walletData.balance}
-                                transactions={transactionData || []}
-                                userName={walletData.user?.name || "User"}
-                                loading={transactionLoading}
-                                addMoney={() => setDialogOpen(true)}
-                            />
-                        )}
-
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Add Money</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4 mt-2">
-                                <Label htmlFor="amount">Enter Amount (Max ₹2000)</Label>
-                                <Input
-                                    id="amount"
-                                    type="number"
-                                    min={1}
-                                    max={2000}
-                                    placeholder="Enter amount in ₹"
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                />
-                            </div>
-                            <DialogFooter className="mt-4">
-                                <Button onClick={handleAddMoney} disabled={!amount}>
-                                    Add to Wallet
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-
-                    {/* Payment Section */}
-                    {showPayment && clientSecret && (
-                        <Elements options={options} stripe={stripePromise}>
-                            <CheckoutForm
-                                open={showPayment}
-                                onClose={() => setShowPayment(false)}
-                                onPaymentSuccess={handleWalletPaymentSuccess}
-                            />
-                        </Elements>
-                    )}
-
-                    {/* Pagination */}
-                    {meta && meta.totalPages > 0 && (
-                        <Pagination
-                            currentPage={meta.currentPage}
-                            totalPages={meta.totalPages}
-                            onPageChange={setPage}
+        <UserLayout>
+            <>
+                {/* Dialog shared between components */}
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    {/* Wallet Section */}
+                    {!walletLoading && walletData && (
+                        <WalletSection
+                            balance={walletData.balance}
+                            transactions={transactionData || []}
+                            userName={userName || "User"}
+                            loading={transactionLoading}
+                            addMoney={() => setDialogOpen(true)}
                         />
                     )}
-                </div>
-            </main>
-        </div>
+
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Add Money</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 mt-2">
+                            <Label htmlFor="amount">Enter Amount (Max ₹2000)</Label>
+                            <Input
+                                id="amount"
+                                type="number"
+                                min={1}
+                                max={2000}
+                                placeholder="Enter amount in ₹"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                            />
+                        </div>
+                        <DialogFooter className="mt-4">
+                            <Button onClick={handleAddMoney} disabled={!amount}>
+                                Add to Wallet
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                {/* Payment Section */}
+                {showPayment && clientSecret && (
+                    <Elements options={options} stripe={stripePromise}>
+                        <CheckoutForm
+                            open={showPayment}
+                            onClose={() => setShowPayment(false)}
+                            onPaymentSuccess={handleWalletPaymentSuccess}
+                        />
+                    </Elements>
+                )}
+                {/* Pagination */}
+                {meta && meta.totalPages > 0 && (
+                    <Pagination
+                        currentPage={meta.currentPage}
+                        totalPages={meta.totalPages}
+                        onPageChange={setPage}
+                    />
+                )}
+            </>
+        </UserLayout>
     );
 };
 

@@ -4,36 +4,37 @@ import { useDispatch } from "react-redux"
 import { showError, showSuccess } from "@/utils/customToast"
 import { setUser } from "@/store/slices/userSlice"
 import { getAllUsers, toggleBlockUser } from "@/services/adminService"
-import { TGetAllUsersResponse } from "@/types/response.types"
-import { TSortOption } from "@/types/custom.types"
+import { IUser } from "@/types/user.types"
+import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
 
 export const useGetUser = () => {
     return useQuery({
-        queryKey: ['user'],
-        queryFn: () => getUser(),
+        queryKey: ['user-profile'],
+        queryFn: getUser,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
+        retry: 2,
     })
 }
 
 export const useUpdateUser = () => {
-    const dispatch = useDispatch()
-    const queryClient = useQueryClient()
+    const dispatch = useDispatch();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: (values: { data: FormData }) => updateUser(values.data),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setUser(res.data.user))
+                dispatch(setUser(res.data))
                 queryClient.invalidateQueries({ queryKey: ['user'] });
             } else {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error?.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }
@@ -54,11 +55,10 @@ export const useBlockUser = () => {
         onMutate: async (userId: string) => {
             await queryClient.cancelQueries({ queryKey: ['admin-users'], exact: false });
 
-            const allQueries = queryClient.getQueriesData<TGetAllUsersResponse>({ queryKey: ['admin-users'] });
-
+            const allQueries = queryClient.getQueriesData({ queryKey: ['admin-users'] });
 
             allQueries.forEach(([key, _]) => {
-                queryClient.setQueryData(key, (prev: TGetAllUsersResponse) => ({
+                queryClient.setQueryData(key, (prev: TApiSuccessResponse<IUser[]>) => ({
                     ...prev,
                     data: prev?.data?.map(user =>
                         user.id === userId ? { ...user, isBlocked: !user.isBlocked } : user
@@ -75,7 +75,7 @@ export const useBlockUser = () => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any, _userId, context) => {
+        onError: (error: ICustomError, _userId, context) => {
             if (context?.allQueries) {
                 context.allQueries.forEach(([key, oldData]) => {
                     queryClient.setQueryData(key, oldData);
@@ -83,7 +83,7 @@ export const useBlockUser = () => {
             }
 
             console.log('error logging: ', error)
-            showError(error.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         },
     })
 }

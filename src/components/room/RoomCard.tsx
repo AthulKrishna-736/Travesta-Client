@@ -1,157 +1,183 @@
-import React from "react";
-import { Users, BedDouble } from "lucide-react";
-import { RoomCardLayoutProps } from "@/types/component.types";
+import React, { useEffect, useState } from "react";
+import { Users, BedDouble, Check } from "lucide-react";
+import { RoomCardProps } from "@/types/room.types";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { saveLastVisitedPath } from "@/store/slices/navigationSlice";
+import { useDispatch } from "react-redux";
 
 
-const RoomCardLayout: React.FC<RoomCardLayoutProps> = ({ room, bookingRoomId, setBookingRoomId, formData, handleInputChange, handleBookingSubmit, handleBookClick }) => {
+const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = useSelector((state: RootState) => state.user.user?.id);
+    const [imagePreview, setImagePreview] = useState<string>('');
+
+    useEffect(() => {
+        if (room.images && room.images.length > 0) {
+            setImagePreview(room.images[0]);
+        } else {
+            console.error('No images found or count does not met', room.images);
+        }
+        return () => setImagePreview('');
+    }, []);
+
     return (
-        <div
-            key={room._id}
-            className="bg-white rounded-xl border border-gray-200 shadow-md hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col"
-        >
-            {/* Main Room Image */}
-            {room.images?.[0] && (
-                <img
-                    src={room.images[0]}
-                    alt={room.name}
-                    className="w-full h-52 object-cover rounded-lg mb-4"
-                />
-            )}
+        <div className="bg-white border border-[#d9d9d9] rounded-xl overflow-hidden">
+            <div className="flex flex-col md:flex-row h-full">
+                {/* Left Side - Images (40%) */}
+                <div className="md:w-2/5 p-4">
+                    <div className="flex flex-col gap-3 h-full">
+                        {/* Main Image */}
+                        {imagePreview && (
+                            <div className="flex-1 h-[200px] md:h-[280px]">
+                                <img
+                                    src={imagePreview}
+                                    alt={room.name}
+                                    className="w-full h-full object-cover rounded-lg shadow-sm"
+                                />
+                            </div>
+                        )}
 
-            {/* Thumbnails */}
-            {room.images?.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto mb-3">
-                    {room.images.slice(0, 4).map((img: string, idx: number) => (
-                        <img
-                            key={idx}
-                            src={img}
-                            alt={`Thumb ${idx}`}
-                            className="w-16 h-16 object-cover rounded-md border shadow-sm"
-                        />
-                    ))}
-                </div>
-            )}
-
-            {/* Room Info */}
-            <div className="flex justify-between items-center mb-2">
-                <h3 className="text-xl font-semibold text-gray-800">{room.name}</h3>
-                <span className="bg-green-100 text-green-700 text-sm font-medium px-3 py-1 rounded-full">
-                    ₹{room.basePrice}
-                </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
-                <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4 text-blue-500" />
-                    <span>{room.guest} Guests</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <BedDouble className="w-4 h-4 text-purple-500" />
-                    <span>{room.bedType}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <span className="font-medium">Room Type: {room.roomType}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <span className="font-medium">Room Count: {room.roomCount}</span>
-                </div>
-            </div>
-
-            {/* Amenities */}
-            {room.amenities?.length > 0 && (
-                <div className="mb-4">
-                    <h4 className="font-medium text-sm text-gray-800 mb-1">Amenities</h4>
-                    <div className="flex flex-wrap gap-2">
-                        {room.amenities.map((item: any) => (
-                            <span
-                                key={item._id}
-                                className="text-xs bg-accent text-muted-foreground px-2 py-1 rounded-full border"
-                            >
-                                {item.name}
-                            </span>
-                        ))}
+                        {/* Thumbnail Images */}
+                        {room.images?.length > 1 && (
+                            <div className="flex gap-2">
+                                {room.images.slice(0, 4).map((img, idx) => (
+                                    <div key={idx} className="flex-1">
+                                        <img
+                                            onMouseEnter={() => setImagePreview(img)}
+                                            src={img}
+                                            alt={`View ${idx + 2}`}
+                                            className="w-full h-20 md:h-24 object-cover rounded-md shadow-sm hover:opacity-90 transition-opacity cursor-pointer"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
-            )}
 
-            {/* Booking Section */}
-            {bookingRoomId === room._id ? (
-                <div className="mt-4 pt-4 border-t">
-                    <h4 className="font-medium mb-2 text-sm text-gray-800">Book this room</h4>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleBookingSubmit(room._id);
-                        }}
-                        className="space-y-3 text-sm"
-                    >
+                {/* Divider */}
+                <div className="hidden md:block w-[0.5px] bg-[#d9d9d9]"></div>
+
+                {/* Right Side - Details (60%) */}
+                <div className="md:w-3/5 p-6 flex flex-col">
+                    {/* Header */}
+                    <div className="flex justify-between items-start mb-4">
                         <div>
-                            <label className="block mb-1 font-medium" htmlFor="checkIn">Check-In</label>
-                            <input
-                                type="date"
-                                id="checkIn"
-                                name="checkIn"
-                                min={new Date().toLocaleDateString('en-CA')}
-                                value={formData.checkIn}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full border rounded-md px-3 py-2"
-                            />
+                            <h3 className="text-3xl font-bold text-gray-900 mb-1">
+                                {room.name}
+                            </h3>
+                            <span className="inline-block bg-blue-50 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">
+                                {room.roomType}
+                            </span>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-sm text-gray-500 mb-1">Starting from</div>
+                            <div className="text-3xl font-bold text-blue-600">
+                                ₹{room.basePrice}
+                            </div>
+                            <h6 className="text-xs text-gray-500">Per night</h6>
+                            <h6 className="text-xs text-gray-500">{room.gstPrice === 0 ? "No taxes & fees" : `+₹ ${room.gstPrice} taxes & fees`}</h6>
+                        </div>
+                    </div>
+
+                    {/* Room Features */}
+                    <div className="grid grid-cols-2 gap-4 mb-5 py-4 border-y border-gray-100">
+                        <div className="flex items-center gap-2">
+                            <div className="bg-blue-50 p-2 rounded-lg">
+                                <Users className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                                <div className="text-xs text-gray-500">Guests</div>
+                                <div className="text-sm font-semibold text-gray-800">
+                                    Up to {room.guest}
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label className="block mb-1 font-medium" htmlFor="checkOut">Check-Out</label>
-                            <input
-                                type="date"
-                                id="checkOut"
-                                min={formData.checkOut ? new Date(new Date(formData.checkOut).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString('en-CA') : new Date().toLocaleDateString('en-CA')}
-                                name="checkOut"
-                                value={formData.checkOut}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full border rounded-md px-3 py-2"
-                            />
+                        <div className="flex items-center gap-2">
+                            <div className="bg-purple-50 p-2 rounded-lg">
+                                <BedDouble className="w-5 h-5 text-purple-600" />
+                            </div>
+                            <div>
+                                <div className="text-xs text-gray-500">Bed Type</div>
+                                <div className="text-sm font-semibold text-gray-800">
+                                    {room.bedType}
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label className="block mb-1 font-medium" htmlFor="guests">Guests</label>
-                            <input
-                                type="number"
-                                id="guests"
-                                name="guests"
-                                min={1}
-                                max={room.capacity}
-                                value={formData.guests}
-                                onChange={handleInputChange}
-                                required
-                                className="w-full border rounded-md px-3 py-2"
-                            />
+                        <div className="flex items-center gap-2 col-span-2">
+                            <div className="bg-amber-50 p-2 rounded-lg">
+                                <div className="w-5 h-5 text-amber-600 font-bold text-center leading-5">
+                                    {room.roomCount}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-xs text-gray-500">Available Rooms</div>
+                                <div className="text-sm font-semibold text-gray-800">
+                                    {room.roomCount} {room.roomCount === 1 ? 'Room' : 'Rooms'}
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <div className="flex gap-2 mt-2">
-                            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                                Confirm Booking
-                            </button>
+                    {/* Amenities */}
+                    {room.amenities?.length > 0 && (
+                        <div className="mb-5">
+                            <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                                Amenities & Services
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                                {room.amenities.map((item) => (
+                                    <span
+                                        key={item._id}
+                                        className="inline-flex items-center gap-1 text-xs bg-gray-50 text-gray-700 px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-200 transition-colors"
+                                    >
+                                        <Check className="w-4 h-4 text-green-500" />
+                                        {item.name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Book Button */}
+                    <div className="flex justify-between items-center w-full gap-3">
+                        {user ? (
                             <button
-                                type="button"
-                                onClick={() => setBookingRoomId(null)}
-                                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                                onClick={() => handleBookClick(room)}
+                                className="w-full bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-xl font-bold px-6 py-3 rounded-lg shadow-sm cursor-pointer"
                             >
-                                Cancel
+                                Book This Room
                             </button>
-                        </div>
-                    </form>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={() => {
+                                        dispatch(saveLastVisitedPath(window.location.href.replace(window.location.origin, "")));
+                                        navigate("/user/login")
+                                    }}
+                                    className="text-[#028dff] font-bold cursor-pointer outline outline-[#028dff] rounded-lg py-2 px-4"
+                                >
+                                    Login Now
+                                </button>
+                                <button
+                                    onClick={() => handleBookClick(room)}
+                                    className="bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-xl font-bold px-6 py-2 rounded-lg shadow-sm cursor-pointer"
+                                >
+                                    Book This Room
+                                </button>
+                            </>
+                        )}
+                    </div>
+
                 </div>
-            ) : (
-                <button
-                    onClick={() => handleBookClick(room._id)}
-                    className="mt-auto bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                >
-                    Book this room
-                </button>
-            )}
+            </div>
         </div>
     );
 };
 
-export default RoomCardLayout;
+export default RoomCard;

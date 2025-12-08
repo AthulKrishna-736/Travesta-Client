@@ -1,12 +1,13 @@
+import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { TRoles } from '@/types/auth.types';
-import { getUserChatMessages, getChattedVendors, getUserUnreadChats } from '@/services/userService';
-import { useEffect, useRef, useState } from 'react';
 import { socket } from '@/utils/socket';
+import { TRoles } from '@/types/auth.types';
+import { getUserChatMessages, getChattedVendors, getUserUnreadChats, getUserChatAccess } from '@/services/userService';
 import { showError } from '@/utils/customToast';
 import { getChattedCustomers, getVendorChatMessages, getVendorUnreadChats } from '@/services/vendorService';
 import { IChat, SendMessagePayload, TypingPayload } from '@/types/chat.types';
 import { getAdminChatMessages, getAdminChatVendors, getAdminUnreadMsg } from '@/services/adminService';
+import { ICustomError, TApiSuccessResponse } from '@/types/custom.types';
 
 //user
 export const useGetUserChatMessages = (userId: string, enabled: boolean) => {
@@ -23,7 +24,18 @@ export const useGetUserUnreadChats = () => {
         queryKey: ['user-unread-chats'],
         queryFn: getUserUnreadChats,
         staleTime: 60 * 1000,
-    })
+    });
+}
+
+export const useGetUserChatAccess = () => {
+    return useQuery<TApiSuccessResponse, ICustomError>({
+        queryKey: ['chat-access'],
+        queryFn: getUserChatAccess,
+        staleTime: 60 * 1000,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        retry: false,
+    });
 }
 
 export const useGetUserChatVendors = (search: string) => {
@@ -51,7 +63,7 @@ export const useGetVendorChatMessages = (userId: string, enabled: boolean) => {
         queryFn: () => getVendorChatMessages(userId),
         enabled,
         staleTime: 60 * 1000,
-    })
+    });
 }
 
 export const useGetVendorUnreadChats = () => {
@@ -59,7 +71,7 @@ export const useGetVendorUnreadChats = () => {
         queryKey: ['vendor-unread-chats'],
         queryFn: getVendorUnreadChats,
         staleTime: 60 * 1000,
-    })
+    });
 }
 
 //admin
@@ -78,7 +90,7 @@ export const useGetAdminChatMessages = (vendorId: string, enabled: boolean) => {
         queryFn: () => getAdminChatMessages(vendorId),
         enabled,
         staleTime: 60 * 1000,
-    })
+    });
 }
 
 export const useGetAdminUnreadChats = () => {
@@ -95,65 +107,69 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
     const [messages, setMessages] = useState<IChat[]>([]);
     const [liveUnreadCounts, setLiveUnreadCounts] = useState<Record<string, number>>({});
     const [typingStatus, setTypingStatus] = useState(false);
-    const [bookingError, setBookingError] = useState<string | null>(null);
-    const isConnected = useRef(false);
+    const [bookingError, setBookingError] = useState<string>('');
 
-    useEffect(() => {
-        if (!isConnected.current) {
-            socket.on("receive_message", (data: IChat) => {
-                if (data.fromId === selectedId || data.toId === selectedId) {
-                    setMessages((prev) => [...prev, data]);
-                } else {
-                    console.info('read message data', data)
-                    setLiveUnreadCounts((prev) => ({
-                        ...prev,
-                        [data.fromId]: (prev[data.fromId] || 0) + 1
-                    }));
-                }
-            });
-
-            socket.on("typing", (data: TypingPayload) => {
-                if (selectedId === data.fromId) {
-                    setTypingStatus(true);
-                    setTimeout(() => setTypingStatus(false), 2000);
-                }
-            });
-
-            socket.on("message_read", (data: { withUserId: string }) => {
-                setLiveUnreadCounts(prev => {
-                    const copy = { ...prev };
-                    delete copy[data.withUserId];
-                    return copy;
-                });
-
-                queryClient.invalidateQueries({ queryKey: ['unread-chats'] });
-            });
-
-            socket.on("connect_error", (err: any) => {
-                showError("Socket connection error: " + err.message);
-            });
-
-            socket.on("booking_error", (err: { message: string }) => {
-                setBookingError(err.message);
-                showError(err.message);
-                socket.disconnect();
-            });
-
-            isConnected.current = true;
+    const handleReceiveMessage = (data: IChat) => {
+        if (data.fromId === selectedId || data.toId === selectedId) {
+            setMessages((prev) => [...prev, data]);
+        } else {
+            console.info('Received Msg: ', data);
+            setLiveUnreadCounts((prev) => ({
+                ...prev,
+                [data.fromId]: (prev[data.fromId] || 0) + 1
+            }))
         }
+    }
+
+    const handleTypingMessage = (data: TypingPayload) => {
+        if (selectedId === data.fromId) {
+            setTypingStatus(true);
+            setTimeout(() => setTypingStatus(false), 1500);
+        }
+    }
+
+    const handleReadMessage = (data: { withUserId: string }) => {
+        setLiveUnreadCounts(prev => {
+            const copy = { ...prev };
+            delete copy[data.withUserId];
+            return copy;
+        })
+    }
+
+    const handleBookingError = (message: string) => {
+        setBookingError(message);
+        socket.disconnect();
+    }
+
+    //mount time checks
+    useEffect(() => {
+        socket.on("booking_error", handleBookingError);
+        socket.on("connect_error", (err: any) => {
+            showError("Socket connection error: " + err.message);
+        });
+
+        return () => {
+            socket.off("booking_error", handleBookingError);
+            socket.off("connect_error");
+        };
+    }, []);
+
+    //on chat acc selected
+    useEffect(() => {
+        socket.on("receive_message", handleReceiveMessage);
+        socket.on("typing", handleTypingMessage);
+        socket.on("message_read", handleReadMessage);
+
+        queryClient.invalidateQueries({ queryKey: ['unread-chats'] });
 
         return () => {
             socket.off("receive_message");
             socket.off("typing");
             socket.off("message_read");
-            socket.off("booking_error");
-            socket.off("connect_error");
-            isConnected.current = false;
         };
     }, [selectedId]);
 
     useEffect(() => {
-        console.log('clearing useEffect running or not check quick here just that here')
         if (selectedId) {
             setLiveUnreadCounts(prev => {
                 const copy = { ...prev };

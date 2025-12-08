@@ -4,7 +4,7 @@ import { IHotel } from '@/types/hotel.types';
 import { IRoom } from '@/types/room.types';
 import ShowRoomDetailsModal from './ShowRoomDetailsModal';
 import CreateRoomModal from './CreateRoomModal';
-import { IRoomTableProps } from '@/types/component.types';
+import { IRoomTableProps } from '@/types/room.types';
 import { useGetAllRooms } from '@/hooks/vendor/useRoom';
 import { useUpdateRoom } from '@/hooks/vendor/useRoom';
 import { Input } from '@/components/ui/input';
@@ -14,9 +14,10 @@ import { Edit, InfoIcon } from 'lucide-react';
 const columns = [
     { key: 'name', label: 'Room Name' },
     { key: 'roomType', label: 'Room Type' },
+    { key: 'hotelName', label: "Hotel" },
     { key: 'guest', label: 'Guests' },
     { key: 'bedType', label: 'Bed Type' },
-    { key: 'isAvailable', label: 'Available' },
+    { key: 'roomCount', label: 'Room Count' },
 ];
 
 const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
@@ -24,13 +25,16 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
     const [detailModalOpen, setDetailModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedHotelId, setSelectedHotelId] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [page, setPage] = useState(1);
-    const limit = 10;
+    const limit = 7;
 
-    const { data: roomsData, isLoading } = useGetAllRooms(page, limit, debouncedSearch);
+    const { data: roomsData, isLoading } = useGetAllRooms(page, limit, debouncedSearch, selectedHotelId);
     const rooms = roomsData?.data;
     const meta = roomsData?.meta;
+
+    const mappedRooms = rooms ? rooms.map((r: any) => ({ ...r, hotelName: r.hotelId.name, })) : [];
 
     // Debounce search input
     useEffect(() => {
@@ -98,26 +102,52 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
     return (
         <>
             <div className="space-y-4">
-                <Input
-                    type="text"
-                    placeholder="Search rooms..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {rooms ? (
-                    <div className="rounded-lg border-1 overflow-hidden">
-                        <DataTable
-                            columns={columns}
-                            data={rooms}
-                            actions={actions}
-                            loading={isLoading}
-                        />
-                    </div>
-                ) : (
-                    <div className="flex justify-center items-center">
-                        <p className="text-semibold text-lg text-red-500">No rooms found. Please create one</p>
-                    </div>
-                )}
+                <div className='flex justify-center items-center gap-1'>
+                    <Input
+                        type="text"
+                        placeholder="Search rooms..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <select
+                        className="border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/3"
+                        value={selectedHotelId}
+                        onChange={(e) => {
+                            setSelectedHotelId(e.target.value);
+                            setPage(1);
+                        }}
+                    >
+                        <option value="">All Hotels</option>
+                        {hotels?.map((hotel: IHotel) => (
+                            <option key={hotel.id} value={hotel.id}>
+                                {hotel.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                {isLoading ?
+                    (
+                        <div className="flex justify-center items-center py-10">
+                            <div className="flex flex-col items-center">
+                                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                <p className="mt-3 text-blue-600 font-medium">Loading rooms...</p>
+                            </div>
+                        </div>
+                    ) : mappedRooms && mappedRooms.length > 0 ? (
+                        <div className="rounded-lg border-1 overflow-hidden">
+                            <DataTable
+                                columns={columns}
+                                data={mappedRooms}
+                                actions={actions}
+                                loading={isLoading}
+                            />
+                        </div>
+                    ) : (
+                        <div className="flex justify-center items-center">
+                            <p className="font-semibold text-2xl text-red-500 bg-red-100 w-full text-center py-5">No rooms found. Please create one</p>
+                        </div>
+                    )}
 
                 {meta && meta.totalPages > 0 && (
                     <Pagination

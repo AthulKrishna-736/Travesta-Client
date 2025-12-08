@@ -10,12 +10,14 @@ import { ErrorBoundary } from './utils/ErrorBoundary';
 import { env } from './config/config';
 import LandingPage from './pages/user/LandingPage';
 import 'leaflet/dist/leaflet.css';
+import ScrollToTop from './utils/ScrollToTop';
 
 const App: React.FC = () => {
   return (
     <>
       <GoogleOAuthProvider clientId={env.GOOGLE_ID}>
         <Router>
+          <ScrollToTop />
           <ErrorBoundary>
             <Routes>
               <Route path="/" element={<LandingPage />} />

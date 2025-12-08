@@ -2,7 +2,7 @@ import { env, HttpStatusCode } from '@/config/config';
 import { logoutUser } from '@/store/slices/userSlice';
 import { logoutVendor } from '@/store/slices/vendorSlice';
 import store from '@/store/store';
-import { ICustomErrorResponse } from '@/types/response.types';
+import { ICustomError } from '@/types/custom.types';
 import { showError } from '@/utils/customToast';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
@@ -12,7 +12,7 @@ export const axiosInstance = axios.create({
     headers: {
         'Content-Type': 'application/json'
     }
-})
+});
 
 
 axiosInstance.interceptors.response.use(
@@ -23,7 +23,7 @@ axiosInstance.interceptors.response.use(
         const pathname = window.location.pathname;
         const isUserRoute = pathname.startsWith('/user');
         const isVendorRoute = pathname.startsWith('/vendor');
-        const errorMsg = error.response?.data as ICustomErrorResponse | undefined;
+        const errorMsg = error.response?.data as ICustomError | undefined;
 
         if (errorMsg?.message == 'user is blocked' && isUserRoute) {
             store.dispatch(logoutUser())

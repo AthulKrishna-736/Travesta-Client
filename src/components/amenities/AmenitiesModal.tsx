@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createAmenitySchema } from "@/utils/validations/commonValidation";
-import { IAmenitiesModalProps, TCreateAmenityData } from "@/types/component.types";
+import { IAmenitiesModalProps, TCreateAmenityData } from "@/types/amenities.types";
 
 
 const AmenitiesModal: React.FC<IAmenitiesModalProps> = ({ open, title, onCancel, onSubmit, loading = false, initialData }) => {

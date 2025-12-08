@@ -15,6 +15,7 @@ import ProtectGuest from '@/ProtectRoutes/ProtectGuest'
 import ProtectedUser from '@/ProtectRoutes/ProtectUser'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
+import SubscriptionPage from '@/pages/user/UserSubscriptionPage'
 
 const UserRoutes: React.FC = () => {
   return (
@@ -51,12 +52,9 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       } />
 
-      <Route path='hotels' element={
-        <ProtectedUser>
-          <UserHotelPage />
-        </ProtectedUser>
-      }
-      />
+      <Route path='hotels' element={<UserHotelPage />} />
+
+      <Route path="hotels/:hotelId/:roomId" element={<UserHotelDetailPage />} />
 
       <Route path='chat' element={
         <ProtectedUser>
@@ -76,15 +74,16 @@ const UserRoutes: React.FC = () => {
         </ProtectedUser>
       } />
 
-      <Route path='checkout' element={
+      <Route path='checkout' element={<UserCheckoutPage />} />
+
+      <Route path='subscription' element={
         <ProtectedUser>
-          <UserCheckoutPage />
+          <SubscriptionPage />
         </ProtectedUser>
       } />
 
       <Route path='about-us' element={<UserAboutPage />} />
 
-      <Route path="hotels/:hotelId" element={<UserHotelDetailPage />} />
     </Routes>
   )
 }

@@ -4,13 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import MultiImageUploader from '../common/ImageUpload';
-import { ICreateRoomProps, IAmenity } from '@/types/component.types';
+import { ICreateRoomProps, } from '@/types/room.types';
 import { IHotel } from '@/types/hotel.types';
 import { X } from 'lucide-react';
 import { useGetVendorAmenities } from '@/hooks/admin/useAmenities';
 import { BED_TYPE_CAPACITY, BedType } from '@/types/room.types';
 import { Label } from '../ui/label';
 import { showError } from '@/utils/customToast';
+import { IAmenity } from '@/types/amenities.types';
 
 type RoomFormValues = {
     name: string;
@@ -163,7 +164,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                             {...register('roomType', { required: 'Room type is required' })}
                         >
                             <option value="" disabled>Select Room Type</option>
-                            {["AC", "Non-AC", "Deluxe", "Suite", "Standard", "Penthouse"].map((type) => (
+                            {["AC", "Non-AC", "Deluxe", "Suite", "Standard"].map((type) => (
                                 <option key={type} value={type}>
                                     {type}
                                 </option>
@@ -215,14 +216,14 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                     <div>
                         <label className="block mb-1 font-medium">Select Amenities</label>
                         <div className="border p-2 rounded flex flex-wrap gap-2 min-h-[40px]">
-                            {selectedAmenities.map((amenityId: any) => {
-                                const amenity = roomAmenities.find((a: IAmenity) => a._id === amenityId);
+                            {selectedAmenities.map((amenityId: string) => {
+                                const amenity = roomAmenities.find((a: IAmenity) => a.id === amenityId);
                                 return (
                                     <span
                                         key={amenityId}
                                         className="bg-gray-200 px-2 py-1 rounded flex items-center"
                                     >
-                                        {amenity?.name || amenityId?.name}
+                                        {amenity?.name}
                                         <X
                                             className="ml-1 w-3 h-3 cursor-pointer"
                                             onClick={() =>
@@ -248,9 +249,9 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                             >
                                 <option value="">+ Add Amenity</option>
                                 {roomAmenities
-                                    .filter((a: IAmenity) => !selectedAmenities.includes(a._id))
+                                    .filter((a: IAmenity) => !selectedAmenities.includes(a.id))
                                     .map((a: IAmenity) => (
-                                        <option key={a._id} value={a._id}>
+                                        <option key={a.id} value={a.id}>
                                             {a.name}
                                         </option>
                                     ))}

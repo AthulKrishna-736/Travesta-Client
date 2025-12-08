@@ -92,7 +92,7 @@ const TravelLocation: React.FC<ITravelLocation> = () => {
 
     return (
         <section className="bg-[#f1f1f1] py-10 px-10">
-            <div className='container mx-auto bg-white rounded-md p-4 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 shadow-lg'>
+            <div className='container mx-auto bg-white rounded-md p-4 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2'>
                 {locations && (locations.map((l) => {
                     return (
                         <div key={l.name} className='cursor-pointer m-2 p-2 rounded-md flex gap-3 hover:bg-gray-200 transition ease-in duration-300'>

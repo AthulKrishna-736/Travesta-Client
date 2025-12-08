@@ -18,12 +18,12 @@ const UserSidebar = ({ isOpen, onClose }: SidebarProps) => {
 
     return (
         <aside
-            className={`fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 shadow-md z-30 transform transition-transform duration-300 lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+            className={`fixed sm:relative z-10 w-64 bg-white border-r border-gray-200 shadow-md transform transition-transform duration-300  ${isOpen ? "translate-x-0" : "-translate-x-full"
                 }`}
         >
             <div className="flex items-center justify-between px-4 py-3 text-xl font-semibold border-b">
                 <span>User Menu</span>
-                <button className="lg:hidden" onClick={onClose}>
+                <button className="md:hidden" onClick={onClose}>
                     <X className="w-5 h-5" />
                 </button>
             </div>

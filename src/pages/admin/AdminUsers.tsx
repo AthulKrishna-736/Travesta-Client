@@ -1,4 +1,4 @@
-import { AdminLayout } from "@/components/header/admin/AdminLayout"
+import { AdminLayout } from "@/components/layouts/AdminLayout"
 import UserTable from "@/components/admin/UserTable"
 import Pagination from "@/components/common/Pagination"
 import { Input } from "@/components/ui/input"

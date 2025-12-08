@@ -1,12 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { IRoom } from "@/types/room.types";
+import { TRoomDetailProps } from "@/types/room.types";
 
-type TRoomDetailProps = {
-    open: boolean;
-    data: IRoom;
-    onClose: () => void;
-};
 
 const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose }) => {
     const mainImage = data.images?.[0];
@@ -16,7 +11,7 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-gray-800">Room Details</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold">Room Details</DialogTitle>
                     <DialogDescription className="text-gray-500">
                         Detailed information about {data.name}
                     </DialogDescription>
@@ -35,47 +30,49 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
                     )}
 
                     {/* Details Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h3 className="text-lg font-semibold text-gray-700 mb-3">Basic Information</h3>
-                                <div className="space-y-2">
-                                    <p className="flex justify-between">
-                                        <span className="text-gray-600 font-medium">Name:</span>
-                                        <span className="text-gray-800">{data.name}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-gray-600 font-medium">Bed Type:</span>
-                                        <span className="text-gray-800 capitalize">{data.bedType}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-gray-600 font-medium">Guest:</span>
-                                        <span className="text-gray-800">{data.roomCount > 1 ? `${data.roomCount} person(s)` : `${data.roomCount} person`}</span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h3 className="text-lg font-semibold text-gray-700 mb-3">Pricing</h3>
-                                <div className="space-y-2">
-                                    <p className="flex justify-between">
-                                        <span className="text-gray-600 font-medium">Base Price:</span>
-                                        <span className="text-gray-800">₹{data.basePrice.toLocaleString()}</span>
-                                    </p>
-                                    <p className="flex justify-between">
-                                        <span className="text-gray-600 font-medium">Availability:</span>
-                                        <span className={`font-medium ${data.isAvailable ? 'text-green-600' : 'text-red-600'}`}>
-                                            {data.isAvailable ? "Available" : "Not Available"}
-                                        </span>
-                                    </p>
-                                </div>
+                    <div className="flex flex-col gap-6">
+                        <div className="bg-gray-300 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-700 mb-3">Basic Information</h3>
+                            <div className="space-y-2">
+                                <p className="flex justify-between">
+                                    <span className="text-gray-600 font-medium">Name:</span>
+                                    <span className="font-semibold">{data.name}</span>
+                                </p>
+                                <p className="flex justify-between">
+                                    <span className="text-gray-600 font-medium">Bed Type:</span>
+                                    <span className="font-semibold capitalize">{data.bedType}</span>
+                                </p>
+                                <p className="flex justify-between">
+                                    <span className="text-gray-600 font-medium">Guest:</span>
+                                    <span className="font-semibold">{data.guest > 1 ? `${data.guest} person(s)` : `${data.guest} person`}</span>
+                                </p>
+                                <p className="flex justify-between">
+                                    <span className="text-gray-600 font-medium">Room Count:</span>
+                                    <span className="font-semibold">{data.roomCount}</span>
+                                </p>
                             </div>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="bg-green-200 p-4 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-700 mb-3">Pricing</h3>
+                            <div className="space-y-2">
+                                <p className="flex justify-between">
+                                    <span className="text-gray-600 font-medium">Base Price:</span>
+                                    <span className="font-semibold text-red-500">₹{data.basePrice.toLocaleString()}</span>
+                                </p>
+                                <p className="flex justify-between">
+                                    <span className="text-gray-600 font-medium">Availability:</span>
+                                    <span className={`font-medium ${data.isAvailable ? 'text-green-600' : 'text-red-600'}`}>
+                                        {data.isAvailable ? "Available" : "Not Available"}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-blue-200 p-4 rounded-lg">
                             <h3 className="text-lg font-semibold text-gray-700 mb-3">Amenities</h3>
                             <div className="flex flex-wrap gap-2">
-                                {data.amenities.map((amenity: any) => (
+                                {data.amenities.map((amenity) => (
                                     <span
                                         key={amenity._id}
                                         className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 border border-gray-200 shadow-sm"
@@ -91,7 +88,7 @@ const ShowRoomDetailsModal: React.FC<TRoomDetailProps> = ({ open, data, onClose 
                     {otherImages.length > 0 && (
                         <div className="mt-6">
                             <h3 className="text-lg font-semibold text-gray-700 mb-4">More Images</h3>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 {otherImages.map((img, index) => {
                                     const src = typeof img === "string" ? img : URL.createObjectURL(img);
                                     return (

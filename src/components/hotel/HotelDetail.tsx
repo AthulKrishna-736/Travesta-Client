@@ -1,31 +1,61 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Star, MapPin } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { useGetRoomsByHotel } from '@/hooks/vendor/useRoom';
+import React, { useRef, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import RoomCard from '../room/RoomCard';
+import Breadcrumbs from '../common/BreadCrumps';
+import HotelWithRoom from './HotelWithRoom';
+import MyOlaMap from '../maps/OlaMap';
+import RatingDetails from './RatingDetails';
+import NearbyAttractions from '../common/NearbyAttractions';
+import WeatherDetails from '../common/WeatherDetails';
+import PropertyRules from './PropertyRules';
 import { showError } from '@/utils/customToast';
-import RoomCardLayout from '../room/RoomCard';
+import { Lock, MapIcon } from 'lucide-react';
+import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
+import { useGetHotelRatings } from '@/hooks/vendor/useRating';
+import { useGetHotelDetailsWithRoom } from '@/hooks/vendor/useHotel';
+import { IRoom } from '@/types/room.types';
+import Pagination from '../common/Pagination';
+import CustomSearch from '../common/CustomSearch';
 
-interface BookingFormData {
-    checkIn: string;
-    checkOut: string;
-    guests: number;
-}
 
 const HotelDetail: React.FC = () => {
-    const { hotelId } = useParams();
-    const { data: hotelResponse, isLoading: hotelLoading, isError: hotelError } = useGetRoomsByHotel(hotelId || '');
-    const hotel = hotelResponse?.data?.[0]?.hotelId;
-
-    const rooms = hotelResponse?.data || [];
-
-    const [bookingRoomId, setBookingRoomId] = useState<string | null>(null);
-    const [formData, setFormData] = useState<BookingFormData>({
-        checkIn: '',
-        checkOut: '',
-        guests: 1,
-    });
+    const { hotelId, roomId } = useParams();
+    const [params] = useSearchParams();
     const navigate = useNavigate();
+    const mapRef = useRef<HTMLDivElement | null>(null);
+    const reviewRef = useRef<HTMLDivElement | null>(null);
+    const roomsRef = useRef<HTMLDivElement | null>(null);
+    const [page, setPage] = useState(1);
+
+    const RATING_LIMT = 5;
+
+    const location = params.get('location');
+    const checkInParam = params.get('checkIn') || '';
+    const checkOutParam = params.get('checkOut') || '';
+    const rooms = Number(params.get('rooms'));
+    const adults = Number(params.get('adults')) || 1;
+    const children = Number(params.get('children')) || 0;
+
+    const [geoSearch, setGeoSearch] = useState<string>(location!);
+    const [lat, setLat] = useState<number | null>(null);
+    const [long, setLong] = useState<number | null>(null);
+    const [checkIn, setCheckIn] = useState(checkInParam);
+    const [checkOut, setCheckOut] = useState(checkOutParam);
+    const [roomsCount, setRoomCount] = useState(rooms);
+    const [guests, setGuests] = useState(adults + children);
+
+    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkIn, checkOut, roomsCount, guests, children);
+    const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
+
+    const hotel = apiResponse?.data.hotel;
+    const room = apiResponse?.data.room as IRoom & { discountedPrice: number, appliedOffer: any };
+
+    const otherRooms = apiResponse?.data.otherRooms as (IRoom & { discountedPrice: number, appliedOffer: any })[];
+    const ratings = ratingResponse?.data;
+    const meta = ratingResponse?.meta;
+
+    const { data: planResponse } = useGetUserActivePlan();
+    const planHistory = planResponse ? planResponse?.data : null;
 
     if (hotelLoading)
         return (
@@ -44,46 +74,34 @@ const HotelDetail: React.FC = () => {
             </div>
         );
 
-    const handleBookClick = (roomId: string) => {
-        setBookingRoomId(roomId);
-        setFormData({ checkIn: '', checkOut: '', guests: 1 });
-    };
+    const BREADCRUMPS_ITEMS = [
+        { label: 'Home', path: '/user/home' },
+        { label: 'Hotels', path: '/user/hotels' },
+        { label: `${location}` },
+        { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
+    ]
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: name === 'guests' ? parseInt(value) : value,
-        }));
-    };
+    const handleBookingSubmit = async (room: IRoom & { discountedPrice: number, appliedOffer: any }) => {
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
 
-    const handleBookingSubmit = async (roomId: string) => {
-        const now = new Date(); 
-        const currentHours = now.getHours();
-        const currentMinutes = now.getMinutes();
-        const currentSeconds = now.getSeconds();
-        const currentMilliseconds = now.getMilliseconds();
+        const checkInTime = hotel?.propertyRules?.checkInTime || "13:00";
+        const checkOutTime = hotel?.propertyRules?.checkOutTime || "12:00";
 
-        console.log('formdata', formData)
+        const [checkInHours, checkInMinutes] = checkInTime.split(":").map(Number);
+        const [checkOutHours, checkOutMinutes] = checkOutTime.split(":").map(Number);
 
-        const checkInDate = new Date(formData.checkIn);
-        checkInDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
+        checkInDate.setHours(checkInHours, checkInMinutes, 0, 0);
+        checkOutDate.setHours(checkOutHours, checkOutMinutes, 0, 0);
 
-        const checkOutDate = new Date(formData.checkOut);
-        checkOutDate.setHours(currentHours, currentMinutes, currentSeconds, currentMilliseconds);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        console.log("Exact checkIn date-time:", checkInDate.toISOString());
-        console.log("Exact checkOut date-time:", checkOutDate.toISOString());
+        const checkInDateOnly = new Date(checkInDate);
+        checkInDateOnly.setHours(0, 0, 0, 0);
 
-        // Check if either date is missing or guests is less than 1
-        if (!formData.checkIn || !formData.checkOut || formData.guests < 1) {
-            showError('Please fill all fields correctly.');
-            return;
-        }
-
-        // Validate check-in is not in the past
-        if (checkInDate < now) {
-            showError('Check-in date/time cannot be in the past.');
+        if (checkInDateOnly < today) {
+            showError('Check-in date cannot be in the past.');
             return;
         }
 
@@ -97,132 +115,165 @@ const HotelDetail: React.FC = () => {
         const diffInTime = checkOutDate.getTime() - checkInDate.getTime();
         const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
 
-        // Optional: round up days for hourly differences
         const days = Math.ceil(diffInDays);
 
-        const room = rooms.find((r: any) => r._id === roomId);
-        if (!room) {
-            showError('Room not found.');
-            return;
-        }
+        const effectivePrice = room.discountedPrice ?? room.basePrice;
+        const totalPrice = effectivePrice * days;
 
-        console.log('room: ', room);
-
-        if (formData.guests > room.guest) {
-            showError(`Maximum ${room.guest} guest${room.guest > 1 ? 's are' : ' is'} allowed per room`);
-            return
-        }
-
-        const totalPrice = room.basePrice * days;
-
-        navigate('/user/checkout', {
-            state: {
-                hotel,
-                room,
-                formData: {
-                    ...formData,
-                    checkIn: checkInDate.toISOString(),
-                    checkOut: checkOutDate.toISOString(),
-                },
-                totalPrice,
-                days,
-            }
+        const queryParams = new URLSearchParams({
+            hotelId: hotelId!,
+            vendorId: hotel.vendorId!,
+            roomId: room.id,
+            rooms: roomsCount.toString(),
+            adults: guests.toString(),
+            children: children.toString(),
+            checkIn: checkInDate.toISOString(),
+            checkOut: checkOutDate.toISOString(),
+            totalPrice: totalPrice.toString(),
+            days: days.toString(),
         });
+        navigate(`/user/checkout?${queryParams.toString()}`);
+    };
 
+    const handleSearch = () => {
+        console.log('Searching with:', { geoSearch, lat, long, checkIn, checkOut, roomsCount, guests });
     };
 
     return (
-        <main className="p-6 max-w-5xl mx-auto space-y-6">
-            {/* Hotel Main Image and Thumbnails */}
-            <div className='bg-white p-2'>
-                <div className="h-80 w-full overflow-hidden rounded-lg shadow-md mb-2">
-                    {hotel.images && hotel.images.length > 0 ? (
-                        <img src={hotel.images[0]} alt={hotel.name} className="object-cover w-full h-full" />
-                    ) : (
-                        <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-600 text-sm">
-                            No Image Available
-                        </div>
-                    )}
-                </div>
-                <div className="flex gap-2 overflow-x-auto">
-                    {hotel.images?.slice(0, 4).map((img: string, idx: number) => (
-                        <img
-                            key={idx}
-                            src={img}
-                            alt={`Hotel Preview ${idx}`}
-                            className="w-20 h-20 object-cover rounded border shadow-sm"
-                        />
-                    ))}
-                </div>
-            </div>
+        <main className="p-6 max-w-6xl mx-auto space-y-4">
+            {/* Custom search */}
+            <CustomSearch
+                searchTerm={geoSearch}
+                setSearchTerm={setGeoSearch}
+                setLat={setLat}
+                setLong={setLong}
+                checkIn={checkIn}
+                setCheckIn={setCheckIn}
+                checkOut={checkOut}
+                setCheckOut={setCheckOut}
+                roomCount={roomsCount}
+                setRoomCount={setRoomCount}
+                guests={guests}
+                setGuests={setGuests}
+                onSearch={handleSearch}
+                disabled={true}
+            />
 
-            {/* Hotel Details */}
-            <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
-                {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <h1 className="text-3xl font-bold text-primary">{hotel.name}</h1>
-                    <div className="flex items-center gap-1 text-yellow-500 text-sm">
-                        <Star className="w-5 h-5 fill-yellow-500" />
-                        <span className="font-medium">{hotel.rating?.toFixed(1)}</span>
-                    </div>
-                </div>
+            {/* BreadCrumps */}
+            <Breadcrumbs items={BREADCRUMPS_ITEMS} />
 
-                {/* Location */}
-                <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                    <MapPin className="w-4 h-4" />
-                    <span>{hotel.city}, {hotel.state} – {hotel.address}</span>
-                </div>
+            {/* Hotel with room Details */}
+            <HotelWithRoom
+                hotel={hotel}
+                room={room!}
+                mapRef={mapRef}
+                roomsRef={roomsRef}
+                reviewRef={reviewRef}
+                ratings={ratings!}
+                roomSubmit={handleBookingSubmit}
+            />
 
-                {/* Description */}
-                <p className="text-gray-700 text-base leading-relaxed">{hotel.description}</p>
-
-                {/* Tags */}
-                {hotel.tags?.length > 0 && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Tags</h2>
-                        <div className="flex flex-wrap gap-2">
-                            {hotel.tags.map((tag: any, idx: any) => (
-                                <Badge key={idx} variant="outline" className="rounded-full px-3 py-1 text-xs">
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Amenities */}
-                {hotel.amenities && hotel.amenities.length > 0 && (
-                    <div>
-                        <h2 className="text-lg font-semibold mb-2">Amenities</h2>
-                        <div className="flex flex-wrap gap-2">
-                            {hotel.amenities.map((amenity: any) => (
-                                <Badge
-                                    key={amenity._id}
-                                    variant="secondary"
-                                    className="rounded-full px-3 py-1 text-xs"
-                                >
-                                    {amenity.name}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Rooms */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {rooms.map((room: any) => (
-                    <RoomCardLayout
-                        key={room._id}
+            {/* Other related rooms */}
+            <div ref={roomsRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                {otherRooms && otherRooms.map((room) => (
+                    <RoomCard
+                        key={room.id}
                         room={room}
-                        bookingRoomId={bookingRoomId}
-                        setBookingRoomId={setBookingRoomId}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                        handleBookingSubmit={handleBookingSubmit}
-                        handleBookClick={handleBookClick}
+                        handleBookClick={handleBookingSubmit}
                     />
                 ))}
+            </div>
+
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <PropertyRules propertyRules={hotel.propertyRules} />
+            </div>
+
+            {/* Weather Details */}
+            <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                {planHistory && planHistory.isActive ? (
+                    <WeatherDetails
+                        latitude={hotel.geoLocation.coordinates[1]}
+                        longitude={hotel.geoLocation.coordinates[0]}
+                        checkIn={checkInParam}
+                        checkOut={checkOutParam}
+                    />
+                ) : (
+                    <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
+                        <Lock className="mb-2 w-8 h-8 text-gray-400" />
+                        <p className="text-lg mb-4">Unlock this feature to access weather details</p>
+                        <button
+                            onClick={() => navigate('/user/subscription')}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Go to Subscription
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Map Section */}
+            <div ref={mapRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                <div className='flex justify-between '>
+                    <h1 className='text-xl font-semibold mb-2'>Location</h1>
+                    <button className='px-4 py-1.5 bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white font-semibold text-lg rounded-md shadow-md cursor-pointer' onClick={() => {
+                        window.open(
+                            `https://www.google.com/maps/dir/?api=1&destination=${hotel.geoLocation.coordinates[1]},${hotel.geoLocation.coordinates[0]}`,
+                            "_blank",
+                            "noopener,noreferrer"
+                        );
+                    }}>
+                        <span className='flex justify-center items-center gap-2'>
+                            <MapIcon className='text-white w-5 h-5 ' />
+                            Get Direction
+                        </span>
+                    </button>
+                </div>
+                <div>
+                    <MyOlaMap
+                        lat={hotel.geoLocation.coordinates[1]}
+                        long={hotel.geoLocation.coordinates[0]}
+                    />
+                </div>
+            </div>
+
+            <div className="space-y-6 bg-white p-4 rounded-md shadow-xs border border-gray-200">
+                {planHistory && planHistory.isActive && planHistory.subscriptionId.type === 'vip' ? (
+                    <NearbyAttractions
+                        lat={hotel.geoLocation.coordinates[1]}
+                        long={hotel.geoLocation.coordinates[0]}
+                    />
+                ) : (
+                    <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
+                        <Lock className="mb-2 w-8 h-8 text-gray-400" />
+                        <p className="text-lg mb-4">Unlock this feature to access Nearby Attractions</p>
+                        <button
+                            onClick={() => navigate('/user/subscription')}
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                        >
+                            Go to Subscription
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            {/* Reviews section */}
+            <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
+                {ratings && ratings.length > 0 ? (
+                    <>
+                        <RatingDetails ratings={ratings} />
+                        {meta && meta.totalPages > 0 && (
+                            <Pagination
+                                currentPage={meta.currentPage}
+                                totalPages={meta.totalPages}
+                                onPageChange={setPage}
+                            />
+                        )}
+                    </>
+                ) : (
+                    <div className='text-lg font-semibold'>
+                        No Ratings Found.
+                    </div>
+                )}
             </div>
 
         </main>

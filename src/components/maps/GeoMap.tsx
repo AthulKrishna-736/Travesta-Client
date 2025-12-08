@@ -5,7 +5,7 @@ import { Label } from "../ui/label";
 const LocationPicker = ({ onSelect }: { onSelect: (coords: [number, number]) => void }) => {
     useMapEvents({
         click(e: any) {
-            onSelect([e.latlng.lat, e.latlng.lng]);
+            onSelect([e.latlng.lng, e.latlng.lat]);
         },
     });
     return null;
@@ -22,9 +22,9 @@ const GeoMap: React.FC<GeoMapProps> = ({ geoLocation, setGeoLocation }) => {
         <div>
             <Label className="mb-3">Select Location (Click on map)</Label>
             <MapContainer
-                center={geoLocation || [20, 78]}
-                zoom={5}
-                style={{ height: "250px", width: "100%" }}
+                center={geoLocation ? { lat: geoLocation[1], lng: geoLocation[0] } : { lat: 20, lng: 78 }}
+                zoom={geoLocation ? 13 : 5}
+                style={{ height: "300px", width: "100%" }}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -35,7 +35,7 @@ const GeoMap: React.FC<GeoMapProps> = ({ geoLocation, setGeoLocation }) => {
 
             {geoLocation && (
                 <p>
-                    Lat: {geoLocation[0]}, Lng: {geoLocation[1]}
+                    Lat: {geoLocation[1]}, Lng: {geoLocation[0]}
                 </p>
             )}
         </div>

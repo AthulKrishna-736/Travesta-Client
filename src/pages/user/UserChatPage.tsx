@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import Header from '@/components/header/user/Header';
-import {  useGetUserChatMessages, useGetUserChatVendors, useGetUserUnreadChats, useSocketChat } from '@/hooks/user/useChat';
+import { useGetUserChatAccess, useGetUserChatMessages, useGetUserChatVendors, useGetUserUnreadChats, useSocketChat } from '@/hooks/user/useChat';
 import { useQueryClient } from '@tanstack/react-query';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import UserSidebar from '@/components/sidebar/UserSidebar';
-import { Menu } from 'lucide-react';
+import UserLayout from '@/components/layouts/UserLayout';
 
 const UserChatPage: React.FC = () => {
     const queryClient = useQueryClient();
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [msg, setMsg] = useState('');
+    const currentUserId = useSelector((state: RootState) => state?.user?.user?.id);
+    const [msg, setMsg] = useState<string>('');
     const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
-    const currentUserId = useSelector((state: RootState) => state?.user?.user?.id)
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
 
@@ -24,9 +21,10 @@ const UserChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
+    const { isLoading: chatAccessLoading, error: chatAccessError } = useGetUserChatAccess();
     const { data: unReadMsgResponse } = useGetUserUnreadChats();
     const { data: chattedVendorsResponse, isLoading } = useGetUserChatVendors(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedVendor?.id, currentUserId, 'user');
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError } = useSocketChat(selectedVendor?.id, currentUserId, 'user');
     const { data: oldMessagesData } = useGetUserChatMessages(selectedVendor?.id || '', !!selectedVendor);
 
     const vendors = chattedVendorsResponse || [];
@@ -69,41 +67,45 @@ const UserChatPage: React.FC = () => {
         }
     };
 
-    return (
-        <div className="min-h-screen flex flex-col">
-            <Header />
 
-            <UserSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-            {!sidebarOpen && (
-                <button
-                    className="fixed top-18 left-1 z-40 bg-yellow-200 p-2 rounded-md shadow-lg lg:hidden"
-                    onClick={() => setSidebarOpen(true)}
-                >
-                    <Menu className="w-5 h-5" />
-                </button>
-            )}
-            <main className="flex-grow bg-gray-50 lg:ml-64">
+    return (
+        <UserLayout>
+            <>
                 <div className="container mx-auto px-4 py-6 max-w-6xl">
-                    <ChatPage
-                        isLoading={isLoading}
-                        users={vendors}
-                        setSelectedUser={setSelectedVendor}
-                        selectedUser={selectedVendor!}
-                        msg={msg}
-                        setMsg={setMsg}
-                        liveUnreadCounts={liveUnreadCounts}
-                        unreadCounts={unreadMsg}
-                        handleSend={handleSend}
-                        handleTyping={handleTyping}
-                        typingStatus={typingStatus}
-                        currentUserId={currentUserId!}
-                        combinedMessages={combinedMessages}
-                        searchText={searchText}
-                        setSearchText={setSearchText}
-                    />
+                    {chatAccessLoading ?
+                        (
+                            <div>
+                                Loading....
+                            </div>
+                        ) : chatAccessError ? (
+                            <div className="flex items-center justify-center w-full h-full">
+                                <div className="p-50 bg-red-100 border border-red-300 rounded-md shadow-md text-center">
+                                    <h2 className="text-xl font-semibold text-red-700">Chat Unavailable {chatAccessError.response.data.message}</h2>
+                                    <p className="mt-2 text-gray-700">{bookingError}</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <ChatPage
+                                isLoading={isLoading}
+                                users={vendors}
+                                setSelectedUser={setSelectedVendor}
+                                selectedUser={selectedVendor!}
+                                msg={msg}
+                                setMsg={setMsg}
+                                liveUnreadCounts={liveUnreadCounts}
+                                unreadCounts={unreadMsg}
+                                handleSend={handleSend}
+                                handleTyping={handleTyping}
+                                typingStatus={typingStatus}
+                                currentUserId={currentUserId!}
+                                combinedMessages={combinedMessages}
+                                searchText={searchText}
+                                setSearchText={setSearchText}
+                            />
+                        )}
                 </div>
-            </main>
-        </div>
+            </>
+        </UserLayout>
     );
 };
 

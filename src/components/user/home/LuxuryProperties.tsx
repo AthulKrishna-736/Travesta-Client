@@ -31,25 +31,25 @@ const hotels = [
 const LuxuryProperties: React.FC<ILuxuryProperties> = () => {
     return (
         <div className='relative w-full h-50'>
-            <div className='absolute w-full top-[-100px] z-10'>
+            <div className='absolute w-full lg:top-[-100px] z-10'>
                 <div
-                    className='container mx-auto p-4 flex justify-between rounded-md bg-white/80 bg-blend-overlay bg-cover bg-center shadow-[0_5px_10px_rgba(0,0,0,0.2)]'
+                    className='container lg:max-w-5xl mx-auto p-4 flex flex-col lg:flex-row justify-between rounded-sm bg-white/80 bg-blend-overlay bg-cover bg-center shadow-[0_5px_5px_rgba(0,0,0,0.2)]'
                     style={{ backgroundImage: "url('https://thumbs.dreamstime.com/z/vector-abstract-texture-luxury-background-line-wave-organic-pattern-elegant-shape-design-gold-white-premium-graphics-leaves-319220832.jpg?ct=jpeg')" }}
                 >
                     <div className='flex flex-col justify-center space-y-2 m-3 max-w-80'>
-                        <h1 className='text-[#4a4a4a] uppercase font-bold text-2xl'>Introducing</h1>
-                        <p className="bg-gradient-to-r from-[#e4c572] to-[#cfa741] bg-clip-text text-transparent font-bold text-5xl">
+                        <h1 className='text-[#4a4a4a] uppercase font-bold text-xl'>Introducing</h1>
+                        <p className="bg-gradient-to-r from-[#e4c572] to-[#cfa741] bg-clip-text text-transparent font-bold text-4xl">
                             Luxury Hotel Collection
                         </p>
                     </div>
 
-                    <div className='flex'>
+                    <div className='flex flex-col justify-center items-center gap-3 sm:flex-row'>
                         {hotels && hotels.map((h) => {
                             return (
-                                <div key={h.title} className='w-57 h-70 pb-5 m-2 bg-white rounded-md shadow-[0_1px_10px_rgba(0,0,0,0.2)] cursor-pointer'>
+                                <div key={h.title} className='w-51 h-60 pb-5 bg-white rounded-md shadow-[0_1px_6px_rgba(0,0,0,0.2)] cursor-pointer'>
                                     <img src={h.image} alt='hotelImage' className='object-cover h-[70%] rounded-t-md transform transition duration-300 hover:scale-102' />
                                     <div className='pt-3 px-3'>
-                                        <h3 className='font-bold text-lg'>{h.title}</h3>
+                                        <h3 className='font-bold text-md'>{h.title}</h3>
                                         <p className=' text-[#4a4a4a] leading-tight text-sm line-clamp-2'>
                                             {h.description}
                                         </p>

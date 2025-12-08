@@ -48,7 +48,7 @@ const ForgotPassPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br to-blue-200 from-white px-4">
       <ForgotPass onSubmit={handleSendOtp} isLoading={isLoadingForgot} />
 
       <OtpModal

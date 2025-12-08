@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import DataTable from "@/components/common/Table";
-import { IHotel } from "@/types/hotel.types";
+import { IHotel, TUpdateHotel } from "@/types/hotel.types";
 import ShowHotelDetailsModal from "../hotel/ShowHotelDetails";
-import { IHotelTableProps } from "@/types/component.types";
+import { IHotelTableProps } from "@/types/hotel.types";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
 import { useHotelsByVendor, useUpdateHotel } from "@/hooks/vendor/useHotel";
-import { Edit, InfoIcon } from "lucide-react";
+import { Edit, InfoIcon, LineChartIcon } from "lucide-react";
 
 const columns = [
     { key: "name", label: "Hotel Name" },
@@ -17,7 +18,8 @@ const columns = [
 ];
 
 const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) => {
-    const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
+    const navigate = useNavigate();
+    const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedSearch, setDebouncedSearch] = useState<string>("");
@@ -59,25 +61,24 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
         setIsEdit(false);
     }
 
+    const handleHotelAnalytics = (hotel: IHotel) => {
+        navigate(`/vendor/hotel-dashboard/${hotel.id}`)
+    }
+
     const { mutate: updateHotelfn, isPending } = useUpdateHotel(handleEditClose);
 
-    const handleEditHotel = (hotelData: IHotel & { oldImages: string[] }) => {
+    const handleEditHotel = (hotelData: TUpdateHotel) => {
         const formData = new FormData();
-        formData.append('name', hotelData.name);
-        formData.append('description', hotelData.description);
-        formData.append('address', hotelData.address);
-        formData.append('city', hotelData.city);
-        formData.append('state', hotelData.state);
-        formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
-        formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
+        if (hotelData.name) formData.append('name', hotelData.name.trim());
+        if (hotelData.description) formData.append('description', hotelData.description.trim());
+        if (hotelData.address) formData.append('address', hotelData.address.trim());
+        if (hotelData.city) formData.append('city', hotelData.city.trim());
+        if (hotelData.state) formData.append('state', hotelData.state.trim());
+        if (hotelData.tags) formData.append('tags', JSON.stringify(Array.isArray(hotelData.tags) ? hotelData.tags : [hotelData.tags]));
+        if (hotelData.amenities) formData.append('amenities', JSON.stringify(Array.isArray(hotelData.amenities) ? hotelData.amenities : [hotelData.amenities]));
+        if (hotelData.geoLocation) formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
 
-        if (hotelData.geoLocation?.length === 2) {
-            formData.append('geoLocation', JSON.stringify(hotelData.geoLocation));
-        }
-
-        const urls = hotelData.oldImages ?
-            Array.isArray(hotelData.oldImages) ? hotelData.oldImages : [hotelData.oldImages] : [];
-
+        const urls = hotelData.oldImages ? Array.isArray(hotelData.oldImages) ? hotelData.oldImages : [hotelData.oldImages] : [];
         formData.append('images', JSON.stringify(urls));
 
         if (hotelData.images && hotelData.images.length > 0) {
@@ -85,7 +86,23 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                 formData.append('imageFile', file);
             });
         }
-        updateHotelfn({ id: hotelData._id as string, data: formData })
+
+        if (hotelData.checkInTime) formData.append('checkInTime', hotelData.checkInTime);
+        if (hotelData.checkOutTime) formData.append('checkOutTime', hotelData.checkOutTime);
+        if (hotelData.minGuestAge) formData.append('minGuestAge', hotelData.minGuestAge.toString());
+
+        if (hotelData.breakfastFee) {
+            formData.append('breakfastFee', hotelData.breakfastFee.toString())
+        }
+
+        if (hotelData.petsAllowed) formData.append('petsAllowed', hotelData.petsAllowed === true ? 'true' : 'false');
+        if (hotelData.outsideFoodAllowed) formData.append('outsideFoodAllowed', hotelData.outsideFoodAllowed === true ? 'true' : 'false');
+        if (hotelData.idProofAccepted) formData.append('idProofAccepted', JSON.stringify(hotelData.idProofAccepted))
+        if (hotelData.specialNotes) {
+            formData.append('specialNotes', hotelData.specialNotes.trim());
+        };
+
+        updateHotelfn({ id: hotelData.id as string, data: formData })
     }
 
     const actions = [
@@ -107,6 +124,15 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
             className: "bg-green-50 text-green-700 hover:bg-green-100",
             onClick: handleDetails,
         },
+        {
+            label: "View Analytics",
+            variant: "outline" as const,
+            showLabel: false,
+            icon: LineChartIcon,
+            tooltip: 'hotel analytics',
+            className: "bg-violet-50 text-violet-700 hover:bg-violet-100",
+            onClick: handleHotelAnalytics,
+        },
     ];
 
     return (
@@ -119,8 +145,15 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
 
-                {hotels ? (
-                    <div className="rounded-lg border-1 overflow-hidden">
+                {isLoading ? (
+                    <div className="flex justify-center items-center py-10">
+                        <div className="flex flex-col items-center">
+                            <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            <p className="mt-3 text-blue-600 font-medium">Loading hotels...</p>
+                        </div>
+                    </div>
+                ) : hotels && hotels.length > 0 ? (
+                    <div className="rounded-lg border overflow-hidden">
                         <DataTable
                             columns={columns}
                             data={hotels}
@@ -130,7 +163,9 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                     </div>
                 ) : (
                     <div className="flex justify-center items-center">
-                        <p className="text-semibold text-lg text-red-500">No hotels found. Please create one</p>
+                        <p className="font-semibold text-2xl text-red-500 bg-red-100 w-full text-center py-5">
+                            No hotels found. Please create one.
+                        </p>
                     </div>
                 )}
 
@@ -150,6 +185,7 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
                     onClose={() => setDetailModalOpen(false)}
                 />
             )}
+
             {isEdit && selectedHotel && (
                 <CreateHotelModal
                     open={isEdit}

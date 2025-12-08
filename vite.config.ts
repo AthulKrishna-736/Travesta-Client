@@ -19,7 +19,7 @@ export default defineConfig({
         secure: false,
       },
     },
-    allowedHosts: ['8ea69087acaa.ngrok-free.app', 'http://localhost:5173/'],
+    allowedHosts: ['fa0cec4476ad.ngrok-free.app'],
     host: true, 
   }
 })

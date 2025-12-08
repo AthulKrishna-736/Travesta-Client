@@ -1,45 +1,79 @@
 import { useState } from 'react';
-import Header from '@/components/header/vendor/Header';
-import Sidebar from '@/components/sidebar/Sidebar';
 import VendorBookingTable from '@/components/booking/VendorListBooking';
 import { useGetVendorBookings } from '@/hooks/user/useBooking';
 import Pagination from '@/components/common/Pagination';
+import VendorLayout from '@/components/layouts/VendorLayout';
+import { TPagination } from '@/types/custom.types';
+import { useHotelsByVendor } from '@/hooks/vendor/useHotel';
+import { ArrowRight } from 'lucide-react';
 
 const VendorBookingListPage = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
     const [page, setPage] = useState(1);
-    const limit = 10;
+    const [selectedHotelId, setSelectedHotelId] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const BOOKINGS_LIMIT = 10;
 
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
-
-    const { data: bookingsRes, isLoading } = useGetVendorBookings(page, limit);
-    const bookings = bookingsRes?.data ?? [];
-    const meta = bookingsRes?.meta;
+    const { data: bookingsRes, isLoading } = useGetVendorBookings(page, BOOKINGS_LIMIT, selectedHotelId, startDate, endDate);
+    const { data: hotelsData } = useHotelsByVendor(page, 40);
+    const hotels = hotelsData?.data;
+    const bookings = bookingsRes?.data;
+    const meta = bookingsRes?.meta as TPagination;
 
     return (
-        <div className="min-h-screen bg-background flex flex-col">
-            <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-            <div className="flex flex-1 overflow-hidden">
-                <Sidebar isOpen={sidebarOpen} />
-                <main
-                    className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}
-                >
-                    <div className="container mx-auto animate-fade-in">
-                        <h2 className="text-2xl font-semibold mb-4">Vendor Bookings</h2>
-                        <VendorBookingTable bookings={bookings || []} loading={isLoading} />
-                        {meta && meta.totalPages > 0 && (
-                            <Pagination
-                                currentPage={meta.currentPage}
-                                totalPages={meta.totalPages}
-                                onPageChange={setPage}
-                            />
-                        )}
+        <VendorLayout title='Bookings'>
+            <>
+                <div className="p-2 flex justify-end items-center gap-4 w-full">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <input
+                            type="date"
+                            className="rounded-md py-2 px-2 border-2 border-gray-400 bg-gray-200 text-gray-700 font-semibold appearance-none"
+                            value={startDate}
+                            onChange={(e) => {
+                                const newStartDate = e.target.value;
+                                setStartDate(newStartDate);
+
+                                if (endDate && new Date(endDate) < new Date(newStartDate)) {
+                                    setEndDate('');
+                                }
+                            }} />
+
+                        <span><ArrowRight className='text-gray-800' /></span>
+
+                        <input
+                            type="date"
+                            className="rounded-md py-2 px-2 border-2 border-gray-400 bg-gray-200 text-gray-700 font-semibold appearance-none"
+                            value={endDate}
+                            min={startDate || undefined}
+                            onChange={(e) => setEndDate(e.target.value)}
+                        />
                     </div>
-                </main>
-            </div>
-        </div>
+
+                    <select
+                        className="rounded-md py-2 px-2 border-2 border-gray-400 bg-gray-200 text-gray-700 font-semibold w-1/4"
+                        value={selectedHotelId}
+                        onChange={(e) => setSelectedHotelId(e.target.value)}
+                    >
+                        <option value="">All Hotels</option>
+                        {hotels?.map((h: any) => (
+                            <option key={h.id} value={h.id}>
+                                {h.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <VendorBookingTable bookings={bookings} loading={isLoading} />
+
+                {meta && meta.totalPages > 0 && (
+                    <Pagination
+                        currentPage={meta.currentPage}
+                        totalPages={meta.totalPages}
+                        onPageChange={setPage}
+                    />
+                )}
+            </>
+        </VendorLayout>
     );
 };
 

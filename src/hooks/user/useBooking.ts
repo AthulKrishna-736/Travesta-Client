@@ -1,7 +1,8 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@/services/userService';
 import { showError, showSuccess } from '@/utils/customToast';
-import { getBookingsToVendor } from '@/services/vendorService';
+import { getBookingsToVendor, getVendorAnalytics } from '@/services/vendorService';
+import { ICustomError } from '@/types/custom.types';
 
 export const useGetUserBookings = (page: number, limit: number, search?: string, sort?: string) => {
     return useQuery({
@@ -9,15 +10,17 @@ export const useGetUserBookings = (page: number, limit: number, search?: string,
         queryFn: () => getUserBookings(page, limit, search, sort),
         placeholderData: keepPreviousData,
         staleTime: 60 * 1000,
+        retry: 2,
     });
 };
 
-export const useGetVendorBookings = (page: number, limit: number) => {
+export const useGetVendorBookings = (page: number, limit: number, hotelId?: string, startDate?: string, endDate?: string) => {
     return useQuery({
-        queryKey: ['vendor-bookings', page],
-        queryFn: () => getBookingsToVendor(page, limit),
+        queryKey: ['vendor-bookings', { page, limit, hotelId, startDate, endDate }],
+        queryFn: () => getBookingsToVendor(page, limit, hotelId, startDate, endDate),
         placeholderData: keepPreviousData,
         staleTime: 60 * 1000,
+        retry: 2,
     });
 };
 
@@ -34,9 +37,9 @@ export const useCancelBooking = () => {
             }
             queryClient.invalidateQueries({ queryKey: ['user-bookings'] });
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.error('Cancel booking error:', error);
-            showError(error?.response?.data?.message || 'Failed to cancel booking');
+            showError(error.response.data.message || 'Failed to cancel booking');
         },
     });
 };
@@ -47,8 +50,8 @@ export const useCreateBooking = () => {
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking successful!');
         },
-        onError: (error: any) => {
-            const msg = error?.response?.data?.message || 'Booking failed. Try again.';
+        onError: (error: ICustomError) => {
+            const msg = error.response.data.message || 'Booking failed. Try again.';
             showError(msg);
         },
     });
@@ -62,9 +65,19 @@ export const useConfirmBooking = (
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
         },
-        onError: (error: any) => {
-            const msg = error?.response?.data?.message || 'Booking failed. Try again.';
+        onError: (error: ICustomError) => {
+            const msg = error.response.data.message || 'Booking failed. Try again.';
             showError(msg);
         },
     });
+}
+
+export const useGetVendorAnalytics = (startDate?: string, endDate?: string) => {
+    return useQuery({
+        queryKey: ['analytics', { startDate, endDate }],
+        queryFn: () => getVendorAnalytics(startDate, endDate),
+        staleTime: 5 * 60 * 1000,
+        retry: 2,
+        placeholderData: keepPreviousData,
+    })
 }

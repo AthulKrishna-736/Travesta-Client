@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, Building, Calendar, BarChart3, Star, MessageSquare, Settings, LogOut, TagIcon, Wallet } from 'lucide-react';
-import { Badge } from "@/components/ui/badge";
+import { LayoutDashboard, Building, Calendar, MessageSquare, LogOut, Wallet, Ticket, BadgePercent } from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 import { useLogout } from '@/hooks/auth/useLogout';
 
@@ -13,12 +12,10 @@ const navItems = [
     { name: 'Dashboard', path: '/vendor/home', icon: LayoutDashboard },
     { name: 'Hotels', path: '/vendor/hotels', icon: Building },
     { name: 'Bookings', path: '/vendor/bookings', icon: Calendar },
-    // { name: 'Analytics', path: '/vendor/analytics', icon: BarChart3 },
-    // { name: 'Reviews', path: '/vendor/reviews', icon: Star, badge: '3' },
-    // { name: 'Promotions', path: '/vendor/promotions', icon: TagIcon },
+    { name: 'Coupons', path: '/vendor/coupons', icon: Ticket },
+    { name: 'Offers', path: '/vendor/offers', icon: BadgePercent },
     { name: 'Messages', path: '/vendor/messages', icon: MessageSquare },
     { name: 'Wallet', path: '/vendor/wallet', icon: Wallet },
-    // { name: 'Settings', path: '/vendor/settings', icon: Settings },
 ];
 
 const Sidebar = ({ isOpen }: SidebarProps) => {

@@ -1,5 +1,6 @@
 import { resetPassword } from "@/services/authService";
 import { TResetPassValues } from "@/types/auth.types";
+import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 
@@ -14,9 +15,9 @@ export const useResetPass = (role: string, onSuccessCallback: () => void) => {
                 showError(res.message || 'Something went wrong')
             }
         },
-        onError: (error: any) => {
+        onError: (error: ICustomError) => {
             console.log('error logging: ', error)
-            showError(error.response?.data?.message || 'Something went wrong')
+            showError(error.response.data.message || 'Something went wrong')
         }
     })
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ImageCropper from '../common/ImageCropper';
 import { Input } from '@/components/ui/input';
-import { IMutilImageUploadProps } from '@/types/component.types';
+import { IMutilImageUploadProps } from '@/types/custom.types';
 import { EditIcon } from 'lucide-react';
 
 

@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetVendorChatCustomers, useGetVendorChatMessages, useGetVendorUnreadChats, useSocketChat } from '@/hooks/user/useChat';
-import Header from '@/components/header/vendor/Header';
-import Sidebar from '@/components/sidebar/Sidebar';
 import { SendMessagePayload } from '@/types/chat.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { User } from '@/types/user.types';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import VendorLayout from '@/components/layouts/VendorLayout';
 
 const VendorChatPage: React.FC = () => {
     const queryClient = useQueryClient();
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [msg, setMsg] = useState('');
     const [selectedUser, setSelectedUser] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
     const currentVendorId = useSelector((state: RootState) => state.vendor.vendor?.id);
@@ -46,8 +44,6 @@ const VendorChatPage: React.FC = () => {
         }
     }, [selectedUser?.id, queryClient]);
 
-    const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
-
     const handleTyping = () => {
         if (selectedUser) {
             sendTyping(selectedUser.id, selectedUser.role);
@@ -69,31 +65,27 @@ const VendorChatPage: React.FC = () => {
 
 
     return (
-        <div className="min-h-screen bg-background flex flex-col">
-            <Header toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-            <div className="flex flex-1 overflow-hidden mt-16">
-                <Sidebar isOpen={sidebarOpen} />
-                <main className={`flex-1 overflow-y-auto p-6 transition-all duration-300 ${sidebarOpen ? 'sm:ml-64' : 'sm:ml-13'}`}>
-                    <ChatPage
-                        isLoading={isLoading}
-                        users={users}
-                        setSelectedUser={setSelectedUser}
-                        selectedUser={selectedUser!}
-                        msg={msg}
-                        setMsg={setMsg}
-                        liveUnreadCounts={liveUnreadCounts}
-                        unreadCounts={unreadMsg}
-                        handleSend={handleSend}
-                        handleTyping={handleTyping}
-                        typingStatus={typingStatus}
-                        currentUserId={currentVendorId as string}
-                        combinedMessages={combinedMessages}
-                        searchText={searchText}
-                        setSearchText={setSearchText}
-                    />
-                </main>
-            </div>
-        </div>
+        <VendorLayout>
+            <>
+                <ChatPage
+                    isLoading={isLoading}
+                    users={users}
+                    setSelectedUser={setSelectedUser}
+                    selectedUser={selectedUser!}
+                    msg={msg}
+                    setMsg={setMsg}
+                    liveUnreadCounts={liveUnreadCounts}
+                    unreadCounts={unreadMsg}
+                    handleSend={handleSend}
+                    handleTyping={handleTyping}
+                    typingStatus={typingStatus}
+                    currentUserId={currentVendorId as string}
+                    combinedMessages={combinedMessages}
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                />
+            </>
+        </VendorLayout>
     );
 };
 

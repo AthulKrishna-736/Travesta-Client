@@ -3,9 +3,8 @@ import { Formik, Form, ErrorMessage } from "formik";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit } from "lucide-react";
-import { ProfileSectionProps, UpdateUserFormValues } from "@/types/component.types";
+import { ProfileSectionProps, UpdateUserFormValues } from "@/types/user.types";
 import { validationSchema } from "@/utils/validations/commonValidation";
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
@@ -25,7 +24,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             email: user.email || "",
-            password: user.password || "",
+            password: "",
             phone: user.phone || 0,
         });
     }, [user]);
@@ -37,10 +36,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
     };
 
     return (
-        <Card className="animate-fade-in bg-yellow-50 border border-yellow-100">
-            <CardHeader className="flex items-center justify-between pb-2">
+        <div className="bg-[#e0dff6] rounded-md p-6">
+            {/* Info and edit button */}
+            <div className="flex items-center justify-between pb-2">
                 <div className="flex items-center gap-3">
-                    <CardTitle>Personal Information</CardTitle>
                     <span
                         className={`text-xs px-2 py-1 rounded-full ${user.role == 'user' ? 'hidden' : ''} ${user.isVerified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                             }`}
@@ -60,9 +59,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                         <span className="sr-only">Edit</span>
                     </Button>
                 )}
-            </CardHeader>
+            </div>
 
-            <CardContent>
+            {/* User Details & Inputs */}
+            <div>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -74,7 +74,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                             <div className="grid gap-4 md:grid-cols-2">
                                 {/* First Name */}
                                 <div className="grid gap-2">
-                                    <Label htmlFor="firstName">First Name</Label>
+                                    <Label className="text-lg mx-1" htmlFor="firstName">First Name</Label>
                                     {isEditing ? (
                                         <>
                                             <Input
@@ -82,7 +82,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                                 name="firstName"
                                                 value={values.firstName}
                                                 onChange={handleChange}
-                                                className="h-9"
+                                                className="h-13 !text-lg bg-[#eae9f5]"
                                             />
                                             <ErrorMessage
                                                 name="firstName"
@@ -91,7 +91,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                             />
                                         </>
                                     ) : (
-                                        <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
+                                        <div className="flex h-13 text-lg items-center rounded-md border bg-muted/50 px-3">
                                             {user.firstName}
                                         </div>
                                     )}
@@ -99,7 +99,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
 
                                 {/* Last Name */}
                                 <div className="grid gap-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
+                                    <Label className="text-lg mx-1" htmlFor="lastName">Last Name</Label>
                                     {isEditing ? (
                                         <>
                                             <Input
@@ -107,7 +107,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                                 name="lastName"
                                                 value={values.lastName}
                                                 onChange={handleChange}
-                                                className="h-9"
+                                                className="h-13 !text-lg bg-[#eae9f5]"
                                             />
                                             <ErrorMessage
                                                 name="lastName"
@@ -116,7 +116,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                             />
                                         </>
                                     ) : (
-                                        <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
+                                        <div className="flex h-13 text-lg items-center rounded-md border bg-muted/50 px-3">
                                             {user.lastName}
                                         </div>
                                     )}
@@ -124,15 +124,15 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
 
                                 {/* Email - always non-editable */}
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
+                                    <Label className="text-lg mx-1" htmlFor="email">Email</Label>
+                                    <div className="flex h-13 text-lg font-semibold items-center rounded-md border bg-muted/50 px-3">
                                         {user.email}
                                     </div>
                                 </div>
 
                                 {/* Password */}
                                 <div className="grid gap-2 relative">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label className="text-lg mx-1" htmlFor="password">Password</Label>
                                     {isEditing ? (
                                         <>
                                             <Input
@@ -141,12 +141,12 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                                 type={showPassword ? "text" : "password"}
                                                 value={values.password}
                                                 onChange={handleChange}
-                                                className="h-9 pr-10"
+                                                className="h-13 !text-lg pr-10 bg-[#eae9f5]"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword((prev) => !prev)}
-                                                className="absolute right-2 top-[30px] text-sm text-muted-foreground hover:underline"
+                                                className="absolute right-2 top-[50px] text-sm text-muted-foreground hover:underline"
                                             >
                                                 {showPassword ? "Hide" : "Show"}
                                             </button>
@@ -157,7 +157,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                             />
                                         </>
                                     ) : (
-                                        <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3 text-muted-foreground">
+                                        <div className="flex h-13 text-lg items-center rounded-md border bg-muted/50 px-3 text-muted-foreground">
                                             ********
                                         </div>
                                     )}
@@ -165,7 +165,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
 
                                 {/* Phone */}
                                 <div className="grid gap-2">
-                                    <Label htmlFor="phone">Phone Number</Label>
+                                    <Label className="text-lg mx-1" htmlFor="phone">Phone Number</Label>
                                     {isEditing ? (
                                         <>
                                             <Input
@@ -174,7 +174,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                                 type="tel"
                                                 value={values.phone}
                                                 onChange={handleChange}
-                                                className="h-9"
+                                                className="h-13 !text-lg bg-[#eae9f5]"
                                             />
                                             <ErrorMessage
                                                 name="phone"
@@ -183,7 +183,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                             />
                                         </>
                                     ) : (
-                                        <div className="flex h-9 items-center rounded-md border bg-muted/50 px-3">
+                                        <div className="flex h-13 text-lg items-center rounded-md border bg-muted/50 px-3">
                                             {user.phone}
                                         </div>
                                     )}
@@ -217,8 +217,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                         </Form>
                     )}
                 </Formik>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 };
 

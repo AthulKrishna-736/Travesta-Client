@@ -1,20 +1,22 @@
 import React from 'react';
 import Footer from '@/components/footer/Footer';
 import HeroBanner from '@/components/user/home/HeroBanner';
-import PopularDestinations from '@/components/user/home/PopularDestination';
 import Features from '@/components/user/home/Features';
 import TravelLocation from '@/components/user/home/TravelLocations';
 import LandingHeader from '@/components/header/user/LandingHeader';
-import LuxuryProperties from '@/components/user/home/LuxuryProperties';
+import TrendingHotels from '@/components/hotel/TrendingHotels';
+import { useGetTrendingHotels } from '@/hooks/vendor/useHotel';
 
 const LandingPage: React.FC = () => {
+    const { data: TrendingRes } = useGetTrendingHotels();
+    const hotels = TrendingRes?.data || [];
+
     return (
         <div className="min-h-screen flex flex-col">
             <LandingHeader />
-            <main className="flex-grow">
+            <main className="flex-1 bg-[#f1f1f1]">
+                {hotels.length > 0 && <TrendingHotels hotel={hotels[0]} />}
                 <HeroBanner />
-                <LuxuryProperties />
-                <PopularDestinations />
                 <Features />
                 <TravelLocation />
             </main>

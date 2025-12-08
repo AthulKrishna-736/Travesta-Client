@@ -14,17 +14,19 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
                     <p className="text-sm text-[#ef9d05] mt-1">Current Wallet Balance</p>
                 </div>
 
-                <button
-                    className="bg-[#f59f00] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#e08900] transition flex items-center gap-2"
-                    onClick={addMoney}
-                >
-                    <Plus size={18} />
-                    <span>Add Money</span>
-                </button>
+                {addMoney && (
+                    <button
+                        className="bg-[#f59f00] text-white font-semibold px-6 py-2 rounded-md hover:bg-[#e08900] transition flex items-center gap-2"
+                        onClick={addMoney}
+                    >
+                        <Plus size={18} />
+                        <span>Add Money</span>
+                    </button>
+                )}
             </div>
 
             {/* Transactions History Section */}
-            <div className="bg-white shadow-md rounded-xl p-6 border border-gray-200">
+            <div className="bg-blue-100 shadow-md rounded-xl p-6 border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Transaction History</h3>
                 {loading ? (
                     <p className="text-gray-500">Loading transactions...</p>
@@ -40,7 +42,7 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
                                 <div>
                                     <p className="font-semibold text-gray-800">{tx.description}</p>
                                     <p className="text-sm text-gray-500">
-                                        {new Date(tx.date).toUTCString()}
+                                        {new Date(tx.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
                                     </p>
                                 </div>
                                 <span

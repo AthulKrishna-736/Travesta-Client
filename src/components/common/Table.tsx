@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import React from "react"
-import { DataTableProps } from "@/types/component.types"
+import { DataTableProps } from "@/types/custom.types"
 import { LoaderCircleIcon, LucideIcon } from "lucide-react"
 import { Button } from "../ui/button"
 

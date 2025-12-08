@@ -5,9 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Plus, Search } from "lucide-react";
 import { useCreateAmentiy, useGetAllAmenities } from "@/hooks/admin/useAmenities";
 import Pagination from "@/components/common/Pagination";
-import { AdminLayout } from "@/components/header/admin/AdminLayout";
+import { AdminLayout } from "@/components/layouts/AdminLayout";
 import AmenitiesModal from "@/components/amenities/AmenitiesModal";
-import { TCreateAmenityData } from "@/types/component.types";
+import { TCreateAmenityData } from "@/types/amenities.types";
 import CustomSort from "@/components/common/CustomSort";
 import { ArrowUpAZ, ArrowDownAZ, Clock } from "lucide-react";
 import { TSortOption } from "@/types/custom.types";
@@ -33,13 +33,12 @@ const AdminAmenities = () => {
     }, [searchTerm]);
 
     const { data, isLoading } = useGetAllAmenities(page, limit, role, debouncedValue, sortOption);
-    const { mutate: createAmenityfn, isPending } = useCreateAmentiy(page, limit);
+    const { mutate: createAmenityfn, isPending } = useCreateAmentiy();
 
     const amenities = data?.data || [];
     const meta = data?.meta;
 
     const handleCreateAmenity = (data: TCreateAmenityData) => {
-        console.log("Creating amenity:", data);
         createAmenityfn(data);
         setOpenModal(false);
     };
@@ -145,12 +144,7 @@ const AdminAmenities = () => {
                     <CustomSort data={sortOptions} />
 
                     {amenities && amenities.length > 0 ? (
-                        <AmenityTable
-                            amenities={amenities}
-                            loading={isLoading}
-                            page={page}
-                            limit={limit}
-                        />
+                        <AmenityTable amenities={amenities} loading={isLoading} />
                     ) : (
                         <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500">
                             <p className="mb-2 text-lg font-medium">No amenities found</p>

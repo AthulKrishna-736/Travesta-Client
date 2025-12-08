@@ -8,11 +8,12 @@ import {
     DialogTitle,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
+import { IBooking } from "@/types/booking.types";
 
 interface BookingDetailVendorProps {
     open: boolean;
     onClose: () => void;
-    booking: any;
+    booking: IBooking | null;
 }
 
 const BookingDetailModalVendor: React.FC<BookingDetailVendorProps> = ({
@@ -24,119 +25,180 @@ const BookingDetailModalVendor: React.FC<BookingDetailVendorProps> = ({
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-lg max-h-[80vh] overflow-y-auto bg-white rounded-lg shadow-xl px-6 py-5">
-                <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold text-gray-900">
+            <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-2xl">
+                <DialogHeader className="border-b border-gray-200 pb-4">
+                    <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                         Booking Details
                     </DialogTitle>
-                    <DialogDescription className="text-sm text-muted-foreground">
-                        Review all details of this booking, including customer information.
+                    <DialogDescription className="text-sm text-gray-500 mt-1">
+                        Complete information about this reservation
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="pt-4 space-y-6 text-sm text-gray-800">
-                    {/* Reservation Summary */}
-                    <div>
-                        <h3 className="text-base font-medium text-gray-700 border-b pb-1">
-                            Reservation Summary
-                        </h3>
-                        <div className="mt-2 space-y-2">
-                            <p>
-                                <strong className="text-gray-600">Hotel:</strong>{" "}
-                                <span className="font-medium">
-                                    {typeof booking.hotelId === "object"
-                                        ? booking.hotelId.name
-                                        : booking.hotelId}
-                                </span>
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Room:</strong>{" "}
-                                <span className="font-medium">
-                                    {typeof booking.roomId === "object"
-                                        ? booking.roomId.name
-                                        : booking.roomId}
-                                </span>
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Room Price:</strong>{" "}
-                                <span className="font-medium">
-                                    {typeof booking.roomId === "object"
-                                        ? `₹${booking.roomId.basePrice}`
-                                        : "N/A"}
-                                </span>
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Guests:</strong>{" "}
-                                {booking.guests}
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Check-in:</strong>{" "}
-                                {booking.checkIn}
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Check-out:</strong>{" "}
-                                {booking.checkOut}
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Status:</strong>{" "}
+                <div className="py-6 space-y-6">
+                    {/* Status Banner */}
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                                    Booking Status
+                                </p>
                                 <span
-                                    className={`font-semibold ${booking.status === "confirmed"
-                                        ? "text-green-600"
+                                    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${booking.status === "confirmed"
+                                        ? "bg-green-100 text-green-700"
                                         : booking.status === "cancelled"
-                                            ? "text-red-500"
-                                            : "text-yellow-500"
+                                            ? "bg-red-100 text-red-700"
+                                            : "bg-yellow-100 text-yellow-700"
                                         }`}
                                 >
-                                    {booking.status}
+                                    {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                                 </span>
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Payment Status:</strong>{" "}
-                                <span className="capitalize">
+                            </div>
+                            <div className="text-right">
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                                    Payment
+                                </p>
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-700 capitalize">
                                     {booking.payment ?? "N/A"}
                                 </span>
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Booking ID:</strong>{" "}
-                                <span className="text-gray-500 text-xs">{booking._id}</span>
-                            </p>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Customer Details */}
-                    <div>
-                        <h3 className="text-base font-medium text-gray-700 border-b pb-1">
-                            Customer Details
-                        </h3>
-                        <div className="mt-2 space-y-2">
-                            <p>
-                                <strong className="text-gray-600">Name:</strong>{" "}
-                                {booking.userId?.firstName} {booking.userId?.lastName}
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Email:</strong>{" "}
-                                {booking.userId?.email}
-                            </p>
-                            <p>
-                                <strong className="text-gray-600">Phone:</strong>{" "}
-                                {booking.userId?.phone}
-                            </p>
+                    {/* Hotel & Room Information */}
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div className="bg-gradient-to-r from-indigo-500 to-blue-500 px-5 py-3">
+                            <h3 className="text-base font-semibold text-white">
+                                Accommodation Details
+                            </h3>
+                        </div>
+                        <div className="p-5 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                        Hotel
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900">
+                                        {typeof booking.hotel === "object" ? booking.hotel.name : booking.hotelId}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                        Room Type
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900">
+                                        {typeof booking.room === "object" ? booking.room.name : booking.roomId}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                        Room Price
+                                    </p>
+                                    <p className="text-lg font-bold text-indigo-600">
+                                        {typeof booking.room === "object" ? `₹${booking.room.basePrice}` : "N/A"}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                        Guests
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900">
+                                        {booking.guests} {booking.guests === 1 ? "Guest" : "Guests"}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Price */}
-                    <div className="border-t pt-3">
-                        <p className="text-lg font-bold text-green-600">
-                            Total Price: ₹{booking.totalPrice}
-                        </p>
+                    {/* Stay Duration */}
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-3">
+                            <h3 className="text-base font-semibold text-white">Stay Duration</h3>
+                        </div>
+                        <div className="p-5">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
+                                        Check-in
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900">
+                                        {booking.checkIn}
+                                    </p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">
+                                        Check-out
+                                    </p>
+                                    <p className="text-base font-semibold text-gray-900">
+                                        {booking.checkOut}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Customer Information */}
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div className="bg-gradient-to-r from-teal-500 to-cyan-500 px-5 py-3">
+                            <h3 className="text-base font-semibold text-white">
+                                Customer Information
+                            </h3>
+                        </div>
+                        <div className="p-5 space-y-3">
+                            <div>
+                                <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                    Full Name
+                                </p>
+                                <p className="text-base font-semibold text-gray-900">
+                                    {booking.user ? booking.user.firstName : 'N/A'} {booking.user ? booking.user.lastName : 'N/A'}
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                        Email Address
+                                    </p>
+                                    <p className="text-sm text-gray-700 break-all">
+                                        {booking.user ? booking.user.email : 'N/A'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+                                        Phone Number
+                                    </p>
+                                    <p className="text-sm text-gray-700">{booking.user ? booking.user.phone : 'N/A'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Price Summary */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600 mb-1">
+                                    Total Amount
+                                </p>
+                                <p className="text-3xl font-bold text-green-600">
+                                    ₹{booking.totalPrice}
+                                </p>
+                            </div>
+                            <div className="bg-white rounded-lg px-4 py-3 shadow-sm">
+                                <p className="text-xs text-gray-500 mb-1">Booking ID</p>
+                                <p className="text-xs font-mono text-gray-700 break-all max-w-[200px]">
+                                    {booking.bookingId}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <DialogFooter className="pt-5">
+                <DialogFooter className="border-t border-gray-200 pt-4">
                     <Button
                         onClick={onClose}
-                        variant="secondary"
-                        className="w-full sm:w-auto"
+                        className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium px-8"
                     >
                         Close
                     </Button>
