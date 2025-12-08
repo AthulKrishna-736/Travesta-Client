@@ -76,8 +76,8 @@ const OfferTable: React.FC<OfferTableProps> = ({ offers, loading, onToggleBlock,
                         loading={loading}
                     />
                 ) : (
-                    <div className="flex justify-center items-center py-10">
-                        <p className="font-semibold text-lg text-red-500">
+                    <div className="flex justify-center items-center">
+                        <p className="font-semibold text-2xl text-red-500 bg-red-100 w-full text-center py-5">
                             No offers found. Please create one.
                         </p>
                     </div>

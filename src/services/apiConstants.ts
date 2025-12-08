@@ -53,4 +53,5 @@ export const ADMIN_APIS = {
     chat: '/admin/chat',
     plans: '/admin/plans',
     planHistory: '/admin/plans/history',
+    analytics: '/admin/analytics'
 }

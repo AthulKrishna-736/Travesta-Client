@@ -117,3 +117,9 @@ export const getAllPlanHistory = async (page: number, limit: number, type: 'basi
     });
     return response.data;
 }
+
+//analytics
+export const getAdminAnalytics = async () => {
+    const response = await axiosInstance.get(`${ADMIN_APIS.analytics}`)
+    return response.data;
+}

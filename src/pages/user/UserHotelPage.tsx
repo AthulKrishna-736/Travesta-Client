@@ -13,10 +13,12 @@ import CustomSort from '@/components/common/CustomSort';
 import HotelCardSkelton from '@/components/hotel/HotelCardSkelton';
 import { useQueryClient } from '@tanstack/react-query';
 
+
 const UserHotelPage: React.FC = () => {
     const [params] = useSearchParams();
     const queryClient = useQueryClient()
 
+    //Query Parmas
     const searchValue = params.get('searchTerm') || '';
     const checkInParam = params.get('checkIn') || '';
     const checkOutParam = params.get('checkOut') || '';
@@ -28,6 +30,7 @@ const UserHotelPage: React.FC = () => {
     const minPrice = Number(params.get('minPrice') as string);
     const maxPrice = Number(params.get('maxPrice') as string) || Infinity;
 
+    //states
     const [geoSearch, setGeoSearch] = useState(searchValue);
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
@@ -39,10 +42,12 @@ const UserHotelPage: React.FC = () => {
     const [guests, setGuests] = useState(adults + children);
     const [page, setPage] = useState(1);
 
+    //filter states
     const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
     const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
     const [roomType, setRoomType] = useState<string[]>([]);
     const [sortOption, setSortOption] = useState<string>('');
+    const [rating, setRating] = useState<number>();
     const HOTEL_LIMIT = 6;
 
     useEffect(() => {
@@ -58,6 +63,7 @@ const UserHotelPage: React.FC = () => {
         priceRange,
         selectedAmenities,
         roomType,
+        rating,
         checkIn,
         checkOut,
         guests,
@@ -67,9 +73,18 @@ const UserHotelPage: React.FC = () => {
     const hotels = hotelResponseData?.data?.length ? hotelResponseData.data : [];
     const meta = hotelResponseData?.meta;
 
+    const mapHotelWithLocations = hotels.map((h: any) => {
+        return {
+            hotelName: h.name,
+            price: h.room.basePrice,
+            coordinates: h.geoLocation.coordinates,
+        }
+    })
+
     const { data: amenities, isLoading: isAmenitiesLoading } = useGetUserAmenities();
     const amenitiesData = amenities?.data || [];
 
+    //functions
     const toggleAmenity = (amenity: string) => {
         setSelectedAmenities((prev) =>
             prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]
@@ -140,6 +155,11 @@ const UserHotelPage: React.FC = () => {
                             setPriceRange={setPriceRange}
                             selectedRoomTypes={roomType}
                             setRoomType={toggleRoomType}
+                            selectedRating={rating}
+                            setRating={setRating}
+                            latitude={latitude}
+                            longitude={longitude}
+                            hotels={mapHotelWithLocations}
                             selectedAmenities={selectedAmenities}
                             toggleAmenity={toggleAmenity}
                             resetFilters={resetFilters}
@@ -175,7 +195,7 @@ const UserHotelPage: React.FC = () => {
                                     ) : (
                                         <div>
                                             {hotels.map((hotel: any) => (
-                                                <HotelCard key={hotel.id} hotel={hotel} roomsCount={roomsCount} guests={guests} geoSearch={searchValue} />
+                                                <HotelCard key={hotel.id} hotel={hotel} roomsCount={roomsCount} guests={guests} geoSearch={geoSearch} />
                                             ))}
                                         </div>
                                     )}
@@ -192,7 +212,6 @@ const UserHotelPage: React.FC = () => {
                                 </div>
                             )}
                         </section>
-
                     </div>
                 </div >
             </main >

@@ -1,4 +1,4 @@
-import { getVendors, updateVendorVerify } from "@/services/adminService"
+import { getAdminAnalytics, getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
 import { setVendor } from "@/store/slices/vendorSlice"
 import { TUpdateVendorReqValues } from "@/types/auth.types"
@@ -115,3 +115,14 @@ export const useVendorVerify = (page: number, limit: number, search: string, onS
         },
     });
 };
+
+
+export const useGetAdminAnalytics = () => {
+    return useQuery({
+        queryKey: ['admin-analytics'],
+        queryFn: getAdminAnalytics,
+        placeholderData: keepPreviousData,
+        staleTime: 5 * 60 * 1000,
+        retry: 2,
+    })
+}

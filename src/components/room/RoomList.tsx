@@ -145,7 +145,7 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
                         </div>
                     ) : (
                         <div className="flex justify-center items-center">
-                            <p className="text-semibold text-lg text-red-500">No rooms found. Please create one</p>
+                            <p className="font-semibold text-2xl text-red-500 bg-red-100 w-full text-center py-5">No rooms found. Please create one</p>
                         </div>
                     )}
 

@@ -160,7 +160,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
                     {/* hover popup rating */}
                     {showBreakdown && (
                         <div className="absolute top-10 right-0 z-20 bg-white border shadow-lg rounded-lg p-4 w-70 text-xs">
-                            <h3 className="font-semibold mb-3 text-sm text-black">User Rating Breakdown</h3>
+                            <h3 className="font-semibold mb-3 text-sm text-black">Hotel Rating Breakdown</h3>
 
                             {ratingMetrics.map(({ label, value }) => (
                                 <div key={label} className="flex justify-between items-center mb-2">
@@ -181,18 +181,18 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
                 </div>
 
                 <div className="text-right">
-                    {room.discountedPrice ? (
+                    {room.discountedPrice !== room.basePrice ? (
                         <>
                             <h1 className="text-lg text-gray-500 line-through">
                                 ₹ {room.basePrice}
                             </h1>
 
-                            <h1 className="font-bold text-2xl text-green-600">
+                            <h1 className="font-bold text-2xl">
                                 ₹ {room.discountedPrice}
                             </h1>
                         </>
                     ) : (
-                        <h1 className="font-bold text-xl">
+                        <h1 className="font-bold text-2xl">
                             ₹ {room.basePrice}
                         </h1>
                     )}

@@ -5,6 +5,7 @@ import Pagination from '@/components/common/Pagination';
 import VendorLayout from '@/components/layouts/VendorLayout';
 import { TPagination } from '@/types/custom.types';
 import { useHotelsByVendor } from '@/hooks/vendor/useHotel';
+import { ArrowRight } from 'lucide-react';
 
 const VendorBookingListPage = () => {
     const [page, setPage] = useState(1);
@@ -16,17 +17,17 @@ const VendorBookingListPage = () => {
     const { data: bookingsRes, isLoading } = useGetVendorBookings(page, BOOKINGS_LIMIT, selectedHotelId, startDate, endDate);
     const { data: hotelsData } = useHotelsByVendor(page, 40);
     const hotels = hotelsData?.data;
-    const bookings = bookingsRes?.data ?? [];
+    const bookings = bookingsRes?.data;
     const meta = bookingsRes?.meta as TPagination;
 
     return (
-        <VendorLayout title='Vendor Bookings'>
+        <VendorLayout title='Bookings'>
             <>
                 <div className="p-2 flex justify-end items-center gap-4 w-full">
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                         <input
                             type="date"
-                            className="border border-[#0084ff] rounded-md py-2 px-2"
+                            className="rounded-md py-2 px-2 border-2 border-gray-400 bg-gray-200 text-gray-700 font-semibold appearance-none"
                             value={startDate}
                             onChange={(e) => {
                                 const newStartDate = e.target.value;
@@ -36,10 +37,12 @@ const VendorBookingListPage = () => {
                                     setEndDate('');
                                 }
                             }} />
-                        <span className="text-gray-600">to</span>
+
+                        <span><ArrowRight className='text-gray-800' /></span>
+
                         <input
                             type="date"
-                            className="border border-[#0084ff] rounded-md py-2 px-2"
+                            className="rounded-md py-2 px-2 border-2 border-gray-400 bg-gray-200 text-gray-700 font-semibold appearance-none"
                             value={endDate}
                             min={startDate || undefined}
                             onChange={(e) => setEndDate(e.target.value)}
@@ -47,7 +50,7 @@ const VendorBookingListPage = () => {
                     </div>
 
                     <select
-                        className="border border-[#0084ff] rounded-md py-2 w-1/4"
+                        className="rounded-md py-2 px-2 border-2 border-gray-400 bg-gray-200 text-gray-700 font-semibold w-1/4"
                         value={selectedHotelId}
                         onChange={(e) => setSelectedHotelId(e.target.value)}
                     >
@@ -59,7 +62,9 @@ const VendorBookingListPage = () => {
                         ))}
                     </select>
                 </div>
-                <VendorBookingTable bookings={bookings || []} loading={isLoading} />
+
+                <VendorBookingTable bookings={bookings} loading={isLoading} />
+
                 {meta && meta.totalPages > 0 && (
                     <Pagination
                         currentPage={meta.currentPage}

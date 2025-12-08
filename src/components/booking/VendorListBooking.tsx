@@ -9,25 +9,21 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
 
     if (!Array.isArray(bookings)) return <div>No bookings available</div>;
 
-    const flattenedBookings = bookings.map((booking: any) => ({
+    const flattenedBookings = bookings.map((booking: IBooking) => ({
         ...booking,
-        userName: booking.userId.firstName,
-        hotelName: booking.hotelId.name,
-        roomName: booking.roomId.name,
-        basePrice: booking.roomId.basePrice,
+        roomName: booking.room ? booking.room.name : booking.roomId,
+        basePrice: booking.room ? booking.room.basePrice : booking.roomId,
     }));
 
 
     const columns = [
-        { key: 'hotelName', label: 'Hotel' },
         { key: 'roomName', label: 'Room' },
-        { key: 'basePrice', label: 'Base Price' },
+        { key: 'basePrice', label: 'Price' },
         { key: 'checkIn', label: 'Check-In' },
         { key: 'checkOut', label: 'Check-Out' },
         { key: 'guests', label: 'Guests' },
         { key: 'totalPrice', label: 'Total Price' },
         { key: 'status', label: 'Status' },
-        { key: 'userName', label: 'User' }
     ];
 
 
@@ -61,7 +57,7 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
                     />
                 ) : (
                     <div className="flex justify-center items-center">
-                        <p className="text-semibold text-lg text-red-500">No Bookings found</p>
+                        <p className="font-semibold text-2xl text-red-500 bg-red-100 w-full text-center py-5">No Bookings found!</p>
                     </div>
                 )}
 

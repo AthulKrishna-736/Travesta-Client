@@ -15,16 +15,18 @@ import { useGetHotelRatings } from '@/hooks/vendor/useRating';
 import { useGetHotelDetailsWithRoom } from '@/hooks/vendor/useHotel';
 import { IRoom } from '@/types/room.types';
 import Pagination from '../common/Pagination';
+import CustomSearch from '../common/CustomSearch';
 
 
 const HotelDetail: React.FC = () => {
     const { hotelId, roomId } = useParams();
     const [params] = useSearchParams();
+    const navigate = useNavigate();
     const mapRef = useRef<HTMLDivElement | null>(null);
     const reviewRef = useRef<HTMLDivElement | null>(null);
     const roomsRef = useRef<HTMLDivElement | null>(null);
-    const navigate = useNavigate();
     const [page, setPage] = useState(1);
+
     const RATING_LIMT = 5;
 
     const location = params.get('location');
@@ -34,7 +36,15 @@ const HotelDetail: React.FC = () => {
     const adults = Number(params.get('adults')) || 1;
     const children = Number(params.get('children')) || 0;
 
-    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkInParam, checkOutParam, rooms, adults, children);
+    const [geoSearch, setGeoSearch] = useState<string>(location!);
+    const [lat, setLat] = useState<number | null>(null);
+    const [long, setLong] = useState<number | null>(null);
+    const [checkIn, setCheckIn] = useState(checkInParam);
+    const [checkOut, setCheckOut] = useState(checkOutParam);
+    const [roomsCount, setRoomCount] = useState(rooms);
+    const [guests, setGuests] = useState(adults + children);
+
+    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkIn, checkOut, roomsCount, guests, children);
     const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
 
     const hotel = apiResponse?.data.hotel;
@@ -72,8 +82,8 @@ const HotelDetail: React.FC = () => {
     ]
 
     const handleBookingSubmit = async (room: IRoom & { discountedPrice: number, appliedOffer: any }) => {
-        const checkInDate = new Date(checkInParam);
-        const checkOutDate = new Date(checkOutParam);
+        const checkInDate = new Date(checkIn);
+        const checkOutDate = new Date(checkOut);
 
         const checkInTime = hotel?.propertyRules?.checkInTime || "13:00";
         const checkOutTime = hotel?.propertyRules?.checkOutTime || "12:00";
@@ -114,8 +124,8 @@ const HotelDetail: React.FC = () => {
             hotelId: hotelId!,
             vendorId: hotel.vendorId!,
             roomId: room.id,
-            rooms: rooms.toString(),
-            adults: adults.toString(),
+            rooms: roomsCount.toString(),
+            adults: guests.toString(),
             children: children.toString(),
             checkIn: checkInDate.toISOString(),
             checkOut: checkOutDate.toISOString(),
@@ -125,8 +135,30 @@ const HotelDetail: React.FC = () => {
         navigate(`/user/checkout?${queryParams.toString()}`);
     };
 
+    const handleSearch = () => {
+        console.log('Searching with:', { geoSearch, lat, long, checkIn, checkOut, roomsCount, guests });
+    };
+
     return (
         <main className="p-6 max-w-6xl mx-auto space-y-4">
+            {/* Custom search */}
+            <CustomSearch
+                searchTerm={geoSearch}
+                setSearchTerm={setGeoSearch}
+                setLat={setLat}
+                setLong={setLong}
+                checkIn={checkIn}
+                setCheckIn={setCheckIn}
+                checkOut={checkOut}
+                setCheckOut={setCheckOut}
+                roomCount={roomsCount}
+                setRoomCount={setRoomCount}
+                guests={guests}
+                setGuests={setGuests}
+                onSearch={handleSearch}
+                disabled={true}
+            />
+
             {/* BreadCrumps */}
             <Breadcrumbs items={BREADCRUMPS_ITEMS} />
 

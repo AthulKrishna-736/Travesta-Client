@@ -33,6 +33,7 @@ interface CustomSearchProps {
     guests: number;
     setGuests: (val: number) => void;
     onSearch: () => void;
+    disabled?: boolean;
 }
 
 const CustomSearch: React.FC<CustomSearchProps> = ({
@@ -42,7 +43,7 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
     setLat, setLong,
     roomCount, setRoomCount,
     guests, setGuests,
-    onSearch
+    disabled, onSearch
 }) => {
     const [geoSearch, setGeoSearch] = useState(searchTerm);
     const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -102,6 +103,7 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
                             setShowSuggestions(true);
                         }}
                         onFocus={() => setShowSuggestions(true)}
+                        disabled={disabled}
                     />
 
                     {/* Suggestions Dropdown */}

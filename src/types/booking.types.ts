@@ -1,22 +1,26 @@
 import { IHotel } from "./hotel.types";
 import { IRoom } from "./room.types";
+import { IUser } from "./user.types";
 
 export type TBookingStatus = 'confirmed' | 'cancelled' | 'pending';
 export type TPaymentStatus = 'pending' | 'success' | 'failed' | 'refunded';
 
 //type
 export interface IBooking {
-    _id: string;
     id: string;
     userId: string;
-    hotelId: Pick<IHotel, 'name'> & { _id: string };
-    roomId: Pick<IRoom, 'name' | 'basePrice'> & { _id: string };
+    hotelId: string;
+    roomId: string;
+    user?: Partial<IUser>;
+    hotel?: Pick<IHotel, 'name' | 'city' | 'state' | 'geoLocation' | 'images'> & { _id: string };
+    room?: Pick<IRoom, 'name' | 'basePrice'> & { _id: string };
     checkIn: string;
     checkOut: string;
     guests: number;
     totalPrice: number;
     status: TBookingStatus;
     payment: TPaymentStatus;
+    bookingId: string;
     createdAt: string;
     updatedAt: string;
 }

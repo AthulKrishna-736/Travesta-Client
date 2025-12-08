@@ -86,6 +86,7 @@ export const useGetAllUserHotels = (
         priceRange?: [number, number];
         selectedAmenities?: string[];
         roomType?: string[];
+        rating?: number;
         checkIn?: string;
         checkOut?: string;
         guests?: number;

@@ -164,7 +164,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                             {...register('roomType', { required: 'Room type is required' })}
                         >
                             <option value="" disabled>Select Room Type</option>
-                            {["AC", "Non-AC", "Deluxe", "Suite", "Standard", "Penthouse"].map((type) => (
+                            {["AC", "Non-AC", "Deluxe", "Suite", "Standard"].map((type) => (
                                 <option key={type} value={type}>
                                     {type}
                                 </option>
@@ -216,14 +216,14 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
                     <div>
                         <label className="block mb-1 font-medium">Select Amenities</label>
                         <div className="border p-2 rounded flex flex-wrap gap-2 min-h-[40px]">
-                            {selectedAmenities.map((amenityId: any) => {
+                            {selectedAmenities.map((amenityId: string) => {
                                 const amenity = roomAmenities.find((a: IAmenity) => a.id === amenityId);
                                 return (
                                     <span
                                         key={amenityId}
                                         className="bg-gray-200 px-2 py-1 rounded flex items-center"
                                     >
-                                        {amenity?.name || amenityId?.name}
+                                        {amenity?.name}
                                         <X
                                             className="ml-1 w-3 h-3 cursor-pointer"
                                             onClick={() =>

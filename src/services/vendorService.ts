@@ -105,40 +105,7 @@ export const getRoomById = async (roomId: string): Promise<TApiSuccessResponse<I
     return response.data;
 };
 
-export const getAvailableRooms = async (
-    page: number,
-    limit: number,
-    priceRange?: [number, number],
-    amenities?: string[],
-    roomTypes?: string[],
-    search?: string,
-    checkIn?: string,
-    checkOut?: string,
-    guests?: number
-) => {
-    const params: Record<string, any> = { page, limit };
 
-    if (search) params.search = search;
-    if (checkIn) params.checkIn = checkIn;
-    if (checkOut) params.checkOut = checkOut;
-    if (guests) params.guests = guests;
-
-    if (priceRange?.length === 2) {
-        params.minPrice = priceRange[0];
-        params.maxPrice = priceRange[1];
-    }
-
-    if (amenities?.length) {
-        params.amenities = amenities.join(",");
-    }
-
-    if (roomTypes?.length) {
-        params.roomTypes = roomTypes.join(",");
-    }
-
-    const { data } = await axiosInstance.get(`${VENDOR_APIS.rooms}/available`, { params });
-    return data;
-};
 
 //amenities
 export const getVendorAmenities = async (): Promise<TApiSuccessResponse<IAmenity[]>> => {

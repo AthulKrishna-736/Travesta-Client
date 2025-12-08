@@ -38,15 +38,16 @@ export const getAllUserHotels = async (
         priceRange?: [number, number];
         selectedAmenities?: string[];
         roomType?: string[];
+        rating?: number;
         checkIn?: string;
         checkOut?: string;
         guests?: number;
         sort?: string;
     } = {}
 ): Promise<TApiSuccessResponse<IHotel[]>> => {
-    const { search, priceRange, selectedAmenities, roomType, checkIn, checkOut, guests, sort } = filters;
+    const { search, priceRange, selectedAmenities, roomType, checkIn, checkOut, rating, guests, sort } = filters;
 
-    const params: any = { page, limit, lat, long, rooms, search, checkIn, checkOut, adults: guests, };
+    const params: any = { page, limit, lat, long, rooms, search, checkIn, checkOut, rating, adults: guests, };
 
     if (priceRange) {
         params.minPrice = priceRange[0];
@@ -91,13 +92,6 @@ export const getHotelDetailsWithRoom = async (
 }
 
 //room
-export const getCustomDates = async (roomId: string, checkIn: string, checkOut: string, limit: number) => {
-    const response = await axiosInstance.get(`${USER_APIS.customRoomDates}`, {
-        params: { roomId, checkIn, checkOut, limit }
-    })
-    return response.data;
-}
-
 export const getUserRoomById = async (roomId: string): Promise<TApiSuccessResponse<IRoom>> => {
     const response = await axiosInstance.get(`${USER_APIS.room}/${roomId}`);
     return response.data;

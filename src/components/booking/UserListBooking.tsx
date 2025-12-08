@@ -25,11 +25,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const { mutate: createRatingMutate } = useCreateRating(() => { setIsRatingModalOpen(false); });
 
     const handleRatingSubmit = (data: TRatingFormData) => {
-        const hotelId =
-            typeof selectedBooking?.hotelId === "string"
-                ? selectedBooking.hotelId
-                : selectedBooking?.hotelId?._id;
-
+        const hotelId = selectedBooking?.hotelId;
         if (!hotelId) {
             showError("Hotel ID missing");
             return;
@@ -45,7 +41,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
 
     const handleConfirmCancel = () => {
         if (selectedBooking) {
-            cancelBookingMutate(selectedBooking._id, {
+            cancelBookingMutate(selectedBooking.id, {
                 onSettled: () => {
                     handleCancel();
                 }
@@ -55,9 +51,8 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
 
     const flattenedBookings = bookings.map((booking) => ({
         ...booking,
-        hotelName: typeof booking.hotelId === "object" ? booking.hotelId.name : booking.hotelId,
-        roomName: typeof booking.roomId === "object" ? booking.roomId.name : booking.roomId,
-        basePrice: typeof booking.roomId === "object" ? booking.roomId.basePrice : undefined,
+        roomName: typeof booking.room === "object" ? booking.room.name : booking.roomId,
+        basePrice: typeof booking.room === "object" ? booking.room.basePrice : undefined,
     }));
 
     const columns = [
@@ -102,8 +97,8 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
             className: 'text-blue-500',
             icon: FileText,
             onClick: async (booking: IBooking) => {
-                const blob = await pdf(<InvoiceDoc booking={booking} user={user} />).toBlob();
-                fileDownload(blob, `invoice_${booking.id}.pdf`);
+                const blob = await pdf(<InvoiceDoc booking={booking} user={user!} />).toBlob();
+                fileDownload(blob, `Invoice_${booking.bookingId ? booking.bookingId : booking.id.slice(-8)}.pdf`);
             },
         },
         {
