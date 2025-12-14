@@ -1,28 +1,49 @@
 import { useResendOtp } from '@/hooks/auth/useResendOtp';
 import { IOtpModalProps } from '@/types/auth.types';
 import { Loader2 } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId, role, isLoading, purpose }) => {
+    const inputRefs = useRef<HTMLInputElement[] | []>([]);
     const [otpValues, setOtpValues] = useState(Array(6).fill(''));
     const [otpError, setOtpError] = useState<string | null>(null);
     const [timer, setTimer] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
     useEffect(() => {
-        let countdown: NodeJS.Timeout;
-        if (isOpen && timer > 0) {
-            countdown = setInterval(() => {
-                setTimer((prev) => prev - 1);
-            }, 1000);
-        } else if (timer === 0) {
-            setCanResend(true);
-        }
+        if (!isOpen) return;
+
+        setOtpValues(Array(6).fill(''));
+        setOtpError(null);
+        setTimer(60);
+        setCanResend(false);
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (!isOpen || timer <= 0) return;
+
+        const countdown = setInterval(() => {
+            setTimer(prev => {
+                if (prev <= 1) {
+                    clearInterval(countdown);
+                    setCanResend(true);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
 
         return () => clearInterval(countdown);
     }, [isOpen, timer]);
+
+    const { mutate: resendOtpFn, isPending: isResending } = useResendOtp(role, purpose, () => {
+        setOtpValues(Array(6).fill(''));
+        setTimer(60);
+        setCanResend(false);
+        setOtpError(null);
+    })
 
     //track on change values of input filed
     const handleChange = (index: number, value: string) => {
@@ -32,20 +53,16 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
         updatedOtp[index] = value;
         setOtpValues(updatedOtp);
 
-        const nextInput = document.getElementById(`otp-${index + 1}`);
-        if (value && nextInput) {
-            (nextInput as HTMLInputElement).focus();
-        }
+        const nextInput = inputRefs.current[index + 1];
+        if (value && nextInput) nextInput.focus();
     };
 
     //track keyboard event of input filed
     const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == 'Backspace') {
             if (otpValues[index] == '') {
-                const prevInput = document.getElementById(`otp-${index - 1}`);
-                if (prevInput) {
-                    (prevInput as HTMLInputElement).focus()
-                }
+                const prevInput = inputRefs.current[index - 1];
+                if (prevInput) prevInput.focus();
             } else {
                 const updatedOtp = [...otpValues];
                 updatedOtp[index] = '';
@@ -83,19 +100,17 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
         }
     };
 
-
-    const { mutate: resendOtpFn, isPending: isResending } = useResendOtp(role, purpose, () => {
-        setTimer(60);
-        setCanResend(false)
-        setOtpValues(Array(6).fill(''))
-    })
+    const handleCloseOtpModal = () => {
+        onClose();
+        setOtpValues(Array(6).fill(''));
+    }
 
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm relative">
-                <button onClick={onClose} className="absolute right-4 top-4 text-gray-500 hover:text-red-500 text-2xl">
+                <button onClick={handleCloseOtpModal} className="absolute right-4 top-4 text-gray-500 hover:text-red-500 text-2xl">
                     ×
                 </button>
 
@@ -107,8 +122,12 @@ const OtpModal: React.FC<IOtpModalProps> = ({ isOpen, onClose, onSubmit, userId,
                 <div className="flex justify-center gap-2 mb-6">
                     {otpValues.map((digit, index) => (
                         <Input
+                            ref={(element) => {
+                                if (element) {
+                                    inputRefs.current[index] = element
+                                }
+                            }}
                             key={index}
-                            id={`otp-${index}`}
                             type="text"
                             maxLength={1}
                             value={digit}

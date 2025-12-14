@@ -7,7 +7,7 @@ import { showError } from '@/utils/customToast';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export const axiosInstance = axios.create({
-    baseURL: '/api',
+    baseURL: env.SERVER_URL,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
