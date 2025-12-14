@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    Document,
-    Page,
-    Text,
-    View,
-    StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import { IBooking } from "@/types/booking.types";
 import { IUser } from "@/types/user.types";
 
@@ -57,7 +51,7 @@ const GST_SLABS = [
 const getGSTPercent = (price: number) =>
     GST_SLABS.find((s) => price >= s.min && price <= s.max)?.percent ?? 0;
 
-const InvoiceDoc: React.FC<{ booking: IBooking; user: IUser }> = ({ booking, user }) => {
+const InvoiceDoc: React.FC<{ booking: IBooking; user: IUser; qrImageUrl: string }> = ({ booking, user, qrImageUrl }) => {
 
     const gstPercent = getGSTPercent(booking.totalPrice);
     const gstAmount = Math.round((booking.totalPrice * gstPercent) / 100);
@@ -72,16 +66,32 @@ const InvoiceDoc: React.FC<{ booking: IBooking; user: IUser }> = ({ booking, use
                 {/* Main Heading */}
                 <Text style={styles.heading}>Travesta — Booking Invoice</Text>
 
-                {/* Booking Basic Info */}
-                <View style={styles.section}>
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Invoice Date:</Text>
-                        <Text>{new Date(booking.createdAt).toLocaleDateString()}</Text>
+                {/* Booking Basic Info with QR */}
+                <View style={[styles.section, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+
+                    {/* Left side — booking info (placeholder + value) */}
+                    <View style={{ flexDirection: "column", gap: 4 }}>
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Invoice Date:</Text>
+                            <Text>{new Date(booking.createdAt).toLocaleDateString()}</Text>
+                        </View>
+
+                        <View style={styles.row}>
+                            <Text style={styles.label}>Booking ID:</Text>
+                            <Text>{booking.bookingId ? booking.bookingId : booking.id.slice(-8)}</Text>
+                        </View>
                     </View>
 
-                    <View style={styles.row}>
-                        <Text style={styles.label}>Booking ID:</Text>
-                        <Text>{booking.bookingId ? booking.bookingId : booking.id.slice(-8)}</Text>
+                    {/* Right side — QR only */}
+                    <View
+                        style={{
+                            width: 110,
+                            height: 110,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Image src={qrImageUrl} style={{ width: 100, height: 100 }} />
                     </View>
                 </View>
 
