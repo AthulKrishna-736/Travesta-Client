@@ -1,71 +1,81 @@
 import { useState } from 'react';
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link } from 'react-router-dom';
 
 const LandingHeader = () => {
-    const [open, setOpen] = useState(false);
+    const [sideBar, setSideBar] = useState<boolean>(false);
 
     return (
-        <header className="sticky top-0 w-full bg-white/70 backdrop-blur-md z-50 shadow-sm">
-            <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-                {/* Logo */}
-                <div className="flex items-center">
-                    <Link to="/" className="flex items-center">
-                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-700 bg-clip-text text-transparent">
-                            Travesta
-                        </span>
-                    </Link>
+        <header className="w-full bg-white shadow-sm">
+            <div className="py-3 px-7 flex items-center justify-between">
+                {/* Title and Nav*/}
+                <div className="flex w-1/3 justify-between">
+                    <h1 className='text-[23px] font-medium tracking-tight'>
+                        Travesta
+                    </h1>
+
+                    <div className="hidden md:flex items-center gap-10">
+                        <Link to='/user/home' className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                            Home
+                        </Link>
+                        <Link to='/user/subscription' className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                            Subscriptions
+                        </Link>
+
+                        <Link to="/user/about-us" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                            About Us
+                        </Link>
+                    </div>
+
                 </div>
 
-                {/* Action Buttons - Desktop */}
-                <div className="hidden md:flex items-center gap-2">
-                    <Link to='/user/login'>
-                        <button
-                            className="text-left text-xs font-semibold px-2 py-1 rounded-md hover:text-white hover:bg-blue-500 cursor-pointer"
-                        >
-                            Login or <br />Create Account
-                        </button>
+                {/* Users */}
+                <div className="hidden md:flex items-center gap-4">
+                    <Link to='/user/login' className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                        Login or Create Account
                     </Link>
 
-                    <Link to="/vendor/login">
-                        <button
-                            className="text-left text-xs font-semibold px-2 py-1 rounded-md text-black bg-yellow-400 hover:text-white hover:bg-yellow-500 cursor-pointer"
-                        >
-                            Become a <br />Vendor
-                        </button>
+                    <Link to="/vendor/login" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                        Become a Partner
                     </Link>
                 </div>
 
                 {/* Mobile Menu Toggle */}
                 <div className="md:hidden">
-                    <Button variant="ghost" size="icon" onClick={() => setOpen(!open)}>
-                        {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                    </Button>
+                    <button onClick={() => setSideBar(true)} className='cursor-pointer'>
+                        <Menu className="w-6 h-6" />
+                    </button>
                 </div>
             </div>
 
             {/* Mobile Sidebar */}
-            {open && (
-                <div className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 p-6 flex flex-col gap-4 md:hidden">
-                    <Link to="/" onClick={() => setOpen(false)}>Home</Link>
-                    <Link to="/user/about-us" onClick={() => setOpen(false)}>About Us</Link>
-
-                    <div className="mt-6 flex flex-col gap-2">
-                        <Link to="/user/login" onClick={() => setOpen(false)}>
-                            <Button variant="outline" className="bg-white text-black border border-black w-full text-sm">
-                                Login or <br />Create Account
-                            </Button>
-                        </Link>
-                        <Link to="/vendor/login" onClick={() => setOpen(false)}>
-                            <Button className="bg-yellow-400 text-black hover:bg-yellow-300 w-full text-sm">
-                                Become a Vendor
-                            </Button>
-                        </Link>
+            {sideBar && (
+                <div className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 py-5 px-4 flex flex-col gap-6 md:hidden">
+                    <div className='flex justify-between items-center'>
+                        <h1 className='text-[23px] font-medium tracking-tight'>
+                            Travesta
+                        </h1>
+                        <button onClick={() => setSideBar(false)} className='cursor-pointer'><X className="w-6 h-6" /></button>
                     </div>
+
+                    <Link to="/" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                        Home
+                    </Link>
+
+                    <Link to="/user/about-us" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                        About Us
+                    </Link>
+
+                    <Link to="/user/login" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                        Login or Create Account
+                    </Link>
+
+                    <Link to="/vendor/login" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
+                        Become a Partner
+                    </Link>
                 </div>
             )}
-        </header>
+        </header >
     );
 };
 

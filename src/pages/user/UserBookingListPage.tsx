@@ -76,7 +76,6 @@ const UserBookingListPage: React.FC = () => {
     ];
 
 
-
     return (
         <UserLayout>
             <>
@@ -96,7 +95,9 @@ const UserBookingListPage: React.FC = () => {
                     </div>
 
                     {/* sorting */}
-                    <CustomSort data={sortOptions} />
+                    <div className="p-2 bg-blue-50">
+                        <CustomSort data={sortOptions} />
+                    </div>
 
                     {/* table */}
                     <BookingTable bookings={bookings} loading={isLoading} />

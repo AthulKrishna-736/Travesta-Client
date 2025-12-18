@@ -1,87 +1,99 @@
 import React from 'react';
 import Header from '@/components/header/user/Header';
 import Footer from '@/components/footer/Footer';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Heart, MapPin, Shield, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const UserAboutPage: React.FC = () => {
+    const navigate = useNavigate();
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <Header />
-            <main className="flex-grow bg-gradient-to-b from-blue-50 via-white to-blue-100 py-12">
-                <div className="container mx-auto px-4 max-w-5xl">
-                    <Card className="shadow-lg border-0 bg-white">
-                        <CardHeader>
-                            <CardTitle className="text-3xl font-bold text-blue-600">
-                                About Travesta
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6 text-gray-700 leading-relaxed">
-                            <p>
-                                Travesta was born out of a desire to simplify the way people discover and book hotels.
-                                We envisioned a platform that not only connects travelers to the perfect rooms,
-                                but also provides a seamless, personalized, and intuitive booking experience.
-                            </p>
+            <main className="py-20 px-4">
+                <div className="mx-auto max-w-6xl space-y-20">
 
-                            <p>
-                                Whether you're planning a weekend getaway, a business trip, or a luxurious retreat,
-                                Travesta lets you book rooms that match your needs with filters, real-time availability, and verified listings.
-                                Our mission is to take the hassle out of hotel hunting, so you can focus on enjoying your journey.
-                            </p>
+                    {/* Hero */}
+                    <div className="text-center space-y-6">
+                        <h1 className="text-5xl md:text-6xl font-bold text-slate-900">
+                            Hotels Across India,<br />
+                            Simplified
+                        </h1>
+                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                            From the Himalayas to Kerala's backwaters, discover stays that
+                            match your journey across India's diverse landscapes and cultures.
+                        </p>
+                    </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <Card className="bg-blue-50 border-blue-200">
-                                    <CardHeader>
-                                        <CardTitle className="text-xl text-blue-800">User-Centric Design</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>
-                                            Our platform is designed with simplicity and user experience in mind fast searches, beautiful visuals, and mobile-ready features.
-                                        </p>
-                                    </CardContent>
-                                </Card>
+                    {/* What We Do */}
+                    <div className="space-y-6">
+                        <h2 className="text-3xl font-semibold text-slate-900">What We Do</h2>
+                        <p className="text-lg text-slate-600 leading-relaxed">
+                            Travesta connects you with hotels across India. Search by location,
+                            check weather forecasts, explore nearby attractions, and book instantly.
+                            Everything you need to plan your stay, in one place.
+                        </p>
+                    </div>
 
-                                <Card className="bg-blue-50 border-blue-200">
-                                    <CardHeader>
-                                        <CardTitle className="text-xl text-blue-800">Smart Booking Engine</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>
-                                            Powered by intelligent filters and curated data, Travesta ensures you see the most relevant rooms based on your preferences.
-                                        </p>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="bg-blue-50 border-blue-200">
-                                    <CardHeader>
-                                        <CardTitle className="text-xl text-blue-800">Secure & Reliable</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>
-                                            We prioritize your security with encrypted transactions and verified hotel partners.
-                                        </p>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="bg-blue-50 border-blue-200">
-                                    <CardHeader>
-                                        <CardTitle className="text-xl text-blue-800">24/7 Support</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>
-                                            Got questions or need help? Our support team is available around the clock to assist you.
-                                        </p>
-                                    </CardContent>
-                                </Card>
+                    {/* Core Features */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-8 space-y-3">
+                                <MapPin className="w-8 h-8 text-blue-600" />
+                                <h3 className="text-xl font-semibold text-slate-900">Smart Search</h3>
+                                <p className="text-slate-600">
+                                    Find hotels by location, filter by price and preferences,
+                                    and see real reviews from travelers.
+                                </p>
                             </div>
+                        </div>
 
-                            <div className="text-center mt-10">
-                                <Button className="bg-blue-600 text-white hover:bg-blue-700 text-lg px-8 py-3">
-                                    Start Booking with Travesta
-                                </Button>
+                        <div className="bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-8 space-y-3">
+                                <Sparkles className="w-8 h-8 text-blue-600" />
+                                <h3 className="text-xl font-semibold text-slate-900">Travel Tools</h3>
+                                <p className="text-slate-600">
+                                    Weather updates, maps for directions, and curated
+                                    recommendations for local attractions.
+                                </p>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+
+                        <div className="bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-8 space-y-3">
+                                <Shield className="w-8 h-8 text-blue-600" />
+                                <h3 className="text-xl font-semibold text-slate-900">Secure Booking</h3>
+                                <p className="text-slate-600">
+                                    Safe online payments, instant confirmations,
+                                    and easy access to your booking history.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-50 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="p-8 space-y-3">
+                                <Heart className="w-8 h-8 text-blue-600" />
+                                <h3 className="text-xl font-semibold text-slate-900">Made for You</h3>
+                                <p className="text-slate-600">
+                                    Subscription benefits, wallet rewards, and support
+                                    whenever you need it.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* For Hotel Partners */}
+                    <div className="bg-slate-100 rounded-2xl p-10 space-y-6">
+                        <h2 className="text-3xl font-semibold text-slate-900">For Hotel Owners</h2>
+                        <p className="text-lg text-slate-600 leading-relaxed">
+                            List your property on Travesta and reach travelers across India.
+                            Manage bookings, track performance, and grow your business with
+                            tools designed for hospitality professionals.
+                        </p>
+                        <Button onClick={() => navigate('/vendor/login')} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg">
+                            Become a Partner
+                        </Button>
+                    </div>
                 </div>
             </main>
             <Footer />

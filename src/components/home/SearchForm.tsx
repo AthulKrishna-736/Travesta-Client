@@ -209,12 +209,12 @@ const SearchForm = () => {
     };
 
     return (
-        <Card className="mx-auto max-w-5xl w-full -mt-24 z-10 relative shadow-lg border border-gray-200 bg-white rounded-sm">
-            <CardContent className="p-6 md:p-8 lg:pb-10">
+        <Card className="w-[95%] xl:max-w-6xl relative shadow-lg border border-gray-200 bg-white rounded-sm">
+            <CardContent className='px-4 py-5'>
                 <form
                     id="searchForm"
                     onSubmit={handleSearch}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 lg:gap-0 border border-[#e7e7e7] rounded-sm divide-y md:divide-y-0 md:divide-x"
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 lg:gap-0 border border-[#e7e7e7] rounded-sm divide-y md:divide-y-0 md:divide-x"
                 >
                     {/* searchTerm */}
                     <div className="lg:col-span-2 relative flex flex-col justify-start pt-1 hover:bg-[#eaf5ff] transition-colors duration-300 ease-in-out">
@@ -375,14 +375,17 @@ const SearchForm = () => {
                         </select>
                     </div>
                 </form>
+                <div className="absolute -bottom-3 w-full flex justify-center">
+                    <Button
+                        type="submit"
+                        form="searchForm"
+                        className="w-40 bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-lg rounded-4xl font-bold hover:from-blue-600 hover:to-blue-800 transition uppercase cursor-pointer"
+                    >
+                        Search
+                    </Button>
+                </div>
+
             </CardContent>
-            <Button
-                type="submit"
-                form='searchForm'
-                className="w-40 absolute bottom-[-18px] right-0 left-0 mx-auto bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white text-lg rounded-4xl font-bold hover:from-blue-600 hover:to-blue-800 transition uppercase cursor-pointer"
-            >
-                Search
-            </Button>
         </Card>
     );
 };
