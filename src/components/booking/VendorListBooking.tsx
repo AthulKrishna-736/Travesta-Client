@@ -49,12 +49,14 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
                         </div>
                     </div>
                 ) : flattenedBookings && flattenedBookings.length > 0 ? (
-                    <DataTable
-                        columns={columns}
-                        data={flattenedBookings}
-                        actions={actions}
-                        loading={loading}
-                    />
+                    <div className="rounded-lg border-1 overflow-hidden">
+                        <DataTable
+                            columns={columns}
+                            data={flattenedBookings}
+                            actions={actions}
+                            loading={loading}
+                        />
+                    </div>
                 ) : (
                     <div className="flex justify-center items-center">
                         <p className="font-semibold text-2xl text-red-500 bg-red-100 w-full text-center py-5">No Bookings found!</p>

@@ -2,12 +2,12 @@ import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { showSuccess, showError } from "@/utils/customToast";
 import { createRating, updateRating } from "@/services/userService";
 import { ICustomError } from "@/types/custom.types";
-import { TRatingFormData } from "@/components/hotel/RatingModal";
 import { getHotelRatings } from "@/services/vendorService";
+import { TRatingForm } from "@/types/rating.types";
 
 export const useCreateRating = (cbFn: () => void) => {
     return useMutation({
-        mutationFn: (data: TRatingFormData & { hotelId: string }) => createRating(data),
+        mutationFn: (data: FormData) => createRating(data),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);
@@ -24,7 +24,7 @@ export const useCreateRating = (cbFn: () => void) => {
 
 export const useUpdateRating = (cbFn: () => void) => {
     return useMutation({
-        mutationFn: (data: TRatingFormData & { ratingId: string }) => updateRating(data),
+        mutationFn: (data: TRatingForm & { ratingId: string }) => updateRating(data),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message);

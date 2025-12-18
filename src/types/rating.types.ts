@@ -14,3 +14,15 @@ export interface IRating {
     createdAt: string;
     updatedAt: string;
 }
+
+export type TRatingForm = Pick<IRating, 'hospitality' | 'cleanliness' | 'facilities' | 'room' | 'moneyValue' | 'review'>
+
+//component props types
+export interface IRatingModalProps {
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (data: TRatingForm & { images: File[], oldImages: string[] }) => void;
+    isEdit?: boolean;
+    ratingData?: Partial<TRatingForm> | null;
+    isLoading: boolean;
+}

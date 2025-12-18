@@ -3,15 +3,15 @@ import { axiosInstance } from "./axiosInstance"
 import { IUser, User } from "@/types/user.types";
 import { BookingPayload, IBooking } from "@/types/booking.types";
 import { USER_APIS } from "./apiConstants";
-import { TRatingFormData } from "@/components/hotel/RatingModal";
-import { TApiSuccessResponse } from "@/types/custom.types";
+import { TApiErrorResponse, TApiSuccessResponse } from "@/types/custom.types";
 import { IAmenity } from "@/types/amenities.types";
 import { IHotel } from "@/types/hotel.types";
 import { IRoom } from "@/types/room.types";
 import { ITransaction, IWallet } from "@/types/wallet.types";
-import { IRating } from "@/types/rating.types";
+import { IRating, TRatingForm } from "@/types/rating.types";
 import { ISubscription } from "@/types/plan.types";
 import { ICoupon } from "@/types/coupon.types";
+import { AxiosError } from "axios";
 
 //user profile
 export const getUser = async (): Promise<TApiSuccessResponse<IUser>> => {
@@ -85,10 +85,15 @@ export const getHotelDetailsWithRoom = async (
     adults: number,
     children: number
 ): Promise<TApiSuccessResponse<{ hotel: IHotel, room: IRoom, otherRooms: IRoom[] }>> => {
-    const response = await axiosInstance.get(`${USER_APIS.hotel}/${hotelId}/details/${roomId}`, {
-        params: { checkIn, checkOut, rooms, adults, children }
-    });
-    return response.data;
+    try {
+        const response = await axiosInstance.get(`${USER_APIS.hotel}/${hotelId}/details/${roomId}`, {
+            params: { checkIn, checkOut, rooms, adults, children }
+        });
+        return response.data;
+    } catch (err) {
+        const error = err as AxiosError<TApiErrorResponse>;
+        throw error.response?.data;
+    }
 }
 
 //room
@@ -210,12 +215,14 @@ export const cancelSubscription = async (): Promise<TApiSuccessResponse<null>> =
 }
 
 //ratings
-export const createRating = async (data: TRatingFormData & { hotelId: string }): Promise<TApiSuccessResponse<IRating>> => {
-    const response = await axiosInstance.post(`${USER_APIS.rating}`, data);
+export const createRating = async (data: FormData): Promise<TApiSuccessResponse<IRating>> => {
+    const response = await axiosInstance.post(`${USER_APIS.rating}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
 };
 
-export const updateRating = async (data: TRatingFormData & { ratingId: string }): Promise<TApiSuccessResponse<IRating>> => {
+export const updateRating = async (data: TRatingForm & { ratingId: string }): Promise<TApiSuccessResponse<IRating>> => {
     const response = await axiosInstance.put(`${USER_APIS.rating}`, data);
     return response.data;
 };

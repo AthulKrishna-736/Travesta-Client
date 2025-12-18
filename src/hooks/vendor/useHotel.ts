@@ -135,6 +135,6 @@ export const useGetTrendingHotels = () => {
         queryFn: getTrendingHotels,
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
-        retry: 2,
+        retry: 1,
     })
 }

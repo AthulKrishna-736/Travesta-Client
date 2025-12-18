@@ -10,7 +10,7 @@ export const useGetStaticMap = (long: number, lat: number, zoom: number, width: 
                 const response = await fetch(`https://api.olamaps.io/tiles/v1/styles/default-light-standard/static/${long},${lat},${zoom}/${width}x${height}.${format}?marker=${long},${lat}|red|scale:1&api_key=${env.OLA_API_SECRET}`);
 
                 if (!response.ok) {
-                    showError('Error while fetching Image');
+                    showError('Error while fetching static Image');
                     return null;
                 }
 

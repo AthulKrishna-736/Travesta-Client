@@ -83,9 +83,11 @@ export const useUpdatePlans = () => {
 }
 
 export const useSubscribePlan = () => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn: ({ planId, method }: { planId: string; method: 'wallet' | 'online' }) => subscribePlan(planId, method),
         onSuccess: (res) => {
+            queryClient.invalidateQueries({ queryKey: ['user-plan'] })
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
             } else {
@@ -100,9 +102,11 @@ export const useSubscribePlan = () => {
 };
 
 export const useCancelSubscription = () => {
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn: cancelSubscription,
         onSuccess: (res) => {
+            queryClient.invalidateQueries({ queryKey: ['user-plan'] })
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
             } else {

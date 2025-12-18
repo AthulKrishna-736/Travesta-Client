@@ -117,7 +117,7 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
 
                     {/* Count */}
                     <div>
-                        <label className="text-sm font-medium">Value</label>
+                        <label className="text-sm font-medium">Count</label>
                         <Input type="number" {...register("count")} placeholder="e.g. 10" />
                         {errors.value && <p className="text-red-500 text-xs">{errors.value.message}</p>}
                     </div>

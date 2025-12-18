@@ -1,18 +1,20 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import QRCode from "qrcode";
+import fileDownload from "js-file-download";
+import { pdf } from "@react-pdf/renderer";
+import { FileText, Info, Star, XCircle } from "lucide-react";
 import DataTable from "../common/Table";
 import ConfirmationModal from "../common/ConfirmationModa";
-import { IBooking, BookingTableProps } from "@/types/booking.types";
-import { useCancelBooking } from "@/hooks/user/useBooking";
-import BookingDetailDialog from "./BookingDetailsModal";
-import { FileText, Info, Star, XCircle } from "lucide-react";
-import { pdf } from "@react-pdf/renderer";
-import fileDownload from "js-file-download";
 import InvoiceDoc from "../common/InvoiceDoc";
-import { useSelector } from "react-redux";
+import BookingDetailDialog from "./BookingDetailsModal";
+import RatingModal from "../hotel/RatingModal";
+import { useCancelBooking } from "@/hooks/user/useBooking";
 import { RootState } from "@/store/store";
-import RatingModal, { TRatingFormData } from "../hotel/RatingModal";
 import { useCreateRating } from "@/hooks/vendor/useRating";
+import { IBooking, BookingTableProps } from "@/types/booking.types";
 import { showError } from "@/utils/customToast";
+import { TRatingForm } from "@/types/rating.types";
 
 const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const user = useSelector((state: RootState) => state.user.user);
@@ -22,16 +24,42 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
     const { mutate: cancelBookingMutate, isPending: isCancelling } = useCancelBooking();
-    const { mutate: createRatingMutate } = useCreateRating(() => { setIsRatingModalOpen(false); });
+    const { mutate: createRatingMutate, isPending: isCreatingRating } = useCreateRating(() => { setIsRatingModalOpen(false); });
 
-    const handleRatingSubmit = (data: TRatingFormData) => {
+    const handleRatingSubmit = (data: TRatingForm & { images: File[], oldImages: string[] }) => {
         const hotelId = selectedBooking?.hotelId;
+        const bookingId = selectedBooking?.id;
         if (!hotelId) {
-            showError("Hotel ID missing");
+            showError("Cannot review now. Hotel ID missing");
             return;
-
         }
-        createRatingMutate({ ...data, hotelId });
+
+        if (!bookingId) {
+            showError('Cannot review now. Booking ID missing');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('hotelId', hotelId);
+        formData.append('bookingId', bookingId);
+        formData.append('hospitality', data.hospitality.toString());
+        formData.append('cleanliness', data.cleanliness.toString());
+        formData.append('facilities', data.facilities.toString());
+        formData.append('room', data.room.toString());
+        formData.append('moneyValue', data.moneyValue.toString());
+        formData.append('review', data.review.trim());
+
+        if (data.images && data.images.length > 0) {
+            data.images.forEach((f) => {
+                formData.append('images', f);
+            })
+        }
+
+        if (data.oldImages && data.oldImages.length > 0) {
+            formData.append('oldImages', JSON.stringify(data.oldImages))
+        }
+
+        createRatingMutate(formData);
     };
 
     const handleCancel = () => {
@@ -63,7 +91,6 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
         { key: "totalPrice", label: "Total Price" },
         { key: "status", label: "Status" }
     ];
-
 
     const actions = [
         {
@@ -97,7 +124,8 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
             className: 'text-blue-500',
             icon: FileText,
             onClick: async (booking: IBooking) => {
-                const blob = await pdf(<InvoiceDoc booking={booking} user={user!} />).toBlob();
+                const qrImageUrl = await generateBookingQR(booking);
+                const blob = await pdf(<InvoiceDoc booking={booking} user={user!} qrImageUrl={qrImageUrl} />).toBlob();
                 fileDownload(blob, `Invoice_${booking.bookingId ? booking.bookingId : booking.id.slice(-8)}.pdf`);
             },
         },
@@ -115,14 +143,28 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
         },
     ];
 
+    const generateBookingQR = async (booking: IBooking) => {
+        const payload = {
+            bookingId: booking.bookingId,
+            hotelName: booking.hotel?.name,
+            checkIn: booking.checkIn,
+            checkOut: booking.checkOut,
+            guests: booking.guests,
+            amount: booking.totalPrice,
+        }
+        return await QRCode.toDataURL(JSON.stringify(payload));
+    }
+
     return (
         <>
-            <DataTable
-                columns={columns}
-                data={flattenedBookings}
-                actions={actions}
-                loading={loading}
-            />
+            <div className="rounded-lg border-1 overflow-hidden">
+                <DataTable
+                    columns={columns}
+                    data={flattenedBookings}
+                    actions={actions}
+                    loading={loading}
+                />
+            </div>
 
             <ConfirmationModal
                 open={isCancelModalOpen}
@@ -162,6 +204,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
                 open={isRatingModalOpen}
                 onClose={() => setIsRatingModalOpen(false)}
                 onSubmit={handleRatingSubmit}
+                isLoading={isCreatingRating}
             />
         </>
     );

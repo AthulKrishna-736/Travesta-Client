@@ -1,5 +1,5 @@
 import { TResponseChat } from "@/types/chat.types";
-import { VENDOR_APIS } from "./apiConstants";
+import { USER_APIS, VENDOR_APIS } from "./apiConstants";
 import { axiosInstance } from "./axiosInstance"
 import { IUser, User } from "@/types/user.types";
 import { TApiSuccessResponse } from "@/types/custom.types";
@@ -74,7 +74,7 @@ export const getHotelAnalytics = async (hotelId: string, period: 'week' | 'month
 }
 
 export const getTrendingHotels = async () => {
-    const response = await axiosInstance.get(`${VENDOR_APIS.hotels}/trending`);
+    const response = await axiosInstance.get(`${USER_APIS.hotels}/trending`);
     return response.data;
 }
 
