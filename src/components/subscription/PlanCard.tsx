@@ -6,7 +6,7 @@ import { env } from "@/config/config";
 import PaymentSelectionModal from "./PlanPaymentOption";
 import SubscriptionCheckoutForm from "./PlanCheckout";
 import { useCancelSubscription, useGetUserActivePlan, useSubscribePlan } from "@/hooks/admin/useSubscription";
-import { useCreatePaymentIntent } from "@/hooks/user/useWallet";
+import { useCreatePaymentIntent, useGetWallet } from "@/hooks/user/useWallet";
 import ConfirmationModal from "../common/ConfirmationModa";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
@@ -35,7 +35,10 @@ const PlanCard = ({ plan }: PricingCardProps) => {
     const [clientSecret, setClientSecret] = useState<string | null>(null);
 
     const { data: activePlanRes } = useGetUserActivePlan();
+    const { data: walletResponse } = useGetWallet();
     const activePlan = activePlanRes?.data;
+    const wallet = walletResponse ? walletResponse.data : null;
+
     const { mutateAsync: subscribePlan } = useSubscribePlan();
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
     const { mutateAsync: cancelSubscription, isPending } = useCancelSubscription();
@@ -211,6 +214,7 @@ const PlanCard = ({ plan }: PricingCardProps) => {
                 open={showPaymentModal}
                 onClose={() => setShowPaymentModal(false)}
                 onSelect={handlePaymentSelect}
+                walletBalance={wallet?.balance}
             />
 
             {/* 💰 Stripe checkout modal */}

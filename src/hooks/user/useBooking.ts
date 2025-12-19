@@ -36,6 +36,7 @@ export const useCancelBooking = () => {
                 showError(res.message || 'Something went wrong');
             }
             queryClient.invalidateQueries({ queryKey: ['user-bookings'] });
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             console.error('Cancel booking error:', error);
@@ -45,10 +46,13 @@ export const useCancelBooking = () => {
 };
 
 export const useCreateBooking = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: createBooking,
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking successful!');
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             const msg = error.response.data.message || 'Booking failed. Try again.';
@@ -57,13 +61,14 @@ export const useCreateBooking = () => {
     });
 };
 
-export const useConfirmBooking = (
-    vendorId: string,
-    method: 'wallet' | 'online') => {
+export const useConfirmBooking = (vendorId: string, method: 'wallet' | 'online') => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: (data: { hotelId: string, roomId: string, checkIn: string, checkOut: string, guests: number, totalPrice: number }) => confirmBooking(vendorId, data, method),
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             const msg = error.response.data.message || 'Booking failed. Try again.';

@@ -22,7 +22,7 @@ const UserSidebar = ({ isOpen, onClose }: SidebarProps) => {
                 }`}
         >
             <div className="flex items-center justify-between px-4 py-3 text-xl font-semibold border-b">
-                <span>User Menu</span>
+                <span>Menu</span>
                 <button className="md:hidden" onClick={onClose}>
                     <X className="w-5 h-5" />
                 </button>

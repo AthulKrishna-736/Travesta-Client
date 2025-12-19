@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Users, MapPin, Clock, CreditCard, Wallet } from 'lucide-react';
 import { useConfirmBooking } from '@/hooks/user/useBooking';
-import { useCreatePaymentIntent } from '@/hooks/user/useWallet';
+import { useCreatePaymentIntent, useGetWallet } from '@/hooks/user/useWallet';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import CheckoutForm from '@/components/wallet/CheckoutForm';
@@ -48,6 +48,9 @@ const BookingCheckout: React.FC = () => {
 
     const { data: roomResponse, isLoading: isRoomLoading } = useGetUserRoomById(roomId!);
     const room = roomResponse ? roomResponse.data : null;
+
+    const { data: walletResponse } = useGetWallet();
+    const wallet = walletResponse ? walletResponse.data : null;
 
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
 
@@ -340,7 +343,7 @@ const BookingCheckout: React.FC = () => {
                                             className="hidden"
                                         />
                                         <Wallet className="w-6 h-6" />
-                                        <span>Wallet</span>
+                                        <span>Wallet {`(${wallet?.balance.toFixed(2)})`}</span>
                                     </label>
                                 </div>
 

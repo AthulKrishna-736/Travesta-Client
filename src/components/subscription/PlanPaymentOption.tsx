@@ -5,10 +5,11 @@ import { CreditCard, Wallet } from "lucide-react";
 interface PaymentSelectionModalProps {
     open: boolean;
     onClose: () => void;
+    walletBalance?: number;
     onSelect: (method: "online" | "wallet") => void;
 }
 
-const PaymentSelectionModal: React.FC<PaymentSelectionModalProps> = ({ open, onClose, onSelect }) => {
+const PaymentSelectionModal: React.FC<PaymentSelectionModalProps> = ({ open, onClose, onSelect, walletBalance }) => {
     return (
         <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
             <DialogContent className="max-w-sm">
@@ -30,7 +31,7 @@ const PaymentSelectionModal: React.FC<PaymentSelectionModalProps> = ({ open, onC
                         className="flex items-center gap-3 border rounded-lg p-3 hover:bg-blue-50 transition"
                     >
                         <Wallet className="w-5 h-5 text-green-600" />
-                        Pay Using Wallet
+                        Pay Using Wallet {`(${walletBalance?.toFixed(2)})`}
                     </button>
                 </div>
             </DialogContent>

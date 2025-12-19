@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetVendorChatCustomers, useGetVendorChatMessages, useGetVendorUnreadChats, useSocketChat } from '@/hooks/user/useChat';
+import { useGetVendorChatCustomers, useGetVendorChatMessages, useGetVendorUnreadChats, useMarkMsgRead, useSocketChat } from '@/hooks/user/useChat';
 import { SendMessagePayload } from '@/types/chat.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { User } from '@/types/user.types';
@@ -22,6 +22,7 @@ const VendorChatPage: React.FC = () => {
     }, [searchText]);
 
     const { data: unReadMsgResponse } = useGetVendorUnreadChats();
+    const { mutate: markMessageAsRead } = useMarkMsgRead();
     const { data: chattedUsersResponse, isLoading } = useGetVendorChatCustomers(debouncedSearch);
     const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedUser?.id, currentVendorId, 'vendor');
     const { data: oldMessagesData } = useGetVendorChatMessages(selectedUser?.id || '', !!selectedUser);
@@ -35,6 +36,12 @@ const VendorChatPage: React.FC = () => {
             (liveMsg) => !oldMessages.some((oldMsg) => oldMsg._id === liveMsg._id)
         ),
     ];
+
+    useEffect(() => {
+        if (selectedUser?.id) {
+            markMessageAsRead(selectedUser?.id)
+        }
+    }, [selectedUser]);
 
     useEffect(() => {
         if (selectedUser?.id) {

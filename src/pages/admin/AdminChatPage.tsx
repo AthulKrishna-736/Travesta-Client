@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useGetAdminChatMessages, useGetAdminUnreadChats, useGetVendorsChatAdmin, useSocketChat } from '@/hooks/user/useChat';
+import { useGetAdminChatMessages, useGetAdminUnreadChats, useGetVendorsChatAdmin, useMarkMsgRead, useSocketChat } from '@/hooks/user/useChat';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
@@ -22,6 +22,7 @@ const AdminChatPage: React.FC = () => {
     }, [searchText]);
 
     const { data: unReadMsgResponse } = useGetAdminUnreadChats();
+    const { mutate: markMessageAsRead } = useMarkMsgRead();
     const { data: vendors, isLoading } = useGetVendorsChatAdmin(debouncedSearch);
     const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedVendor?.id, adminId, 'admin');
     const { data: oldMessagesData } = useGetAdminChatMessages(selectedVendor?.id || '', !!selectedVendor);
@@ -41,6 +42,12 @@ const AdminChatPage: React.FC = () => {
             });
         }
     }, [selectedVendor?.id, queryClient]);
+
+    useEffect(() => {
+        if (selectedVendor?.id) {
+            markMessageAsRead(selectedVendor?.id)
+        }
+    }, [selectedVendor]);
 
     const handleTyping = () => {
         if (selectedVendor) {

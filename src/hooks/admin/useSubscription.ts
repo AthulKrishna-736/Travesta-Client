@@ -55,6 +55,7 @@ export const useCreatePlans = () => {
                 showError(res.message || 'Something went wrong');
             }
             queryClient.invalidateQueries({ queryKey: ['plans'] })
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             console.log('error logging: ', error)
@@ -74,6 +75,7 @@ export const useUpdatePlans = () => {
                 showError(res.message || 'Something went wrong');
             }
             queryClient.invalidateQueries({ queryKey: ['plans'] });
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             console.log('error logging: ', error)
@@ -88,6 +90,7 @@ export const useSubscribePlan = () => {
         mutationFn: ({ planId, method }: { planId: string; method: 'wallet' | 'online' }) => subscribePlan(planId, method),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
             } else {
@@ -107,6 +110,7 @@ export const useCancelSubscription = () => {
         mutationFn: cancelSubscription,
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
             } else {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useGetUserChatAccess, useGetUserChatMessages, useGetUserChatVendors, useGetUserUnreadChats, useSocketChat } from '@/hooks/user/useChat';
+import { useGetUserChatAccess, useGetUserChatMessages, useGetUserChatVendors, useGetUserUnreadChats, useMarkMsgRead, useSocketChat } from '@/hooks/user/useChat';
 import { useQueryClient } from '@tanstack/react-query';
 import { SendMessagePayload } from '@/types/chat.types';
 import { User } from '@/types/user.types';
@@ -22,6 +22,7 @@ const UserChatPage: React.FC = () => {
     }, [searchText]);
 
     const { isLoading: chatAccessLoading, error: chatAccessError } = useGetUserChatAccess();
+    const { mutate: markMessageAsRead } = useMarkMsgRead()
     const { data: unReadMsgResponse } = useGetUserUnreadChats();
     const { data: chattedVendorsResponse, isLoading } = useGetUserChatVendors(debouncedSearch);
     const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError } = useSocketChat(selectedVendor?.id, currentUserId, 'user');
@@ -30,6 +31,7 @@ const UserChatPage: React.FC = () => {
     const vendors = chattedVendorsResponse || [];
     const unreadMsg = unReadMsgResponse?.data;
     const oldMessages = oldMessagesData || [];
+
     const combinedMessages = [
         ...oldMessages,
         ...liveMessages.filter(
@@ -39,11 +41,15 @@ const UserChatPage: React.FC = () => {
 
     useEffect(() => {
         if (selectedVendor?.id) {
-            queryClient.invalidateQueries({
-                queryKey: ['chat-history', selectedVendor.id],
-            });
+            queryClient.invalidateQueries({ queryKey: ['chat-history'] });
         }
     }, [selectedVendor?.id, queryClient]);
+
+    useEffect(() => {
+        if (selectedVendor?.id) {
+            markMessageAsRead(selectedVendor?.id)
+        }
+    }, [selectedVendor]);
 
     const handleTyping = () => {
         if (selectedVendor) {
@@ -61,9 +67,7 @@ const UserChatPage: React.FC = () => {
             sendMessage(payload);
             setMsg('');
 
-            queryClient.invalidateQueries({
-                queryKey: ['chat-history', selectedVendor.id],
-            });
+            queryClient.invalidateQueries({ queryKey: ['chat-history'] });
         }
     };
 

@@ -37,6 +37,7 @@ export const useCreateWallet = () => {
         onSuccess: (res) => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (err: ICustomError) => {
             showError(err.response.data.message || "Failed to create wallet");
@@ -53,6 +54,7 @@ export const useAddWalletCredit = () => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (err: ICustomError) => {
             showError(err.response.data.message || "Failed to credit wallet");

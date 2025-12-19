@@ -53,23 +53,46 @@ const ChatPage: React.FC<IChatPageProps> = ({
 
                             return (
                                 <div key={user.id} onClick={() => setSelectedUser(user)}
-                                    className={`relative p-3 my-1 cursor-pointer rounded-md flex items-center gap-3 hover:bg-[#4e3c69] transition ${selectedUser?.id === user.id ? 'bg-[#4e3c69] font-semibold' : ''}`}   >
+                                    className={`relative p-3 my-1 cursor-pointer rounded-md flex items-center gap-3 hover:bg-[#4e3c69] transition ${selectedUser?.id === user.id ? 'bg-[#4e3c69] font-semibold' : ''}`} >
 
-                                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm text-gray-700">
+                                    <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-700">
                                         {user.firstName?.charAt(0).toUpperCase()}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-white">{user.firstName}</span>
-                                        {totalCount > 0 && (
-                                            <Badge className="absolute right-5 bg-green-500 rounded-full">
-                                                {totalCount}
-                                            </Badge>
+
+                                    <div className='flex flex-col items-start justify-center w-3/4 overflow-hidden'>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-white">{user.firstName}</span>
+                                            {totalCount > 0 && (
+                                                <Badge className="absolute right-5 my-auto bg-green-500 rounded-full">
+                                                    {totalCount}
+                                                </Badge>
+                                            )}
+                                            {user.role === 'admin' && (
+                                                <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-full">
+                                                    Admin
+                                                </span>
+                                            )}
+                                        </div>
+                                        {user.lastMessage && (
+                                            <div className="flex items-center justify-between text-[12px] w-full text-yellow-200 gap-2">
+
+                                                <div className="truncate w-[65%]">
+                                                    {user.lastMessage}
+                                                </div>
+
+                                                <div className="text-right">
+                                                    {new Date(user.lastMessageTime!).toLocaleString('en-IN', {
+                                                        day: '2-digit',
+                                                        month: 'short',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        hour12: true,
+                                                    })}
+                                                </div>
+
+                                            </div>
                                         )}
-                                        {user.role === 'admin' && (
-                                            <span className="text-xs px-2 py-0.5 bg-yellow-400 text-black rounded-full">
-                                                Admin
-                                            </span>
-                                        )}
+
                                     </div>
                                 </div>
                             )

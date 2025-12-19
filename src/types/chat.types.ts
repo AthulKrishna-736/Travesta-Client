@@ -21,7 +21,7 @@ export type TResponseChat = IChat;
 //component props and types
 export interface IChatPageProps {
     isLoading: boolean;
-    users: Pick<User, 'id' | 'firstName' | 'role'>[];
+    users: (Pick<User, 'id' | 'firstName' | 'role'> & { lastMessage?: string, lastMessageTime?: string })[];
     setSelectedUser: (data: Pick<User, 'id' | 'firstName' | 'role'>) => void;
     selectedUser: Pick<User, 'id' | 'firstName' | 'role'>;
     msg: string;
