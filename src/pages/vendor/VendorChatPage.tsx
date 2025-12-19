@@ -41,7 +41,7 @@ const VendorChatPage: React.FC = () => {
         if (selectedUser?.id) {
             markMessageAsRead(selectedUser?.id)
         }
-    }, [selectedUser]);
+    }, [selectedUser?.id]);
 
     useEffect(() => {
         if (selectedUser?.id) {

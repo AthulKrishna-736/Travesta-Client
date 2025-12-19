@@ -106,7 +106,7 @@ const AdminDash = () => {
                                                 contentStyle={{ backgroundColor: '#fff', border: '1px solid #e5e7eb', borderRadius: '6px' }}
                                             />
                                             <Bar dataKey="rating" radius={[0, 4, 4, 0]}>
-                                                {ratingData.map((entry, index) => (
+                                                {ratingData.map((_, index) => (
                                                     <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                                                 ))}
                                             </Bar>
