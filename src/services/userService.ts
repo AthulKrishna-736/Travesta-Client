@@ -126,6 +126,11 @@ export const getUserUnreadChats = async () => {
     return response.data;
 };
 
+export const MarkMsgRead = async (receiverId: string) => {
+    const response = await axiosInstance.post(`${USER_APIS.chat}/${receiverId}/read`)
+    return response.data;
+}
+
 export const getUserChatAccess = async () => {
     const response = await axiosInstance.get(`${USER_APIS.access}`);
     return response.data;
@@ -232,5 +237,26 @@ export const getUserCoupons = async (vendorId: string, price: number): Promise<T
     const response = await axiosInstance.get(`${USER_APIS.coupons}/${vendorId}`, {
         params: { price },
     });
+    return response.data;
+}
+
+//notification
+export const getNotification = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.notification}`);
+    return response.data;
+}
+
+export const getUnreadNotificationCount = async () => {
+    const response = await axiosInstance.get(`${USER_APIS.notification}/unread`);
+    return response.data;
+}
+
+export const markNotificationRead = async (notificaionId: string) => {
+    const response = await axiosInstance.patch(`${USER_APIS.notification}/${notificaionId}`);
+    return response.data;
+}
+
+export const markAllNotifications = async () => {
+    const response = await axiosInstance.put(`${USER_APIS.notification}`);
     return response.data;
 }

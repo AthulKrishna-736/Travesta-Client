@@ -29,6 +29,7 @@ export const USER_APIS = {
     cancelPlan: '/users/plans/cancel',
     rating: '/users/rating',
     coupons: '/users/coupons',
+    notification: '/users/notification',
 }
 
 export const VENDOR_APIS = {
