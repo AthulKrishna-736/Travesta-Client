@@ -1,4 +1,5 @@
 import { Clock, LogOut, Users, PawPrint, Utensils, CreditCard, AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import CollapsibleText from "../common/CollapseText";
 
 interface PropertyRulesData {
     checkInTime?: string;
@@ -18,13 +19,13 @@ const PropertyRules = ({ propertyRules }: PropertyRulesProps) => {
     const rules = [
         {
             icon: Clock,
-            label: "Check-in",
+            label: "Check-In",
             value: propertyRules?.checkInTime || '--',
             type: "time" as const,
         },
         {
             icon: LogOut,
-            label: "Check-out",
+            label: "Check-Out",
             value: propertyRules?.checkOutTime || '--',
             type: "time" as const,
         },
@@ -135,18 +136,16 @@ const PropertyRules = ({ propertyRules }: PropertyRulesProps) => {
 
                 {/* Special Notes Section */}
                 {propertyRules?.specialNotes && (
-                    <div className="p-4 rounded-lg bg-[#fdf5e6] border border-[#fbe4ba]">
+                    <div className="p-4 rounded-lg bg-gray-100">
                         <div className="flex items-start gap-3">
                             <div className="flex-shrink-0">
                                 <AlertCircle className="w-5 h-5 text-[#f6a71e]" />
                             </div>
                             <div className="flex-1">
-                                <p className="text-sm font-medium text-card-foreground mb-2">
+                                <p className="text-sm font-medium mb-2">
                                     Special Notes
                                 </p>
-                                <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
-                                    {propertyRules.specialNotes}
-                                </p>
+                                <CollapsibleText text={propertyRules.specialNotes} limit={250}/>
                             </div>
                         </div>
                     </div>

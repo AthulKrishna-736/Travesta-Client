@@ -44,7 +44,7 @@ const HotelDetail: React.FC = () => {
     const [roomsCount, setRoomCount] = useState(rooms);
     const [guests, setGuests] = useState(adults + children);
 
-    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkIn, checkOut, roomsCount, guests, children);
+    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError, error } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkIn, checkOut, roomsCount, guests, children);
     const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
 
     const hotel = apiResponse?.data.hotel;
@@ -53,6 +53,9 @@ const HotelDetail: React.FC = () => {
     const otherRooms = apiResponse?.data.otherRooms as (IRoom & { discountedPrice: number, appliedOffer: any })[];
     const ratings = ratingResponse?.data;
     const meta = ratingResponse?.meta;
+
+    const ratingImages = hotel?.ratings?.flatMap(r => (r && Array.isArray(r.images) ? r.images : [])) || [];
+
 
     const { data: planResponse } = useGetUserActivePlan();
     const planHistory = planResponse ? planResponse?.data : null;
@@ -64,15 +67,17 @@ const HotelDetail: React.FC = () => {
                 <p className="text-base">Please wait while we fetch the hotel information.</p>
             </div>
         );
-    if (hotelError || !hotel)
+
+    if (hotelError || !hotel) {
+        const err = error?.message
         return (
             <div className="mt-16 mx-auto max-w-xl px-6 py-10 bg-red-100 border border-red-400 text-red-700 rounded-xl text-center shadow-sm">
                 <h2 className="text-xl font-semibold mb-2">Hotel Not Found</h2>
-                <p className="text-base">
-                    We couldn’t find the hotel you're looking for. Please try again later or check the URL.
-                </p>
+                <p className="text-base">We couldn’t fetch the hotel details.</p>
+                <p className="text-base">{err}</p>
             </div>
         );
+    }
 
     const BREADCRUMPS_ITEMS = [
         { label: 'Home', path: '/user/home' },
@@ -254,6 +259,25 @@ const HotelDetail: React.FC = () => {
                         </button>
                     </div>
                 )}
+            </div>
+
+            {/* Guest Photos */}
+            <div className="space-y-6 bg-white p-4 rounded-md shadow-xs border border-gray-200">
+                <h1 className='text-xl font-semibold mb-2'>Guest Photos <span className='text-sm'>(Recent)</span></h1>
+                <div className='flex justify-between w-full overflow-hidden'>
+                    {ratingImages && ratingImages.length > 0 ? ratingImages.slice(0, 4).map((r, idx) => (
+                        <img
+                            className='w-65 h-40 rounded-md shadow-md'
+                            key={idx}
+                            src={r}
+                            alt="ratingImages"
+                        />
+                    )) : (
+                        <div className='text-lg'>
+                            No Guest Images Found
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Reviews section */}

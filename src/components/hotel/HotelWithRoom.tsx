@@ -4,6 +4,7 @@ import { IRating } from '@/types/rating.types';
 import { RATINGS } from './HotelCard';
 import { IRoom } from '@/types/room.types';
 import { IHotel } from '@/types/hotel.types';
+import CollapsibleText from '../common/CollapseText';
 
 interface IHotelWithRoom {
     hotel: IHotel;
@@ -89,9 +90,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                         <h1 className='text-lg font-bold'>
                             About Property
                         </h1>
-                        <p className='whitespace-pre-line font-semibold text-sm text-[#4a4a4a]'>
-                            {hotel.description}
-                        </p>
+                        <CollapsibleText text={hotel.description} limit={500}/>
                     </div>
 
                     {/* Amenities */}

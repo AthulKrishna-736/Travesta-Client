@@ -16,6 +16,7 @@ export interface IHotel {
   address: string
   isBlocked: boolean;
   rating?: Partial<IRating[]>
+  ratings?: Partial<IRating[]>
   geoLocation: {
     type: string,
     coordinates: [number, number],

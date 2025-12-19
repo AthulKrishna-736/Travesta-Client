@@ -7,27 +7,16 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ratingSchema } from "@/utils/validations/commonValidation";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { IRatingModalProps, TRatingForm } from "@/types/rating.types";
+import MultiImageUploader from "../common/ImageUpload";
+import { showError } from "@/utils/customToast";
 
-export type TRatingFormData = {
-    hospitality: number;
-    cleanliness: number;
-    facilities: number;
-    room: number;
-    moneyValue: number;
-    review: string;
-};
 
-interface RatingModalProps {
-    open: boolean;
-    onClose: () => void;
-    onSubmit: (data: TRatingFormData) => void;
-    isEdit?: boolean;
-    ratingData?: Partial<TRatingFormData> | null;
-}
+const RatingModal: React.FC<IRatingModalProps> = ({ open, onClose, onSubmit, isEdit = false, ratingData, isLoading }) => {
+    const [imagesCount, setImagesCount] = useState<number>(1);
+    const [images, setImages] = useState<(string | File)[]>([]);
 
-const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: RatingModalProps) => {
-
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<TRatingFormData>({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<TRatingForm>({
         resolver: yupResolver(ratingSchema),
     });
 
@@ -46,7 +35,7 @@ const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: Ra
             Object.entries(ratingData).forEach(([key, val]) => {
                 if (val !== undefined) {
                     setStars((prev) => ({ ...prev, [key]: val as number }));
-                    setValue(key as keyof TRatingFormData, val);
+                    setValue(key as keyof TRatingForm, val);
                 }
             });
 
@@ -64,11 +53,43 @@ const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: Ra
         }
     }, [ratingData]);
 
+    const handleImageCount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        if (imagesCount >= 3) {
+            showError('You can upload a maximum of 3 images')
+            return;
+        }
+        setImagesCount(imagesCount + 1)
+    }
+
+    const handleReduceImageCount = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        if (imagesCount <= 1) {
+            showError('At least one image is required')
+            return;
+        }
+        setImagesCount(imagesCount - 1);
+    }
+
+    const handleSubmitModal = (data: TRatingForm) => {
+        if (!images || images.length == 0) {
+            showError('Please upload at least one image')
+        }
+
+        const imageFiles = images.filter(f => f instanceof File)
+
+        const finalData = {
+            ...data,
+            images: imageFiles,
+            oldImages: [],
+        }
+        onSubmit(finalData);
+    }
 
     const handleStarClick = (field: string, value: number) => {
         console.log(field, value)
         setStars((prev) => ({ ...prev, [field]: value }));
-        setValue(field as keyof TRatingFormData, value);
+        setValue(field as keyof TRatingForm, value);
     };
 
     return (
@@ -86,10 +107,7 @@ const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: Ra
                 </DialogHeader>
 
                 <form
-                    onSubmit={handleSubmit((data) => {
-                        onSubmit(data);
-                        onClose();
-                    })}
+                    onSubmit={handleSubmit(handleSubmitModal)}
                     className="space-y-6"
                 >
                     {fields.map((fieldName) => (
@@ -116,7 +134,7 @@ const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: Ra
 
                             {/* Validation message */}
                             {errors[fieldName] && (
-                                <p className="text-sm text-red-500">Please rate 1–5 stars.</p>
+                                <p className="text-sm text-red-500">Please select a rating between 1 and 5 stars.</p>
                             )}
 
                             {/* Hidden input for react-hook-form */}
@@ -128,6 +146,22 @@ const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: Ra
                         </div>
                     ))}
 
+                    {/* Images */}
+                    <div className="flex justify-between mb-2">
+                        <Label>Images</Label>
+                        <div>
+                            <Button variant="ghost" className="bg-red-100 mr-2" onClick={handleReduceImageCount}>Remove</Button>
+                            <Button variant="ghost" className="bg-green-200" onClick={handleImageCount}>Add</Button>
+                        </div>
+                    </div>
+                    {imagesCount && imagesCount > 0 && (
+                        <MultiImageUploader
+                            maxImages={imagesCount}
+                            onImagesChange={(file) => setImages(file)}
+                        />
+                    )}
+
+                    {/* Review */}
                     <div>
                         <Label>Review</Label>
                         <Textarea
@@ -137,7 +171,7 @@ const RatingModal = ({ open, onClose, onSubmit, isEdit = false, ratingData }: Ra
                         {errors.review && <p className="text-sm text-red-500">Review is required</p>}
                     </div>
 
-                    <Button type="submit" className="w-full">
+                    <Button type="submit" className="w-full" disabled={isLoading}>
                         {isEdit ? "Update Rating" : "Submit Rating"}
                     </Button>
                 </form>

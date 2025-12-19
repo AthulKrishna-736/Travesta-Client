@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin } from 'lucide-react';
+import { ArrowUpRight, MapPin } from 'lucide-react';
 
 interface HotelData {
     _id: string;
@@ -25,6 +25,15 @@ interface TrendingHotelsProps {
 
 const TrendingHotels: React.FC<TrendingHotelsProps> = ({ hotel }) => {
     const navigate = useNavigate();
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (hotel.images && hotel.images.length > 0) {
+            setPreviewImage(hotel.images[0]);
+        }
+
+        return () => setPreviewImage(null);
+    }, [hotel.images])
 
     const handleCardClick = () => {
         const today = new Date();
@@ -40,61 +49,39 @@ const TrendingHotels: React.FC<TrendingHotelsProps> = ({ hotel }) => {
             checkOut: checkOut,
             rooms: '1',
             adults: '1',
-            children: '0',
+            children: '0'
         });
 
-        navigate(`/hotel/${hotel._id}?${queryParams.toString()}`);
+        navigate(`/user/hotels/${hotel._id}/${hotel.room._id}?${queryParams.toString()}`);
     };
 
     return (
-        <div
-            onClick={handleCardClick}
-            className="bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer p-4 flex gap-4"
-        >
-            {/* Image Section */}
-            <div className="w-64 h-48 flex-shrink-0">
+        <div className="bg-white w-full h-full rounded-lg overflow-hidden relative">
+            {/* Image */}
+            {previewImage && (
                 <img
-                    src={hotel.images[0] || '/placeholder.jpg'}
+                    src={previewImage || "/placeholder.jpg"}
                     alt={hotel.name}
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-full h-full object-cover"
                 />
+            )}
+
+            <div className='bg-white absolute top-2 left-2 text-sm shadow-md px-2 rounded-2xl font-semibold'>
+                ₹{hotel.room.basePrice}
             </div>
 
-            {/* Hotel Details */}
-            <div className="flex-1 flex flex-col justify-between">
-                <div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">
-                        {hotel.name}
-                    </h2>
-
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                        <MapPin className="w-4 h-4" />
-                        <span>{hotel.city}, {hotel.state}</span>
-                    </div>
-
-                    <div className="space-y-1 text-sm text-gray-700">
-                        <p><span className="font-semibold">Room:</span> {hotel.room.name}</p>
-                        <p><span className="font-semibold">Bed Type:</span> {hotel.room.bedType}</p>
-                        <p><span className="font-semibold">Guests:</span> Up to {hotel.room.guest}</p>
-                        <p><span className="font-semibold">Available:</span> {hotel.room.availableRooms} rooms</p>
-                    </div>
-                </div>
-
-                {/* Price Section */}
-                <div className="flex items-end justify-between mt-4">
-                    <div className="text-sm text-gray-500">
-                        Price per night
-                    </div>
-                    <div className="text-right">
-                        <div className="text-2xl font-bold text-gray-900">
-                            ₹{hotel.room.basePrice.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                            + taxes & fees
-                        </div>
-                    </div>
+            <div className='bg-white absolute bottom-2 left-2 p-2 rounded-4xl px-4 flex items-center justify-center gap-1'>
+                <MapPin className="w-4 h-4 text-gray-800" />
+                <div className='text-sm font-medium'>
+                    <span>{hotel.city}, </span>
+                    <span>{hotel.state}</span>
                 </div>
             </div>
+
+            {/* Overlay Button */}
+            <button onClick={handleCardClick} className="absolute cursor-pointer bottom-2 right-2 bg-white rounded-full p-2 shadow-md" aria-label="View hotel">
+                <ArrowUpRight className="w-6 h-6 text-gray-800" />
+            </button>
         </div>
     );
 };
