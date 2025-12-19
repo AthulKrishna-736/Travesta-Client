@@ -1,7 +1,7 @@
 import { verifyOtp } from "@/services/authService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
-import { TOtpFormValues } from '../../types/auth.types';
+import { TOtpFormValues } from '../../types/authentication.types';
 import { ICustomError } from "@/types/custom.types";
 
 export const useOtpVerify = (role: string, onSuccessCallback: (data: any) => void) => {

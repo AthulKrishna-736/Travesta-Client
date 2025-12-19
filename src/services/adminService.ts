@@ -1,5 +1,5 @@
 import { axiosInstance } from "./axiosInstance";
-import { TUpdateVendorReqValues } from '../types/auth.types';
+import { TUpdateVendorReqValues } from '../types/authentication.types';
 import { IAmenity, TAmenityType, TCreateAmenityData } from "@/types/amenities.types";
 import { IUser, User } from "@/types/user.types";
 import { TApiSuccessResponse, TSortOption } from "@/types/custom.types";

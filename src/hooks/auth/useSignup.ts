@@ -1,5 +1,5 @@
 import { register } from "@/services/authService";
-import { TSignUpFormValues } from '../../types/auth.types';
+import { TSignUpFormValues } from '../../types/authentication.types';
 import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";

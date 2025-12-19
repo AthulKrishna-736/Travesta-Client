@@ -4,7 +4,7 @@ import { showError, showSuccess } from '@/utils/customToast';
 import { useDispatch } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { setUser } from '@/store/slices/userSlice';
-import { TLoginFormValues } from '../../types/auth.types';
+import { TLoginFormValues } from '../../types/authentication.types';
 import { useNavigate } from 'react-router-dom';
 import { setAdmin } from '@/store/slices/adminSlice';
 import { setVendor } from '@/store/slices/vendorSlice';

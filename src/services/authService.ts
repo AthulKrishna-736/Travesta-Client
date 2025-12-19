@@ -1,4 +1,4 @@
-import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TRoles, TSignUpFormValues } from '../types/auth.types';
+import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TRoles, TSignUpFormValues } from '../types/authentication.types';
 import { axiosInstance } from "./axiosInstance";
 import { AUTH_APIS } from "./apiConstants";
 

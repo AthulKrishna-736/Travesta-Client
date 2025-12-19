@@ -1,7 +1,7 @@
 import { getAdminAnalytics, getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
 import { setVendor } from "@/store/slices/vendorSlice"
-import { TUpdateVendorReqValues } from '../../types/auth.types'
+import { TUpdateVendorReqValues } from '../../types/authentication.types'
 import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
 import { IUser } from "@/types/user.types"
 import { showError, showSuccess } from "@/utils/customToast"

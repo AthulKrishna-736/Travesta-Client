@@ -4,7 +4,7 @@ import OtpModal from '@/components/auth/Otp';
 import { useNavigate } from 'react-router-dom';
 import { useSignup } from '@/hooks/auth/useSignup';
 import { useOtpVerify } from '@/hooks/auth/useOtpVerify';
-import { TRoles } from '../../types/auth.types';
+import { TRoles } from '../../types/authentication.types';
 
 const VendorSignupPage: React.FC = () => {
     const [isOtpModalOpen, setOtpModalOpen] = useState(false);

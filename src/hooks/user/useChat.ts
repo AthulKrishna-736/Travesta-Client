@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { socket } from '@/utils/socket';
-import { TRoles } from '../../types/auth.types';
+import { TRoles } from '../../types/authentication.types';
 import { getUserChatMessages, getChattedVendors, getUserUnreadChats, getUserChatAccess, MarkMsgRead } from '@/services/userService';
 import { showError } from '@/utils/customToast';
 import { getChattedCustomers, getVendorChatMessages, getVendorUnreadChats } from '@/services/vendorService';

@@ -1,6 +1,6 @@
 import React from "react";
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { IGoogleLoginProps } from '../../types/auth.types';
+import { IGoogleLoginProps } from '../../types/authentication.types';
 import { useGoogleLogin } from "@/hooks/auth/useGoogleLogin";
 import { showError } from "@/utils/customToast";
 

@@ -1,4 +1,4 @@
-import { TRoles } from "./auth.types"
+import { TRoles } from "./authentication.types"
 
 export type User = {
   id: string
