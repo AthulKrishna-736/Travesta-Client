@@ -5,7 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { ISignUpFormProps, TSignUpFormValues } from '@/types/auth.types';
+import { ISignUpFormProps, TSignUpFormValues } from '../../types/auth.types';
 import { useNavigate } from 'react-router-dom';
 
 const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {

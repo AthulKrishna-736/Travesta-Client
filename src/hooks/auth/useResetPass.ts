@@ -1,5 +1,5 @@
 import { resetPassword } from "@/services/authService";
-import { TResetPassValues } from "@/types/auth.types";
+import { TResetPassValues } from '../../types/auth.types';
 import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";

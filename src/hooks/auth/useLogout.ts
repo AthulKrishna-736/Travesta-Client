@@ -3,7 +3,7 @@ import { logoutAdmin } from "@/store/slices/adminSlice";
 import { logoutUser } from "@/store/slices/userSlice";
 import { logoutVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch } from "@/store/store";
-import { TRoles } from "@/types/auth.types";
+import { TRoles } from '../../types/auth.types';
 import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";

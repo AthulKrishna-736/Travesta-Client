@@ -1,5 +1,5 @@
 import { forgotPass } from "@/services/authService";
-import { TForgotPassValues } from "@/types/auth.types";
+import { TForgotPassValues } from '../../types/auth.types';
 import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
