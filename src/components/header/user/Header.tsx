@@ -58,28 +58,28 @@ const Header = () => {
 
                 {/* User Section */}
                 {user ? (
-                    <div className="hidden md:flex items-center gap-4">
-                        <button onClick={() => { setIsNotificationOpen(true) }}>
+                    <div className="hidden md:flex items-center justify-center gap-4">
+                        <button className="cursor-pointer" onClick={() => { setIsNotificationOpen(true) }}>
                             <Bell className="w-5 h-5" />
                         </button>
                         <Link to="/user/profile">
                             <div className="flex justify-center items-center gap-3">
-                                <span className="text-sm font-semibold">
-                                    Welcome, {userName}
-                                </span>
-
-                                <Avatar className="cursor-pointer w-8 h-8">
+                                <Avatar className="rounded-full w-8 h-8">
                                     <AvatarImage src={profileImage} alt="User" />
                                     <AvatarFallback>
                                         {userName?.charAt(0).toUpperCase() || "N"}
                                     </AvatarFallback>
                                 </Avatar>
+                                <span className="text-sm font-semibold">
+                                    Welcome, {userName}
+                                </span>
+
                             </div>
                         </Link>
 
                         <button
                             onClick={handleLogout}
-                            className="text-xs font-semibold hover:underline hover:underline-offset-4"
+                            className="text-xs text-red-500 font-semibold hover:underline hover:underline-offset-4"
                         >
                             Logout
                         </button>
