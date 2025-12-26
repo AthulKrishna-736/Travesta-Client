@@ -37,9 +37,7 @@ const AdminChatPage: React.FC = () => {
 
     useEffect(() => {
         if (selectedVendor?.id) {
-            queryClient.invalidateQueries({
-                queryKey: ['chat-history', selectedVendor.id],
-            });
+            queryClient.invalidateQueries({ queryKey: ['chat-history'] });
         }
     }, [selectedVendor?.id, queryClient]);
 
@@ -64,7 +62,7 @@ const AdminChatPage: React.FC = () => {
             };
             sendMessage(payload);
             setMsg('');
-            queryClient.invalidateQueries({ queryKey: ['chat-history', selectedVendor.id] });
+            queryClient.invalidateQueries({ queryKey: ['chat-history'] });
         }
     };
 

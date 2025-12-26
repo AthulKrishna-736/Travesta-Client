@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 interface PlanHistoryDetailModalProps {
@@ -13,55 +13,83 @@ const PlanHistoryDetailModal: React.FC<PlanHistoryDetailModalProps> = ({ open, o
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-md bg-white rounded-lg shadow-xl px-6 py-5">
+            <DialogContent className="sm:max-w-md bg-white rounded-xl p-6">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold text-gray-900">
-                        Subscription History Details
+                    <DialogTitle className="text-lg font-semibold">
+                        Subscription Details
                     </DialogTitle>
-                    <DialogDescription>
-                        Detailed view of this user’s subscription record.
-                    </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-2 text-gray-700">
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">User:</span>
-                        <span className="text-gray-900">{history.firstName}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Email:</span>
-                        <span className="text-gray-900">{history.email}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Plan:</span>
-                        <span className="text-gray-900">{history.subscriptionName}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Type:</span>
-                        <span className="text-gray-900">{history.subscriptionType}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Amount:</span>
-                        <span className="text-green-600 font-semibold">₹{history.paymentAmount}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Valid From:</span>
-                        <span className="text-gray-900">{new Date(history.validFrom).toLocaleDateString()}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Valid Until:</span>
-                        <span className="text-gray-900">{new Date(history.validUntil).toLocaleDateString()}</span>
-                    </p>
-                    <p className="flex justify-between">
-                        <span className="font-medium text-gray-500">Status:</span>
-                        <span className={history.isActive ? "text-green-600 font-semibold" : "text-red-500 font-semibold"}>
-                            {history.isActive ? "Active" : "Inactive"}
-                        </span>
-                    </p>
+                <div className="mt-4 space-y-4 text-sm">
+
+                    {/* User */}
+                    <div>
+                        <p className="text-gray-500">User</p>
+                        <p className="font-medium text-gray-900">
+                            {history.firstName}
+                        </p>
+                        <p className="text-gray-500">{history.email}</p>
+                    </div>
+
+                    <hr className="border-gray-200" />
+
+                    {/* Plan */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <p className="text-gray-500">Plan</p>
+                            <p className="font-medium">{history.subscriptionName}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500">Type</p>
+                            <span className="inline-block rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+                                {history.subscriptionType}
+                            </span>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500">Amount</p>
+                            <p className="font-semibold text-green-600">
+                                ₹{history.paymentAmount}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-500">Status</p>
+                            <span
+                                className={`inline-block rounded-md px-2 py-1 text-sm font-medium ${history.isActive
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-red-100 text-red-700"
+                                    }`}
+                            >
+                                {history.isActive ? "Active" : "Inactive"}
+                            </span>
+                        </div>
+                    </div>
+
+                    <hr className="border-gray-200" />
+
+                    {/* Validity */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <p className="text-gray-500">Valid From</p>
+                            <p className="font-medium">
+                                {new Date(history.validFrom).toLocaleDateString()}
+                            </p>
+                        </div>
+                        <div>
+                            <p className="text-gray-500">Valid Until</p>
+                            <p className="font-medium">
+                                {new Date(history.validUntil).toLocaleDateString()}
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <DialogFooter className="pt-5">
-                    <Button onClick={onClose} variant="secondary">Close</Button>
+                <DialogFooter className="mt-6">
+                    <Button variant="secondary" onClick={onClose}>
+                        Close
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

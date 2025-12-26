@@ -10,12 +10,13 @@ import Pagination from "../common/Pagination";
 
 const PlanHistoryList = () => {
     const [page, setPage] = useState<number>(1);
-    const [type, setType] = useState<"basic" | "medium" | "vip">("basic");
+    const [type, setType] = useState<"basic" | "medium" | "vip" | "all">("all");
     const [selectedHistory, setSelectedHistory] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const limit = 6;
     const { data: planHistoryResponse, isLoading } = useGetPlanHistory(page, limit, type);
+
     const histories = planHistoryResponse
         ? planHistoryResponse.data.map((item: any) => ({
             id: item._id,
@@ -23,21 +24,20 @@ const PlanHistoryList = () => {
             email: item.user?.email ?? 'n/a',
             subscriptionName: item.subscription?.name ?? 'n/a',
             subscriptionType: item.subscription?.type ?? 'n/a',
-            paymentAmount: `₹${item.paymentAmount ?? 0}`,
-            validFrom: new Date(item.validFrom).toLocaleDateString(),
-            validUntil: new Date(item.validUntil).toLocaleDateString(),
+            paymentAmount: `${item.paymentAmount ?? 0}`,
+            validFrom: new Date(item.validFrom).toLocaleString('en-IN', { month: 'short', year: '2-digit', day: '2-digit' }),
+            validUntil: new Date(item.validUntil).toLocaleString('en-IN', { month: 'short', year: '2-digit', day: '2-digit' }),
             isActive: item.isActive ? true : false,
-        }))
-        : [];
+        })) : [];
+
     const meta = planHistoryResponse ? planHistoryResponse.meta as TPagination : null;
 
 
     const columns = [
         { key: "firstName", label: "User Name" },
         { key: "email", label: "Email" },
-        { key: "subscriptionName", label: "Plan Name" },
-        { key: "subscriptionType", label: "Type" },
-        { key: "paymentAmount", label: "Amount (₹)" },
+        { key: "subscriptionName", label: "Plan" },
+        { key: "paymentAmount", label: "Amount" },
         { key: "validFrom", label: "Valid From" },
         { key: "validUntil", label: "Valid Until" },
         { key: "isActive", label: "Active" },
@@ -73,6 +73,7 @@ const PlanHistoryList = () => {
                             <SelectValue placeholder="All Types" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="all">All Plans</SelectItem>
                             <SelectItem value="basic">Basic</SelectItem>
                             <SelectItem value="medium">Medium</SelectItem>
                             <SelectItem value="vip">VIP</SelectItem>
@@ -83,16 +84,18 @@ const PlanHistoryList = () => {
 
             {/* Table */}
             {!isLoading && histories && histories.length > 0 ? (
-                <DataTable
-                    columns={columns}
-                    data={histories}
-                    actions={actions}
-                    loading={isLoading}
-                />
+                <div className="rounded-lg border overflow-hidden">
+                    <DataTable
+                        columns={columns}
+                        data={histories}
+                        actions={actions}
+                        loading={isLoading}
+                    />
+                </div>
             ) : (
                 !isLoading && (
-                    <div className="flex flex-col items-center justify-center py-10 text-gray-500 border rounded-md bg-gray-50">
-                        <p className="text-sm font-medium">No subscription history found.</p>
+                    <div className="flex flex-col items-center justify-center py-10 text-gray-500 border rounded-md bg-gray-100">
+                        <p className="font-medium">No subscription history found.</p>
                     </div>
                 )
             )}

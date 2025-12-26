@@ -111,7 +111,7 @@ export const updatePlan = async (data: TUpdatePlan, planId: string): Promise<TAp
     return response.data;
 }
 
-export const getAllPlanHistory = async (page: number, limit: number, type: 'basic' | 'medium' | 'vip') => {
+export const getAllPlanHistory = async (page: number, limit: number, type: 'basic' | 'medium' | 'vip' | 'all') => {
     const response = await axiosInstance.get(`${ADMIN_APIS.planHistory}`, {
         params: { page, limit, type }
     });

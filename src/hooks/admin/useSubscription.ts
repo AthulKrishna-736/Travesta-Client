@@ -34,7 +34,7 @@ export const useGetUserActivePlan = () => {
     })
 }
 
-export const useGetPlanHistory = (page: number, limit: number, type: 'basic' | 'medium' | 'vip') => {
+export const useGetPlanHistory = (page: number, limit: number, type: 'basic' | 'medium' | 'vip' | 'all') => {
     return useQuery({
         queryKey: ['planHistory', page, limit, type],
         queryFn: () => getAllPlanHistory(page, limit, type),
