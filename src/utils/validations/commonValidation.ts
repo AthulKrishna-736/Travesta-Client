@@ -144,11 +144,13 @@ export const couponSchema = Yup.object({
         .min(3)
         .max(50)
         .required("Name is required"),
-    code: Yup.string()
+    code: Yup
+        .string()
         .trim()
-        .min(3)
-        .max(20)
-        .required("Code is required"),
+        .min(3, "Coupon code must be at least 3 characters")
+        .max(20, "Coupon code must be less than 20 characters")
+        .matches(/^[A-Z0-9-]+$/, "Coupon code can only contain uppercase letters, numbers, and hyphens")
+        .required("Coupon code is required"),
     type: Yup.mixed<TCouponTypes>()
         .oneOf(["flat", "percent"], "Invalid type")
         .required(),

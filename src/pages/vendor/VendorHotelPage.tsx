@@ -59,10 +59,6 @@ const VendorHotelsPage: React.FC = () => {
         formData.append('checkOutTime', hotelData.checkOutTime);
         formData.append('minGuestAge', hotelData.minGuestAge.toString());
 
-        if (hotelData.breakfastFee) {
-            formData.append('breakfastFee', hotelData.breakfastFee.toString())
-        }
-
         formData.append('petsAllowed', hotelData.petsAllowed === true ? 'true' : 'false');
         formData.append('outsideFoodAllowed', hotelData.outsideFoodAllowed === true ? 'true' : 'false');
         formData.append('idProofAccepted', JSON.stringify(hotelData.idProofAccepted))

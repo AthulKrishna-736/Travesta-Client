@@ -154,6 +154,13 @@ const Header = () => {
                     <Link to="/user/about-us" className="text-xs font-semibold hover:underline hover:underline-offset-4 cursor-pointer">
                         About Us
                     </Link>
+
+                    <button
+                        onClick={handleLogout}
+                        className="text-xs text-red-500 font-semibold hover:underline hover:underline-offset-4"
+                    >
+                        Logout
+                    </button>
                 </div>
             )}
         </header >

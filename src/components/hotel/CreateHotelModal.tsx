@@ -25,8 +25,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
     const [tags, setTags] = useState<string[]>([]);
     const [tagInput, setTagInput] = useState<string>('');
     const [tagError, SetTagError] = useState<string>('');
-    const [breakfastFee, setBreakfastFee] = useState<number | null>(null);
-    const [breakfastFeeError, setBreakfastFeeError] = useState<string>('');
     const [idProofs, setIdProofs] = useState<TIdProof[]>([]);
     const [idProofError, setIdProofError] = useState<string>('');
 
@@ -79,10 +77,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
                 setTags(hotelData.tags);
             } else if (typeof hotelData.tags === "string") {
                 setTags((hotelData.tags as string).split(",").map(t => t.trim()).filter(Boolean));
-            }
-
-            if (hotelData.propertyRules?.breakfastFee) {
-                setBreakfastFee(hotelData.propertyRules.breakfastFee)
             }
 
             if (hotelData.propertyRules?.idProofAccepted) {
@@ -145,11 +139,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
             return;
         }
 
-        if (breakfastFee !== null && (isNaN(breakfastFee) || breakfastFee < 0)) {
-            setBreakfastFeeError('Breakfast fee must be a positive number');
-            return;
-        }
-
         if (idProofs.length === 0) {
             setIdProofError('At least one ID proof must be accepted');
             return;
@@ -179,7 +168,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
                 amenities: selectedAmenities,
                 images: newFiles,
                 geoLocation: geoLocation,
-                breakfastFee: breakfastFee ?? undefined,
                 idProofAccepted: idProofs,
             };
             onSubmit(payload);
@@ -191,7 +179,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
                 amenities: selectedAmenities,
                 images: newFiles,
                 geoLocation: geoLocation,
-                breakfastFee: breakfastFee ?? undefined,
                 idProofAccepted: idProofs,
                 oldImages: oldUrls,
             }
@@ -360,23 +347,6 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
                                     <option value="false">No</option>
                                 </select>
                             </div>
-                        </div>
-
-                        {/* Breakfast Fee – external */}
-                        <div>
-                            <Label>Breakfast Fee</Label>
-                            <Input
-                                type="number"
-                                step="0.01"
-                                value={breakfastFee ?? ''}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setBreakfastFeeError('');
-                                    setBreakfastFee(val === '' ? null : Number(val));
-                                }}
-                                placeholder="0 (optional)"
-                            />
-                            {breakfastFeeError && <p className="text-sm text-red-500">{breakfastFeeError}</p>}
                         </div>
 
                         {/* ID Proofs – external */}

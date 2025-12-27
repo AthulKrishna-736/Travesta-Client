@@ -91,10 +91,6 @@ const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) =>
         if (hotelData.checkOutTime) formData.append('checkOutTime', hotelData.checkOutTime);
         if (hotelData.minGuestAge) formData.append('minGuestAge', hotelData.minGuestAge.toString());
 
-        if (hotelData.breakfastFee) {
-            formData.append('breakfastFee', hotelData.breakfastFee.toString())
-        }
-
         if (hotelData.petsAllowed) formData.append('petsAllowed', hotelData.petsAllowed === true ? 'true' : 'false');
         if (hotelData.outsideFoodAllowed) formData.append('outsideFoodAllowed', hotelData.outsideFoodAllowed === true ? 'true' : 'false');
         if (hotelData.idProofAccepted) formData.append('idProofAccepted', JSON.stringify(hotelData.idProofAccepted))
