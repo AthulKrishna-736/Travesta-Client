@@ -3,9 +3,9 @@ import { useDebounce } from '@/utils/helperFunctions';
 import { MapPinIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
-const FloatingLabelDate: React.FC<{ label: string; value: string; onChange: (val: string) => void, min?: string }> = ({ label, value, onChange, min }) => {
+const FloatingLabelDate: React.FC<{ label: string; value: string; onChange: (val: string) => void, min?: string, className?: string }> = ({ label, value, onChange, min, className }) => {
     return (
-        <div className="relative flex-1 max-w-45">
+        <div className={`relative ${className}`}>
             <span className="absolute font-semibold top-1 left-4 text-[#757575] text-[10px] pointer-events-none">{label}</span>
             <input
                 type="date"
@@ -18,6 +18,26 @@ const FloatingLabelDate: React.FC<{ label: string; value: string; onChange: (val
         </div>
     )
 };
+
+const FloatingLabelSelect: React.FC<{ label: string; value: number; onChange: (val: number) => void; options: number[]; className?: string; }> = ({ label, value, onChange, options, className }) => {
+    return (
+        <div className={`relative ${className}`}>
+            <span className="absolute font-semibold top-1 left-3 text-[#757575] text-[10px] pointer-events-none">{label}</span>
+            <select
+                value={value}
+                onChange={(e) => onChange(Number(e.target.value))}
+                className="bg-gray-100 text-black font-bold rounded px-2 pt-4 w-full border border-gray-300 focus:outline-none"
+            >
+                {options.map((opt) => (
+                    <option key={opt} value={opt}>
+                        {opt}
+                    </option>
+                ))}
+            </select>
+        </div>
+    );
+};
+
 
 interface CustomSearchProps {
     searchTerm: string;
@@ -59,11 +79,7 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
 
         const fetchSuggestions = async () => {
             try {
-                const response = await fetch(
-                    `https://api.olamaps.io/places/v1/autocomplete?input=${encodeURIComponent(
-                        debouncedSearch
-                    )}&language=en&api_key=${env.OLA_API_SECRET}`
-                );
+                const response = await fetch(`https://api.olamaps.io/places/v1/autocomplete?input=${encodeURIComponent(debouncedSearch)}&language=en&api_key=${env.OLA_API_SECRET}`);
                 const data = await response.json();
                 setSuggestions(data.predictions || []);
             } catch (err) {
@@ -90,13 +106,13 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
 
     return (
         <div className="bg-white shadow-sm flex justify-center items-center p-2 py-3 sticky top-0 z-40">
-            <div className="flex flex-row gap-2 w-full max-w-4xl">
+            <div className="flex flex-col lg:flex-row gap-2 w-full max-w-4xl">
 
                 <div className="relative flex-1">
                     <input
                         id="searchTerm"
                         placeholder="Where you want to stay?"
-                        className="bg-gray-100 text-black font-semibold rounded px-3 pt-2.5 pb-1 w-full border border-gray-300 text-lg placeholder:font-normal focus:outline-none"
+                        className="bg-gray-100 text-black font-semibold rounded px-3 pt-2 pb-1 w-full lg:w-50 border border-gray-300 text-lg placeholder:font-normal focus:outline-none"
                         value={geoSearch}
                         onChange={(e) => {
                             setGeoSearch(e.target.value);
@@ -129,37 +145,33 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
 
                 <FloatingLabelDate
                     label="CHECK-IN"
+                    className='w-full px-2 lg:px-0 lg:w-45'
                     value={checkIn}
                     onChange={setCheckIn} />
 
                 <FloatingLabelDate
                     label="CHECK-OUT"
+                    className='w-full px-2 lg:px-0 lg:w-45'
                     value={checkOut}
                     onChange={setCheckOut}
                     min={checkIn ? new Date(new Date(checkIn).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString("en-CA") : new Date().toLocaleDateString("en-CA")}
                 />
 
-                <select
-                    aria-placeholder='Rooms'
+                <FloatingLabelSelect
+                    label="ROOMS"
+                    className='w-full px-2 lg:px-0 lg:w-45'
                     value={roomCount}
-                    onChange={(e) => setRoomCount(Number(e.target.value))}
-                    className="bg-gray-100 text-black font-bold rounded px-2 w-20 border border-gray-300"
-                >
-                    {[1, 2, 3, 4, 5].map(num => (
-                        <option key={num} value={num}>{num}</option>
-                    ))}
-                </select>
+                    onChange={setRoomCount}
+                    options={[1, 2, 3, 4, 5]}
+                />
 
-                <select
-                    aria-placeholder='Guests'
+                <FloatingLabelSelect
+                    label="GUESTS"
+                    className='w-full px-2 lg:px-0 lg:w-45'
                     value={guests}
-                    onChange={(e) => setGuests(Number(e.target.value))}
-                    className="bg-gray-100 text-black font-bold rounded px-2 w-20 border border-gray-300"
-                >
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map(num => (
-                        <option key={num} value={num}>{num}</option>
-                    ))}
-                </select>
+                    onChange={setGuests}
+                    options={Array.from({ length: 10 }, (_, i) => i + 1)}
+                />
 
                 <button
                     onClick={onSearch}

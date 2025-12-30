@@ -19,7 +19,7 @@ const CustomSort: React.FC<CustomSortProps> = ({ data }) => {
             <span className="text-[#4a4a4a] font-bold mx-4 text-sm uppercase">
                 Sort by
             </span>
-            <div className='flex py-4 divide-x divide-gray-300'>
+            <div className='flex flex-wrap py-4 lg:divide-x divide-gray-300'>
                 {data.map((s) => {
                     const isActive = active == s.name
                     return (

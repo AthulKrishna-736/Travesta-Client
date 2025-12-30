@@ -63,18 +63,18 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
             {/* Name */}
             <h1 className='text-xl font-bold'>{hotel.name}</h1>
 
-            <div className='flex w-full h-full my-4 gap-4'>
-                <div className='space-y-6 w-175'>
+            <div className='flex flex-col lg:flex-row w-full h-full my-4 gap-4'>
+                <div className='space-y-6 w-full'>
                     {/* Images */}
-                    <div className='flex gap-3'>
-                        <div className='h-80 w-115'>
+                    <div className='flex flex-col md:flex-row gap-3'>
+                        <div className='h-80 w-full md:w-3/4'>
                             {hotel.images.slice(0, 1).map((i, idx) => (
                                 <img className='h-full w-full object-cover rounded-lg' key={idx} src={i} alt={`Image:${idx}`} />
                             ))}
                         </div>
-                        <div className='flex flex-col justify-between'>
+                        <div className='flex md:flex-col gap-2 md:gap-0 overflow-hidden justify-around bg-amber-300'>
                             {hotel.images.slice(1, 3).map((i, idx) => (
-                                <img className='h-39 w-60 object-cover rounded-lg' key={idx} src={i} alt={`Images:${idx}`} />
+                                <img className='h-15 sm:h-30 w-full md:h-39 object-cover rounded-lg' key={idx} src={i} alt={`Images:${idx}`} />
                             ))}
                         </div>
                     </div>
@@ -86,7 +86,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                     </div>
 
                     {/* Description */}
-                    <div className='space-y-2 w-175'>
+                    <div className='space-y-2 w-full'>
                         <h1 className='text-lg font-bold'>
                             About Property
                         </h1>
@@ -109,7 +109,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                     </div>
 
                     {/* Tags */}
-                    <div className='space-y-2'>
+                    <div className='space-y-2 w-full overflow-hidden'>
                         <h1 className='text-lg font-semibold'>Tags</h1>
                         {hotel.tags.map((t, idx) => (
                             <span
@@ -123,9 +123,9 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                 </div>
 
                 {/* Room details, Ratings & Location */}
-                <div className='flex flex-col h-full w-full gap-4'>
+                <div className='flex flex-col h-full w-full lg:w-1/2 gap-4'>
                     <div className='p-4 rounded-lg border-[1px] border-[#d8d8d8]'>
-                        <div className='flex gap-4 mb-4'>
+                        <div className='flex flex-col-reverse md:flex-row gap-4 mb-4'>
                             <div className='flex-1'>
                                 <h1 className='text-lg font-bold mb-2'>{room.name}</h1>
                                 <div className='flex items-center gap-2 mb-2'>
@@ -140,7 +140,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                                     Room Type: {room.roomType}
                                 </h3>
                             </div>
-                            <div className='w-32 h-32 flex-shrink-0'>
+                            <div className='w-full h-60 md:h-40 md:w-60 lg:h-32 lg:w-32 flex-shrink-0'>
                                 {room.images && room.images.length > 0 && (
                                     <img
                                         className='w-full h-full object-cover rounded-lg'

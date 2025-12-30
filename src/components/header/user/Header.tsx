@@ -103,9 +103,11 @@ const Header = () => {
 
                 {/* Mobile Menu Toggle */}
                 <div className="md:hidden flex items-center justify-center gap-4">
-                    <button onClick={() => { setIsNotificationOpen(true) }} className="cursor-pointer">
-                        <Bell className="w-6 h-6" />
-                    </button>
+                    {user && (
+                        <button onClick={() => { setIsNotificationOpen(true) }} className="cursor-pointer">
+                            <Bell className="w-6 h-6" />
+                        </button>
+                    )}
 
                     <button onClick={() => setSideBar(true)} className='cursor-pointer'>
                         <Menu className="w-6 h-6" />
@@ -155,12 +157,14 @@ const Header = () => {
                         About Us
                     </Link>
 
-                    <button
-                        onClick={handleLogout}
-                        className="text-xs text-red-500 font-semibold hover:underline hover:underline-offset-4"
-                    >
-                        Logout
-                    </button>
+                    {user && (
+                        <button
+                            onClick={handleLogout}
+                            className="text-xs text-left text-red-500 font-semibold hover:underline hover:underline-offset-4"
+                        >
+                            Logout
+                        </button>
+                    )}
                 </div>
             )}
         </header >
