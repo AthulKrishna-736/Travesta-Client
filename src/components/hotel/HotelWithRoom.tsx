@@ -72,7 +72,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                                 <img className='h-full w-full object-cover rounded-lg' key={idx} src={i} alt={`Image:${idx}`} />
                             ))}
                         </div>
-                        <div className='flex md:flex-col gap-2 md:gap-0 overflow-hidden justify-around bg-amber-300'>
+                        <div className='flex md:flex-col gap-2 md:gap-0 overflow-hidden justify-around'>
                             {hotel.images.slice(1, 3).map((i, idx) => (
                                 <img className='h-15 sm:h-30 w-full md:h-39 object-cover rounded-lg' key={idx} src={i} alt={`Images:${idx}`} />
                             ))}
