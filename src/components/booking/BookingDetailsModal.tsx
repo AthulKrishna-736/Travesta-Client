@@ -75,7 +75,14 @@ const BookingDetailDialog: React.FC<BookingDetailProps> = ({ open, onClose, book
 
                     <div className="bg-green-50 rounded-xl p-4 space-y-3">
                         {booking.hotel && booking.hotel.geoLocation && booking.hotel.geoLocation.coordinates.length > 0 && (
-                            <StaticMap long={booking.hotel.geoLocation.coordinates[0]} lat={booking.hotel.geoLocation.coordinates[1]} />
+                            <StaticMap
+                                long={booking.hotel.geoLocation.coordinates[0]}
+                                lat={booking.hotel.geoLocation.coordinates[1]}
+                                zoom={17}
+                                height={720}
+                                width={1280}
+                                format="png"
+                            />
                         )}
                     </div>
 

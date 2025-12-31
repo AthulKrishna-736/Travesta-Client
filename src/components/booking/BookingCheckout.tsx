@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Users, MapPin, Clock, CreditCard, Wallet } from 'lucide-react';
 import { useConfirmBooking } from '@/hooks/user/useBooking';
 import { useCreatePaymentIntent, useGetWallet } from '@/hooks/user/useWallet';
@@ -40,7 +39,6 @@ const BookingCheckout: React.FC = () => {
     const checkOut = params.get('checkOut');
     const totalPrice = Number(params.get('totalPrice'));
     const days = Number(params.get('days'));
-
 
 
     const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelById(hotelId!);
@@ -163,78 +161,154 @@ const BookingCheckout: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-5xl mx-auto p-6 space-y-6">
-            <Card>
-                <CardContent className="p-6 space-y-4">
+        <div className="max-w-6xl w-full mx-auto p-6">
+            <div className='flex flex-col lg:flex-row w-full gap-4'>
+
+                <div className="p-6 space-y-4 w-full bg-white rounded-sm">
                     {/* Hotel Image */}
                     {hotel.images?.length > 0 && (
                         <img
                             src={hotel.images[0]}
-                            className="w-full h-64 object-cover rounded-xl"
+                            className="w-full h-64 object-cover rounded-md"
                         />
                     )}
 
-                    {/* HOTEL + ROOM */}
+                    {/* Hotel & room */}
                     <div className="space-y-2">
-                        <h2 className="text-2xl font-bold">{hotel.name}</h2>
+                        <h2 className="text-xl md:text-2xl font-bold">{hotel.name}</h2>
                         <p className="text-muted-foreground flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
+                            <MapPin className="w-4 h-4 text-blue-400" />
                             {hotel.address}
                         </p>
 
-                        <div className="flex gap-4 items-start">
+                        <div className="flex flex-wrap gap-4 items-start md:items-center justify-center md:justify-start bg-slate-100 w-full rounded-md p-2">
                             {room.images?.length > 0 && (
                                 <img
                                     src={room.images[0]}
-                                    className="w-32 h-24 object-cover rounded-md"
+                                    className="w-40 h-28 object-cover rounded-md border"
                                 />
                             )}
-                            <div>
-                                <Badge className="px-4 py-1 bg-blue-900">{room.bedType}</Badge>
-                                <p className="text-sm font-medium">{room.name}</p>
+
+                            <div className="space-y-1">
+                                <Badge className="px-3 py-1 bg-blue-100 text-blue-700">
+                                    {room.bedType}
+                                </Badge>
+
+                                <p className="font-semibold text-base text-gray-800">
+                                    {room.name}
+                                </p>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                    <Users className="h-4 w-4" />
+                                    {room.guest} guests max
+                                </div>
                             </div>
                         </div>
 
-                        {/* BOOKING DETAILS */}
-                        <div className="grid grid-cols-2 gap-4 pt-4">
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4" /> Check-In:{" "}
-                                {new Date(checkIn!).toLocaleString()}
-                            </div>
+                        {/* Booking details */}
+                        <div className="bg-slate-100 rounded-lg p-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-4 text-sm">
+                                <div className="flex items-start gap-2 text-gray-600">
+                                    <Calendar className="h-4 w-4 mt-0.5 text-blue-500" />
+                                    <div>
+                                        <div className="font-medium text-gray-700">Check-in</div>
+                                        <div>
+                                            {new Date(checkIn!).toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4" /> Check-Out:{" "}
-                                {new Date(checkOut!).toLocaleString()}
-                            </div>
+                                <div className="flex items-start gap-2 text-gray-600">
+                                    <Calendar className="h-4 w-4 mt-0.5 text-blue-500" />
+                                    <div>
+                                        <div className="font-medium text-gray-700">Check-out</div>
+                                        <div>
+                                            {new Date(checkOut!).toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="flex items-center gap-2">
-                                <Users className="h-4 w-4" />
-                                Guests: {adults + children}
-                            </div>
+                                <div className="flex items-start gap-2 text-gray-600">
+                                    <Users className="h-4 w-4 mt-0.5 text-green-500" />
+                                    <div>
+                                        <div className="font-medium text-gray-700">Guests</div>
+                                        <div>
+                                            {adults + children} total
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <div className="flex items-center gap-2">
-                                <Clock className="h-4 w-4" />
-                                Days: {days}
+                                <div className="flex items-start gap-2 text-gray-600">
+                                    <Clock className="h-4 w-4 mt-0.5 text-purple-500" />
+                                    <div>
+                                        <div className="font-medium text-gray-700">Duration</div>
+                                        <div>
+                                            {days} night(s)
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* PRICE BREAKDOWN */}
-                        <div className="border-t pt-4 mt-4">
-                            <h3 className="font-semibold mb-2">Price Breakdown</h3>
+                        {/* final price */}
+                        {selectedCoupon && (
+                            <div className="mt-4 p-3 border rounded-lg bg-green-50">
+                                <h3 className="font-semibold text-green-700 mb-1">Coupon Applied</h3>
+                                <p className="text-sm">
+                                    {selectedCoupon.code}:{" "}
+                                    {selectedCoupon.type === 'flat'
+                                        ? `₹${selectedCoupon.value} OFF`
+                                        : `${selectedCoupon.value}% OFF`}
+                                </p>
 
-                            <div className="flex justify-between">
-                                <span>₹{room.basePrice} × {days} nights × {rooms} room(s)</span>
-                                <span>₹{room.basePrice * days}</span>
+                                <div className="flex justify-between mt-2 font-medium text-green-800">
+                                    <span>Final Price:</span>
+                                    <span>₹{discountedPrice}</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div className='flex flex-col gap-4 w-full lg:w-1/2'>
+                    {/* Price breakdown */}
+                    <div className='p-4 bg-white rounded-sm w-full'>
+                        <h3 className="font-semibold mb-3 text-lg underline underline-offset-5">
+                            Price Summary
+                        </h3>
+
+                        <div className="text-sm space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span>Room</span>
+                                <span className='font-medium'>₹{room.basePrice}</span>
                             </div>
 
-                            <div className="flex justify-between font-medium mt-2">
-                                <span>Total</span>
-                                <span>₹{totalPrice}</span>
+                            <div className="flex justify-between items-center">
+                                <span>Nights</span>
+                                <span className='font-medium'>{days}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                                <span>Number of Rooms</span>
+                                <span className='font-medium'>{rooms}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                                <span>Calculate</span>
+                                <span className='font-medium'>{room.basePrice} × {days} × {rooms}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center pt-2">
+                                <span className='uppercase font-semibold'>Total</span>
+                                <span className='text-lg font-bold'>₹{room.basePrice * days * rooms}</span>
                             </div>
                         </div>
+                    </div>
 
+                    {/* Coupons */}
+                    <div className='p-4 bg-white rounded-sm w-full'>
                         {coupons.length > 0 && (
-                            <div className="border-t pt-4 mt-4">
+                            <div>
                                 <h3 className="font-semibold mb-3">Available Coupons</h3>
 
                                 <div className="flex flex-col gap-3">
@@ -270,27 +344,12 @@ const BookingCheckout: React.FC = () => {
                                 </div>
                             </div>
                         )}
+                    </div>
 
-                        {/* FINAL PRICE AFTER COUPON */}
-                        {selectedCoupon && (
-                            <div className="mt-4 p-3 border rounded-lg bg-green-50">
-                                <h3 className="font-semibold text-green-700 mb-1">Coupon Applied</h3>
-                                <p className="text-sm">
-                                    {selectedCoupon.code}:{" "}
-                                    {selectedCoupon.type === 'flat'
-                                        ? `₹${selectedCoupon.value} OFF`
-                                        : `${selectedCoupon.value}% OFF`}
-                                </p>
-
-                                <div className="flex justify-between mt-2 font-medium text-green-800">
-                                    <span>Final Price:</span>
-                                    <span>₹{discountedPrice}</span>
-                                </div>
-                            </div>
-                        )}
-
+                    {/* Payment section */}
+                    <div className='p-4 bg-white rounded-sm w-full'>
                         {!user ? (
-                            <div className="pt-6 flex flex-col items-center gap-3">
+                            <div className="flex flex-col items-center gap-3">
                                 <p className="text-gray-600 text-center">
                                     Login to complete your booking
                                 </p>
@@ -307,15 +366,12 @@ const BookingCheckout: React.FC = () => {
                             </div>
                         ) : (
                             <>
-                                {/* PAYMENT METHODS */}
-                                <div className="flex flex-col gap-3 pt-4">
-
-                                    <label
-                                        className={`w-full flex items-center gap-3 p-3 border rounded-lg cursor-pointer ${paymentMethod === 'online'
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-gray-300'
-                                            }`}
-                                    >
+                                {/* Payment methods */}
+                                <div className="flex flex-col gap-3">
+                                    <h3 className="font-semibold mb-1">
+                                        Payment Section
+                                    </h3>
+                                    <label className={`w-full flex items-center gap-3 p-3 border rounded-lg cursor-pointer ${paymentMethod === 'online' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
                                         <input
                                             type="radio"
                                             name="paymentMethod"
@@ -328,12 +384,7 @@ const BookingCheckout: React.FC = () => {
                                         <span>Online Payment</span>
                                     </label>
 
-                                    <label
-                                        className={`w-full flex items-center gap-3 p-3 border rounded-lg cursor-pointer ${paymentMethod === 'wallet'
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-gray-300'
-                                            }`}
-                                    >
+                                    <label className={`w-full flex items-center gap-3 p-3 border rounded-lg cursor-pointer ${paymentMethod === 'wallet' ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
                                         <input
                                             type="radio"
                                             name="paymentMethod"
@@ -347,7 +398,7 @@ const BookingCheckout: React.FC = () => {
                                     </label>
                                 </div>
 
-                                {/* CONFIRM SECTION */}
+                                {/* confirm buttons */}
                                 <div className="pt-6">
                                     {!clientSecret ? (
                                         <Button onClick={handleConfirm} disabled={isPending}>
@@ -366,9 +417,9 @@ const BookingCheckout: React.FC = () => {
                             </>
                         )}
                     </div>
-                </CardContent>
-            </Card>
-        </div>
+                </div>
+            </div>
+        </div >
     );
 };
 

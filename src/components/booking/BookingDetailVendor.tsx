@@ -1,12 +1,5 @@
 import React from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { IBooking } from "@/types/booking.types";
 
@@ -16,11 +9,7 @@ interface BookingDetailVendorProps {
     booking: IBooking | null;
 }
 
-const BookingDetailModalVendor: React.FC<BookingDetailVendorProps> = ({
-    open,
-    onClose,
-    booking,
-}) => {
+const BookingDetailModalVendor: React.FC<BookingDetailVendorProps> = ({ open, onClose, booking, }) => {
     if (!booking) return null;
 
     return (
