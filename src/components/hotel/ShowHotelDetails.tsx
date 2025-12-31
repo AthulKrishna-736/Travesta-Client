@@ -154,7 +154,14 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                             </div>
 
                             <div>
-                                <StaticMap long={data.geoLocation.coordinates[0]} lat={data.geoLocation.coordinates[1]} />
+                                <StaticMap
+                                    long={data.geoLocation.coordinates[0]}
+                                    lat={data.geoLocation.coordinates[1]}
+                                    zoom={17}
+                                    height={720}
+                                    width={1280}
+                                    format='png'
+                                />
                             </div>
                         </div>
                     )}

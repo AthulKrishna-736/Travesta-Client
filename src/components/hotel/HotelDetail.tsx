@@ -3,19 +3,20 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import RoomCard from '../room/RoomCard';
 import Breadcrumbs from '../common/BreadCrumps';
 import HotelWithRoom from './HotelWithRoom';
-import MyOlaMap from '../maps/OlaMap';
-import RatingDetails from './RatingDetails';
 import NearbyAttractions from '../common/NearbyAttractions';
 import WeatherDetails from '../common/WeatherDetails';
 import PropertyRules from './PropertyRules';
 import { showError } from '@/utils/customToast';
-import { Lock, MapIcon } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useGetUserActivePlan } from '@/hooks/admin/useSubscription';
 import { useGetHotelRatings } from '@/hooks/vendor/useRating';
 import { useGetHotelDetailsWithRoom } from '@/hooks/vendor/useHotel';
 import { IRoom } from '@/types/room.types';
-import Pagination from '../common/Pagination';
 import CustomSearch from '../common/CustomSearch';
+import StaticMap from '../maps/StaticMap';
+import GuestReviewImages from '../reviews/GuestReviewImages';
+import ReviewList from '../reviews/ReviewList';
+import SubscriptionLock from '../subscription/SubscriptionLock';
 
 
 const HotelDetail: React.FC = () => {
@@ -189,6 +190,7 @@ const HotelDetail: React.FC = () => {
                 ))}
             </div>
 
+            {/* Property rules */}
             <div className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
                 <PropertyRules propertyRules={hotel.propertyRules} />
             </div>
@@ -203,44 +205,44 @@ const HotelDetail: React.FC = () => {
                         checkOut={checkOutParam}
                     />
                 ) : (
-                    <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
-                        <Lock className="mb-2 w-8 h-8 text-gray-400" />
-                        <p className="text-lg mb-4">Unlock this feature to access weather details</p>
-                        <button
-                            onClick={() => navigate('/user/subscription')}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        >
-                            Go to Subscription
-                        </button>
-                    </div>
+                    <SubscriptionLock title={`Unlock this feature to access weather details`} />
                 )}
             </div>
 
             {/* Map Section */}
             <div ref={mapRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                <div className='flex justify-between '>
+                <div className='flex justify-between items-center'>
                     <h1 className='text-xl font-semibold mb-2'>Location</h1>
-                    <button className='px-4 py-1.5 bg-gradient-to-r from-[#53b2fe] to-[#065af3] text-white font-semibold text-lg rounded-md shadow-md cursor-pointer' onClick={() => {
-                        window.open(
-                            `https://www.google.com/maps/dir/?api=1&destination=${hotel.geoLocation.coordinates[1]},${hotel.geoLocation.coordinates[0]}`,
-                            "_blank",
-                            "noopener,noreferrer"
-                        );
-                    }}>
-                        <span className='flex justify-center items-center gap-2'>
-                            <MapIcon className='text-white w-5 h-5 ' />
-                            Get Direction
+                    <button
+                        className="flex items-center gap-1 text-indigo-600 text-sm font-medium hover:underline cursor-pointer"
+                        title="Get Directions"
+                        onClick={() => {
+                            window.open(
+                                `https://www.google.com/maps/dir/?api=1&destination=${hotel.geoLocation.coordinates[1]},${hotel.geoLocation.coordinates[0]}`,
+                                "_blank",
+                                "noopener,noreferrer"
+                            );
+                        }}>
+                        <span className='flex justify-center items-center gap-1'>
+                            <span>Get Direction</span>
+                            <ArrowUpRight className="w-4 h-4" />
                         </span>
                     </button>
                 </div>
+
                 <div>
-                    <MyOlaMap
+                    <StaticMap
                         lat={hotel.geoLocation.coordinates[1]}
                         long={hotel.geoLocation.coordinates[0]}
+                        zoom={15}
+                        width={1280}
+                        height={700}
+                        format="png"
                     />
                 </div>
             </div>
 
+            {/* Nearby attractions */}
             <div className="space-y-6 bg-white p-4 rounded-md shadow-xs border border-gray-200">
                 {planHistory && planHistory.isActive && planHistory.subscriptionId.type === 'vip' ? (
                     <NearbyAttractions
@@ -248,58 +250,20 @@ const HotelDetail: React.FC = () => {
                         long={hotel.geoLocation.coordinates[0]}
                     />
                 ) : (
-                    <div className="text-center text-gray-500 flex flex-col items-center justify-center py-10">
-                        <Lock className="mb-2 w-8 h-8 text-gray-400" />
-                        <p className="text-lg mb-4">Unlock this feature to access Nearby Attractions</p>
-                        <button
-                            onClick={() => navigate('/user/subscription')}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                        >
-                            Go to Subscription
-                        </button>
-                    </div>
+                    <SubscriptionLock title={`Unlock this feature to access Nearby Attractions`} />
                 )}
             </div>
 
             {/* Guest Photos */}
             <div className="space-y-6 bg-white p-4 rounded-md shadow-xs border border-gray-200">
                 <h1 className='text-xl font-semibold mb-2'>Guest Photos <span className='text-sm'>(Recent)</span></h1>
-                <div className='flex justify-between w-full overflow-hidden'>
-                    {ratingImages && ratingImages.length > 0 ? ratingImages.slice(0, 4).map((r, idx) => (
-                        <img
-                            className='w-65 h-40 rounded-md shadow-md'
-                            key={idx}
-                            src={r}
-                            alt="ratingImages"
-                        />
-                    )) : (
-                        <div className='text-lg'>
-                            No Guest Images Found
-                        </div>
-                    )}
-                </div>
+                <GuestReviewImages images={ratingImages} />
             </div>
 
             {/* Reviews section */}
             <div ref={reviewRef} className="space-y-6 bg-white p-6 rounded-md shadow-xs border border-gray-200">
-                {ratings && ratings.length > 0 ? (
-                    <>
-                        <RatingDetails ratings={ratings} />
-                        {meta && meta.totalPages > 0 && (
-                            <Pagination
-                                currentPage={meta.currentPage}
-                                totalPages={meta.totalPages}
-                                onPageChange={setPage}
-                            />
-                        )}
-                    </>
-                ) : (
-                    <div className='text-lg font-semibold'>
-                        No Ratings Found.
-                    </div>
-                )}
+                <ReviewList ratings={ratings} currentPage={page} totalPages={meta?.totalPages} setPage={setPage} />
             </div>
-
         </main>
     );
 };

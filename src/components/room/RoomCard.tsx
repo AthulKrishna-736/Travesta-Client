@@ -108,20 +108,6 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="flex items-center gap-2 col-span-2">
-                            <div className="bg-amber-50 p-2 rounded-lg">
-                                <div className="w-5 h-5 text-amber-600 font-bold text-center leading-5">
-                                    {room.roomCount}
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-xs text-gray-500">Available Rooms</div>
-                                <div className="text-sm font-semibold text-gray-800">
-                                    {room.roomCount} {room.roomCount === 1 ? 'Room' : 'Rooms'}
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Amenities */}

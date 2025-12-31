@@ -81,7 +81,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
 
                     {/* location */}
                     <div className="flex items-center gap-2 text-muted-foreground text-md">
-                        <MapPin className="w-5 h-5" />
+                        <MapPin className="w-5 h-5 text-blue-500" />
                         <span>{hotel.city}, {hotel.state} – {hotel.address}</span>
                     </div>
 
@@ -90,13 +90,13 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                         <h1 className='text-lg font-bold'>
                             About Property
                         </h1>
-                        <CollapsibleText text={hotel.description} limit={500}/>
+                        <CollapsibleText text={hotel.description} limit={500} />
                     </div>
 
                     {/* Amenities */}
                     <div className='space-y-2'>
                         <h1 className='text-lg font-semibold'>Amenities</h1>
-                        <div className='flex gap-2'>
+                        <div className='flex flex-wrap gap-2'>
                             {hotel.amenities.map((a) => (
                                 <span
                                     className="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200 transition"
@@ -109,8 +109,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                     </div>
 
                     {/* Tags */}
-                    <div className='space-y-2 w-full overflow-hidden'>
-                        <h1 className='text-lg font-semibold'>Tags</h1>
+                    <div className='space-y-2 w-full flex flex-wrap overflow-hidden'>
                         {hotel.tags.map((t, idx) => (
                             <span
                                 key={idx}
@@ -151,33 +150,31 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                             </div>
                         </div>
 
-                        <h6 className="text-sm text-[#4a4a4a] font-medium">Per Night:</h6>
+                        <h6 className="text-xs md:text-sm text-[#4a4a4a] font-medium">Per Night:</h6>
 
                         {/* If offer exists */}
                         {room.discountedPrice ? (
                             <div className="mb-4">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xl line-through text-gray-400 font-semibold">
+                                    <span className="text-lg: md:text-xl line-through text-gray-400 font-semibold">
                                         ₹ {room.basePrice}
                                     </span>
 
-                                    <span className="text-xl font-bold text-green-600">
+                                    <span className="text-lg md:text-xl font-bold">
                                         ₹ {room.discountedPrice}
                                     </span>
                                 </div>
 
                                 {/* GST price */}
-                                <div className="text-sm text-[#4a4a4a] font-medium mt-1">
+                                <div className="text-xs md:text-sm text-[#4a4a4a] font-medium mt-1">
                                     +₹ {room.gstPrice} taxes & fees
                                 </div>
                             </div>
                         ) : (
-                            <h1 className="text-3xl font-bold mb-4">
+                            <h1 className="text-xl md:text-3xl font-bold mb-4">
                                 ₹ {room.basePrice}
                                 <span className="ml-2 text-[14px] text-[#4a4a4a] font-medium">
-                                    {room.gstPrice === 0
-                                        ? "No taxes & fees"
-                                        : `+₹ ${room.gstPrice} taxes & fees`}
+                                    {room.gstPrice === 0 ? "No taxes & fees" : `+₹ ${room.gstPrice} taxes & fees`}
                                 </span>
                             </h1>
                         )}
@@ -227,7 +224,7 @@ const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRe
                         {/* Location */}
                         <div className='flex justify-between items-center'>
                             <img className='h-10 w-15 rounded-lg object-cover' src={'https://imgak.mmtcdn.com/pwa_v3/pwa_hotel_assets/map-icon-dtls.png'} alt="mapImage" />
-                            <h1 className='text-xl font-bold'>{hotel.city}</h1>
+                            <h1 className='text-sm md:text-xl font-bold'>{hotel.city}</h1>
                             <button
                                 onClick={() => {
                                     if (mapRef.current) mapRef.current.scrollIntoView({ behavior: "smooth" });
