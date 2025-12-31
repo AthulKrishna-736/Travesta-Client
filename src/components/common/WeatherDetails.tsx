@@ -1,41 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Cloud, CloudRain, Sun, CloudDrizzle, CloudSnow, Wind } from "lucide-react";
+import { useWeatherForecast } from "@/hooks/admin/useService";
+import { IWeatherDetailsProps } from "@/types/custom.types";
 
-interface WeatherDetailsProps {
-    latitude: number;
-    longitude: number;
-    checkIn: string;
-    checkOut: string;
-}
 
-const WeatherDetails: React.FC<WeatherDetailsProps> = ({ latitude, longitude, checkIn, checkOut }) => {
-    const [weatherData, setWeatherData] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-
-    useEffect(() => {
-        if (!latitude || !longitude) return;
-
-        const fetchWeather = async () => {
-            try {
-                setLoading(true);
-                setError("");
-
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto&start_date=${checkIn}&end_date=${checkOut}`;
-                const res = await fetch(url);
-                const data = await res.json();
-
-                setWeatherData(data);
-            } catch (err) {
-                console.error(err);
-                setError(`Unable to fetch weather data ${err}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchWeather();
-    }, [latitude, longitude, checkIn, checkOut]);
+const WeatherDetails: React.FC<IWeatherDetailsProps> = ({ latitude, longitude, checkIn, checkOut }) => {
+    const { data: weatherData, isLoading: loading, isError: error } = useWeatherForecast(latitude, longitude, checkIn, checkOut, true);
 
     if (loading)
         return (

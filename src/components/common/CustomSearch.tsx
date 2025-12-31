@@ -1,4 +1,5 @@
-import { env } from '@/config/config';
+import { useGeoAutocomplete } from '@/hooks/admin/useService';
+import { ICustomSearchProps, TAutoComplete } from '@/types/custom.types';
 import { useDebounce } from '@/utils/helperFunctions';
 import { MapPinIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -23,11 +24,7 @@ const FloatingLabelSelect: React.FC<{ label: string; value: number; onChange: (v
     return (
         <div className={`relative ${className}`}>
             <span className="absolute font-semibold top-1 left-3 text-[#757575] text-[10px] pointer-events-none">{label}</span>
-            <select
-                value={value}
-                onChange={(e) => onChange(Number(e.target.value))}
-                className="bg-gray-100 text-black font-bold rounded px-2 pt-4 w-full border border-gray-300 focus:outline-none"
-            >
+            <select value={value} onChange={(e) => onChange(Number(e.target.value))} className="bg-gray-100 text-black font-bold rounded px-2 pt-4 w-full border border-gray-300 focus:outline-none">
                 {options.map((opt) => (
                     <option key={opt} value={opt}>
                         {opt}
@@ -39,24 +36,7 @@ const FloatingLabelSelect: React.FC<{ label: string; value: number; onChange: (v
 };
 
 
-interface CustomSearchProps {
-    searchTerm: string;
-    setSearchTerm: (val: string) => void;
-    checkIn: string;
-    setCheckIn: (val: string) => void;
-    checkOut: string;
-    setCheckOut: (val: string) => void;
-    setLat: (val: number) => void;
-    setLong: (val: number) => void;
-    roomCount: number;
-    setRoomCount: (val: number) => void;
-    guests: number;
-    setGuests: (val: number) => void;
-    onSearch: () => void;
-    disabled?: boolean;
-}
-
-const CustomSearch: React.FC<CustomSearchProps> = ({
+const CustomSearch: React.FC<ICustomSearchProps> = ({
     searchTerm, setSearchTerm,
     checkIn, setCheckIn,
     checkOut, setCheckOut,
@@ -66,41 +46,31 @@ const CustomSearch: React.FC<CustomSearchProps> = ({
     disabled, onSearch
 }) => {
     const [geoSearch, setGeoSearch] = useState(searchTerm);
-    const [suggestions, setSuggestions] = useState<any[]>([]);
-    const [showSuggestions, setShowSuggestions] = useState(false);
-
+    const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
     const debouncedSearch = useDebounce(geoSearch, 1500);
 
+    const { data: suggestions = [] } = useGeoAutocomplete(debouncedSearch);
+
     useEffect(() => {
-        if (!debouncedSearch.trim()) {
-            setSuggestions([]);
-            return;
+        if (!geoSearch.trim()) {
+            setShowSuggestions(false);
+        }
+    }, [geoSearch]);
+
+
+    const handleSelectSuggestion = (item: TAutoComplete["predictions"][number]) => {
+        const mainText = item.structured_formatting?.main_text || '';
+        const lat = item.geometry.location.lat ?? null;
+        const lng = item.geometry.location.lng ?? null;
+
+        if (lat !== null && lng !== null) {
+            setLat(lat);
+            setLong(lng);
         }
 
-        const fetchSuggestions = async () => {
-            try {
-                const response = await fetch(`https://api.olamaps.io/places/v1/autocomplete?input=${encodeURIComponent(debouncedSearch)}&language=en&api_key=${env.OLA_API_SECRET}`);
-                const data = await response.json();
-                setSuggestions(data.predictions || []);
-            } catch (err) {
-                console.error("Location autocomplete failed:", err);
-            }
-        };
-
-        fetchSuggestions();
-    }, [debouncedSearch]);
-
-    const handleSelectSuggestion = (item: any) => {
-        const mainText = item.structured_formatting?.main_text || '';
-        const lat = item.geometry.location.lat || null;
-        const lng = item.geometry.location.lng || null;
-
-        setLat(lat);
-        setLong(lng);
         setGeoSearch(mainText);
         setSearchTerm(mainText);
         setShowSuggestions(false);
-        setSuggestions([]);
     };
 
 
