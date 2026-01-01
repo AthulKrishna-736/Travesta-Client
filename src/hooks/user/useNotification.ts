@@ -1,24 +1,28 @@
 import { getNotification, getUnreadNotificationCount, markAllNotifications, markNotificationRead } from "@/services/userService"
 import { showError, showSuccess } from "@/utils/customToast"
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 
-export const useGetNotification = () => {
+export const useGetNotification = (enabled: boolean) => {
     return useQuery({
         queryKey: ['notification'],
         queryFn: getNotification,
         staleTime: 1 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        enabled,
         retry: 2,
     })
 }
 
-export const useGetUnreadNotificationCount = () => {
+export const useGetUnreadNotificationCount = (enabled: boolean) => {
     return useQuery({
         queryKey: ['unreadCount'],
         queryFn: getUnreadNotificationCount,
         staleTime: 1 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        enabled,
         retry: 2
     })
 }

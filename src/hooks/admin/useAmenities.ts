@@ -4,7 +4,7 @@ import { getVendorAmenities } from "@/services/vendorService";
 import { IAmenity, TCreateAmenityData } from "@/types/amenities.types";
 import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export const useGetAllAmenities = (page: number, limit: number, type: 'hotel' | 'room', search?: string, sortOption?: TSortOption) => {
@@ -12,7 +12,7 @@ export const useGetAllAmenities = (page: number, limit: number, type: 'hotel' | 
         queryKey: ['amenities', { page, limit, type, search, sortOption }],
         queryFn: () => getAllAmenities(page, limit, type, search, sortOption),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 2,
     });
 };
@@ -22,7 +22,7 @@ export const useGetUserAmenities = () => {
         queryKey: ['user-amenities'],
         queryFn: getUserAmenities,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 2,
     })
 }
@@ -32,7 +32,7 @@ export const useGetVendorAmenities = () => {
         queryKey: ['vendor-amenities'],
         queryFn: getVendorAmenities,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 2,
     });
 }

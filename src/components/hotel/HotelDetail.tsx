@@ -17,6 +17,8 @@ import StaticMap from '../maps/StaticMap';
 import GuestReviewImages from '../reviews/GuestReviewImages';
 import ReviewList from '../reviews/ReviewList';
 import SubscriptionLock from '../subscription/SubscriptionLock';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 
 const HotelDetail: React.FC = () => {
@@ -29,6 +31,7 @@ const HotelDetail: React.FC = () => {
     const [page, setPage] = useState(1);
 
     const RATING_LIMT = 5;
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     const location = params.get('location');
     const checkInParam = params.get('checkIn') || '';
@@ -57,8 +60,7 @@ const HotelDetail: React.FC = () => {
 
     const ratingImages = hotel?.ratings?.flatMap(r => (r && Array.isArray(r.images) ? r.images : [])) || [];
 
-
-    const { data: planResponse } = useGetUserActivePlan();
+    const { data: planResponse } = useGetUserActivePlan(isAuthenticated);
     const planHistory = planResponse ? planResponse?.data : null;
 
     if (hotelLoading)

@@ -10,6 +10,9 @@ export const useGetWallet = () => {
         queryKey: ['wallet'],
         queryFn: getWallet,
         staleTime: 5 * 60 * 1000,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 2,
     });
 };
 
@@ -18,6 +21,9 @@ export const useGetUserTransactions = (page: number, limit: number) => {
         queryKey: ['transactions', { page, limit }],
         queryFn: () => getUserTransactions(page, limit),
         staleTime: 5 * 60 * 1000,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 2,
     });
 }
 
@@ -26,6 +32,9 @@ export const useGetVendorTransactions = (page: number, limit: number) => {
         queryKey: ['transactions', { page, limit }],
         queryFn: () => getVendorTransactions(page, limit),
         staleTime: 5 * 60 * 1000,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 2,
     })
 }
 
@@ -38,6 +47,7 @@ export const useCreateWallet = () => {
             res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
             queryClient.invalidateQueries({ queryKey: ['notification'] })
+            queryClient.invalidateQueries({ queryKey: ['transactions'] })
         },
         onError: (err: ICustomError) => {
             showError(err.response.data.message || "Failed to create wallet");

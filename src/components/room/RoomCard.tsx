@@ -66,7 +66,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                     {/* Header */}
                     <div className="flex justify-between items-start mb-4">
                         <div>
-                            <h3 className="text-3xl font-bold text-gray-900 mb-1">
+                            <h3 className="text-lg md:text-3xl font-bold text-gray-900 mb-1">
                                 {room.name}
                             </h3>
                             <span className="inline-block bg-blue-50 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full">
@@ -75,7 +75,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
                         </div>
                         <div className="text-right">
                             <div className="text-sm text-gray-500 mb-1">Starting from</div>
-                            <div className="text-3xl font-bold text-blue-600">
+                            <div className="text-xl md:text-3xl font-bold text-blue-600">
                                 ₹{room.basePrice}
                             </div>
                             <h6 className="text-xs text-gray-500">Per night</h6>

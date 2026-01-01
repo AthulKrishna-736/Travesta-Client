@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getUser, updateUser } from "@/services/userService"
 import { useDispatch } from "react-redux"
 import { showError, showSuccess } from "@/utils/customToast"
@@ -7,13 +7,14 @@ import { getAllUsers, toggleBlockUser } from "@/services/adminService"
 import { IUser } from "@/types/user.types"
 import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
 
-export const useGetUser = () => {
+export const useGetUser = (enabled: boolean) => {
     return useQuery({
         queryKey: ['user-profile'],
         queryFn: getUser,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
-        retry: 2,
+        placeholderData: (prev) => prev,
+        enabled,
+        retry: 1,
     })
 }
 
@@ -44,7 +45,7 @@ export const useGetAllUsers = (page: number, limit: number, role: string, search
         queryKey: ['admin-users', { page, limit, role, search, sortOption }],
         queryFn: () => getAllUsers(page, limit, role, search, sortOption),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
     });
 };
 

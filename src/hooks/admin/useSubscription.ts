@@ -3,14 +3,14 @@ import { cancelSubscription, getActivePlan, getUserSubscriptions, subscribePlan 
 import { ICustomError } from "@/types/custom.types"
 import { TCreatePlan, TUpdatePlan } from "@/types/plan.types"
 import { showError, showSuccess } from "@/utils/customToast"
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useGetSubscriptionPlans = () => {
     return useQuery({
         queryKey: ['plans'],
         queryFn: getUserSubscriptions,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 2,
     })
 }
@@ -20,16 +20,18 @@ export const useGetAllPlans = () => {
         queryKey: ['plans'],
         queryFn: getAllPlans,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
     })
 }
 
-export const useGetUserActivePlan = () => {
+export const useGetUserActivePlan = (enabled: boolean) => {
     return useQuery({
         queryKey: ['user-plan'],
         queryFn: getActivePlan,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        enabled,
         retry: 1,
     })
 }
@@ -38,7 +40,7 @@ export const useGetPlanHistory = (page: number, limit: number, type: 'basic' | '
     return useQuery({
         queryKey: ['planHistory', page, limit, type],
         queryFn: () => getAllPlanHistory(page, limit, type),
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         staleTime: 5 * 60 * 1000,
         retry: 1,
     });

@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createHotel, getHotelAnalytics, getHotelByVendor, getHotelsByVendor, getTrendingHotels, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { getAllUserHotels, getHotelDetailsWithRoom, getUserHotelById } from '@/services/userService';
@@ -52,7 +52,7 @@ export const useHotelsByVendor = (page: number, limit: number, search?: string) 
         queryKey: ['vendor-hotels', { page, limit, search }],
         queryFn: () => getHotelsByVendor(page, limit, search),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
     });
 };
 
@@ -61,7 +61,7 @@ export const useHotelByVendor = (hotelId: string) => {
         queryKey: ['vendor-hotel', hotelId],
         queryFn: () => getHotelByVendor(hotelId),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
     })
 }
 
@@ -70,7 +70,7 @@ export const useGetHotelDetailsWithRoom = (hotelId: string, roomId: string, chec
         queryKey: ['hotel-details', { hotelId, roomId, checkIn, checkOut, rooms, adults, children }],
         queryFn: () => getHotelDetailsWithRoom(hotelId, roomId, checkIn, checkOut, rooms, adults, children),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 1,
     });
 };
@@ -97,6 +97,7 @@ export const useGetAllUserHotels = (
         queryKey: ['user-hotels', { page, limit, lat, long, rooms, filters }],
         queryFn: () => getAllUserHotels(page, limit, lat, long, rooms, filters),
         staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: false,
         retry: false,
     });
 };
@@ -106,7 +107,7 @@ export const useGetUserHotel = (hotelId: string) => {
     return useQuery({
         queryKey: ['userHotel', hotelId],
         queryFn: () => getUserHotelById(hotelId),
-        // enabled: !!hotelId,
+        enabled: !!hotelId,
     });
 };
 
@@ -115,7 +116,7 @@ export const useGetHotelById = (hotelId: string) => {
         queryKey: ['hotel', hotelId],
         queryFn: () => getUserHotelById(hotelId),
         enabled: !!hotelId,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
     })
 }
 
@@ -124,7 +125,7 @@ export const useGetHotelAnalytics = (hotelId: string, period: 'week' | 'month' |
         queryKey: ['hotel-analytics', { hotelId, period }],
         queryFn: () => getHotelAnalytics(hotelId, period),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 2,
     })
 }
@@ -133,8 +134,11 @@ export const useGetTrendingHotels = () => {
     return useQuery({
         queryKey: ['trending-hotels'],
         queryFn: getTrendingHotels,
-        staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        staleTime: 6 * 60 * 60 * 1000,
+        gcTime: 24 * 60 * 60 * 1000,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
         retry: 1,
-    })
+    });
 }

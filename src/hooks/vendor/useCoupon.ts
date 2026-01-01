@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createCoupon, updateCoupon, getVendorCoupon, toggleCouponStatus } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
 import { ICustomError, TApiSuccessResponse } from "@/types/custom.types";
@@ -92,17 +92,18 @@ export const useVendorCoupons = (page: number, limit: number, search?: string) =
         queryKey: ["vendor-coupons", { page, limit, search }],
         queryFn: () => getVendorCoupon(page, limit, search),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 2,
     });
 };
 
-export const useUserCoupons = (vendorId: string, price: number) => {
+export const useUserCoupons = (vendorId: string, price: number, enabled: boolean) => {
     return useQuery({
         queryKey: ['user-coupons', { vendorId }],
         queryFn: () => getUserCoupons(vendorId, price),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
+        enabled,
         retry: 2,
     })
 }

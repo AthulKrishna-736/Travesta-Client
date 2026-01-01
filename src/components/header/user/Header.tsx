@@ -17,9 +17,11 @@ const Header = () => {
     const [sideBar, setSideBar] = useState<boolean>(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
 
-    const { } = useGetUser();
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
+
+    const { } = useGetUser(isAuthenticated);
+    const { data: notificationRes } = useGetNotification(isAuthenticated);
     const { mutate: logoutUserFn } = useLogout("user");
-    const { data: notificationRes } = useGetNotification();
     const { mutate: markNotificationAsRead } = useMarkNotification();
 
     const notifications = notificationRes ? notificationRes?.data : [];

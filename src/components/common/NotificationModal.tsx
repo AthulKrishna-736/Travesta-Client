@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 
 
-export type TResponseNotificationDTO = {
+export type TNotification = {
     id: string;
     userId: string;
     title: string;
@@ -12,21 +12,18 @@ export type TResponseNotificationDTO = {
     updatedAt: string;
 };
 
-
-type Props = {
+interface INotificationModalProps {
     open: boolean;
     onClose: () => void;
-    notifications: TResponseNotificationDTO[];
+    notifications: TNotification[];
     onMarkAsRead: (id: string) => void;
 };
 
-const NotificationModal = ({ open, onClose, notifications, onMarkAsRead, }: Props) => {
+const NotificationModal: React.FC<INotificationModalProps> = ({ open, onClose, notifications, onMarkAsRead }) => {
     const [activeTab, setActiveTab] = useState<"unread" | "all">("unread");
 
     const unreadNotifications = notifications.filter(n => !n.isRead);
-
-    const displayedNotifications =
-        activeTab === "unread" ? unreadNotifications : notifications;
+    const displayedNotifications = activeTab === "unread" ? unreadNotifications : notifications;
 
     return (
         <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
@@ -37,23 +34,11 @@ const NotificationModal = ({ open, onClose, notifications, onMarkAsRead, }: Prop
 
                 {/* Tabs */}
                 <div className="flex border-b text-sm">
-                    <button
-                        onClick={() => setActiveTab("unread")}
-                        className={`flex-1 py-2 ${activeTab === "unread"
-                            ? "border-b-2 border-black font-medium"
-                            : "text-gray-500"
-                            }`}
-                    >
+                    <button onClick={() => setActiveTab("unread")} className={`flex-1 py-2 ${activeTab === "unread" ? "border-b-2 border-black font-medium" : "text-gray-500"}`}>
                         Unread ({unreadNotifications.length})
                     </button>
 
-                    <button
-                        onClick={() => setActiveTab("all")}
-                        className={`flex-1 py-2 ${activeTab === "all"
-                            ? "border-b-2 border-black font-medium"
-                            : "text-gray-500"
-                            }`}
-                    >
+                    <button onClick={() => setActiveTab("all")} className={`flex-1 py-2 ${activeTab === "all" ? "border-b-2 border-black font-medium" : "text-gray-500"}`}>
                         All
                     </button>
                 </div>
@@ -67,10 +52,7 @@ const NotificationModal = ({ open, onClose, notifications, onMarkAsRead, }: Prop
                     )}
 
                     {displayedNotifications.map(notification => (
-                        <div
-                            key={notification.id}
-                            className="border rounded-md p-3 text-sm"
-                        >
+                        <div key={notification.id} className="border rounded-md p-3 text-sm">
                             <div className="font-medium">{notification.title}</div>
 
                             <div className="text-gray-600 mt-1">
@@ -89,10 +71,7 @@ const NotificationModal = ({ open, onClose, notifications, onMarkAsRead, }: Prop
                                 </span>
 
                                 {!notification.isRead && (
-                                    <button
-                                        onClick={() => onMarkAsRead(notification.id)}
-                                        className="text-blue-600 hover:underline"
-                                    >
+                                    <button onClick={() => onMarkAsRead(notification.id)} className="text-blue-600 hover:underline">
                                         Mark as read
                                     </button>
                                 )}

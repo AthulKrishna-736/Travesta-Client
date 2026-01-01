@@ -37,6 +37,8 @@ export const useCancelBooking = () => {
             }
             queryClient.invalidateQueries({ queryKey: ['user-bookings'] });
             queryClient.invalidateQueries({ queryKey: ['notification'] })
+            queryClient.invalidateQueries({ queryKey: ['wallet'] })
+            queryClient.invalidateQueries({ queryKey: ['transactions'] })
         },
         onError: (error: ICustomError) => {
             console.error('Cancel booking error:', error);
@@ -53,6 +55,8 @@ export const useCreateBooking = () => {
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking successful!');
             queryClient.invalidateQueries({ queryKey: ['notification'] })
+            queryClient.invalidateQueries({ queryKey: ['wallet'] })
+            queryClient.invalidateQueries({ queryKey: ['transactions'] })
         },
         onError: (error: ICustomError) => {
             const msg = error.response.data.message || 'Booking failed. Try again.';
@@ -69,6 +73,8 @@ export const useConfirmBooking = (vendorId: string, method: 'wallet' | 'online')
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
             queryClient.invalidateQueries({ queryKey: ['notification'] })
+            queryClient.invalidateQueries({ queryKey: ['wallet'] })
+            queryClient.invalidateQueries({ queryKey: ['transactions'] })
         },
         onError: (error: ICustomError) => {
             const msg = error.response.data.message || 'Booking failed. Try again.';

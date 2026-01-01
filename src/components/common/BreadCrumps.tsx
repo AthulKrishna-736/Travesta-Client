@@ -11,7 +11,7 @@ const Breadcrumbs: React.FC<{ items: BreadcrumbItem[] }> = ({ items }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="text-sm flex items-center mb-2">
+        <div className="text-sm flex items-center flex-wrap mb-2">
             {items.map((item, index) => {
                 const isLast = index === items.length - 1;
                 return (
