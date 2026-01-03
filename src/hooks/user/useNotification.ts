@@ -23,7 +23,7 @@ export const useGetUnreadNotificationCount = (enabled: boolean) => {
         placeholderData: (prev) => prev,
         refetchOnWindowFocus: false,
         enabled,
-        retry: 2
+        retry: 2,
     })
 }
 
@@ -32,7 +32,7 @@ export const useMarkAllNotificationRead = () => {
     return useMutation({
         mutationFn: markAllNotifications,
         onSuccess: (res) => {
-            showSuccess(res.messaage)
+            showSuccess(res.message)
             queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (err) => {

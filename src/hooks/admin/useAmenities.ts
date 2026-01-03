@@ -86,7 +86,7 @@ export const useBlockAmenity = (cbFn: () => void) => {
 
             const allQueries = queryClient.getQueriesData({ queryKey: ['amenities'] });
 
-            allQueries.forEach(([key, _]) => {
+            allQueries.forEach(([key]) => {
                 queryClient.setQueryData(key, (prev: TApiSuccessResponse<IAmenity[]>) => ({
                     ...prev,
                     data: prev.data.map(amenity =>

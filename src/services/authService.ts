@@ -1,6 +1,6 @@
 import { TForgotPassValues, TGoogleLoginValues, TLoginFormValues, TOtpFormValues, TResentOtpValues, TResetPassValues, TRoles, TSignUpFormValues } from '../types/authentication.types';
 import { axiosInstance } from "./axiosInstance";
-import { AUTH_APIS } from "./apiConstants";
+import { AUTH_APIS } from "../constants/apiConstants";
 
 enum ENDPOINTS {
     user = '/users',

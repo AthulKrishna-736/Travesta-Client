@@ -19,7 +19,7 @@ const Header = () => {
 
     const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
-    const { } = useGetUser(isAuthenticated);
+    useGetUser(isAuthenticated);
     const { data: notificationRes } = useGetNotification(isAuthenticated);
     const { mutate: logoutUserFn } = useLogout("user");
     const { mutate: markNotificationAsRead } = useMarkNotification();

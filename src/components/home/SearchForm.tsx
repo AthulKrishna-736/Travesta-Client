@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronDown, MapPinIcon, Minus, Plus } from "lucide-react";
 import { showError } from '@/utils/customToast';
 import { useNavigate } from 'react-router-dom';
-import { PRICE_RANGES } from '@/components/sidebar/UserFilterSidebar';
+import { PRICE_RANGES } from '@/constants/constants';
 import { Dialog } from '@/components/ui/dialog';
 import { DialogContent } from '@radix-ui/react-dialog';
 import { disablePastDates, useDebounce } from '@/utils/helperFunctions';

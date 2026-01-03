@@ -1,4 +1,3 @@
-
 export const AUTH_APIS = {
     login: '/auth/login',
     googleLogin: '/auth/google-login',

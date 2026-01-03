@@ -8,6 +8,8 @@ import SubscriptionCheckoutForm from "./PlanCheckout";
 import { useCancelSubscription, useGetUserActivePlan, useSubscribePlan } from "@/hooks/admin/useSubscription";
 import { useCreatePaymentIntent, useGetWallet } from "@/hooks/user/useWallet";
 import ConfirmationModal from "../common/ConfirmationModa";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
@@ -34,8 +36,11 @@ const PlanCard = ({ plan }: PricingCardProps) => {
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
 
-    const { data: activePlanRes } = useGetUserActivePlan();
-    const { data: walletResponse } = useGetWallet();
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
+
+    const { data: activePlanRes } = useGetUserActivePlan(isAuthenticated);
+    const { data: walletResponse } = useGetWallet(isAuthenticated);
+
     const activePlan = activePlanRes?.data;
     const wallet = walletResponse ? walletResponse.data : null;
 
