@@ -5,12 +5,14 @@ import { ArrowUpRight, MapPin } from 'lucide-react';
 interface HotelData {
     _id: string;
     name: string;
+    slug: string;
     images: string[];
     city: string;
     state: string;
     room: {
         _id: string;
         name: string;
+        slug: string;
         basePrice: number;
         bedType: string;
         guest: number;
@@ -52,7 +54,7 @@ const TrendingHotels: React.FC<TrendingHotelsProps> = ({ hotel }) => {
             children: '0'
         });
 
-        navigate(`/user/hotels/${hotel._id}/${hotel.room._id}?${queryParams.toString()}`);
+        navigate(`/user/hotels/${hotel.slug}/${hotel.room.slug}?${queryParams.toString()}`);
     };
 
     return (

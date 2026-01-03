@@ -1,5 +1,7 @@
+import { RefObject } from "react";
 import { IAmenity } from "./amenities.types";
 import { IRating } from "./rating.types";
+import { IRoom } from "./room.types";
 
 export type TIdProof = 'Aadhaar' | 'Passport' | 'DrivingLicense' | 'PAN';
 
@@ -7,6 +9,7 @@ export interface IHotel {
   id: string
   vendorId: string;
   name: string
+  slug: string
   description: string
   images: string[]
   amenities: (Partial<IAmenity> & { _id: string })[]
@@ -77,6 +80,31 @@ export type TUpdateHotel = {
   geoLocation?: [number, number]
 }
 
+export interface IHotelCard {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  images: string[];
+  amenities: (Pick<IAmenity, 'name'> & { _id: string })[];
+  city: string;
+  state: string;
+  address: string;
+  room: IRoom & { discountedPrice: number, appliedOffer: any };
+  rating: {
+    totalRatings: number
+    averageRating: number
+    averages: {
+      hospitality: number,
+      cleanliness: number,
+      facilities: number,
+      room: number,
+      moneyValue: number,
+    }
+  }
+  isBlocked: boolean;
+}
+
 //component props types
 export interface ICreateHotelModalProps<T = any> {
   open: boolean;
@@ -91,4 +119,21 @@ export interface IHotelTableProps {
   hotels: IHotel[];
   loading: boolean;
   onHotelsFetched?: (hotels: IHotel[]) => void;
+}
+
+export interface HotelCardProps {
+  hotel: IHotelCard;
+  roomsCount: number,
+  guests: number,
+  geoSearch: string,
+}
+
+export interface IHotelWithRoom {
+  hotel: IHotel;
+  room: IRoom & { discountedPrice: number, appliedOffer: any };
+  mapRef: RefObject<HTMLDivElement | null>;
+  reviewRef: RefObject<HTMLDivElement | null>;
+  roomsRef: RefObject<HTMLDivElement | null>;
+  ratings: IRating[];
+  roomSubmit: (room: IRoom & { discountedPrice: number, appliedOffer: any }) => void;
 }

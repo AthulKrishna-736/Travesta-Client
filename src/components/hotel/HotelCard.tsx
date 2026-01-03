@@ -1,48 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { MapPin, ArrowRight } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { IAmenity } from "@/types/amenities.types";
-import { IRoom } from "@/types/room.types";
+import { RATINGS } from "@/constants/constants";
+import { HotelCardProps } from "@/types/hotel.types";
 
-interface IHotelCard {
-    id: string;
-    name: string;
-    description: string;
-    images: string[];
-    amenities: (Pick<IAmenity, 'name'> & { _id: string })[];
-    city: string;
-    state: string;
-    address: string;
-    room: IRoom & { discountedPrice: number, appliedOffer: any };
-    rating: {
-        totalRatings: number
-        averageRating: number
-        averages: {
-            hospitality: number,
-            cleanliness: number,
-            facilities: number,
-            room: number,
-            moneyValue: number,
-        }
-    }
-    isBlocked: boolean;
-}
-
-interface HotelCardProps {
-    hotel: IHotelCard;
-    roomsCount: number,
-    guests: number,
-    geoSearch: string,
-}
-
-export const RATINGS: { min: number; label: string }[] = [
-    { min: 4.5, label: "Excellent" },
-    { min: 4.0, label: "Very Good" },
-    { min: 3.0, label: "Good" },
-    { min: 2.0, label: "Average" },
-    { min: 1.0, label: "Fair" },
-    { min: 0, label: "Unrated" },
-];
 
 const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSearch }) => {
     const navigate = useNavigate();
@@ -56,7 +17,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
     const adults = Number(params.get('adults')) || 1;
     const children = Number(params.get('children')) || 0;
 
-    const { id, name, description, images, amenities, state, rating, city, room } = hotel;
+    const { name, slug, description, images, amenities, state, rating, city, room } = hotel;
 
     const ratingMetrics = [
         { label: "Hospitality", value: rating.averages.hospitality },
@@ -82,7 +43,19 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
             console.error('No images found or count does not met', images);
         }
         return () => setImagePreview('');
-    }, []);
+    }, [images]);
+
+    const handleCardClick = () => {
+        const queryParams = new URLSearchParams({
+            location: geoSearch,
+            checkIn: checkIn,
+            checkOut: checkOut,
+            rooms: roomsCount ? roomsCount.toString() : rooms.toString(),
+            adults: guests ? guests.toString() : adults.toString(),
+            children: children.toString(),
+        });
+        navigate(`/user/hotels/${slug}/${room.slug}?${queryParams.toString()}`);
+    }
 
     return (
         <div className="bg-white rounded-xs w-full flex flex-col lg:flex-row p-4 my-4 outline-1 outline-[#e1e1e1] hover:outline-[#0084ff] h-auto lg:h-55">
@@ -227,18 +200,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
                 <div className="flex gap-1 items-center mt-2">
                     <button
                         className="text-[#0084ff] rounded-sm font-semibold cursor-pointer"
-                        onClick={
-                            () => {
-                                const queryParams = new URLSearchParams({
-                                    location: geoSearch,
-                                    checkIn: checkIn,
-                                    checkOut: checkOut,
-                                    rooms: roomsCount ? roomsCount.toString() : rooms.toString(),
-                                    adults: guests ? guests.toString() : adults.toString(),
-                                    children: children.toString(),
-                                });
-                                navigate(`/user/hotels/${id}/${room.id}?${queryParams.toString()}`);
-                            }}
+                        onClick={handleCardClick}
                     >
                         View Details
                     </button>

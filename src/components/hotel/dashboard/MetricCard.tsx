@@ -16,7 +16,7 @@ const MetricCard = ({ title, value, icon: Icon, prefix = "", suffix = "" }: Metr
                 <div className="flex-1">
                     <p className="text-sm text-muted-foreground font-medium mb-2">{title}</p>
                     <p className="text-3xl font-bold text-foreground tabular-nums">
-                        {prefix}{typeof value && value === 'number' ? value.toLocaleString() : value}{suffix}
+                        {prefix}{typeof value === 'number' ? value.toLocaleString() : value}{suffix}
                     </p>
                 </div>
                 <div className="p-3 bg-gradient-primary rounded-lg">

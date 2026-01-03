@@ -21,7 +21,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, handleBookClick }) => {
             console.error('No images found or count does not met', room.images);
         }
         return () => setImagePreview('');
-    }, []);
+    }, [room.images]);
 
     return (
         <div className="bg-white border border-[#d9d9d9] rounded-xl overflow-hidden">

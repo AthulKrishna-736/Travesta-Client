@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { Star, User } from 'lucide-react';
-import { IRating } from '@/types/rating.types';
+import { IRatingDetailsProps } from '@/types/rating.types';
 
-interface RatingDetailsProps {
-    ratings: IRating[];
-}
 
-const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {
+const RatingDetails: React.FC<IRatingDetailsProps> = ({ ratings }) => {
+    const [hovered, setHovered] = useState<string | null>(null);
 
     const calculateAverages = () => {
         if (!ratings || ratings.length === 0) {
@@ -20,14 +18,13 @@ const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {
             };
         }
 
-        const totals = ratings.reduce(
-            (acc, rating) => ({
-                hospitality: acc.hospitality + rating.hospitality,
-                cleanliness: acc.cleanliness + rating.cleanliness,
-                facilities: acc.facilities + rating.facilities,
-                room: acc.room + rating.room,
-                moneyValue: acc.moneyValue + rating.moneyValue,
-            }),
+        const totals = ratings.reduce((acc, rating) => ({
+            hospitality: acc.hospitality + rating.hospitality,
+            cleanliness: acc.cleanliness + rating.cleanliness,
+            facilities: acc.facilities + rating.facilities,
+            room: acc.room + rating.room,
+            moneyValue: acc.moneyValue + rating.moneyValue,
+        }),
             { hospitality: 0, cleanliness: 0, facilities: 0, room: 0, moneyValue: 0 }
         );
 
@@ -125,15 +122,7 @@ const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {
             {/* Individual Reviews */}
             <div className="space-y-4">
                 {ratings.map((rating) => {
-                    const userAvg =
-                        (rating.hospitality +
-                            rating.cleanliness +
-                            rating.facilities +
-                            rating.room +
-                            rating.moneyValue) /
-                        5;
-
-                    const [hovered, setHovered] = useState<string | null>(null);
+                    const userAvg = (rating.hospitality + rating.cleanliness + rating.facilities + rating.room + rating.moneyValue) / 5;
 
                     return (
                         <div key={rating.id} className="border border-gray-200 rounded-lg p-4 relative">
@@ -142,10 +131,7 @@ const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
                                         {rating.userId.profileImage ? (
-                                            <img
-                                                src={rating.userId.profileImage}
-                                                className="w-full h-full object-cover"
-                                            />
+                                            <img src={rating.userId.profileImage} className="w-full h-full object-cover" />
                                         ) : (
                                             <User className="w-5 h-5 text-gray-400" />
                                         )}
@@ -161,8 +147,7 @@ const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {
                                 </div>
 
                                 {/* User Avg (Hover Tooltip) */}
-                                <div
-                                    className="relative flex items-center gap-1 bg-[#0d92ff] text-white px-2 py-1 rounded text-sm font-medium cursor-pointer"
+                                <div className="relative flex items-center gap-1 bg-[#0d92ff] text-white px-2 py-1 rounded text-sm font-medium cursor-pointer"
                                     onMouseEnter={() => setHovered(rating.id)}
                                     onMouseLeave={() => setHovered(null)}
                                 >
@@ -173,19 +158,11 @@ const RatingDetails: React.FC<RatingDetailsProps> = ({ ratings }) => {
                                             <h3 className="font-semibold mb-3 text-sm text-black">User Rating Breakdown</h3>
 
                                             {overallMetrics.map(({ label, value }) => (
-                                                <div
-                                                    key={label}
-                                                    className="flex justify-between items-center mb-2"
-                                                >
+                                                <div key={label} className="flex justify-between items-center mb-2">
                                                     <span className="text-gray-600">{label}</span>
                                                     <div className="flex items-center gap-2">
                                                         <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                                                            <div
-                                                                className="h-full bg-[#0d92ff]"
-                                                                style={{
-                                                                    width: `${(value / 5) * 100}%`,
-                                                                }}
-                                                            />
+                                                            <div className="h-full bg-[#0d92ff]" style={{ width: `${(value / 5) * 100}%` }} />
                                                         </div>
                                                         <span className="font-medium w-8 text-black">
                                                             {value.toFixed(1)}
