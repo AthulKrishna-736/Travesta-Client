@@ -15,7 +15,9 @@ const UserDashboard: React.FC = () => {
     const user = useSelector((state: RootState) => state.user.user);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
-    const { data: UserProfileResponse } = useGetUser()
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
+
+    const { data: UserProfileResponse } = useGetUser(isAuthenticated);
     const { mutate: updateUser } = useUpdateUser();
 
     useEffect(() => {
