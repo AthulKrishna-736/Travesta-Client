@@ -8,11 +8,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 
 const AdminWalletPage = () => {
-    const adminName = useSelector((state: RootState) => state.admin.admin?.firstName);
     const [page, setPage] = useState(1);
+
+    const adminName = useSelector((state: RootState) => state.admin.admin?.firstName);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.admin.admin?.id));
+
     const limit = 5;
 
-    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(isAuthenticated);
     const { data: transactionDataResponse, isLoading: transactionLoading } = useGetUserTransactions(page, limit);
 
     const walletData = walletDataResponse?.data ?? null;

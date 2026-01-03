@@ -22,16 +22,9 @@ import { RootState } from '@/store/store';
 
 
 const HotelDetail: React.FC = () => {
-    const { hotelId, roomId } = useParams();
+    const { hotelSlug, roomSlug } = useParams();
     const [params] = useSearchParams();
     const navigate = useNavigate();
-    const mapRef = useRef<HTMLDivElement | null>(null);
-    const reviewRef = useRef<HTMLDivElement | null>(null);
-    const roomsRef = useRef<HTMLDivElement | null>(null);
-    const [page, setPage] = useState(1);
-
-    const RATING_LIMT = 5;
-    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     const location = params.get('location');
     const checkInParam = params.get('checkIn') || '';
@@ -40,6 +33,10 @@ const HotelDetail: React.FC = () => {
     const adults = Number(params.get('adults')) || 1;
     const children = Number(params.get('children')) || 0;
 
+    const mapRef = useRef<HTMLDivElement | null>(null);
+    const reviewRef = useRef<HTMLDivElement | null>(null);
+    const roomsRef = useRef<HTMLDivElement | null>(null);
+    const [page, setPage] = useState(1);
     const [geoSearch, setGeoSearch] = useState<string>(location!);
     const [lat, setLat] = useState<number | null>(null);
     const [long, setLong] = useState<number | null>(null);
@@ -48,8 +45,11 @@ const HotelDetail: React.FC = () => {
     const [roomsCount, setRoomCount] = useState(rooms);
     const [guests, setGuests] = useState(adults + children);
 
-    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError, error } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkIn, checkOut, roomsCount, guests, children);
-    const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
+    const RATING_LIMT = 5;
+
+    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError, error } = useGetHotelDetailsWithRoom(hotelSlug!, roomSlug!, checkIn, checkOut, roomsCount, guests, children);
+    const { data: ratingResponse } = useGetHotelRatings(hotelSlug!, page, RATING_LIMT);
 
     const hotel = apiResponse?.data.hotel;
     const room = apiResponse?.data.room as IRoom & { discountedPrice: number, appliedOffer: any };
@@ -86,7 +86,7 @@ const HotelDetail: React.FC = () => {
         { label: 'Home', path: '/user/home' },
         { label: 'Hotels', path: '/user/hotels' },
         { label: `${location}` },
-        { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
+        { label: `${hotel.name}`, path: `/user/hotels/${hotelSlug}` }
     ]
 
     const handleBookingSubmit = async (room: IRoom & { discountedPrice: number, appliedOffer: any }) => {
@@ -129,18 +129,15 @@ const HotelDetail: React.FC = () => {
         const totalPrice = effectivePrice * days;
 
         const queryParams = new URLSearchParams({
-            hotelId: hotelId!,
-            vendorId: hotel.vendorId!,
-            roomId: room.id,
             rooms: roomsCount.toString(),
             adults: guests.toString(),
             children: children.toString(),
-            checkIn: checkInDate.toISOString(),
-            checkOut: checkOutDate.toISOString(),
+            checkIn: checkIn,
+            checkOut: checkOut,
             totalPrice: totalPrice.toString(),
             days: days.toString(),
         });
-        navigate(`/user/checkout?${queryParams.toString()}`);
+        navigate(`/user/checkout/${hotel.slug}/${room.slug}?${queryParams.toString()}`);
     };
 
     const handleSearch = () => {

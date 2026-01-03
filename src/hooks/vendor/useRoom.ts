@@ -1,8 +1,8 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createRoom, updateRoom, getRoomById, getAllRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { ICustomError } from '@/types/custom.types';
-import { getUserRoomById } from '@/services/userService';
+import { getUserRoomBySlug } from '@/services/userService';
 
 export const useCreateRoom = (cbFn: () => void) => {
     const queryClient = useQueryClient();
@@ -63,7 +63,6 @@ export const useGetAllRooms = (page: number, limit: number, search?: string, hot
         },
         staleTime: 5 * 60 * 1000,
         retry: false,
-
     });
 };
 
@@ -73,16 +72,20 @@ export const useGetRoomById = (roomId: string) => {
         queryKey: ['room-vendor', roomId],
         queryFn: () => getRoomById(roomId),
         enabled: !!roomId,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         retry: 1,
     });
 };
 
-export const useGetUserRoomById = (roomId: string) => {
+
+export const useGetRoomBySlug = (hotelSlug: string, roomSlug: string, enabled: boolean) => {
     return useQuery({
-        queryKey: ['room', roomId],
-        queryFn: () => getUserRoomById(roomId),
-        enabled: !!roomId,
-        placeholderData: keepPreviousData,
-    })
-}
+        queryKey: ['room-slug', hotelSlug, roomSlug],
+        queryFn: () => getUserRoomBySlug(hotelSlug, roomSlug),
+        enabled,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 1,
+    });
+};
+

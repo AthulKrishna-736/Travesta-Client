@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Users, MapPin, Clock, CreditCard, Wallet } from 'lucide-react';
@@ -10,28 +10,22 @@ import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import CheckoutForm from '@/components/wallet/CheckoutForm';
 import { env } from '@/config/config';
 import { showError } from '@/utils/customToast';
-import { useGetHotelById } from '@/hooks/vendor/useHotel';
-import { useGetUserRoomById } from '@/hooks/vendor/useRoom';
+import { useGetRoomBySlug } from '@/hooks/vendor/useRoom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { saveLastVisitedPath } from '@/store/slices/navigationSlice';
 import { useUserCoupons } from '@/hooks/vendor/useCoupon';
 import { ICoupon } from '@/types/coupon.types';
+import { useGetHotelBySlug } from '@/hooks/vendor/useHotel';
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const BookingCheckout: React.FC = () => {
+    const { hotelSlug, roomSlug } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [params] = useSearchParams();
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
-    const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet' | null>(null);
 
-    const user = useSelector((state: RootState) => state.user.user?.id);
-
-    const hotelId = params.get('hotelId');
-    const vendorId = params.get('vendorId');
-    const roomId = params.get('roomId');
     const rooms = Number(params.get('rooms')) || 1;
     const adults = Number(params.get('adults'));
     const children = Number(params.get('children'));
@@ -40,28 +34,45 @@ const BookingCheckout: React.FC = () => {
     const totalPrice = Number(params.get('totalPrice'));
     const days = Number(params.get('days'));
 
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<'online' | 'wallet' | null>(null);
+    const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | null>(null);
+    const [discountedPrice, setDiscountedPrice] = useState<number>(totalPrice);
 
-    const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelById(hotelId!);
+    const user = useSelector((state: RootState) => state.user.user?.id);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
+
+    //get hotel details
+    const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelBySlug(hotelSlug!);
     const hotel = hotelResponse ? hotelResponse.data : null;
 
-    const { data: roomResponse, isLoading: isRoomLoading } = useGetUserRoomById(roomId!);
+    //get room details
+    const { data: roomResponse, isLoading: isRoomLoading } = useGetRoomBySlug(hotelSlug!, roomSlug!, true);
     const room = roomResponse ? roomResponse.data : null;
 
-    const { data: walletResponse } = useGetWallet();
+    //get wallet details
+    const { data: walletResponse } = useGetWallet(isAuthenticated);
     const wallet = walletResponse ? walletResponse.data : null;
 
-    const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
-
-    const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(
-        vendorId || 'random',
-        paymentMethod || 'wallet'
-    );
-
-    const { data: couponResponse } = useUserCoupons(vendorId!, room?.basePrice ?? 0);
+    //get coupons for user
+    const { data: couponResponse } = useUserCoupons(hotel?.vendorId!, room?.basePrice ?? 0, isAuthenticated && !!hotel?.vendorId && !!room?.basePrice);
     const coupons = couponResponse ? couponResponse.data : [];
 
-    const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | null>(null);
-    const [discountedPrice, setDiscountedPrice] = useState(totalPrice);
+    //mutation functions
+    const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
+    const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(paymentMethod || 'wallet');
+
+    const checkInDate = new Date(checkIn as string);
+    const checkOutDate = new Date(checkOut as string);
+
+    const checkInTime = hotel?.propertyRules?.checkInTime || "13:00";
+    const checkOutTime = hotel?.propertyRules?.checkOutTime || "12:00";
+
+    const [checkInHours, checkInMinutes] = checkInTime.split(":").map(Number);
+    const [checkOutHours, checkOutMinutes] = checkOutTime.split(":").map(Number);
+
+    checkInDate.setHours(checkInHours, checkInMinutes, 0, 0);
+    checkOutDate.setHours(checkOutHours, checkOutMinutes, 0, 0);
 
     const applyCoupon = (coupon: ICoupon | null) => {
         if (!coupon) {
@@ -106,10 +117,11 @@ const BookingCheckout: React.FC = () => {
 
     const finalizeBooking = async () => {
         const payload = {
+            vendorId: hotel.vendorId,
             hotelId: hotel.id,
             roomId: room.id,
-            checkIn: checkIn!,
-            checkOut: checkOut!,
+            checkIn: checkInDate.toISOString(),
+            checkOut: checkOutDate.toISOString(),
             guests: Number(adults + children),
             roomsCount: rooms,
             totalPrice: discountedPrice,
@@ -128,10 +140,11 @@ const BookingCheckout: React.FC = () => {
             }
 
             const payload = {
+                vendorId: hotel.vendorId,
                 hotelId: hotel.id,
                 roomId: room.id,
-                checkIn: checkIn!,
-                checkOut: checkOut!,
+                checkIn: checkInDate.toISOString(),
+                checkOut: checkOutDate.toISOString(),
                 guests: Number(adults + children),
                 roomsCount: rooms,
                 totalPrice: discountedPrice,
@@ -213,7 +226,10 @@ const BookingCheckout: React.FC = () => {
                                     <div>
                                         <div className="font-medium text-gray-700">Check-in</div>
                                         <div>
-                                            {new Date(checkIn!).toLocaleString()}
+                                            {checkInDate.toLocaleString('en-IN', {
+                                                day: '2-digit', weekday: 'short', month: 'short', year: 'numeric',
+                                                hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata'
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -223,7 +239,10 @@ const BookingCheckout: React.FC = () => {
                                     <div>
                                         <div className="font-medium text-gray-700">Check-out</div>
                                         <div>
-                                            {new Date(checkOut!).toLocaleString()}
+                                            {checkOutDate.toLocaleString('en-IN', {
+                                                day: '2-digit', weekday: 'short', month: 'short', year: 'numeric',
+                                                hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata'
+                                            })}
                                         </div>
                                     </div>
                                 </div>

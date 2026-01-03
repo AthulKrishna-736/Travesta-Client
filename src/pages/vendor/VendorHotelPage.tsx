@@ -50,7 +50,7 @@ const VendorHotelsPage: React.FC = () => {
         formData.append('images', JSON.stringify([]));
 
         if (hotelData.images && hotelData.images.length > 0) {
-            hotelData.images.forEach((file: any) => {
+            hotelData.images.forEach((file) => {
                 formData.append('imageFile', file);
             });
         }

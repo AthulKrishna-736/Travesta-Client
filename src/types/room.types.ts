@@ -25,6 +25,7 @@ export interface IRoom {
     id: string
     hotelId: string;
     name: string;
+    slug: string;
     roomCount: number;
     roomType: string;
     bedType: string;

@@ -2,7 +2,7 @@ import { TResponseChat } from "@/types/chat.types";
 import { axiosInstance } from "./axiosInstance"
 import { IUser, User } from "@/types/user.types";
 import { BookingPayload, IBooking } from "@/types/booking.types";
-import { USER_APIS } from "./apiConstants";
+import { USER_APIS } from "../constants/apiConstants";
 import { TApiErrorResponse, TApiSuccessResponse } from "@/types/custom.types";
 import { IAmenity } from "@/types/amenities.types";
 import { IHotel } from "@/types/hotel.types";
@@ -71,8 +71,8 @@ export const getAllUserHotels = async (
 };
 
 
-export const getUserHotelById = async (hotelId: string): Promise<TApiSuccessResponse<IHotel>> => {
-    const response = await axiosInstance.get(`${USER_APIS.hotels}/${hotelId}`);
+export const getUserHotelBySlug = async (hotelSlug: string): Promise<TApiSuccessResponse<IHotel>> => {
+    const response = await axiosInstance.get(`${USER_APIS.hotels}/${hotelSlug}`);
     return response.data;
 };
 
@@ -97,8 +97,8 @@ export const getHotelDetailsWithRoom = async (
 }
 
 //room
-export const getUserRoomById = async (roomId: string): Promise<TApiSuccessResponse<IRoom>> => {
-    const response = await axiosInstance.get(`${USER_APIS.room}/${roomId}`);
+export const getUserRoomBySlug = async (hotelSlug: string, roomSlug: string): Promise<TApiSuccessResponse<IRoom>> => {
+    const response = await axiosInstance.get(`${USER_APIS.room}/${hotelSlug}/${roomSlug}`);
     return response.data;
 }
 
@@ -183,8 +183,8 @@ export const getUserTransactions = async (page: number, limit: number): Promise<
 }
 
 export const confirmBooking = async (
-    vendorId: string,
     data: {
+        vendorId: string,
         hotelId: string;
         roomId: string;
         checkIn: string;
@@ -194,7 +194,7 @@ export const confirmBooking = async (
     },
     method: 'wallet' | 'online'
 ): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/${vendorId}/booking?method=${method}`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payment}/${data.vendorId}/booking?method=${method}`, data);
     return response.data;
 };
 

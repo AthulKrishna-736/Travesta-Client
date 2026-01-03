@@ -26,3 +26,7 @@ export interface IRatingModalProps {
     ratingData?: Partial<TRatingForm> | null;
     isLoading: boolean;
 }
+
+export interface IRatingDetailsProps {
+    ratings: IRating[];
+}

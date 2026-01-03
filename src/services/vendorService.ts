@@ -1,5 +1,5 @@
 import { TResponseChat } from "@/types/chat.types";
-import { USER_APIS, VENDOR_APIS } from "./apiConstants";
+import { USER_APIS, VENDOR_APIS } from "../constants/apiConstants";
 import { axiosInstance } from "./axiosInstance"
 import { IUser, User } from "@/types/user.types";
 import { TApiSuccessResponse } from "@/types/custom.types";
@@ -104,7 +104,6 @@ export const getRoomById = async (roomId: string): Promise<TApiSuccessResponse<I
     const response = await axiosInstance.get(`${VENDOR_APIS.rooms}/${roomId}`);
     return response.data;
 };
-
 
 
 //amenities

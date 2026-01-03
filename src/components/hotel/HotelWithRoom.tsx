@@ -1,20 +1,9 @@
-import React, { RefObject } from 'react'
+import React from 'react'
 import { MapPin, Users } from 'lucide-react';
-import { IRating } from '@/types/rating.types';
-import { RATINGS } from './HotelCard';
-import { IRoom } from '@/types/room.types';
-import { IHotel } from '@/types/hotel.types';
+import { IHotelWithRoom } from '@/types/hotel.types';
 import CollapsibleText from '../common/CollapseText';
+import { RATINGS } from '@/constants/constants';
 
-interface IHotelWithRoom {
-    hotel: IHotel;
-    room: IRoom & { discountedPrice: number, appliedOffer: any };
-    mapRef: RefObject<HTMLDivElement | null>;
-    reviewRef: RefObject<HTMLDivElement | null>;
-    roomsRef: RefObject<HTMLDivElement | null>;
-    ratings: IRating[];
-    roomSubmit: (room: IRoom & { discountedPrice: number, appliedOffer: any }) => void;
-}
 
 const HotelWithRoom: React.FC<IHotelWithRoom> = ({ hotel, room, mapRef, reviewRef, roomsRef, ratings, roomSubmit }) => {
 

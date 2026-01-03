@@ -23,7 +23,7 @@ const MyOlaMap: React.FC<{ lat?: number; long?: number }> = ({ lat, long }) => {
         map.on("load", () => ola.addMarker({ anchor: "bottom", color: 'red' }).setLngLat(center).addTo(map));
 
         return () => map.remove?.();
-    }, [lat, long]);
+    }, [lat, long, center]);
 
     return <div className="shadow-md" ref={ref} style={{ width: "100%", height: "500px" }} />;
 };

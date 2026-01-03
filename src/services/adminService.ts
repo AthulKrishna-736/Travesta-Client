@@ -3,7 +3,7 @@ import { TUpdateVendorReqValues } from '../types/authentication.types';
 import { IAmenity, TAmenityType, TCreateAmenityData } from "@/types/amenities.types";
 import { IUser, User } from "@/types/user.types";
 import { TApiSuccessResponse, TSortOption } from "@/types/custom.types";
-import { ADMIN_APIS } from "./apiConstants";
+import { ADMIN_APIS } from "../constants/apiConstants";
 import { ISubscription, TCreatePlan, TUpdatePlan } from "@/types/plan.types";
 
 
