@@ -5,13 +5,14 @@ import { getVendorTransactions } from "@/services/vendorService";
 import { ICustomError } from "@/types/custom.types";
 
 // Get Wallet
-export const useGetWallet = () => {
+export const useGetWallet = (enabled: boolean) => {
     return useQuery({
         queryKey: ['wallet'],
         queryFn: getWallet,
         staleTime: 5 * 60 * 1000,
         placeholderData: (prev) => prev,
         refetchOnWindowFocus: false,
+        enabled,
         retry: 2,
     });
 };
@@ -44,7 +45,11 @@ export const useCreateWallet = () => {
     return useMutation({
         mutationFn: createWallet,
         onSuccess: (res) => {
-            res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
+            if (res.success) {
+                showSuccess(res.message)
+            } else {
+                showError(res.message || "Something went wrong");
+            }
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
             queryClient.invalidateQueries({ queryKey: ['notification'] })
             queryClient.invalidateQueries({ queryKey: ['transactions'] })

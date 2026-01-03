@@ -20,17 +20,19 @@ import { RootState } from "@/store/store";
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const UserWallet: React.FC = () => {
-    const userName = useSelector((state: RootState) => state.user.user?.firstName);
     const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const [showPayment, setShowPayment] = useState(false);
     const [clientSecret, setClientSecret] = useState("");
     const [amount, setAmount] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
+
+    const userName = useSelector((state: RootState) => state.user.user?.firstName);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
     const limit = 5;
 
     // queries
-    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(isAuthenticated);
     const { data: transactionDataResponse, isLoading: transactionLoading } = useGetUserTransactions(page, limit)
 
     // mutation functions
