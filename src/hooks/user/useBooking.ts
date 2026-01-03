@@ -65,11 +65,11 @@ export const useCreateBooking = () => {
     });
 };
 
-export const useConfirmBooking = (vendorId: string, method: 'wallet' | 'online') => {
+export const useConfirmBooking = (method: 'wallet' | 'online') => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: { hotelId: string, roomId: string, checkIn: string, checkOut: string, guests: number, totalPrice: number }) => confirmBooking(vendorId, data, method),
+        mutationFn: (data: { vendorId: string, hotelId: string, roomId: string, checkIn: string, checkOut: string, guests: number, totalPrice: number }) => confirmBooking(data, method),
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
             queryClient.invalidateQueries({ queryKey: ['notification'] })
