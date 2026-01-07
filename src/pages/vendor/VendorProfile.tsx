@@ -26,7 +26,7 @@ const VendorProfile: React.FC = () => {
         }
     }, [vendorProfileResponse, dispatch]);
 
-    const handleProfileUpdate = (userData: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => {
+    const handleProfileUpdate = (userData: Omit<UpdateUser, 'isVerified' | 'id' | 'email' | 'password'>) => {
         const formData = new FormData()
         if (userData.firstName) {
             formData.append('firstName', userData.firstName)

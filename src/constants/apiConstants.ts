@@ -15,6 +15,7 @@ export const USER_APIS = {
     hotel: '/users/hotel',
     room: '/users/room',
     chat: '/users/chat',
+    changePass: '/users/password',
     booking: '/users/bookings',
     cancelBooking: '/users/booking',
     wallet: '/users/wallet',
@@ -28,7 +29,7 @@ export const USER_APIS = {
     cancelPlan: '/users/plans/cancel',
     rating: '/users/rating',
     coupons: '/users/coupons',
-    notification: '/users/notification',
+    notification: '/users/notifications',
 }
 
 export const VENDOR_APIS = {
@@ -36,7 +37,7 @@ export const VENDOR_APIS = {
     hotels: '/vendor/hotels',
     hotel: '/vendor/hotel',
     rooms: '/vendor/rooms',
-    chat: '/vendor/chat',
+    chat: '/vendorn/chat',
     booking: '/vendor/bookings',
     amenities: '/vendor/amenities',
     transactions: '/users/transactions',

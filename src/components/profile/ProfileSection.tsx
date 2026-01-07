@@ -6,32 +6,31 @@ import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
 import { ProfileSectionProps, UpdateUserFormValues } from "@/types/user.types";
 import { validationSchema } from "@/utils/validations/commonValidation";
+import ChangePasswordModal from "../common/ChangePass";
 
 const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
 
     const [initialValues, setInitialValues] = useState<UpdateUserFormValues>({
         firstName: "",
         lastName: "",
         email: "",
-        password: "",
         phone: 0,
     });
-    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         setInitialValues({
             firstName: user.firstName || "",
             lastName: user.lastName || "",
             email: user.email || "",
-            password: "",
             phone: user.phone || 0,
         });
     }, [user]);
 
     const handleSave = (values: UpdateUserFormValues) => {
-        const { firstName, lastName, phone, password } = values;
-        onUpdate({ firstName, lastName, password, phone });
+        const { firstName, lastName, phone } = values;
+        onUpdate({ firstName, lastName, phone });
         setIsEditing(false);
     };
 
@@ -40,9 +39,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
             {/* Info and edit button */}
             <div className="flex items-center justify-between pb-2">
                 <div className="flex items-center gap-3">
-                    <span
-                        className={`text-xs px-2 py-1 rounded-full ${user.role == 'user' ? 'hidden' : ''} ${user.isVerified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                            }`}
+                    <span className={`text-xs px-2 py-1 rounded-full ${user.role == 'user' ? 'hidden' : ''} ${user.isVerified ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
                     >
                         {user.isVerified ? "Verified" : "Unverified"}
                     </span>
@@ -130,39 +127,6 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                                     </div>
                                 </div>
 
-                                {/* Password */}
-                                <div className="grid gap-2 relative">
-                                    <Label className="text-lg mx-1" htmlFor="password">Password</Label>
-                                    {isEditing ? (
-                                        <>
-                                            <Input
-                                                id="password"
-                                                name="password"
-                                                type={showPassword ? "text" : "password"}
-                                                value={values.password}
-                                                onChange={handleChange}
-                                                className="h-13 !text-lg pr-10 bg-[#eae9f5]"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword((prev) => !prev)}
-                                                className="absolute right-2 top-[50px] text-sm text-muted-foreground hover:underline"
-                                            >
-                                                {showPassword ? "Hide" : "Show"}
-                                            </button>
-                                            <ErrorMessage
-                                                name="password"
-                                                component="div"
-                                                className="text-sm text-red-500"
-                                            />
-                                        </>
-                                    ) : (
-                                        <div className="flex h-13 text-lg items-center rounded-md border bg-muted/50 px-3 text-muted-foreground">
-                                            ********
-                                        </div>
-                                    )}
-                                </div>
-
                                 {/* Phone */}
                                 <div className="grid gap-2">
                                     <Label className="text-lg mx-1" htmlFor="phone">Phone Number</Label>
@@ -217,6 +181,22 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ user, onUpdate }) => {
                         </Form>
                     )}
                 </Formik>
+
+                {/* Password */}
+                <div className="mt-2 grid gap-2">
+                    <Label className="text-lg mx-1">Password</Label>
+                    <div className="flex h-13 text-lg items-center justify-between rounded-md border bg-muted/50 px-3">
+                        <span className="text-muted-foreground">********</span>
+                        <Button className="cursor-pointer" type="button" variant="ghost" size="sm" onClick={() => setShowPasswordModal(true)}>
+                            Change
+                        </Button>
+                    </div>
+                </div>
+
+                <ChangePasswordModal
+                    open={showPasswordModal}
+                    onClose={() => setShowPasswordModal(false)}
+                />
             </div>
         </div>
     );

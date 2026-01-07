@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getUser, updateUser } from "@/services/userService"
+import { changePassword, getUser, updateUser } from "@/services/userService"
 import { useDispatch } from "react-redux"
 import { showError, showSuccess } from "@/utils/customToast"
 import { setUser } from "@/store/slices/userSlice"
@@ -39,6 +39,23 @@ export const useUpdateUser = () => {
         }
     })
 }
+
+export const useChangePassword = () => {
+    return useMutation({
+        mutationFn: (values: { oldPassword: string; newPassword: string; }) => changePassword(values),
+        onSuccess: (res) => {
+            if (res.success) {
+                showSuccess(res.message || "Password updated successfully");
+            } else {
+                showError(res.message || "Something went wrong");
+            }
+        },
+
+        onError: (error: ICustomError) => {
+            showError(error.response?.data?.message || "Something went wrong");
+        }
+    });
+};
 
 export const useGetAllUsers = (page: number, limit: number, role: string, search?: string, sortOption?: TSortOption) => {
     return useQuery({

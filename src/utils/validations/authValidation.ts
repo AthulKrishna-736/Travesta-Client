@@ -70,6 +70,23 @@ export const forgotPasswordValidationSchema = Yup.object().shape({
         ),
 });
 
+export const changePasswordSchema = Yup.object({
+    oldPassword: Yup.string()
+        .required("Current password required"),
+
+    newPassword: Yup.string()
+        .required("New password is required")
+        .min(6, "Password must be at least 6 characters long")
+        .max(30, "Password cannot exceed 30 characters")
+        .matches(/[A-Z]/, "Must include an uppercase letter")
+        .matches(/[a-z]/, "Must include a lowercase letter")
+        .matches(/\d/, "Must include a number")
+        .matches(/[!@#$%^&*]/, "Must include a special character"),
+
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref("newPassword")], "Passwords must match")
+        .required("Confirm password required"),
+});
 
 export const resetPasswordValidationSchema = Yup.object().shape({
     password: Yup.string()

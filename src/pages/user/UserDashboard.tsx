@@ -26,12 +26,11 @@ const UserDashboard: React.FC = () => {
         }
     }, [UserProfileResponse, dispatch]);
 
-    const handleProfileUpdate = (userData: Omit<UpdateUser, "isVerified" | "id" | "email">) => {
+    const handleProfileUpdate = (userData: Omit<UpdateUser, "isVerified" | "id" | "email" | 'password'>) => {
         const formData = new FormData();
         if (userData.firstName) formData.append("firstName", userData.firstName);
         if (userData.lastName) formData.append("lastName", userData.lastName);
         if (userData.phone) formData.append("phone", String(userData.phone));
-        if (userData.password) formData.append("password", userData.password);
         if (selectedImageFile) formData.append("image", selectedImageFile);
         updateUser({ data: formData });
     };
