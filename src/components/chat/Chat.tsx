@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { IChatProps } from '@/types/chat.types';
-import { Check } from 'lucide-react';
+import { Check, SendIcon } from 'lucide-react';
 
 
 const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
@@ -33,7 +32,7 @@ const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleT
                                     ? 'bg-violet-600 text-white rounded-br-none'
                                     : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
                                     }`}
-                                style={{ maxWidth: '40%' }}
+                                style={{ maxWidth: '70%' }}
                             >
                                 <p className="text-sm">{m.message}</p>
 
@@ -95,7 +94,7 @@ const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleT
                     className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md transition-all flex items-center gap-2"
                 >
                     <span className="hidden sm:inline">Send</span>
-                    <PaperAirplaneIcon className="w-5 h-5 rotate-45" />
+                    <SendIcon className="w-5 h-5 rotate-45" />
                 </Button>
             </div>
         </div>
