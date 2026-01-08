@@ -1,3 +1,4 @@
+import { ICoupon } from "./coupon.types";
 import { IHotel } from "./hotel.types";
 import { IRoom } from "./room.types";
 import { IUser } from "./user.types";
@@ -14,6 +15,7 @@ export interface IBooking {
     user?: Partial<IUser>;
     hotel?: Pick<IHotel, 'name' | 'city' | 'state' | 'geoLocation' | 'images'> & { _id: string };
     room?: Pick<IRoom, 'name' | 'basePrice'> & { _id: string };
+    coupon?: Pick<ICoupon, 'name' | 'type' | 'value'> & { _id: string };
     checkIn: string;
     checkOut: string;
     guests: number;

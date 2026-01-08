@@ -1,4 +1,4 @@
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@/services/userService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { getBookingsToVendor, getVendorAnalytics } from '@/services/vendorService';
@@ -8,9 +8,9 @@ export const useGetUserBookings = (page: number, limit: number, search?: string,
     return useQuery({
         queryKey: ["user-bookings", { page, search, sort }],
         queryFn: () => getUserBookings(page, limit, search, sort),
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         staleTime: 60 * 1000,
-        retry: 2,
+        retry: 1,
     });
 };
 
@@ -18,9 +18,9 @@ export const useGetVendorBookings = (page: number, limit: number, hotelId?: stri
     return useQuery({
         queryKey: ['vendor-bookings', { page, limit, hotelId, startDate, endDate }],
         queryFn: () => getBookingsToVendor(page, limit, hotelId, startDate, endDate),
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         staleTime: 60 * 1000,
-        retry: 2,
+        retry: 1,
     });
 };
 
@@ -36,9 +36,9 @@ export const useCancelBooking = () => {
                 showError(res.message || 'Something went wrong');
             }
             queryClient.invalidateQueries({ queryKey: ['user-bookings'] });
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
             queryClient.invalidateQueries({ queryKey: ['wallet'] })
             queryClient.invalidateQueries({ queryKey: ['transactions'] })
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             console.error('Cancel booking error:', error);
@@ -54,9 +54,9 @@ export const useCreateBooking = () => {
         mutationFn: createBooking,
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking successful!');
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
             queryClient.invalidateQueries({ queryKey: ['wallet'] })
             queryClient.invalidateQueries({ queryKey: ['transactions'] })
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             const msg = error.response.data.message || 'Booking failed. Try again.';
@@ -72,9 +72,9 @@ export const useConfirmBooking = (method: 'wallet' | 'online') => {
         mutationFn: (data: { vendorId: string, hotelId: string, roomId: string, checkIn: string, checkOut: string, guests: number, totalPrice: number }) => confirmBooking(data, method),
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
             queryClient.invalidateQueries({ queryKey: ['wallet'] })
             queryClient.invalidateQueries({ queryKey: ['transactions'] })
+            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             const msg = error.response.data.message || 'Booking failed. Try again.';
@@ -88,7 +88,8 @@ export const useGetVendorAnalytics = (startDate?: string, endDate?: string) => {
         queryKey: ['analytics', { startDate, endDate }],
         queryFn: () => getVendorAnalytics(startDate, endDate),
         staleTime: 5 * 60 * 1000,
-        retry: 2,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 1,
     })
 }

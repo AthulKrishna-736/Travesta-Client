@@ -56,7 +56,8 @@ export type UpdateUser = {
   phone: number
   isVerified: boolean
 }
-export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified' | 'id'>;
+
+export type UpdateUserFormValues = Omit<UpdateUser, 'isVerified' | 'id' | 'password'>;
 
 //component props types
 export interface UserTableProps {
@@ -79,7 +80,7 @@ export interface KycDocumentsProps {
 
 export interface ProfileSectionProps {
   user: IUser;
-  onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified' | 'id' | 'email'>) => void;
+  onUpdate: (updatedUser: Omit<UpdateUser, 'isVerified' | 'id' | 'email' | 'password'>) => void;
 }
 
 export interface ShowDetailModalProps {

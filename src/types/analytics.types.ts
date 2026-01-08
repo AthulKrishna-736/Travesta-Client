@@ -11,3 +11,10 @@ export type TAdminAnalyticsData = {
     topRevenueDays: Array<{ _id: string, revenue: number }>;
     averageRating: { _id: string | null, avgHospitality: number, avgCleanliness: number, avgFacilities: number, avgRoom: number, avgValue: number };
 };
+
+export type TVendorAnalyticsData = {
+    summary: { totalRevenue: number, totalBookings: number, averageBookingValue: number, activeHotels: number }
+    topHotels: Array<{ hotelName: string, revenue: number, bookings: number, hotelId: string }>
+    monthlyRevenue: Array<{ revenue: number, bookings: number, month: string }>
+    bookingStatus: Array<{ name: string, value: number, color: string }>
+}

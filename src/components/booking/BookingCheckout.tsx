@@ -55,7 +55,11 @@ const BookingCheckout: React.FC = () => {
     const wallet = walletResponse ? walletResponse.data : null;
 
     //get coupons for user
-    const { data: couponResponse } = useUserCoupons(hotel?.vendorId!, room?.basePrice ?? 0, isAuthenticated && !!hotel?.vendorId && !!room?.basePrice);
+    const vendorId = hotel?.vendorId;
+    const basePrice = room?.basePrice;
+    const isCouponsEnabled = isAuthenticated && typeof vendorId === "string" && typeof basePrice === "number";
+
+    const { data: couponResponse } = useUserCoupons(vendorId!, basePrice ?? 0, isCouponsEnabled);
     const coupons = couponResponse ? couponResponse.data : [];
 
     //mutation functions
