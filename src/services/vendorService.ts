@@ -9,6 +9,7 @@ import { IRoom } from "@/types/room.types";
 import { IRating } from "@/types/rating.types";
 import { ICoupon, TCreateCoupon, TUpdateCoupon } from "@/types/coupon.types";
 import { IOffer, TCreateOffer, TUpdateOffer } from "@/types/offer.types";
+import { TVendorAnalyticsData } from "@/types/analytics.types";
 
 
 //vendor profile
@@ -139,7 +140,7 @@ export const getBookingsToVendor = async (page: number, limit: number, hotelId?:
 };
 
 //analytics
-export const getVendorAnalytics = async (startDate?: string, endDate?: string) => {
+export const getVendorAnalytics = async (startDate?: string, endDate?: string): Promise<TApiSuccessResponse<TVendorAnalyticsData>> => {
     const response = await axiosInstance.get(`${VENDOR_APIS.analytics}`, {
         params: { startDate, endDate },
     });

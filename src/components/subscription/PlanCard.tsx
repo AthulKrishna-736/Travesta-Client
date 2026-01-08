@@ -86,60 +86,34 @@ const PlanCard = ({ plan }: PricingCardProps) => {
         appearance: { theme: "stripe" },
     };
 
-    const isPopular = plan.type === "medium";
-    const isPremium = plan.type === "vip";
-    const durationText =
-        plan.duration >= 30
-            ? `${Math.floor(plan.duration / 30)} ${Math.floor(plan.duration / 30) === 1 ? "month" : "months"}`
-            : `${plan.duration} days`;
+    const durationText = plan.duration >= 30 ? `${Math.floor(plan.duration / 30)} ${Math.floor(plan.duration / 30) === 1 ? "month" : "months"}` : `${plan.duration} days`;
+    const hasActivePlan = Boolean(activePlan?.isActive);
+    const isCurrentPlan = hasActivePlan && activePlan.subscriptionId.type === plan.type;
 
     return (
         <>
             <div className="relative h-full">
-                {isPopular && (
-                    <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
-                        <span className="text-xs font-medium px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full shadow-sm backdrop-blur-sm">
-                            Most Popular
-                        </span>
-                    </div>
-                )}
-
-                <div
-                    className={`h-full rounded-3xl border border-transparent bg-white/80 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 
-                    ${isPopular ? "ring-2 ring-blue-400/40" : ""} 
-                    ${isPremium ? "ring-2 ring-purple-400/40" : ""} 
-                    ${!isPopular && !isPremium ? "ring-1 ring-gray-200/60" : ""}`}
-                >
+                <div className={`h-full rounded-xl border-2 border-black`}>
                     <div className="p-7 flex flex-col h-full">
                         <div className="mb-6">
-                            <h3 className="text-lg font-semibold text-gray-900 tracking-tight">{plan.name}</h3>
-                            <p className="text-sm text-gray-500 mt-1 leading-relaxed">{plan.description}</p>
+                            <h3 className="text-lg lg:text-2xl font-semibold text-gray-900 tracking-tight">{plan.name}</h3>
+                            <p className="text-sm lg:text-md text-gray-500 mt-1 leading-relaxed">{plan.description}</p>
                         </div>
 
                         <div className="mb-6">
                             <div className="flex items-end gap-1">
-                                <span className="text-3xl font-semibold text-gray-900">₹{plan.price}</span>
+                                <span className="text-2xl lg:text-4xl font-semibold text-gray-900">₹{plan.price}</span>
                                 {plan.type !== "basic" && (
-                                    <span className="text-gray-400 text-sm mb-1">/{durationText}</span>
+                                    <span className="text-gray-500 text-sm lg:text-md mb-1">/{durationText}</span>
                                 )}
                             </div>
                         </div>
 
                         <ul className="space-y-2.5 mb-6 flex-grow">
                             {plan.features.map((feature, index) => (
-                                <li key={index} className="flex items-center gap-2 text-gray-700 text-sm">
-                                    <div
-                                        className={`p-1.5 rounded-md bg-gradient-to-br 
-                                        ${isPopular ? "from-blue-100 to-blue-50" : ""} 
-                                        ${isPremium ? "from-purple-100 to-purple-50" : ""} 
-                                        ${!isPopular && !isPremium ? "from-gray-100 to-gray-50" : ""}`}
-                                    >
-                                        <Check
-                                            className={`w-3.5 h-3.5 
-                                            ${isPopular ? "text-blue-600" : ""} 
-                                            ${isPremium ? "text-purple-600" : ""} 
-                                            ${!isPopular && !isPremium ? "text-gray-600" : ""}`}
-                                        />
+                                <li key={index} className="flex items-center gap-2 text-gray-700 text-sm lg:text-md">
+                                    <div className='p-1 rounded-full bg-blue-200'>
+                                        <Check className='w-3.5 h-3.5 text-blue-600' />
                                     </div>
                                     <span>{feature}</span>
                                 </li>
@@ -148,25 +122,15 @@ const PlanCard = ({ plan }: PricingCardProps) => {
 
                         {plan.type !== "basic" && (
                             <div className="flex flex-col gap-2">
-                                <button
-                                    onClick={handleSelectPlan}
-                                    disabled={activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type}
-                                    className={`w-full rounded-md py-2 text-sm font-medium transition ${activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type
-                                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                        : "bg-black text-white hover:bg-gray-800"
-                                        }`}
+                                <button onClick={handleSelectPlan} disabled={isCurrentPlan}
+                                    className={`w-full rounded-md py-2 text-sm font-medium transition ${isCurrentPlan ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-black text-white cursor-pointer hover:bg-gray-800"}`}
                                 >
-                                    {activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type
-                                        ? "Active Plan"
-                                        : "Select Plan"}
+                                    {isCurrentPlan ? "Active Plan" : "Select Plan"}
                                 </button>
 
                                 {/* Cancel button only if active plan matches */}
-                                {activePlan?.isActive && activePlan?.subscriptionId?.type === plan.type && (
-                                    <button
-                                        onClick={() => setShowCancelModal(true)}
-                                        className="w-full rounded-md py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
-                                    >
+                                {isCurrentPlan && (
+                                    <button onClick={() => setShowCancelModal(true)} className="w-full cursor-pointer rounded-md py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">
                                         Cancel
                                     </button>
                                 )}
