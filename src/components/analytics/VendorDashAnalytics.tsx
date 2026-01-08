@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Calendar, Users, IndianRupee } from 'lucide-react';
 import { useGetVendorAnalytics } from '@/hooks/user/useBooking';
-import AnalyticsLineChart from './AnalyticsLineChart';
-import AnalyticsPieChart from './AnalyticsPieChart';
-import AnalyticsBarChart from './AnalyticsBarChart';
+import ChartLoader from '../common/ChartLoader';
+
+const AnalyticsBarChart = lazy(() => import('./AnalyticsBarChart'));
+const AnalyticsLineChart = lazy(() => import('./AnalyticsLineChart'));
+const AnalyticsPieChart = lazy(() => import('./AnalyticsPieChart'));
 
 const VendorAnalyticsDashboard = () => {
     const [dateRange, setDateRange] = useState({ startDate: '', endDate: '' });
@@ -226,14 +228,16 @@ const VendorAnalyticsDashboard = () => {
                     </div>
 
                     {analyticsData.monthlyRevenue.length > 0 ? (
-                        <AnalyticsLineChart
-                            data={analyticsData.monthlyRevenue}
-                            xKey="month"
-                            yKey="revenue"
-                            label="Revenue"
-                            strokeColor="#2563eb"
-                            valueFormatter={(value) => `₹${value / 1000}k`}
-                        />
+                        <Suspense fallback={<ChartLoader />}>
+                            <AnalyticsLineChart
+                                data={analyticsData.monthlyRevenue}
+                                xKey="month"
+                                yKey="revenue"
+                                label="Revenue"
+                                strokeColor="#2563eb"
+                                valueFormatter={(value) => `₹${value / 1000}k`}
+                            />
+                        </Suspense>
                     ) : (
                         <div className="flex items-center justify-center h-64 text-sm text-gray-500">
                             No revenue data available
@@ -250,10 +254,12 @@ const VendorAnalyticsDashboard = () => {
                     </div>
 
                     {analyticsData.bookingStatus.length > 0 ? (
-                        <AnalyticsPieChart
-                            data={analyticsData.bookingStatus}
-                            centerLabel={`${analyticsData.bookingStatus.reduce((sum: number, item: any) => sum + item.value, 0)} Bookings`}
-                        />
+                        <Suspense fallback={<ChartLoader />}>
+                            <AnalyticsPieChart
+                                data={analyticsData.bookingStatus}
+                                centerLabel={`${analyticsData.bookingStatus.reduce((sum: number, item: any) => sum + item.value, 0)} Bookings`}
+                            />
+                        </Suspense>
                     ) : (
                         <div className="flex items-center justify-center h-64 text-sm text-gray-500">
                             No booking status data available
@@ -272,15 +278,17 @@ const VendorAnalyticsDashboard = () => {
                     </h2>
 
                     {analyticsData.topHotels.length > 0 ? (
-                        <AnalyticsBarChart
-                            data={analyticsData.topHotels}
-                            xKey="hotelName"
-                            yKey="revenue"
-                            label="Revenue"
-                            barColor="#10b981"
-                            valueFormatter={(value) => `₹${value.toLocaleString()}`}
-                            yAxisFormatter={(value) => `₹${value / 1000}k`}
-                        />
+                        <Suspense fallback={<ChartLoader />}>
+                            <AnalyticsBarChart
+                                data={analyticsData.topHotels}
+                                xKey="hotelName"
+                                yKey="revenue"
+                                label="Revenue"
+                                barColor="#10b981"
+                                valueFormatter={(value) => `₹${value.toLocaleString()}`}
+                                yAxisFormatter={(value) => `₹${value / 1000}k`}
+                            />
+                        </Suspense>
                     ) : (
                         <div className="flex items-center justify-center h-64 text-sm text-gray-500">
                             No hotel data available
@@ -295,14 +303,16 @@ const VendorAnalyticsDashboard = () => {
                     </h2>
 
                     {analyticsData.monthlyRevenue.length > 0 ? (
-                        <AnalyticsBarChart
-                            data={analyticsData.monthlyRevenue}
-                            xKey="month"
-                            yKey="bookings"
-                            label="Bookings"
-                            barColor="#f59e0b"
-                            valueFormatter={(value) => value.toLocaleString()}
-                        />
+                        <Suspense fallback={<ChartLoader />}>
+                            <AnalyticsBarChart
+                                data={analyticsData.monthlyRevenue}
+                                xKey="month"
+                                yKey="bookings"
+                                label="Bookings"
+                                barColor="#f59e0b"
+                                valueFormatter={(value) => value.toLocaleString()}
+                            />
+                        </Suspense>
                     ) : (
                         <div className="flex items-center justify-center h-64 text-sm text-gray-500">
                             No booking data available

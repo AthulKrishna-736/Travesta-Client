@@ -1,9 +1,12 @@
+import { lazy, Suspense } from "react";
 import { AdminLayout } from "@/components/layouts/AdminLayout"
 import { useGetAdminAnalytics } from "@/hooks/vendor/useVendor";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { IndianRupee, CalendarCheck, Hotel, BedDouble } from "lucide-react";
-import AnalyticsBarChart from "@/components/analytics/AnalyticsBarChart";
-import AnalyticsLineChart from "@/components/analytics/AnalyticsLineChart";
+import ChartLoader from "@/components/common/ChartLoader";
+
+const AnalyticsBarChart = lazy(() => import("@/components/analytics/AnalyticsBarChart"));
+const AnalyticsLineChart = lazy(() => import("@/components/analytics/AnalyticsLineChart"));
 
 const AdminDash = () => {
     const { data: analyticsRes } = useGetAdminAnalytics()
@@ -104,14 +107,16 @@ const AdminDash = () => {
                                         Monthly Bookings
                                     </h2>
 
-                                    <AnalyticsLineChart
-                                        data={bookingsData}
-                                        xKey="month"
-                                        yKey="bookings"
-                                        label="Bookings"
-                                        strokeColor="#2563eb"
-                                        valueFormatter={(value) => value.toLocaleString()}
-                                    />
+                                    <Suspense fallback={<ChartLoader />}>
+                                        <AnalyticsLineChart
+                                            data={bookingsData}
+                                            xKey="month"
+                                            yKey="bookings"
+                                            label="Bookings"
+                                            strokeColor="#2563eb"
+                                            valueFormatter={(value) => value.toLocaleString()}
+                                        />
+                                    </Suspense>
                                 </div>
 
                                 {/* Revenue Days */}
@@ -120,15 +125,17 @@ const AdminDash = () => {
                                         Top Revenue Days
                                     </h2>
 
-                                    <AnalyticsBarChart
-                                        data={revenueData}
-                                        xKey="date"
-                                        yKey="revenue"
-                                        label="Revenue"
-                                        barColor="#16a34a"
-                                        barSize={28}
-                                        valueFormatter={(value) => `₹${value.toLocaleString()}`}
-                                    />
+                                    <Suspense fallback={<ChartLoader />}>
+                                        <AnalyticsBarChart
+                                            data={revenueData}
+                                            xKey="date"
+                                            yKey="revenue"
+                                            label="Revenue"
+                                            barColor="#16a34a"
+                                            barSize={28}
+                                            valueFormatter={(value) => `₹${value.toLocaleString()}`}
+                                        />
+                                    </Suspense>
                                 </div>
                             </div>
 
