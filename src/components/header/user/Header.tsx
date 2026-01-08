@@ -5,10 +5,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
 import { saveLastVisitedPath } from "@/store/slices/navigationSlice";
 import { useGetUser } from "@/hooks/user/useUser";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Bell, Menu, X } from "lucide-react";
 import NotificationModal from "@/components/common/NotificationModal";
-import { useGetNotification, useMarkNotification } from "@/hooks/user/useNotification";
+import { useGetLiveNotifications, useGetNotification } from "@/hooks/user/useNotification";
+import { INotification } from "@/types/notification.types";
+import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
     const navigate = useNavigate();
@@ -16,15 +18,25 @@ const Header = () => {
 
     const [sideBar, setSideBar] = useState<boolean>(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
+    const [liveNotifications, setLiveNotifications] = useState<INotification[]>([]);
 
     const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
+    const { data: oldNotifications = [], isLoading } = useGetNotification(isAuthenticated);
     useGetUser(isAuthenticated);
-    const { data: notificationRes } = useGetNotification(isAuthenticated);
-    const { mutate: logoutUserFn } = useLogout("user");
-    const { mutate: markNotificationAsRead } = useMarkNotification();
+    useGetLiveNotifications(isAuthenticated, setLiveNotifications);
 
-    const notifications = notificationRes ? notificationRes?.data : [];
+    const unreadCount = useMemo(() => {
+        const map = new Map<string, INotification>();
+
+        [...oldNotifications, ...liveNotifications].forEach(n => {
+            map.set(n.id, n);
+        });
+
+        return Array.from(map.values()).filter(n => !n.isRead).length;
+    }, [oldNotifications, liveNotifications]);
+
+    const { mutate: logoutUserFn } = useLogout("user");
 
     const user = useSelector((state: RootState) => state.user.user?.id);
     const profileImage = useSelector((state: RootState) => state.user.user?.profileImage);
@@ -61,8 +73,14 @@ const Header = () => {
                 {/* User Section */}
                 {user ? (
                     <div className="hidden md:flex items-center justify-center gap-4">
-                        <button className="cursor-pointer" onClick={() => { setIsNotificationOpen(true) }}>
+                        <button className="cursor-pointer relative" onClick={() => { setIsNotificationOpen(true) }}>
                             <Bell className="w-5 h-5" />
+                            {unreadCount > 0 && (
+                                <Badge
+                                    className="absolute -top-2 -left-4 h-4 w-4 p-2 bg-red-500 text-[12px] font-semibold flex items-center justify-center rounded-full"                                >
+                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                </Badge>
+                            )}
                         </button>
                         <Link to="/user/profile">
                             <div className="flex justify-center items-center gap-3">
@@ -106,8 +124,14 @@ const Header = () => {
                 {/* Mobile Menu Toggle */}
                 <div className="md:hidden flex items-center justify-center gap-4">
                     {user && (
-                        <button onClick={() => { setIsNotificationOpen(true) }} className="cursor-pointer">
+                        <button onClick={() => { setIsNotificationOpen(true) }} className="cursor-pointer relative">
                             <Bell className="w-6 h-6" />
+                            {unreadCount > 0 && (
+                                <Badge
+                                    className="absolute -top-2 -left-4 h-4 w-4 p-2 bg-red-500 text-[12px] font-semibold flex items-center justify-center rounded-full"                                >
+                                    {unreadCount > 99 ? "99+" : unreadCount}
+                                </Badge>
+                            )}
                         </button>
                     )}
 
@@ -121,8 +145,10 @@ const Header = () => {
                 <NotificationModal
                     open={isNotificationOpen}
                     onClose={() => setIsNotificationOpen(false)}
-                    notifications={notifications}
-                    onMarkAsRead={(id) => markNotificationAsRead(id)}
+                    notifications={oldNotifications}
+                    liveNotifications={liveNotifications}
+                    setLiveNotifications={setLiveNotifications}
+                    loading={isLoading}
                 />
             )}
 

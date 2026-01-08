@@ -1,12 +1,10 @@
-import VendorAnalyticsDashboard from '@/components/common/VendorDashAnalytics';
+import VendorAnalyticsDashboard from '@/components/analytics/VendorDashAnalytics';
 import VendorLayout from '@/components/layouts/VendorLayout';
 
 const VendorDashboard = () => {
     return (
         <VendorLayout>
-            <>
-                <VendorAnalyticsDashboard />
-            </>
+            <VendorAnalyticsDashboard />
         </VendorLayout >
     );
 };

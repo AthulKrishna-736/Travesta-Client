@@ -5,7 +5,7 @@ import { TUpdateVendorReqValues } from '../../types/authentication.types'
 import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
 import { IUser } from "@/types/user.types"
 import { showError, showSuccess } from "@/utils/customToast"
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useDispatch } from "react-redux"
 
 
@@ -14,8 +14,9 @@ export const useGetVendor = () => {
         queryKey: ['vendor-profile'],
         queryFn: getVendor,
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData,
-        retry: 2,
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 1,
     })
 }
 
@@ -66,7 +67,8 @@ export const useGetVendors = (page: number, limit: number, search?: string, sort
         queryKey: ['admin-vendor', { page, limit, search, sortOption }],
         queryFn: () => getVendors(page, limit, search, sortOption),
         staleTime: 5 * 60 * 1000,
-        placeholderData: keepPreviousData
+        placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
     })
 }
 
@@ -121,8 +123,9 @@ export const useGetAdminAnalytics = () => {
     return useQuery({
         queryKey: ['admin-analytics'],
         queryFn: getAdminAnalytics,
-        placeholderData: keepPreviousData,
+        placeholderData: (prev) => prev,
         staleTime: 5 * 60 * 1000,
-        retry: 2,
+        refetchOnWindowFocus: false,
+        retry: 1,
     })
 }

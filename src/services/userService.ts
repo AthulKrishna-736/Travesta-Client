@@ -12,6 +12,7 @@ import { IRating, TRatingForm } from "@/types/rating.types";
 import { ISubscription } from "@/types/plan.types";
 import { ICoupon } from "@/types/coupon.types";
 import { AxiosError } from "axios";
+import { INotification } from "@/types/notification.types";
 
 //user profile
 export const getUser = async (): Promise<TApiSuccessResponse<IUser>> => {
@@ -23,6 +24,11 @@ export const updateUser = async (formData: FormData): Promise<TApiSuccessRespons
     const response = await axiosInstance.put(`${USER_APIS.profile}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
     });
+    return response.data;
+};
+
+export const changePassword = async (data: { oldPassword: string; newPassword: string; }) => {
+    const response = await axiosInstance.patch(`${USER_APIS.changePass}`, data);
     return response.data;
 };
 
@@ -241,14 +247,9 @@ export const getUserCoupons = async (vendorId: string, price: number): Promise<T
 }
 
 //notification
-export const getNotification = async () => {
+export const getNotification = async (): Promise<INotification[]> => {
     const response = await axiosInstance.get(`${USER_APIS.notification}`);
-    return response.data;
-}
-
-export const getUnreadNotificationCount = async () => {
-    const response = await axiosInstance.get(`${USER_APIS.notification}/unread`);
-    return response.data;
+    return response.data.data;
 }
 
 export const markNotificationRead = async (notificaionId: string) => {

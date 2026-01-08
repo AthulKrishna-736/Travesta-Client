@@ -9,6 +9,24 @@ import StaticMap from "../maps/StaticMap";
 const BookingDetailDialog: React.FC<BookingDetailProps> = ({ open, onClose, booking, }) => {
     if (!booking) return null;
 
+    let originalAmount = booking.totalPrice;
+    let discountAmount = 0;
+
+    if (booking.coupon) {
+        if (booking.coupon.type === "flat") {
+            discountAmount = booking.coupon.value;
+            originalAmount = booking.totalPrice + discountAmount;
+        }
+
+        if (booking.coupon.type === "percent") {
+            // totalPrice = original - (original * percent / 100)
+            originalAmount = Math.round(
+                booking.totalPrice / (1 - booking.coupon.value / 100)
+            );
+            discountAmount = originalAmount - booking.totalPrice;
+        }
+    }
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'confirmed': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
@@ -134,6 +152,40 @@ const BookingDetailDialog: React.FC<BookingDetailProps> = ({ open, onClose, book
                             </div>
                         </div>
                     </div>
+
+                    {/* Coupon Details */}
+                    {booking.coupon && (
+                        <div className="space-y-3 pt-3 border-t border-gray-200">
+                            <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                Price Breakdown
+                            </div>
+
+                            <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100 space-y-2">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">Original Price</span>
+                                    <span className="font-medium text-gray-900">
+                                        ₹{originalAmount}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">
+                                        Coupon ({booking.coupon.name})
+                                    </span>
+                                    <span className="font-medium text-green-700">
+                                        - ₹{discountAmount}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between text-sm font-semibold border-t pt-2">
+                                    <span className="text-gray-700">Final Amount Paid</span>
+                                    <span className="text-gray-900">
+                                        ₹{booking.totalPrice}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Payment Info */}
                     <div className="space-y-3 pt-3 border-t border-gray-200">

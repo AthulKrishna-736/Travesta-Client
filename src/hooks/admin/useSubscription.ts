@@ -11,7 +11,7 @@ export const useGetSubscriptionPlans = () => {
         queryFn: getUserSubscriptions,
         staleTime: 5 * 60 * 1000,
         placeholderData: (prev) => prev,
-        retry: 2,
+        retry: 1,
     })
 }
 
@@ -21,6 +21,8 @@ export const useGetAllPlans = () => {
         queryFn: getAllPlans,
         staleTime: 5 * 60 * 1000,
         placeholderData: (prev) => prev,
+        refetchOnWindowFocus: false,
+        retry: 1,
     })
 }
 
@@ -51,13 +53,12 @@ export const useCreatePlans = () => {
     return useMutation({
         mutationFn: (data: TCreatePlan) => createPlan(data),
         onSuccess: (res) => {
+            queryClient.invalidateQueries({ queryKey: ['admin-plans'] })
             if (res.success) {
                 showSuccess(res.message);
             } else {
                 showError(res.message || 'Something went wrong');
             }
-            queryClient.invalidateQueries({ queryKey: ['plans'] })
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             console.log('error logging: ', error)
@@ -77,7 +78,6 @@ export const useUpdatePlans = () => {
                 showError(res.message || 'Something went wrong');
             }
             queryClient.invalidateQueries({ queryKey: ['plans'] });
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (error: ICustomError) => {
             console.log('error logging: ', error)
@@ -92,7 +92,9 @@ export const useSubscribePlan = () => {
         mutationFn: ({ planId, method }: { planId: string; method: 'wallet' | 'online' }) => subscribePlan(planId, method),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
+            queryClient.invalidateQueries({ queryKey: ['wallet'] })
+            queryClient.invalidateQueries({ queryKey: ['transactions'] })
+
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
             } else {
@@ -112,7 +114,9 @@ export const useCancelSubscription = () => {
         mutationFn: cancelSubscription,
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
-            queryClient.invalidateQueries({ queryKey: ['notification'] })
+            queryClient.invalidateQueries({ queryKey: ['wallet'] })
+            queryClient.invalidateQueries({ queryKey: ['transactions'] })
+
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
             } else {

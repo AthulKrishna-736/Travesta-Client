@@ -1,29 +1,53 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { INotification } from "@/types/notification.types";
+import { useMarkNotification } from "@/hooks/user/useNotification";
 
-
-export type TNotification = {
-    id: string;
-    userId: string;
-    title: string;
-    message: string;
-    isRead: boolean;
-    createdAt: string;
-    updatedAt: string;
-};
 
 interface INotificationModalProps {
     open: boolean;
     onClose: () => void;
-    notifications: TNotification[];
-    onMarkAsRead: (id: string) => void;
+    notifications: INotification[];
+    liveNotifications: INotification[];
+    setLiveNotifications: React.Dispatch<React.SetStateAction<INotification[]>>;
+    loading: boolean;
 };
 
-const NotificationModal: React.FC<INotificationModalProps> = ({ open, onClose, notifications, onMarkAsRead }) => {
+const NotificationModal: React.FC<INotificationModalProps> = ({ open, onClose, notifications, liveNotifications, setLiveNotifications, loading }) => {
     const [activeTab, setActiveTab] = useState<"unread" | "all">("unread");
 
-    const unreadNotifications = notifications.filter(n => !n.isRead);
-    const displayedNotifications = activeTab === "unread" ? unreadNotifications : notifications;
+    const { mutate: onMarkAsRead } = useMarkNotification();
+
+    const combinedNotifications = useMemo<INotification[]>(() => {
+        const map = new Map<string, INotification>();
+
+        [...notifications, ...liveNotifications].forEach((n) => {
+            map.set(n.id, n);
+        });
+
+        return Array.from(map.values()).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }, [notifications, liveNotifications]);
+
+    const unreadNotifications = combinedNotifications.filter((n) => {
+        if (!n.isRead) {
+            return n;
+        }
+    })
+
+    const handleMarkAsRead = (id: string) => {
+        onMarkAsRead(id, {
+            onSuccess: () => {
+                setLiveNotifications(prev =>
+                    prev.map(n =>
+                        n.id === id ? { ...n, isRead: true } : n
+                    )
+                );
+            }
+        });
+    };
+
+
+    const displayedNotifications = activeTab === "unread" ? unreadNotifications : combinedNotifications;
 
     return (
         <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
@@ -45,14 +69,20 @@ const NotificationModal: React.FC<INotificationModalProps> = ({ open, onClose, n
 
                 {/* Content */}
                 <div className="max-h-[400px] overflow-y-auto p-3 space-y-3">
-                    {displayedNotifications.length === 0 && (
+                    {loading && (
+                        <div className="text-center text-sm text-gray-500 py-10">
+                            Loading notifications...
+                        </div>
+                    )}
+
+                    {!loading && displayedNotifications.length === 0 && (
                         <div className="text-center text-sm text-gray-500 py-10">
                             No notifications
                         </div>
                     )}
 
-                    {displayedNotifications.map(notification => (
-                        <div key={notification.id} className="border rounded-md p-3 text-sm">
+                    {displayedNotifications.map((notification) => (
+                        <div key={notification.id} className="border bg-slate-100 rounded-md p-3 text-sm">
                             <div className="font-medium">{notification.title}</div>
 
                             <div className="text-gray-600 mt-1">
@@ -64,14 +94,18 @@ const NotificationModal: React.FC<INotificationModalProps> = ({ open, onClose, n
                                     {new Date(notification.createdAt).toLocaleString("en-IN", {
                                         day: "2-digit",
                                         month: "short",
+                                        year: 'numeric',
                                         hour: "2-digit",
                                         minute: "2-digit",
-                                        hour12: true,
+                                        hour12: true
                                     })}
                                 </span>
 
                                 {!notification.isRead && (
-                                    <button onClick={() => onMarkAsRead(notification.id)} className="text-blue-600 hover:underline">
+                                    <button
+                                        onClick={() => handleMarkAsRead(notification.id)}
+                                        className="text-blue-600 hover:underline cursor-pointer"
+                                    >
                                         Mark as read
                                     </button>
                                 )}
