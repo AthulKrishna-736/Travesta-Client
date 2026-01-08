@@ -5,6 +5,7 @@ import { IUser, User } from "@/types/user.types";
 import { TApiSuccessResponse, TSortOption } from "@/types/custom.types";
 import { ADMIN_APIS } from "../constants/apiConstants";
 import { ISubscription, TCreatePlan, TUpdatePlan } from "@/types/plan.types";
+import { TAdminAnalyticsData } from "@/types/analytics.types";
 
 
 //customers manage
@@ -119,7 +120,7 @@ export const getAllPlanHistory = async (page: number, limit: number, type: 'basi
 }
 
 //analytics
-export const getAdminAnalytics = async () => {
+export const getAdminAnalytics = async (): Promise<TApiSuccessResponse<TAdminAnalyticsData>> => {
     const response = await axiosInstance.get(`${ADMIN_APIS.analytics}`)
     return response.data;
 }

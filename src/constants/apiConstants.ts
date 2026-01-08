@@ -37,7 +37,7 @@ export const VENDOR_APIS = {
     hotels: '/vendor/hotels',
     hotel: '/vendor/hotel',
     rooms: '/vendor/rooms',
-    chat: '/vendorn/chat',
+    chat: '/vendor/chat',
     booking: '/vendor/bookings',
     amenities: '/vendor/amenities',
     transactions: '/users/transactions',
