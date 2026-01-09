@@ -1,13 +1,29 @@
-import { Socket } from "socket.io-client";
 import { env } from "@/config/config";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 
 // Setup socket instance
-export const socket: typeof Socket = io(env.SOCKET_URL, {
-    transports: ["websocket", "polling"],
-    path: "/api/chat",
-    reconnectionAttempts: 5,
-});
+let socket: typeof Socket | null = null;
 
-socket.connect();
+export const connectChatSocket = () => {
+    if (socket?.connected) return socket;
 
+    socket = io(env.SOCKET_URL, {
+        path: "/api/chat",
+        transports: ["websocket"],
+        transportOptions: {
+            polling: {
+                withCredentials: true
+            }
+        },
+        reconnectionAttempts: 5,
+    });
+
+    return socket;
+};
+
+export const getChatSocket = (): typeof Socket | null => socket;
+
+export const disconnectChatSocket = () => {
+    socket?.disconnect();
+    socket = null;
+};

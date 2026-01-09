@@ -7,11 +7,13 @@ import { RootState } from '@/store/store';
 import UserLayout from '@/components/layouts/UserLayout';
 
 const UserChatPage: React.FC = () => {
-    const currentUserId = useSelector((state: RootState) => state?.user?.user?.id);
     const [msg, setMsg] = useState<string>('');
     const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
+
+    const currentUserId = useSelector((state: RootState) => state?.user?.user?.id);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state?.user?.user?.id))
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearch(searchText), 400);
@@ -22,7 +24,7 @@ const UserChatPage: React.FC = () => {
     const { mutate: markMessageAsRead } = useMarkMsgRead()
     const { data: unReadMsgResponse } = useGetUserUnreadChats();
     const { data: chattedVendorsResponse, isLoading } = useGetUserChatVendors(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError } = useSocketChat(selectedVendor?.id, currentUserId, 'user');
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError } = useSocketChat(isAuthenticated, selectedVendor?.id, currentUserId, 'user');
     const { data: oldMessagesData } = useGetUserChatMessages(selectedVendor?.id || '', !!selectedVendor);
 
     const vendors = chattedVendorsResponse || [];

@@ -9,9 +9,11 @@ import { AdminLayout } from '@/components/layouts/AdminLayout';
 const AdminChatPage: React.FC = () => {
     const [msg, setMsg] = useState('');
     const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
-    const adminId = useSelector((state: RootState) => state.admin.admin?.id);
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
+
+    const adminId = useSelector((state: RootState) => state.admin.admin?.id);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.admin.admin?.id));
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearch(searchText), 400);
@@ -21,7 +23,7 @@ const AdminChatPage: React.FC = () => {
     const { data: unReadMsgResponse } = useGetAdminUnreadChats();
     const { mutate: markMessageAsRead } = useMarkMsgRead();
     const { data: chattedVendorsResponse, isLoading } = useGetVendorsChatAdmin(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(selectedVendor?.id, adminId, 'admin');
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(isAuthenticated, selectedVendor?.id, adminId, 'admin');
     const { data: oldMessagesData } = useGetAdminChatMessages(selectedVendor?.id || '', !!selectedVendor);
 
     const vendors = chattedVendorsResponse || [];

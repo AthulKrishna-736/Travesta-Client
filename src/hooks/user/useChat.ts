@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { socket } from '@/utils/socket';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { TRoles } from '../../types/authentication.types';
 import { getUserChatMessages, getChattedVendors, getUserUnreadChats, getUserChatAccess, MarkMsgRead } from '@/services/userService';
 import { showError } from '@/utils/customToast';
 import { getChattedCustomers, getVendorChatMessages, getVendorUnreadChats } from '@/services/vendorService';
-import { IChat, SendMessagePayload, TypingPayload } from '@/types/chat.types';
+import { IChat, SendMessagePayload } from '@/types/chat.types';
 import { getAdminChatMessages, getAdminChatVendors, getAdminUnreadMsg } from '@/services/adminService';
 import { ICustomError, TApiSuccessResponse } from '@/types/custom.types';
+import { connectChatSocket, disconnectChatSocket, getChatSocket } from '@/utils/socket';
 
 //user
 export const useGetUserChatMessages = (userId: string, enabled: boolean) => {
@@ -108,55 +108,64 @@ export const useGetAdminUnreadChats = () => {
 }
 
 //socket setup
-export const useSocketChat = (selectedId?: string, userId?: string, userRole?: TRoles) => {
+export const useSocketChat = (isAuthenticated: boolean, selectedId?: string, userId?: string, userRole?: TRoles) => {
     const [messages, setMessages] = useState<IChat[]>([]);
     const [liveUnreadCounts, setLiveUnreadCounts] = useState<Record<string, number>>({});
     const [typingStatus, setTypingStatus] = useState(false);
     const [bookingError, setBookingError] = useState<string>('');
     const typingTimeout = useRef<NodeJS.Timeout | null>(null);
 
-    const handleReceiveMessage = (data: IChat) => {
-        const otherUserId = data.fromId === userId ? data.toId : data.fromId;
+    useEffect(() => {
+        if (!isAuthenticated) return;
 
-        if (otherUserId === selectedId) {
-            setMessages(prev => [...prev, data]);
-        } else {
-            setLiveUnreadCounts(prev => ({
-                ...prev,
-                [otherUserId]: (prev[otherUserId] || 0) + 1
-            }));
-        }
-    };
+        connectChatSocket();
 
-    const handleTypingMessage = (data: { fromId: string }) => {
-        if (data.fromId !== selectedId) return;
-
-        setTypingStatus(true);
-
-        if (typingTimeout.current) {
-            clearTimeout(typingTimeout.current);
-        }
-
-        typingTimeout.current = setTimeout(() => {
-            setTypingStatus(false);
-        }, 1200);
-    };
-
-    const handleReadMessage = (data: { withUserId: string }) => {
-        setLiveUnreadCounts(prev => {
-            const copy = { ...prev };
-            delete copy[data.withUserId];
-            return copy;
-        });
-    };
-
-
-    const handleBookingError = (message: string) => {
-        setBookingError(message);
-        socket.disconnect();
-    };
+        return () => {
+            disconnectChatSocket();
+        };
+    }, [isAuthenticated]);
 
     useEffect(() => {
+        const socket = getChatSocket();
+        if (!socket) return;
+
+        const handleReceiveMessage = (data: IChat) => {
+            const otherUserId = data.fromId === userId ? data.toId : data.fromId;
+
+            if (otherUserId === selectedId) {
+                setMessages(prev => [...prev, data]);
+            } else {
+                setLiveUnreadCounts(prev => ({
+                    ...prev,
+                    [otherUserId]: (prev[otherUserId] || 0) + 1,
+                }));
+            }
+        };
+
+        const handleTypingMessage = (data: { fromId: string }) => {
+            if (data.fromId !== selectedId) return;
+
+            setTypingStatus(true);
+            if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+            typingTimeout.current = setTimeout(() => {
+                setTypingStatus(false);
+            }, 1200);
+        };
+
+        const handleReadMessage = (data: { withUserId: string }) => {
+            setLiveUnreadCounts(prev => {
+                const copy = { ...prev };
+                delete copy[data.withUserId];
+                return copy;
+            });
+        };
+
+        const handleBookingError = (message: string) => {
+            setBookingError(message);
+            socket.disconnect();
+        };
+
         socket.on("receive_message", handleReceiveMessage);
         socket.on("typing", handleTypingMessage);
         socket.on("message_read", handleReadMessage);
@@ -173,11 +182,12 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
             socket.off("booking_error", handleBookingError);
             socket.off("connect_error");
         };
-    }, [selectedId, userId]);
+    }, [isAuthenticated, selectedId, userId]);
 
     useEffect(() => {
+        const socket = getChatSocket();
+        if (!socket || !socket.connected) return;
         if (!selectedId || !userId || !userRole) return;
-        if (!socket.connected) return;
 
         setLiveUnreadCounts(prev => {
             const copy = { ...prev };
@@ -190,13 +200,18 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
             receiverId: userId,
             toRole: userRole,
         });
-    }, [selectedId, socket.connected]);
+    }, [selectedId]);
+
 
     const sendMessage = (payload: SendMessagePayload) => {
+        const socket = getChatSocket();
+        if (!socket) return;
         socket.emit("send_message", payload);
     };
 
     const sendTyping = (toId: string, toRole: TRoles) => {
+        const socket = getChatSocket();
+        if (!socket) return;
         socket.emit("typing", { toId, toRole });
     };
 
@@ -207,7 +222,7 @@ export const useSocketChat = (selectedId?: string, userId?: string, userRole?: T
         typingStatus,
         liveUnreadCounts,
         bookingError,
-        socketConnected: socket.connected,
+        socketConnected: Boolean(getChatSocket()?.connected),
     };
 };
 
