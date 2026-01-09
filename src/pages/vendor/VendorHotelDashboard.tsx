@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { DollarSign, Calendar, Percent, TrendingUp } from "lucide-react";
 import DashboardHeader from "@/components/hotel/dashboard/DashboardHeader";
+import { useParams } from "react-router-dom";
+import { useGetHotelAnalytics } from "@/hooks/vendor/useHotel";
 import MetricCard from "@/components/hotel/dashboard/MetricCard";
-import RevenueChart from "@/components/hotel/dashboard/RevenueChart";
-import BookingsStatusChart from "@/components/hotel/dashboard/BookingStatusChart";
-import PaymentStatusChart from "@/components/hotel/dashboard/PaymentStatusChart";
 import RoomPerformanceTable from "@/components/hotel/dashboard/RoomPerformanceTable";
 import VendorLayout from "@/components/layouts/VendorLayout";
-import { useGetHotelAnalytics } from "@/hooks/vendor/useHotel";
-import { useParams } from "react-router-dom";
+import ChartLoader from "@/components/common/ChartLoader";
+
+const RevenueChart = lazy(() => import("@/components/hotel/dashboard/RevenueChart"));
+const BookingsStatusChart = lazy(() => import("@/components/hotel/dashboard/BookingStatusChart"));
+const PaymentStatusChart = lazy(() => import("@/components/hotel/dashboard/PaymentStatusChart"));
 
 const VendorHotelDashboard = () => {
     const { hotelId } = useParams()
@@ -81,15 +83,17 @@ const VendorHotelDashboard = () => {
                         {/* Revenue Chart */}
                         <section>
                             {charts && charts.revenueTrend && (
-                                <RevenueChart
-                                    data={charts.revenueTrend.map((item: { _id: string; revenue: number }) => ({
-                                        date: new Date(item._id).toLocaleDateString("en-CA", {
-                                            month: "short",
-                                            day: "numeric",
-                                        }),
-                                        revenue: item.revenue,
-                                    }))}
-                                />
+                                <Suspense fallback={<ChartLoader />}>
+                                    <RevenueChart
+                                        data={charts.revenueTrend.map((item: { _id: string; revenue: number }) => ({
+                                            date: new Date(item._id).toLocaleDateString("en-CA", {
+                                                month: "short",
+                                                day: "numeric",
+                                            }),
+                                            revenue: item.revenue,
+                                        }))}
+                                    />
+                                </Suspense>
                             )}
                         </section>
 
@@ -97,20 +101,25 @@ const VendorHotelDashboard = () => {
                         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {charts && charts.bookingStatus && charts.paymentStatus && (
                                 <>
-                                    <BookingsStatusChart
-                                        data={charts.bookingStatus.map((item: { _id: string; count: number }) => ({
-                                            name: item._id.charAt(0).toUpperCase() + item._id.slice(1),
-                                            value: item.count,
-                                            color: statusColors[item._id] || "gray",
-                                        }))}
-                                    />
-                                    <PaymentStatusChart
-                                        data={charts.paymentStatus.map((item: { _id: string; count: number }) => ({
-                                            status: item._id.charAt(0).toUpperCase() + item._id.slice(1),
-                                            count: item.count,
-                                            color: paymentColors[item._id] || "gray",
-                                        }))}
-                                    />
+                                    <Suspense fallback={<ChartLoader />}>
+                                        <BookingsStatusChart
+                                            data={charts.bookingStatus.map((item: { _id: string; count: number }) => ({
+                                                name: item._id.charAt(0).toUpperCase() + item._id.slice(1),
+                                                value: item.count,
+                                                color: statusColors[item._id] || "gray",
+                                            }))}
+                                        />
+                                    </Suspense>
+
+                                    <Suspense fallback={<ChartLoader />}>
+                                        <PaymentStatusChart
+                                            data={charts.paymentStatus.map((item: { _id: string; count: number }) => ({
+                                                status: item._id.charAt(0).toUpperCase() + item._id.slice(1),
+                                                count: item.count,
+                                                color: paymentColors[item._id] || "gray",
+                                            }))}
+                                        />
+                                    </Suspense>
                                 </>
                             )}
                         </section>
