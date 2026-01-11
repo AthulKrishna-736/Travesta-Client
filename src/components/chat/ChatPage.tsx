@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent } from '../ui/card';
+import { CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import Chat from './Chat';
@@ -10,11 +10,10 @@ import { Badge } from '../ui/badge';
 const ChatPage: React.FC<IChatPageProps> = ({
     isLoading,
     users,
-    setSelectedUser,
     selectedUser,
+    handleSelectUser,
     msg,
     setMsg,
-    liveUnreadCounts,
     unreadCounts,
     handleSend,
     handleTyping,
@@ -25,9 +24,9 @@ const ChatPage: React.FC<IChatPageProps> = ({
     setSearchText }) => {
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-[120vh] md:h-[80vh]">
+        <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-140">
             {/* Left Sidebar: User List */}
-            <Card className="col-span-4 flex flex-col bg-[#402e57] text-white">
+            <div className="col-span-4 flex flex-col bg-[#402e57] text-white h-full overflow-hidden rounded-md">
                 <div className="p-4 border-b">
                     <Input
                         placeholder="Search users..."
@@ -36,7 +35,7 @@ const ChatPage: React.FC<IChatPageProps> = ({
                         onChange={(e) => setSearchText(e.target.value)}
                     />
                 </div>
-                <ScrollArea className="flex-grow px-2">
+                <ScrollArea className="flex-grow px-2 overflow-auto">
                     {isLoading ? (
                         <div className="p-4 text-sm text-gray-500 flex items-center gap-2">
                             <span>Loading users</span>
@@ -46,13 +45,10 @@ const ChatPage: React.FC<IChatPageProps> = ({
                         <div className="p-4 text-sm text-gray-500">No users have messaged yet.</div>
                     ) : (
                         users.map((user) => {
-
-                            const serverCount = unreadCounts?.find(u => u.id === user.id)?.count || 0;
-                            const liveCount = liveUnreadCounts[user.id] || 0;
-                            const totalCount = serverCount + liveCount;
+                            const totalCount = unreadCounts?.[user.id] || 0;
 
                             return (
-                                <div key={user.id} onClick={() => setSelectedUser(user)}
+                                <div key={user.id} onClick={() => handleSelectUser(user)}
                                     className={`relative p-3 my-1 cursor-pointer rounded-md flex items-center gap-3 hover:bg-[#4e3c69] transition ${selectedUser?.id === user.id ? 'bg-[#4e3c69] font-semibold' : ''}`} >
 
                                     <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-700">
@@ -92,17 +88,16 @@ const ChatPage: React.FC<IChatPageProps> = ({
 
                                             </div>
                                         )}
-
                                     </div>
                                 </div>
                             )
                         })
                     )}
                 </ScrollArea>
-            </Card>
+            </div>
 
             {/* Chat Panel */}
-            <Card className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden p-0 gap-0">
+            <div className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden h-full p-0 gap-0">
                 <div className="m-0 px-4 py-3 border-b font-bold bg-[#402e57] text-white flex items-center gap-2">
                     {selectedUser ? (
                         <>
@@ -139,7 +134,7 @@ const ChatPage: React.FC<IChatPageProps> = ({
                         </div>
                     )}
                 </CardContent>
-            </Card>
+            </div>
         </div>
     )
 }

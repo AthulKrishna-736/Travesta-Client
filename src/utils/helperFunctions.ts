@@ -25,3 +25,20 @@ export const formatDate = (date: string | Date): string => {
     return new Date(date).toISOString().split("T")[0];
 };
 
+export const formatDayLabel = (iso: string) => {
+    const date = new Date(iso);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) return "Today";
+    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+
+    return date.toLocaleDateString(undefined, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+};
+
+

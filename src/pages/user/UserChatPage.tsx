@@ -1,18 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useGetUserChatAccess, useGetUserChatMessages, useGetUserChatVendors, useGetUserUnreadChats, useMarkMsgRead, useSocketChat } from '@/hooks/user/useChat';
-import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import UserLayout from '@/components/layouts/UserLayout';
+import { ChatItem } from '@/types/chat.types';
 
 const UserChatPage: React.FC = () => {
     const [msg, setMsg] = useState<string>('');
-    const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
+    const [selectedVendor, setSelectedVendor] = useState<ChatItem | null>(null);
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
+    const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
 
-    const currentUserId = useSelector((state: RootState) => state?.user?.user?.id);
+    const userId = useSelector((state: RootState) => state?.user?.user?.id);
+    const userRole = useSelector((state: RootState) => state.user.user?.role);
     const isAuthenticated = Boolean(useSelector((state: RootState) => state?.user?.user?.id))
 
     useEffect(() => {
@@ -21,15 +23,21 @@ const UserChatPage: React.FC = () => {
     }, [searchText]);
 
     const { isLoading: chatAccessLoading, error: chatAccessError } = useGetUserChatAccess();
-    const { mutate: markMessageAsRead } = useMarkMsgRead()
-    const { data: unReadMsgResponse } = useGetUserUnreadChats();
     const { data: chattedVendorsResponse, isLoading } = useGetUserChatVendors(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError } = useSocketChat(isAuthenticated, selectedVendor?.id, currentUserId, 'user');
     const { data: oldMessagesData } = useGetUserChatMessages(selectedVendor?.id || '', !!selectedVendor);
+    const { data: unReadMsgResponse } = useGetUserUnreadChats(isAuthenticated);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, bookingError, clearLiveUnread } = useSocketChat(isAuthenticated, userRole!, userId!, selectedVendor?.id,);
+    const { mutate: markMessageAsRead } = useMarkMsgRead()
 
     const vendors = chattedVendorsResponse || [];
     const unreadMsg = unReadMsgResponse?.data;
     const oldMessages = oldMessagesData || [];
+
+    const handleSelectUser = (user: ChatItem) => {
+        setSelectedVendor(user);
+        clearLiveUnread(user.id);
+        markMessageAsRead(user.id);
+    };
 
     const combinedMessages = useMemo(() => {
         const map = new Map();
@@ -41,12 +49,34 @@ const UserChatPage: React.FC = () => {
         );
     }, [oldMessages, liveMessages]);
 
+    const mergedUnreadMap = useMemo(() => {
+        const map: Record<string, number> = {};
+
+        unreadMsg?.forEach(({ id, count }) => {
+            if (id !== selectedVendor?.id) {
+                map[id] = count;
+            }
+        });
+
+        Object.entries(liveUnreadCounts || {}).forEach(([id, count]) => {
+            if (id !== selectedVendor?.id) {
+                map[id] = (map[id] || 0) + count;
+            }
+        });
+
+        return map;
+    }, [unreadMsg, liveUnreadCounts, selectedVendor?.id]);
+
+    useEffect(() => {
+        setUnreadMap(mergedUnreadMap);
+    }, [mergedUnreadMap]);
+
     const chatLastActivity = useMemo(() => {
         const map = new Map<string, number>();
 
         [...oldMessages, ...liveMessages].forEach(msg => {
             const otherId =
-                msg.fromId === currentUserId ? msg.toId : msg.fromId;
+                msg.fromId === userId ? msg.toId : msg.fromId;
 
             const time = new Date(msg.timestamp).getTime();
             const existing = map.get(otherId) || 0;
@@ -57,21 +87,15 @@ const UserChatPage: React.FC = () => {
         });
 
         return map;
-    }, [oldMessages, liveMessages, currentUserId]);
+    }, [oldMessages, liveMessages, userId]);
 
-    const sortedVendors = useMemo(() => {
+    const sortedChats = useMemo(() => {
         return [...vendors].sort((a, b) => {
             const timeA = chatLastActivity.get(a.id) || 0;
             const timeB = chatLastActivity.get(b.id) || 0;
             return timeB - timeA;
         });
     }, [vendors, chatLastActivity]);
-
-    useEffect(() => {
-        if (selectedVendor?.id) {
-            markMessageAsRead(selectedVendor?.id)
-        }
-    }, [selectedVendor]);
 
     const handleTyping = () => {
         if (selectedVendor) {
@@ -82,12 +106,7 @@ const UserChatPage: React.FC = () => {
     const handleSend = () => {
         if (!msg.trim() || !selectedVendor) return;
 
-        sendMessage({
-            toId: selectedVendor.id,
-            toRole: 'vendor',
-            message: msg.trim(),
-        });
-
+        sendMessage({ toId: selectedVendor.id, toRole: 'vendor', message: msg.trim() });
         setMsg('');
     };
 
@@ -110,17 +129,16 @@ const UserChatPage: React.FC = () => {
                         ) : (
                             <ChatPage
                                 isLoading={isLoading}
-                                users={sortedVendors}
-                                setSelectedUser={setSelectedVendor}
+                                users={sortedChats}
                                 selectedUser={selectedVendor!}
+                                handleSelectUser={handleSelectUser}
                                 msg={msg}
                                 setMsg={setMsg}
-                                liveUnreadCounts={liveUnreadCounts}
-                                unreadCounts={unreadMsg}
+                                unreadCounts={unreadMap}
                                 handleSend={handleSend}
                                 handleTyping={handleTyping}
                                 typingStatus={typingStatus}
-                                currentUserId={currentUserId!}
+                                currentUserId={userId!}
                                 combinedMessages={combinedMessages}
                                 searchText={searchText}
                                 setSearchText={setSearchText}

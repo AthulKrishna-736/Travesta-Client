@@ -1,6 +1,6 @@
-import { TResponseChat } from "@/types/chat.types";
+import { ChatItem, TResponseChat } from "@/types/chat.types";
 import { axiosInstance } from "./axiosInstance"
-import { IUser, User } from "@/types/user.types";
+import { IUser } from "@/types/user.types";
 import { BookingPayload, IBooking } from "@/types/booking.types";
 import { USER_APIS } from "../constants/apiConstants";
 import { TApiErrorResponse, TApiSuccessResponse } from "@/types/custom.types";
@@ -115,24 +115,24 @@ export const getUserAmenities = async (): Promise<TApiSuccessResponse<IAmenity[]
 }
 
 //chat
-export const getChattedVendors = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
+export const getChattedVendors = async (search?: string): Promise<ChatItem[]> => {
     const response = await axiosInstance.get(`${USER_APIS.chat}/vendors`, {
         params: { search }
     })
     return response.data?.data
 };
 
-export const getUserChatMessages = async (userId: string): Promise<TResponseChat[] | null> => {
+export const getUserChatMessages = async (userId: string): Promise<TResponseChat[]> => {
     const response = await axiosInstance.get(`${USER_APIS.chat}/${userId}/messages`);
     return response.data?.data;
 };
 
-export const getUserUnreadChats = async () => {
+export const getUserUnreadChats = async (): Promise<TApiSuccessResponse<{ id: string, count: number }[]>> => {
     const response = await axiosInstance.get(`${USER_APIS.chat}/unread`);
     return response.data;
 };
 
-export const MarkMsgRead = async (receiverId: string) => {
+export const MarkMsgRead = async (receiverId: string): Promise<TApiSuccessResponse<null>> => {
     const response = await axiosInstance.post(`${USER_APIS.chat}/${receiverId}/read`)
     return response.data;
 }

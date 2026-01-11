@@ -2,17 +2,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useGetAdminChatMessages, useGetAdminUnreadChats, useGetVendorsChatAdmin, useMarkMsgRead, useSocketChat } from '@/hooks/user/useChat';
-import { User } from '@/types/user.types';
 import ChatPage from '@/components/chat/ChatPage';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
+import { ChatItem } from '@/types/chat.types';
 
 const AdminChatPage: React.FC = () => {
     const [msg, setMsg] = useState('');
-    const [selectedVendor, setSelectedVendor] = useState<Pick<User, 'id' | 'firstName' | 'role'> | null>(null);
+    const [selectedVendor, setSelectedVendor] = useState<ChatItem | null>(null);
     const [searchText, setSearchText] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
+    const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
 
     const adminId = useSelector((state: RootState) => state.admin.admin?.id);
+    const adminRole = useSelector((state: RootState) => state.admin.admin?.role);
     const isAuthenticated = Boolean(useSelector((state: RootState) => state.admin.admin?.id));
 
     useEffect(() => {
@@ -20,15 +22,21 @@ const AdminChatPage: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchText]);
 
-    const { data: unReadMsgResponse } = useGetAdminUnreadChats();
-    const { mutate: markMessageAsRead } = useMarkMsgRead();
     const { data: chattedVendorsResponse, isLoading } = useGetVendorsChatAdmin(debouncedSearch);
-    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts } = useSocketChat(isAuthenticated, selectedVendor?.id, adminId, 'admin');
     const { data: oldMessagesData } = useGetAdminChatMessages(selectedVendor?.id || '', !!selectedVendor);
+    const { data: unReadMsgResponse } = useGetAdminUnreadChats(isAuthenticated);
+    const { messages: liveMessages, sendMessage, sendTyping, typingStatus, liveUnreadCounts, clearLiveUnread } = useSocketChat(isAuthenticated, adminRole!, adminId!, selectedVendor?.id,);
+    const { mutate: markMessageAsRead } = useMarkMsgRead();
 
     const vendors = chattedVendorsResponse || [];
-    const unReadMsg = unReadMsgResponse?.data;
+    const unreadMsg = unReadMsgResponse?.data;
     const oldMessages = oldMessagesData || [];
+
+    const handleSelectUser = (user: ChatItem) => {
+        setSelectedVendor(user);
+        clearLiveUnread(user.id);
+        markMessageAsRead(user.id);
+    };
 
     const combinedMessages = useMemo(() => {
         const map = new Map();
@@ -39,6 +47,28 @@ const AdminChatPage: React.FC = () => {
             (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
         );
     }, [oldMessages, liveMessages]);
+
+    const mergedUnreadMap = useMemo(() => {
+        const map: Record<string, number> = {};
+
+        unreadMsg?.forEach(({ id, count }) => {
+            if (id !== selectedVendor?.id) {
+                map[id] = count;
+            }
+        });
+
+        Object.entries(liveUnreadCounts || {}).forEach(([id, count]) => {
+            if (id !== selectedVendor?.id) {
+                map[id] = (map[id] || 0) + count;
+            }
+        });
+
+        return map;
+    }, [unreadMsg, liveUnreadCounts, selectedVendor?.id]);
+
+    useEffect(() => {
+        setUnreadMap(mergedUnreadMap);
+    }, [mergedUnreadMap]);
 
     const chatLastActivity = useMemo(() => {
         const map = new Map<string, number>();
@@ -58,19 +88,13 @@ const AdminChatPage: React.FC = () => {
         return map;
     }, [oldMessages, liveMessages, adminId]);
 
-    const sortedVendors = useMemo(() => {
+    const sortedChats = useMemo(() => {
         return [...vendors].sort((a, b) => {
             const timeA = chatLastActivity.get(a.id) || 0;
             const timeB = chatLastActivity.get(b.id) || 0;
             return timeB - timeA;
         });
     }, [vendors, chatLastActivity]);
-
-    useEffect(() => {
-        if (selectedVendor?.id) {
-            markMessageAsRead(selectedVendor?.id)
-        }
-    }, [selectedVendor]);
 
     const handleTyping = () => {
         if (selectedVendor) {
@@ -81,12 +105,7 @@ const AdminChatPage: React.FC = () => {
     const handleSend = () => {
         if (!msg.trim() || !selectedVendor) return;
 
-        sendMessage({
-            toId: selectedVendor.id,
-            toRole: 'vendor',
-            message: msg.trim(),
-        });
-
+        sendMessage({ toId: selectedVendor.id, toRole: 'vendor', message: msg.trim() });
         setMsg('');
     };
 
@@ -99,13 +118,12 @@ const AdminChatPage: React.FC = () => {
 
                 <ChatPage
                     isLoading={isLoading}
-                    users={sortedVendors || []}
-                    setSelectedUser={setSelectedVendor}
+                    users={sortedChats}
                     selectedUser={selectedVendor!}
+                    handleSelectUser={handleSelectUser}
                     msg={msg}
                     setMsg={setMsg}
-                    liveUnreadCounts={liveUnreadCounts}
-                    unreadCounts={unReadMsg}
+                    unreadCounts={unreadMap}
                     handleSend={handleSend}
                     handleTyping={handleTyping}
                     typingStatus={typingStatus}

@@ -1,11 +1,12 @@
 import { axiosInstance } from "./axiosInstance";
 import { TUpdateVendorReqValues } from '../types/authentication.types';
 import { IAmenity, TAmenityType, TCreateAmenityData } from "@/types/amenities.types";
-import { IUser, User } from "@/types/user.types";
+import { IUser } from "@/types/user.types";
 import { TApiSuccessResponse, TSortOption } from "@/types/custom.types";
 import { ADMIN_APIS } from "../constants/apiConstants";
 import { ISubscription, TCreatePlan, TUpdatePlan } from "@/types/plan.types";
 import { TAdminAnalyticsData } from "@/types/analytics.types";
+import { ChatItem, IChat } from "@/types/chat.types";
 
 
 //customers manage
@@ -79,19 +80,19 @@ export const toggleBlockAmenity = async (amenityId: string): Promise<TApiSuccess
 };
 
 //chat
-export const getAdminChatVendors = async (search?: string): Promise<Pick<User, 'id' | 'firstName' | 'role'>[] | null> => {
+export const getAdminChatVendors = async (search?: string): Promise<ChatItem[]> => {
     const response = await axiosInstance.get(`${ADMIN_APIS.chat}/vendors`, {
         params: { search },
     })
     return response.data?.data;
 }
 
-export const getAdminChatMessages = async (userId: string) => {
+export const getAdminChatMessages = async (userId: string): Promise<IChat[]> => {
     const response = await axiosInstance.get(`${ADMIN_APIS.chat}/${userId}/messages`);
     return response.data?.data;
 }
 
-export const getAdminUnreadMsg = async () => {
+export const getAdminUnreadMsg = async (): Promise<TApiSuccessResponse<{ id: string, count: number }[]>> => {
     const response = await axiosInstance.get(`${ADMIN_APIS.chat}/unread`);
     return response.data;
 }

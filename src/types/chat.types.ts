@@ -1,5 +1,4 @@
 import { TRoles } from "./authentication.types";
-import { User } from "./user.types";
 
 //chat model
 export interface IChat {
@@ -21,13 +20,12 @@ export type TResponseChat = IChat;
 //component props and types
 export interface IChatPageProps {
     isLoading: boolean;
-    users: (Pick<User, 'id' | 'firstName' | 'role'> & { lastMessage?: string, lastMessageTime?: string })[];
-    setSelectedUser: (data: Pick<User, 'id' | 'firstName' | 'role'>) => void;
-    selectedUser: Pick<User, 'id' | 'firstName' | 'role'>;
+    users: ChatItem[];
+    selectedUser: ChatItem;
+    handleSelectUser: (data: ChatItem) => void;
     msg: string;
     setMsg: (data: string) => void;
-    liveUnreadCounts: Record<string, number>;
-    unreadCounts?: { id: string; count: number }[];
+    unreadCounts?: Record<string, number>;
     handleSend: () => void;
     handleTyping: () => void;
     typingStatus: boolean;
@@ -47,6 +45,16 @@ export interface IChatProps {
     currentUserId: string;
 }
 
+export interface ChatItem {
+    id: string;
+    firstName: string;
+    role: TRoles;
+    lastMessage: string;
+    lastMessageTime: number;
+    unreadCount: number;
+}
+
+
 //socket types
 export interface SendMessagePayload {
     toId: string;
@@ -65,3 +73,5 @@ export interface ReadReceiptPayload {
     toId: string;
     toRole: TRoles;
 }
+
+

@@ -1,8 +1,8 @@
 import { env } from "@/config/config";
-import io, { Socket } from "socket.io-client";
+import { io, Socket } from 'socket.io-client';
 
 // Setup socket instance
-let socket: typeof Socket | null = null;
+let socket: Socket | null = null;
 
 export const connectChatSocket = () => {
     if (socket?.connected) return socket;
@@ -10,18 +10,14 @@ export const connectChatSocket = () => {
     socket = io(env.SOCKET_URL, {
         path: "/api/chat",
         transports: ["websocket"],
-        transportOptions: {
-            polling: {
-                withCredentials: true
-            }
-        },
+        withCredentials: true,
         reconnectionAttempts: 5,
     });
 
     return socket;
 };
 
-export const getChatSocket = (): typeof Socket | null => socket;
+export const getChatSocket = (): Socket | null => socket;
 
 export const disconnectChatSocket = () => {
     socket?.disconnect();

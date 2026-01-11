@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { IChatProps } from '@/types/chat.types';
 import { Check, SendIcon } from 'lucide-react';
+import { formatDayLabel } from '@/utils/helperFunctions';
 
 
 const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleTyping, typingStatus, currentUserId }) => {
@@ -16,54 +17,59 @@ const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleT
     }, [messages]);
 
     const isSender = (fromId: string) => String(fromId) === String(currentUserId);
+    const getDayKey = (iso: string) => new Date(iso).toDateString();
 
     return (
         <div className="flex flex-col flex-grow overflow-hidden">
             <div className="flex-grow overflow-y-auto bg-[#f1edf7] p-4 space-y-4" ref={messageContainerRef}>
                 {messages.map((m, i) => {
                     const sent = isSender(m.fromId);
+                    const prev = messages[i - 1];
+                    const showDateDivider = !prev || getDayKey(prev.timestamp) !== getDayKey(m.timestamp);
+
                     return (
-                        <div
-                            key={i}
-                            className={`flex ${sent ? 'justify-end' : 'justify-start'}`}
-                        >
-                            <div
-                                className={`inline-block px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${sent
-                                    ? 'bg-violet-600 text-white rounded-br-none'
+                        <React.Fragment key={m._id ?? i}>
+                            {showDateDivider && (
+                                <div className="flex items-center my-4">
+                                    <div className="flex-grow border-t border-gray-300" />
+                                    <span className="mx-3 text-xs font-semibold text-gray-500 whitespace-nowrap">
+                                        {formatDayLabel(m.timestamp)}
+                                    </span>
+                                    <div className="flex-grow border-t border-gray-300" />
+                                </div>
+                            )}
+
+                            <div key={i} className={`flex ${sent ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`inline-block max-w-[70%] px-4 py-2 rounded-xl shadow-sm text-sm my-1 break-words whitespace-pre-wrap ${sent
+                                    ? 'bg-violet-500 text-white rounded-br-none'
                                     : 'bg-white text-gray-900 border border-gray-200 rounded-bl-none'
                                     }`}
-                                style={{ maxWidth: '70%' }}
-                            >
-                                <p className="text-sm">{m.message}</p>
+                                >
+                                    <p className="text-sm">{m.message}</p>
 
-                                <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
-                                    <span className="text-xs">
-                                        {new Date(m.timestamp).toLocaleString([], {
-                                            day: '2-digit',
-                                            month: 'short',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        })}
-                                    </span>
-
-                                    {isSender(m.fromId) && (
-                                        <span className="flex items-center gap-[2px]">
-                                            <Check
-                                                size={12}
-                                                className={m.isRead ? 'text-white' : 'text-gray-300'}
-                                            />
-                                            {m.isRead && (
-                                                <Check
-                                                    size={12}
-                                                    className={m.isRead ? 'text-white' : 'text-gray-300'}
-                                                />
-                                            )}
+                                    <div className="flex justify-between items-center mt-1 text-[10px] opacity-70">
+                                        <span className="text-xs">
+                                            {new Date(m.timestamp).toLocaleString([], {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
                                         </span>
-                                    )}
-                                </div>
 
+                                        {isSender(m.fromId) && (
+                                            <span className="flex items-center gap-[2px]">
+                                                <Check size={12} className={m.isRead ? 'text-white' : 'text-gray-300'} />
+                                                {m.isRead && (
+                                                    <Check size={12} className={m.isRead ? 'text-white' : 'text-gray-300'} />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
+                        </React.Fragment>
                     );
                 })}
 
@@ -91,10 +97,10 @@ const Chat: React.FC<IChatProps> = ({ msg, setMsg, messages, handleSend, handleT
                 />
                 <Button
                     onClick={handleSend}
-                    className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-md transition-all flex items-center gap-2"
+                    className="bg-[#e0d1f8] text-indigo-700 px-4 py-2 rounded-md transition-all flex items-center gap-2 cursor-pointer"
                 >
                     <span className="hidden sm:inline">Send</span>
-                    <SendIcon className="w-5 h-5 rotate-45" />
+                    <SendIcon className="w-5 h-5" />
                 </Button>
             </div>
         </div>
