@@ -12,6 +12,8 @@ import HotelCard from '@/components/hotel/HotelCard';
 import CustomSort from '@/components/common/CustomSort';
 import HotelCardSkelton from '@/components/hotel/HotelCardSkelton';
 import { useQueryClient } from '@tanstack/react-query';
+import { IHotel } from '@/types/hotel.types';
+import { IRoom } from '@/types/room.types';
 
 
 const UserHotelPage: React.FC = () => {
@@ -73,10 +75,10 @@ const UserHotelPage: React.FC = () => {
     const hotels = hotelResponseData?.data?.length ? hotelResponseData.data : [];
     const meta = hotelResponseData?.meta;
 
-    const mapHotelWithLocations = hotels.map((h: any) => {
+    const mapHotelWithLocations = hotels.map((h: IHotel & { room?: IRoom }) => {
         return {
             hotelName: h.name,
-            price: h.room.basePrice,
+            price: h.room?.basePrice ?? 0,
             coordinates: h.geoLocation.coordinates,
         }
     })

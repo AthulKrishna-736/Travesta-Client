@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { TOtpFormValues } from '../../types/authentication.types';
 import { ICustomError } from "@/types/custom.types";
 
-export const useOtpVerify = (role: string, onSuccessCallback: (data: any) => void) => {
+export const useOtpVerify = (role: string, onSuccessCallback: (data: string) => void) => {
     return useMutation({
         mutationFn: (values: TOtpFormValues) => verifyOtp(values, role),
         onSuccess: (res) => {

@@ -55,7 +55,7 @@ const VendorBookingListPage = () => {
                         onChange={(e) => setSelectedHotelId(e.target.value)}
                     >
                         <option value="">All Hotels</option>
-                        {hotels?.map((h: any) => (
+                        {hotels?.map((h) => (
                             <option key={h.id} value={h.id}>
                                 {h.name}
                             </option>

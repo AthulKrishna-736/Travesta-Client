@@ -183,11 +183,8 @@ const VendorAnalyticsDashboard = () => {
                             </thead>
 
                             <tbody>
-                                {analyticsData.topHotels.map((hotel: any, index: number) => (
-                                    <tr
-                                        key={hotel.hotelId}
-                                        className="border-b border-gray-100 hover:bg-gray-50 transition"
-                                    >
+                                {analyticsData.topHotels.map((hotel, index: number) => (
+                                    <tr key={hotel.hotelId} className="border-b border-gray-100 hover:bg-gray-50 transition"                                    >
                                         <td className="py-3 px-4">
                                             <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-blue-50 text-blue-700 font-semibold">
                                                 {index + 1}

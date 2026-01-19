@@ -192,7 +192,7 @@ const AdminDash = () => {
                                     </h2>
 
                                     <div className="divide-y divide-gray-100">
-                                        {analytics.topHotels.map((hotel: any, idx: number) => (
+                                        {analytics.topHotels.map((hotel, idx: number) => (
                                             <div
                                                 key={idx}
                                                 className="flex items-center justify-between py-4 hover:bg-gray-50 transition rounded-md px-2"

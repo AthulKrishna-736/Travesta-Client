@@ -65,7 +65,11 @@ export const useAddWalletCredit = () => {
     return useMutation({
         mutationFn: (amount: number) => addWalletCredit(amount),
         onSuccess: (res) => {
-            res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
+            if (res.success) {
+                showSuccess(res.message)
+            } else {
+                showError(res.message || "Something went wrong");
+            }
             queryClient.invalidateQueries({ queryKey: ['wallet'] });
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
@@ -80,7 +84,11 @@ export const useCreatePaymentIntent = () => {
     return useMutation({
         mutationFn: (amount: number) => createPaymentIntent({ amount }),
         onSuccess: (res) => {
-            res.success ? showSuccess(res.message) : showError(res.message || "Something went wrong");
+            if (res.success) {
+                showSuccess(res.message)
+            } else {
+                showError(res.message || "Something went wrong");
+            }
         },
         onError: (err: ICustomError) => {
             showError(err.response.data.message || "Failed to create payment intent");

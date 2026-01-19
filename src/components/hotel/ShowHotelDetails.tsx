@@ -81,7 +81,7 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                                         if (!data[key]) return null;
 
                                         if (['amenities', 'tags'].includes(key)) {
-                                            const values = Array.isArray(data[key]) ? data[key].map((item: any) => key === 'amenities' ? item.name : item) : [];
+                                            const values = Array.isArray(data[key]) ? data[key].map((item) => key === 'amenities' ? item.name : item) : [];
 
                                             return (
                                                 <div key={key} className="flex flex-col">
