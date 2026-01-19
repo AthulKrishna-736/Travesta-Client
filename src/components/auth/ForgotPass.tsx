@@ -26,17 +26,14 @@ const ForgotPass: React.FC<IForgotPassProps> = ({ onSubmit, isLoading }) => {
                     <Form className="space-y-6">
                         <div>
                             <Label htmlFor="email">Email</Label>
-                            <Field name="email">
-                                {({ field }: any) => (
-                                    <Input
-                                        {...field}
-                                        id="email"
-                                        type="email"
-                                        placeholder="you@example.com"
-                                        required
-                                    />
-                                )}
-                            </Field>
+                            <Field
+                                as={Input}
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="you@example.com"
+                                required
+                            />
                             <ErrorMessage name="email" component="p" className="text-red-500 text-sm text-center mt-1" />
                         </div>
 

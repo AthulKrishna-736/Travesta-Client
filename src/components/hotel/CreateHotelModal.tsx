@@ -66,9 +66,9 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
             });
 
             if (Array.isArray(hotelData?.amenities)) {
-                setSelectedAmenities(hotelData.amenities.map((a: any) => a._id));
+                setSelectedAmenities(hotelData.amenities.map((a) => a._id));
             } else if (typeof hotelData?.amenities === 'string') {
-                setSelectedAmenities((hotelData.amenities as string).split(',').map((a: any) => a.trim()).filter(Boolean));
+                setSelectedAmenities((hotelData.amenities as string).split(',').map((a) => a.trim()).filter(Boolean));
             } else {
                 setSelectedAmenities([]);
             }
@@ -284,7 +284,7 @@ const CreateHotelModal: React.FC<ICreateHotelModalProps> = ({ open, onClose, onS
                                 }}
                             >
                                 <option value="">+ Add Amenity</option>
-                                {hotelAmenities.map((a: any) => (
+                                {hotelAmenities.map((a) => (
                                     <option key={a.id} value={a.id}>{a.name}</option>
                                 ))}
                             </select>

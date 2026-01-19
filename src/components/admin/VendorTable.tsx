@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import DataTable from '../common/Table'
-import { VendorRequestTableProps } from '@/types/user.types'
+import { Vendor, VendorRequestTableProps } from '@/types/user.types'
 import ConfirmationModal from '../common/ConfirmationModa'
 import ShowDetailsModal from '../common/ShowDetailsModal'
 import { useVendorVerify } from '@/hooks/vendor/useVendor'
 import { BadgeInfo, CheckCircle2, XCircle } from 'lucide-react'
+import { Column } from '@/types/custom.types'
 
 const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page, limit, search }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false);
-    const [selectedVendor, setSelectedVendor] = useState<any>(null);
+    const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
     const [rejectReason, setRejectReason] = useState('');
     const [vendorModalOpen, setVendorModalOpen] = useState(false);
 
@@ -18,7 +19,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         setRejectReason('')
     })
 
-    const openRejectModal = (vendor: any) => {
+    const openRejectModal = (vendor: Vendor) => {
         setSelectedVendor(vendor);
         setIsModalOpen(true);
     };
@@ -38,14 +39,14 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         }
     };
 
-    const openVendorDetailModal = (vendor: any) => {
+    const openVendorDetailModal = (vendor: Vendor) => {
         setSelectedVendor(vendor)
         setVendorModalOpen(true)
     }
 
     const handleDetailModalClose = () => {
         setVendorModalOpen(false)
-        setSelectedVendor('')
+        setSelectedVendor(null)
     }
 
     const handleRejectCancel = () => {
@@ -55,7 +56,6 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
 
     const handleAcceptConfirm = () => {
         if (selectedVendor) {
-            console.log('selected vendor: ', selectedVendor)
             updateVendorReq({
                 vendorId: selectedVendor.id,
                 isVerified: true,
@@ -72,14 +72,29 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
         setIsAcceptModalOpen(false);
     };
 
-
-    const columns = [
-        { key: "firstName", label: "Name" },
+    const columns: Column<Vendor>[] = [
+        { key: "firstName", label: "Name", render: (value) => (<span className="font-semibold">{value}</span>) },
         { key: "email", label: "Email" },
-        { key: "role", label: "Role" },
-        { key: "verificationReason", label: "reason" },
-        { key: "isVerified", label: "Verified" },
-    ]
+        {
+            key: "role", label: "Role", render: (value) => (
+                <span className="px-4 py-2 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ),
+        },
+        { key: "verificationReason", label: "Reason" },
+        {
+            key: "isVerified", label: "Verified", render: (value) => value ? (
+                <span className="px-4 py-2 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                    Yes
+                </span>
+            ) : (
+                <span className="px-4 py-2 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                    No
+                </span>
+            ),
+        },
+    ];
 
     const actions = [
         {
@@ -88,9 +103,9 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
             icon: CheckCircle2,
             tooltip: 'Accept verification',
             showLabel: false,
-            hidden: (row: any) => row.isVerified === true,
+            hidden: (row: Vendor) => row.isVerified === true,
             className: "text-green-700 hover:bg-green-100",
-            onClick: (row: any) => {
+            onClick: (row: Vendor) => {
                 setSelectedVendor(row);
                 setIsAcceptModalOpen(true);
             }
@@ -101,9 +116,9 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
             icon: XCircle,
             tooltip: 'Reject verification',
             showLabel: false,
-            hidden: (row: any) => row.isVerified === true,
+            hidden: (row: Vendor) => row.isVerified === true,
             className: "text-red-700 hover:bg-red-100",
-            onClick: (row: any) => {
+            onClick: (row: Vendor) => {
                 openRejectModal(row);
             }
         },
@@ -114,7 +129,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
             tooltip: 'Show Details',
             showLabel: false,
             className: 'cursor-pointer text-blue-700 hover:bg-blue-100 mx-2',
-            onClick: (row: any) => {
+            onClick: (row: Vendor) => {
                 openVendorDetailModal(row)
             }
         }
@@ -142,12 +157,16 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
                 onCancel={handleRejectCancel}
                 isLoading={isPending}
             />
-            <ShowDetailsModal
-                open={vendorModalOpen}
-                title='Vendor Details'
-                data={selectedVendor}
-                onCancel={handleDetailModalClose}
-            />
+
+            {selectedVendor && (
+                <ShowDetailsModal
+                    open={vendorModalOpen}
+                    title='Vendor Details'
+                    data={selectedVendor}
+                    onCancel={handleDetailModalClose}
+                />
+            )}
+
             <ConfirmationModal
                 open={isAcceptModalOpen}
                 title="Accept Vendor"

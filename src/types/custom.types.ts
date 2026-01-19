@@ -39,22 +39,30 @@ export interface ILayoutProps {
     title?: string;
 }
 
-export type Action = {
-    label: string | ((rowData: any) => string);
-    tooltip?: string | ((rowData: any) => string);
-    onClick: (rowData: any) => void;
+export type Action<T> = {
+    label: string | ((rowData: T) => string);
+    tooltip?: string | ((rowData: T) => string);
+    onClick: (rowData: T) => void;
     variant?: "default" | "outline" | "ghost" | "link" | "destructive";
-    className?: string | ((rowData: any) => string);
+    className?: string | ((rowData: T) => string);
     showLabel?: boolean;
-    icon?: LucideIcon | ((rowData: any) => LucideIcon);
-    hidden?: boolean | ((rowData: any) => boolean);
+    icon?: LucideIcon | ((rowData: T) => LucideIcon);
+    hidden?: boolean | ((rowData: T) => boolean);
 };
 
-export interface DataTableProps<T = any[]> {
-    columns: { key: string; label: string }[]
-    data: T
-    actions?: Action[]
-    loading?: boolean
+export type TTableRow = object;
+
+export type Column<T> = {
+    key: keyof T;
+    label: string;
+    render?: (value: T[keyof T], row: T) => React.ReactNode;
+};
+
+export interface DataTableProps<T extends TTableRow> {
+    columns: Column<T>[];
+    data: T[];
+    actions?: Action<T>[];
+    loading?: boolean;
 }
 
 export interface PaginationProps {
@@ -190,3 +198,5 @@ export type TAutoComplete = {
         layer: string[],
     }[]
 }
+
+export type TAutoCompletePrediction = TAutoComplete["predictions"][number];

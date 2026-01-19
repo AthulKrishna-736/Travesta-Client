@@ -59,11 +59,13 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                 ].map(({ name, label, type = 'text' }) => (
                                     <div key={name} className="space-y-1">
                                         <Label htmlFor={name}>{label}</Label>
-                                        <Field name={name}>
-                                            {({ field }: any) => (
-                                                <Input id={name} type={type} {...field} className="w-full" />
-                                            )}
-                                        </Field>
+                                        <Field
+                                            as={Input}
+                                            id={name}
+                                            name={name}
+                                            type={type}
+                                            className="w-full"
+                                        />
                                         <ErrorMessage name={name}>
                                             {(msg: string) => (
                                                 <p className="text-red-500 text-sm mt-0 mb-0">{msg}</p>
@@ -76,28 +78,24 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                 <div className="space-y-[1px]">
                                     <Label htmlFor="password">Password</Label>
                                     <div className="relative">
-                                        <Field name="password">
-                                            {({ field }: any) => (
-                                                <Input
-                                                    id="password"
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    {...field}
-                                                    className="pr-10 w-full"
-                                                />
-                                            )}
-                                        </Field>
+                                        <Field
+                                            as={Input}
+                                            name="password"
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            className="pr-10 w-full"
+                                        />
+
                                         <button
                                             type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
+                                            onClick={() => setShowPassword((prev) => !prev)}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
                                         >
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
                                     <ErrorMessage name="password">
-                                        {(msg: string) => (
-                                            <p className="text-red-500 text-sm mt-0 mb-0">{msg}</p>
-                                        )}
+                                        {(msg: string) => (<p className="text-red-500 text-sm mt-0 mb-0">{msg}</p>)}
                                     </ErrorMessage>
                                 </div>
 
@@ -105,28 +103,24 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                 <div className="space-y-[1px]">
                                     <Label htmlFor="confirmPassword">Confirm Password</Label>
                                     <div className="relative">
-                                        <Field name="confirmPassword">
-                                            {({ field }: any) => (
-                                                <Input
-                                                    id="confirmPassword"
-                                                    type={showConfirmPassword ? 'text' : 'password'}
-                                                    {...field}
-                                                    className="pr-10 w-full"
-                                                />
-                                            )}
-                                        </Field>
+                                        <Field
+                                            as={Input}
+                                            name="confirmPassword"
+                                            id="confirmPassword"
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            className="pr-10 w-full"
+                                        />
+
                                         <button
                                             type="button"
-                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            onClick={() => setShowConfirmPassword((prev) => !prev)}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
                                         >
                                             {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
                                     <ErrorMessage name="confirmPassword">
-                                        {(msg: string) => (
-                                            <p className="text-red-500 text-sm mt-0 mb-0">{msg}</p>
-                                        )}
+                                        {(msg: string) => (<p className="text-red-500 text-sm mt-0 mb-0">{msg}</p>)}
                                     </ErrorMessage>
                                 </div>
 
@@ -138,11 +132,7 @@ const SignUp: React.FC<ISignUpFormProps> = ({ role, onSubmit, isLoading }) => {
                                 {/* Already have an account? Login */}
                                 <div className="text-sm text-center text-gray-600">
                                     Already have an account?{' '}
-                                    <button
-                                        type="button"
-                                        onClick={() => navigate(`/${role}/login`)}
-                                        className="text-blue-600 hover:underline font-medium"
-                                    >
+                                    <button type="button" onClick={() => navigate(`/${role}/login`)} className="text-blue-600 hover:underline font-medium">
                                         Log in
                                     </button>
                                 </div>

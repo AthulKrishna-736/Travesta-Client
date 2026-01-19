@@ -9,6 +9,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { DialogContent } from '@radix-ui/react-dialog';
 import { disablePastDates, useDebounce } from '@/utils/helperFunctions';
 import { env } from '@/config/config';
+import { TAutoCompletePrediction } from '@/types/custom.types';
 
 type TState = {
     search: string,
@@ -50,7 +51,7 @@ const reducer = (state: TState, action: TAction): TState => {
 const SearchForm = () => {
     const [geoSearch, setGeoSearch] = useState('');
     const debouncedSearch = useDebounce(geoSearch, 1500);
-    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [suggestions, setSuggestions] = useState<TAutoCompletePrediction[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [state, dispatch] = useReducer(reducer, initialState);
     const checkInRef = useRef<HTMLInputElement | null>(null);
@@ -103,7 +104,7 @@ const SearchForm = () => {
         setShowSuggestions(true);
     };
 
-    const handleSelectSuggestion = (item: any) => {
+    const handleSelectSuggestion = (item: TAutoCompletePrediction) => {
         const mainText = item.structured_formatting?.main_text || "";
         const lat = item.geometry.location.lat || null;
         const lng = item.geometry.location.lng || null;
@@ -235,7 +236,7 @@ const SearchForm = () => {
                         {showSuggestions && suggestions.length > 0 && (
                             <div className="absolute top-full left-0 w-full bg-white border border-gray-300 shadow-md rounded-b-sm z-20 max-h-54 overflow-y-auto">
 
-                                {suggestions.map((item: any, idx) => (
+                                {suggestions.map((item, idx) => (
                                     <div
                                         key={idx}
                                         className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-[#333]"

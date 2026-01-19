@@ -5,6 +5,7 @@ import { useBlockAmenity, useUpdateAmenity } from "@/hooks/admin/useAmenities";
 import AmenitiesModal from "./AmenitiesModal";
 import ConfirmationModal from "../common/ConfirmationModa";
 import { Ban, Edit, Unlock } from "lucide-react";
+import { Column } from "@/types/custom.types";
 
 const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
     const [editAmenity, setEditAmenity] = useState<IAmenity | null>(null);
@@ -17,11 +18,28 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
     });
     const { mutate: updateAmenity, isPending: isUpdating } = useUpdateAmenity();
 
-    const columns = [
-        { key: "name", label: "Name" },
+    const columns: Column<IAmenity>[] = [
+        { key: "name", label: "Name", render: (value) => (<span className="font-semibold">{value as string}</span>) },
         { key: "description", label: "Description" },
-        { key: "isActive", label: "Active" },
-        { key: "type", label: "Type" },
+        {
+            key: "isActive", label: "Active", render: (value) => value ? (
+                <span className="px-4 py-2 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                    Active
+                </span>
+            ) : (
+                <span className="px-4 py-2 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                    Inactive
+                </span>
+            ),
+        },
+        {
+            key: "type", label: "Type", render: (value) =>
+            (
+                <span className="px-4 py-2 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value as string}
+                </span>
+            ),
+        },
     ];
 
     const actions = [
@@ -63,7 +81,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
     return (
         <>
             <div className="rounded-lg border-1 overflow-hidden">
-                <DataTable
+                <DataTable<IAmenity>
                     columns={columns}
                     data={amenities}
                     actions={actions}

@@ -46,28 +46,24 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
 
                                 <div className='space-y-2'>
                                     <Label htmlFor="email">Email</Label>
-                                    <Field name="email">
-                                        {({ field }: any) => <Input id="email" type="email" {...field} />}
-                                    </Field>
+                                    <Field
+                                        as={Input}
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                    />
                                     <ErrorMessage name="email" component="p" className="text-red-500 text-sm mt-1" />
 
                                     <Label htmlFor="password">Password</Label>
                                     <div className="relative">
-                                        <Field name="password">
-                                            {({ field }: any) => (
-                                                <Input
-                                                    id="password"
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    {...field}
-                                                    className="pr-10"
-                                                />
-                                            )}
-                                        </Field>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
-                                        >
+                                        <Field
+                                            as={Input}
+                                            id="password"
+                                            name="password"
+                                            type={showPassword ? "text" : "password"}
+                                            className="pr-10"
+                                        />
+                                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black">
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
@@ -75,11 +71,7 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
 
                                     {role !== 'admin' && (
                                         <div className="text-right text-sm">
-                                            <button
-                                                type="button"
-                                                className="text-blue-600 hover:underline"
-                                                onClick={() => navigate(`/${role}/forgot-password`)}
-                                            >
+                                            <button type="button" className="text-blue-600 hover:underline" onClick={() => navigate(`/${role}/forgot-password`)}>
                                                 Forgot Password?
                                             </button>
                                         </div>
@@ -103,11 +95,7 @@ const Login: React.FC<ILoginFormProps> = ({ role, onSubmit, isLoading }) => {
 
                                         <div className="text-center text-sm text-gray-600">
                                             Don’t have an account?{' '}
-                                            <button
-                                                type="button"
-                                                className="text-blue-600 hover:underline font-medium"
-                                                onClick={() => navigate(`/${role}/signup`)}
-                                            >
+                                            <button type="button" className="text-blue-600 hover:underline font-medium" onClick={() => navigate(`/${role}/signup`)}>
                                                 Sign up
                                             </button>
                                         </div>

@@ -5,7 +5,7 @@ import { BookingPayload, IBooking } from "@/types/booking.types";
 import { USER_APIS } from "../constants/apiConstants";
 import { TApiErrorResponse, TApiSuccessResponse } from "@/types/custom.types";
 import { IAmenity } from "@/types/amenities.types";
-import { IHotel } from "@/types/hotel.types";
+import { IHotel, TUserHotelParams } from "@/types/hotel.types";
 import { IRoom } from "@/types/room.types";
 import { ITransaction, IWallet } from "@/types/wallet.types";
 import { IRating, TRatingForm } from "@/types/rating.types";
@@ -53,7 +53,7 @@ export const getAllUserHotels = async (
 ): Promise<TApiSuccessResponse<IHotel[]>> => {
     const { search, priceRange, selectedAmenities, roomType, checkIn, checkOut, rating, guests, sort } = filters;
 
-    const params: any = { page, limit, lat, long, rooms, search, checkIn, checkOut, rating, adults: guests, };
+    const params: TUserHotelParams = { page, limit, lat, long, rooms, search, checkIn, checkOut, rating, adults: guests, };
 
     if (priceRange) {
         params.minPrice = priceRange[0];

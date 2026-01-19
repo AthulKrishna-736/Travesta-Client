@@ -19,12 +19,12 @@ const AdminDash = () => {
         </div>
     )
 
-    const bookingsData = analytics.bookingsChart.map((item: any) => ({
+    const bookingsData = analytics.bookingsChart.map((item) => ({
         month: item._id,
         bookings: item.count
     }));
 
-    const revenueData = analytics.topRevenueDays.map((item: any) => ({
+    const revenueData = analytics.topRevenueDays.map((item) => ({
         date: item._id.slice(5),
         revenue: item.revenue
     }));

@@ -5,20 +5,46 @@ import ConfirmationModal from "../common/ConfirmationModa";
 import { Eye, Edit, Ban, Unlock } from "lucide-react";
 import CouponModal from "./CreateCouponModal";
 import ShowCouponDetailsModal from "./ShowCouponDetails";
+import { Column } from "@/types/custom.types";
 
 const CouponTable: React.FC<CouponTableProps> = ({ coupons, loading, onToggleBlock, onEdit, }) => {
     const [selectedCoupon, setSelectedCoupon] = useState<ICoupon | null>(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [viewCoupon, setViewCoupon] = useState<ICoupon | null>(null);
 
-    const columns = [
-        { key: "name", label: "Name" },
-        { key: "code", label: "Code" },
-        { key: "type", label: "Type" },
-        { key: "value", label: "Value" },
-        { key: "minPrice", label: "Min Price" },
-        { key: "maxPrice", label: "Max Price" },
-        { key: "isBlocked", label: "Blocked" },
+
+    const columns: Column<ICoupon>[] = [
+        { key: "name", label: "Name", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
+        {
+            key: "code", label: "Code", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-gray-100 text-gray-800 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
+        {
+            key: "type", label: "Type", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
+        { key: "value", label: "Value", render: (value) => typeof value === "number" ? `${value}%` : null },
+        { key: "minPrice", label: "Min Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
+        { key: "maxPrice", label: "Max Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
+        {
+            key: "isBlocked", label: "Blocked", render: (value) => typeof value === "boolean" ? (
+                value ? (
+                    <span className="px-3 py-1 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                        Yes
+                    </span>
+                ) : (
+                    <span className="px-3 py-1 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                        No
+                    </span>
+                )
+            ) : null,
+        },
     ];
 
     const actions = [

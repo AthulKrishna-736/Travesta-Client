@@ -4,6 +4,7 @@ import DataTable from "../common/Table";
 import ConfirmationModal from "../common/ConfirmationModa";
 import { Eye, Edit, Ban, Unlock } from "lucide-react";
 import ShowOfferDetailsModal from "./ShowOfferDetails";
+import { Column } from "@/types/custom.types";
 
 
 const OfferTable: React.FC<OfferTableProps> = ({ offers, loading, onToggleBlock, onEdit, }) => {
@@ -11,14 +12,38 @@ const OfferTable: React.FC<OfferTableProps> = ({ offers, loading, onToggleBlock,
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [viewOffer, setViewOffer] = useState<IOffer | null>(null);
 
-    const columns = [
-        { key: "name", label: "Name" },
-        { key: "roomType", label: "Room Type" },
-        { key: "discountType", label: "Discount Type" },
-        { key: "discountValue", label: "Value" },
-        { key: "startDate", label: "Start Date" },
-        { key: "expiryDate", label: "End Date" },
-        { key: "isBlocked", label: "Blocked" },
+    const columns: Column<IOffer>[] = [
+        { key: "name", label: "Name", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
+        {
+            key: "roomType", label: "Room Type", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
+        {
+            key: "discountType", label: "Discount Type", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-purple-100 text-purple-700 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
+        { key: "discountValue", label: "Value", render: (value) => typeof value === "number" ? `${value}%` : null },
+        { key: "startDate", label: "Start Date", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        { key: "expiryDate", label: "End Date", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        {
+            key: "isBlocked", label: "Blocked", render: (value) => typeof value === "boolean" ? (
+                value ? (
+                    <span className="px-3 py-1 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                        Yes
+                    </span>
+                ) : (
+                    <span className="px-3 py-1 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                        No
+                    </span>
+                )
+            ) : null,
+        },
     ];
 
     const actions = [

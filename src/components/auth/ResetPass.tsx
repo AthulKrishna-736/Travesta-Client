@@ -41,21 +41,23 @@ const ResetPassModal: React.FC<IResetPassModalProps> = ({ isOpen, onClose, onSub
                                 <Label className="block text-sm font-medium text-gray-700 mb-1">
                                     New Password
                                 </Label>
-                                <Field name="password">
-                                    {({ field }: any) => (
-                                        <div className="relative">
-                                            <Input
-                                                {...field}
-                                                type={showPass ? 'text' : 'password'}
-                                                placeholder="Enter new password"
-                                                required
-                                            />
-                                            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-black">
-                                                {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
-                                            </button>
-                                        </div>
-                                    )}
-                                </Field>
+                                <div className="relative">
+                                    <Field
+                                        as={Input}
+                                        name="password"
+                                        type={showPass ? "text" : "password"}
+                                        placeholder="Enter new password"
+                                        required
+                                    />
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPass((prev) => !prev)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+                                    >
+                                        {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
                                 <ErrorMessage name="password" component="p" className="text-red-500 text-sm text-center mt-1" />
                             </div>
 
@@ -64,21 +66,23 @@ const ResetPassModal: React.FC<IResetPassModalProps> = ({ isOpen, onClose, onSub
                                 <Label className="block text-sm font-medium text-gray-700 mb-1">
                                     Confirm Password
                                 </Label>
-                                <Field name="confirmPassword">
-                                    {({ field }: any) => (
-                                        <div className="relative">
-                                            <Input
-                                                {...field}
-                                                type={showConfirmPass ? 'text' : 'password'}
-                                                placeholder="Confirm new password"
-                                                required
-                                            />
-                                            <button type="button" onClick={() => setShowConfirmPass(!showConfirmPass)} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-black">
-                                                {showConfirmPass ? <EyeOff size={20} /> : <Eye size={20} />}
-                                            </button>
-                                        </div>
-                                    )}
-                                </Field>
+                                <div className="relative">
+                                    <Field
+                                        as={Input}
+                                        name="confirmPassword"
+                                        type={showConfirmPass ? "text" : "password"}
+                                        placeholder="Confirm new password"
+                                        required
+                                    />
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPass((prev) => !prev)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+                                    >
+                                        {showConfirmPass ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </div>
                                 <ErrorMessage
                                     name="confirmPassword"
                                     component="p"

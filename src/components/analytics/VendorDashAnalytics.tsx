@@ -257,7 +257,7 @@ const VendorAnalyticsDashboard = () => {
                         <Suspense fallback={<ChartLoader />}>
                             <AnalyticsPieChart
                                 data={analyticsData.bookingStatus}
-                                centerLabel={`${analyticsData.bookingStatus.reduce((sum: number, item: any) => sum + item.value, 0)} Bookings`}
+                                centerLabel={`${analyticsData.bookingStatus.reduce((sum: number, item) => sum + item.value, 0)} Bookings`}
                             />
                         </Suspense>
                     ) : (

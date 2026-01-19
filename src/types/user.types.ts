@@ -40,11 +40,13 @@ export interface IUser {
 export type TSubscriptionType = 'basic' | 'medium' | 'vip';
 
 export type Vendor = {
-  id: string
-  firstName: string
-  lastName: string
-  email: string
-  isVerified: boolean
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: TRoles;
+  verificationReason?: string;
+  isVerified: boolean;
 }
 
 export type UpdateUser = {
@@ -86,7 +88,16 @@ export interface ProfileSectionProps {
 export interface ShowDetailModalProps {
   open: boolean
   title: string
-  data: IUser
+  data: Partial<IUser>
   onCancel: () => void
 }
 
+// params types
+export type TGetAllUsersParams = {
+  page: number;
+  limit: number;
+  role?: string;
+  search?: string;
+  sortField?: string;
+  sortOrder?: 'ascending' | 'descending';
+}

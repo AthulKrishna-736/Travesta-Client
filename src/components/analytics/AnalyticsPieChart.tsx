@@ -1,18 +1,16 @@
-import React from "react";
+import { AnalyticsPieChartProps } from "@/types/analytics.types";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 
-interface AnalyticsPieChartProps {
-    data: any[];
-    height?: number;
-    innerRadius?: number;
-    outerRadius?: number;
-    centerLabel?: string;
-    showTotal?: boolean;
-}
-
-const AnalyticsPieChart: React.FC<AnalyticsPieChartProps> = ({ data, height = 320, innerRadius = 60, outerRadius = 100, centerLabel, showTotal = true }) => {
-    const total = data.reduce((sum: number, item: any) => sum + item.value, 0);
+const AnalyticsPieChart = <T extends Record<string, any>>({
+    data,
+    height = 320,
+    innerRadius = 60,
+    outerRadius = 100,
+    centerLabel,
+    showTotal = true
+}: AnalyticsPieChartProps<T>) => {
+    const total = data.reduce((sum: number, item) => sum + item.value, 0);
 
     return (
         <ResponsiveContainer width="100%" height={height}>

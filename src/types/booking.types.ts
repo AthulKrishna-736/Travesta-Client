@@ -27,6 +27,17 @@ export interface IBooking {
     updatedAt: string;
 }
 
+export type BookingRow = IBooking & {
+    roomName: string;
+    basePrice?: number;
+};
+
+export type VendorBookingRow = IBooking & {
+    roomName: string;
+    basePrice: number | string;
+};
+
+
 //component props types
 export interface BookingTableProps {
     bookings: IBooking[];

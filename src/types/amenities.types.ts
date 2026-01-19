@@ -31,3 +31,13 @@ export interface IAmenitiesModalProps {
     initialData?: TCreateAmenityData;
     loading?: boolean;
 }
+
+// params types
+export type TAmenityListParams = {
+    page: number;
+    limit: number;
+    type: TAmenityType;
+    search?: string;
+    sortField?: string;
+    sortOrder?: 'ascending' | 'descending';
+};

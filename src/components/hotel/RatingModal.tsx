@@ -120,14 +120,7 @@ const RatingModal: React.FC<IRatingModalProps> = ({ open, onClose, onSubmit, isE
                                         key={num}
                                         onClick={() => handleStarClick(fieldName, num)}
                                     >
-                                        <Star
-                                            size={28}
-                                            className={
-                                                num <= stars[fieldName]
-                                                    ? "text-yellow-500 fill-yellow-500"
-                                                    : "text-gray-400"
-                                            }
-                                        />
+                                        <Star size={28} className={num <= stars[fieldName] ? "text-yellow-500 fill-yellow-500" : "text-gray-400"} />
                                     </button>
                                 ))}
                             </div>
@@ -141,7 +134,7 @@ const RatingModal: React.FC<IRatingModalProps> = ({ open, onClose, onSubmit, isE
                             <input
                                 type="hidden"
                                 value={stars[fieldName]}
-                                {...register(fieldName as any, { required: true, min: 1 })}
+                                {...register(fieldName, { required: true, min: 1 })}
                             />
                         </div>
                     ))}

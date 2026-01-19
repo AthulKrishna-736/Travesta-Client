@@ -9,17 +9,17 @@ import Pagination from "@/components/common/Pagination";
 import CreateHotelModal from "./CreateHotelModal";
 import { useHotelsByVendor, useUpdateHotel } from "@/hooks/vendor/useHotel";
 import { Edit, InfoIcon, LineChartIcon } from "lucide-react";
+import { Column } from "@/types/custom.types";
 
-const columns = [
+const columns: Column<IHotel>[] = [
     { key: "name", label: "Hotel Name" },
     { key: "city", label: "City" },
     { key: "state", label: "State" },
     { key: "address", label: "Address" },
 ];
-
 const HotelTable: React.FC<Partial<IHotelTableProps>> = ({ onHotelsFetched }) => {
     const navigate = useNavigate();
-    const [selectedHotel, setSelectedHotel] = useState<any | null>(null);
+    const [selectedHotel, setSelectedHotel] = useState<IHotel | null>(null);
     const [detailModalOpen, setDetailModalOpen] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedSearch, setDebouncedSearch] = useState<string>("");

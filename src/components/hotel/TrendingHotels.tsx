@@ -1,28 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowUpRight, MapPin } from 'lucide-react';
+import { HotelWithRoom } from '../home/TrendingProperties';
 
-interface HotelData {
-    _id: string;
-    name: string;
-    slug: string;
-    images: string[];
-    city: string;
-    state: string;
-    room: {
-        _id: string;
-        name: string;
-        slug: string;
-        basePrice: number;
-        bedType: string;
-        guest: number;
-        roomType: string;
-        availableRooms: number;
-    };
-}
 
 interface TrendingHotelsProps {
-    hotel: HotelData;
+    hotel: HotelWithRoom;
 }
 
 const TrendingHotels: React.FC<TrendingHotelsProps> = ({ hotel }) => {

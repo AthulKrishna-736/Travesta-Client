@@ -18,3 +18,36 @@ export type TVendorAnalyticsData = {
     monthlyRevenue: Array<{ revenue: number, bookings: number, month: string }>
     bookingStatus: Array<{ name: string, value: number, color: string }>
 }
+
+// component props
+export interface AnalyticsBarChartProps<T> {
+    data: T[];
+    xKey: string;
+    yKey: string;
+    label?: string;
+    height?: number;
+    barColor?: string;
+    barSize?: number;
+    valueFormatter?: (value: number) => string;
+    xAxisAngle?: number;
+    yAxisFormatter?: (value: number) => string;
+}
+
+export interface AnalyticsLineChartProps<T> {
+    data: T[];
+    xKey: string;
+    yKey: string;
+    label?: string;
+    height?: number;
+    strokeColor?: string;
+    valueFormatter?: (value: number) => string;
+}
+
+export interface AnalyticsPieChartProps<T> {
+    data: T[];
+    height?: number;
+    innerRadius?: number;
+    outerRadius?: number;
+    centerLabel?: string;
+    showTotal?: boolean;
+}

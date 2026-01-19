@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, LegendPayload } from "recharts";
 
 interface BookingsStatusChartProps {
     data: Array<{ name: string; value: number; color: string }>;
@@ -37,11 +37,16 @@ const BookingsStatusChart = ({ data }: BookingsStatusChartProps) => {
                     <Legend
                         verticalAlign="bottom"
                         height={36}
-                        formatter={(value: any, entry: any) => (
-                            <span className="text-sm text-foreground">
-                                {value}: <span className="font-semibold">{entry.payload.value}</span>
-                            </span>
-                        )}
+                        formatter={(value: string, entry?: LegendPayload) => {
+                            const payload = entry?.payload as { name: string; value: number; color: string } | undefined;
+                            if (!payload) return null;
+
+                            return (
+                                <span className="text-sm text-foreground">
+                                    {value}: <span className="font-semibold">{payload.value}</span>
+                                </span>
+                            );
+                        }}
                     />
                 </PieChart>
             </ResponsiveContainer>

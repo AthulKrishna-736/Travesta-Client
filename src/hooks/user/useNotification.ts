@@ -64,7 +64,7 @@ export const useGetLiveNotifications = (isAuthenticated: boolean, setNotificatio
                     return [data, ...prev];
                 });
             } catch (err) {
-                console.error("Invalid SSE JSON", e.data);
+                console.error("Invalid SSE JSON", e.data, err);
             }
         };
 

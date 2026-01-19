@@ -1,24 +1,24 @@
 import { useState } from "react";
 import DataTable from "@/components/common/Table";
 import { Eye } from "lucide-react";
-import { Action } from "@/types/custom.types";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import PlanHistoryDetailModal from "./PlanHistoryDetail";
 import { useGetPlanHistory } from "@/hooks/admin/useSubscription";
-import { TPagination } from "@/types/custom.types";
+import { Column, TPagination } from "@/types/custom.types";
 import Pagination from "../common/Pagination";
+import { UserSubscriptionRow } from "@/types/plan.types";
 
 const PlanHistoryList = () => {
     const [page, setPage] = useState<number>(1);
     const [type, setType] = useState<"basic" | "medium" | "vip" | "all">("all");
-    const [selectedHistory, setSelectedHistory] = useState<any | null>(null);
+    const [selectedHistory, setSelectedHistory] = useState<UserSubscriptionRow | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const limit = 6;
     const { data: planHistoryResponse, isLoading } = useGetPlanHistory(page, limit, type);
 
-    const histories = planHistoryResponse
-        ? planHistoryResponse.data.map((item: any) => ({
+    const histories: UserSubscriptionRow[] = planHistoryResponse
+        ? planHistoryResponse.data.map((item) => ({
             id: item._id,
             firstName: item.user?.firstName ?? 'n/a',
             email: item.user?.email ?? 'n/a',
@@ -32,27 +32,43 @@ const PlanHistoryList = () => {
 
     const meta = planHistoryResponse ? planHistoryResponse.meta as TPagination : null;
 
-
-    const columns = [
-        { key: "firstName", label: "User Name" },
-        { key: "email", label: "Email" },
-        { key: "subscriptionName", label: "Plan" },
-        { key: "paymentAmount", label: "Amount" },
-        { key: "validFrom", label: "Valid From" },
-        { key: "validUntil", label: "Valid Until" },
-        { key: "isActive", label: "Active" },
+    const columns: Column<UserSubscriptionRow>[] = [
+        { key: "firstName", label: "User Name", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
+        { key: "email", label: "Email", render: (value) => typeof value === "string" ? value : null },
+        {
+            key: "subscriptionName", label: "Plan", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
+        { key: "paymentAmount", label: "Amount", render: (value) => typeof value === "string" ? value : null },
+        { key: "validFrom", label: "Valid From", render: (value) => typeof value === "string" ? value : null },
+        { key: "validUntil", label: "Valid Until", render: (value) => typeof value === "string" ? value : null },
+        {
+            key: "isActive", label: "Active", render: (value) => typeof value === "boolean" ? (
+                value ? (
+                    <span className="px-3 py-1 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                        Active
+                    </span>
+                ) : (
+                    <span className="px-3 py-1 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                        Inactive
+                    </span>
+                )
+            ) : null,
+        },
     ];
 
-
-    const actions: Action[] = [
+    const actions = [
         {
             label: "View Details",
-            variant: "ghost",
+            variant: "ghost" as const,
             icon: Eye,
             showLabel: false,
             className: "text-blue-600",
             tooltip: "View details",
-            onClick: (history) => {
+            onClick: (history: UserSubscriptionRow) => {
                 setSelectedHistory(history);
                 setIsModalOpen(true);
             },
@@ -68,7 +84,7 @@ const PlanHistoryList = () => {
                 <div className="flex items-center gap-3">
                     <label className="text-sm font-medium text-gray-700">Filter by Type:</label>
 
-                    <Select value={type} onValueChange={(value: any) => setType(value)}>
+                    <Select value={type} onValueChange={(value: "basic" | "medium" | "vip" | "all") => setType(value)}>
                         <SelectTrigger className="w-[150px]">
                             <SelectValue placeholder="All Types" />
                         </SelectTrigger>
@@ -85,7 +101,7 @@ const PlanHistoryList = () => {
             {/* Table */}
             {!isLoading && histories && histories.length > 0 ? (
                 <div className="rounded-lg border overflow-hidden">
-                    <DataTable
+                    <DataTable<UserSubscriptionRow>
                         columns={columns}
                         data={histories}
                         actions={actions}

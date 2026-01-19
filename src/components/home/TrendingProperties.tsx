@@ -2,8 +2,33 @@ import React from 'react';
 import TrendingHotels from '@/components/hotel/TrendingHotels';
 import { useNavigate } from 'react-router-dom';
 
+export interface HotelWithRoom {
+    _id: string;
+    name: string;
+    slug: string;
+    images: string[];
+    city: string;
+    state: string;
+    room: {
+        _id: string;
+        hotelId: string;
+        name: string;
+        slug: string;
+        roomType: string;
+        roomCount: number;
+        bedType: string;
+        guest: number;
+        amenities: string[];
+        images: string[];
+        basePrice: number;
+        isAvailable: boolean;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
+
 interface ITrendingProperties {
-    hotels?: any[];
+    hotels?: HotelWithRoom[];
 }
 
 const TrendingProperties: React.FC<ITrendingProperties> = ({ hotels }) => {
@@ -29,12 +54,12 @@ const TrendingProperties: React.FC<ITrendingProperties> = ({ hotels }) => {
                 <div className='w-full lg:w-3/4 flex flex-col md:flex-row h-full justify-around'>
                     <div className='w-full md:w-120 h-90'>
                         {hotels && hotels.length > 0 && (
-                            <TrendingHotels key={hotels[0].id || hotels[0]._id} hotel={hotels[0]} />
+                            <TrendingHotels key={hotels[0]._id} hotel={hotels[0]} />
                         )}
                     </div>
                     <div className='w-full flex flex-col gap-8 md:w-80 h-full my-4'>
                         {hotels && hotels.length > 0 && hotels.slice(1).map((h) => (
-                            <TrendingHotels key={h.id || h._id} hotel={h} />
+                            <TrendingHotels key={h._id} hotel={h} />
                         ))}
                     </div>
                 </div>

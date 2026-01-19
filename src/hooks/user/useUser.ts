@@ -75,7 +75,7 @@ export const useBlockUser = () => {
 
             const allQueries = queryClient.getQueriesData({ queryKey: ['admin-users'] });
 
-            allQueries.forEach(([key, _]) => {
+            allQueries.forEach(([key,]) => {
                 queryClient.setQueryData(key, (prev: TApiSuccessResponse<IUser[]>) => ({
                     ...prev,
                     data: prev?.data?.map(user =>

@@ -1,17 +1,17 @@
 import { axiosInstance } from "./axiosInstance";
 import { TUpdateVendorReqValues } from '../types/authentication.types';
-import { IAmenity, TAmenityType, TCreateAmenityData } from "@/types/amenities.types";
-import { IUser } from "@/types/user.types";
+import { IAmenity, TAmenityListParams, TAmenityType, TCreateAmenityData } from "@/types/amenities.types";
+import { IUser, TGetAllUsersParams } from "@/types/user.types";
 import { TApiSuccessResponse, TSortOption } from "@/types/custom.types";
 import { ADMIN_APIS } from "../constants/apiConstants";
-import { ISubscription, TCreatePlan, TUpdatePlan } from "@/types/plan.types";
+import { ISubscription, ISubscriptionHistory, TCreatePlan, TUpdatePlan } from "@/types/plan.types";
 import { TAdminAnalyticsData } from "@/types/analytics.types";
 import { ChatItem, IChat } from "@/types/chat.types";
 
 
 //customers manage
 export const getAllUsers = async (page: number, limit: number, role: string, search?: string, sortOption?: TSortOption): Promise<TApiSuccessResponse<IUser[]>> => {
-    const params: any = { page, limit, role, search };
+    const params: TGetAllUsersParams = { page, limit, role, search };
     if (sortOption) {
         const [field, order] = Object.entries(sortOption)[0];
         params.sortField = field;
@@ -28,7 +28,7 @@ export const toggleBlockUser = async (userId: string): Promise<TApiSuccessRespon
 };
 
 export const getVendors = async (page: number, limit: number, search?: string, sortOption?: TSortOption): Promise<TApiSuccessResponse<IUser[]>> => {
-    const params: any = { page, limit, search };
+    const params: TGetAllUsersParams = { page, limit, search };
     if (sortOption) {
         const [field, order] = Object.entries(sortOption)[0];
         params.sortField = field;
@@ -45,14 +45,8 @@ export const updateVendorVerify = async (data: TUpdateVendorReqValues): Promise<
 };
 
 //amenities
-export const getAllAmenities = async (
-    page: number,
-    limit: number,
-    type: TAmenityType,
-    search?: string,
-    sortOption?: TSortOption
-): Promise<TApiSuccessResponse<IAmenity[]>> => {
-    const params: any = { page, limit, type, search };
+export const getAllAmenities = async (page: number, limit: number, type: TAmenityType, search?: string, sortOption?: TSortOption): Promise<TApiSuccessResponse<IAmenity[]>> => {
+    const params: TAmenityListParams = { page, limit, type, search };
     if (sortOption) {
         const [field, order] = Object.entries(sortOption)[0];
         params.sortField = field;
@@ -113,7 +107,7 @@ export const updatePlan = async (data: TUpdatePlan, planId: string): Promise<TAp
     return response.data;
 }
 
-export const getAllPlanHistory = async (page: number, limit: number, type: 'basic' | 'medium' | 'vip' | 'all') => {
+export const getAllPlanHistory = async (page: number, limit: number, type: 'basic' | 'medium' | 'vip' | 'all'): Promise<TApiSuccessResponse<ISubscriptionHistory[]>> => {
     const response = await axiosInstance.get(`${ADMIN_APIS.planHistory}`, {
         params: { page, limit, type }
     });

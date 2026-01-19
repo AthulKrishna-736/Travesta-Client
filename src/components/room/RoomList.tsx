@@ -10,15 +10,8 @@ import { useUpdateRoom } from '@/hooks/vendor/useRoom';
 import { Input } from '@/components/ui/input';
 import Pagination from '@/components/common/Pagination';
 import { Edit, InfoIcon } from 'lucide-react';
+import { Column } from '@/types/custom.types';
 
-const columns = [
-    { key: 'name', label: 'Room Name' },
-    { key: 'roomType', label: 'Room Type' },
-    { key: 'hotelName', label: "Hotel" },
-    { key: 'guest', label: 'Guests' },
-    { key: 'bedType', label: 'Bed Type' },
-    { key: 'roomCount', label: 'Room Count' },
-];
 
 const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
     const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
@@ -34,7 +27,19 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
     const rooms = roomsData?.data;
     const meta = roomsData?.meta;
 
-    const mappedRooms = rooms ? rooms.map((r: any) => ({ ...r, hotelName: r.hotelId.name, })) : [];
+    const columns: Column<IRoom>[] = [
+        { key: "name", label: "Room Name", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
+        {
+            key: "roomType", label: "Room Type", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
+        { key: "guest", label: "Guests", render: (value) => typeof value === "number" ? value : null },
+        { key: "bedType", label: "Bed Type", render: (value) => typeof value === "string" ? value : null },
+        { key: "roomCount", label: "Room Count", render: (value) => typeof value === "number" ? value : null },
+    ];
 
     // Debounce search input
     useEffect(() => {
@@ -134,11 +139,11 @@ const RoomTable: React.FC<Partial<IRoomTableProps>> = ({ hotels }) => {
                                 <p className="mt-3 text-blue-600 font-medium">Loading rooms...</p>
                             </div>
                         </div>
-                    ) : mappedRooms && mappedRooms.length > 0 ? (
+                    ) : rooms && rooms.length > 0 ? (
                         <div className="rounded-lg border-1 overflow-hidden">
                             <DataTable
                                 columns={columns}
-                                data={mappedRooms}
+                                data={rooms}
                                 actions={actions}
                                 loading={isLoading}
                             />

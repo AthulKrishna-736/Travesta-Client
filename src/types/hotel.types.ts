@@ -137,3 +137,24 @@ export interface IHotelWithRoom {
   ratings: IRating[];
   roomSubmit: (room: IRoom & { discountedPrice: number, appliedOffer: any }) => void;
 }
+
+// params types
+export type TUserHotelParams = {
+  page: number;
+  limit: number;
+  lat: number;
+  long: number;
+  rooms: number;
+
+  search?: string;
+  checkIn?: string;
+  checkOut?: string;
+  rating?: number;
+  adults?: number;
+
+  minPrice?: number;
+  maxPrice?: number;
+  amenities?: string;
+  roomType?: string;
+  sort?: string;
+};

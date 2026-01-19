@@ -1,11 +1,12 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { UserSubscriptionRow } from "@/types/plan.types";
 
 interface PlanHistoryDetailModalProps {
     open: boolean;
     onClose: () => void;
-    history: any | null;
+    history: UserSubscriptionRow | null;
 }
 
 const PlanHistoryDetailModal: React.FC<PlanHistoryDetailModalProps> = ({ open, onClose, history }) => {

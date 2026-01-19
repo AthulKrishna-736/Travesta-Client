@@ -1,11 +1,12 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import StaticMap from '../maps/StaticMap';
+import { IHotel } from '@/types/hotel.types';
 
 interface ShowHotelDetailsModalProps {
     open: boolean;
     onClose: () => void;
-    data: any;
+    data: IHotel;
     title?: string;
 }
 
@@ -14,6 +15,7 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
 
     const mainImage = data.images?.[0];
     const otherImages = data.images?.slice(1) || [];
+    const basicFields: (keyof IHotel)[] = ['name', 'address', 'city', 'state'];
 
     return (
         <Dialog open={open} onOpenChange={onClose}>
@@ -57,21 +59,16 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                                     Basic Information
                                 </h3>
                                 <div className="space-y-2 text-sm sm:text-base">
-                                    {['name', 'address', 'city', 'state'].map(
-                                        (key) =>
-                                            data[key] && (
-                                                <p
-                                                    key={key}
-                                                    className="flex flex-col sm:flex-row sm:justify-between"
-                                                >
-                                                    <span className="text-gray-600 font-medium uppercase">
-                                                        {key}:
-                                                    </span>
-                                                    <span className="font-semibold mt-1 sm:mt-0">
-                                                        {String(data[key])}
-                                                    </span>
-                                                </p>
-                                            )
+                                    {basicFields.map((key) =>
+                                        data[key] && (
+                                            <p
+                                                key={key}
+                                                className="flex flex-col sm:flex-row sm:justify-between"
+                                            >
+                                                <span className="text-gray-600 font-medium uppercase">{key}:</span>
+                                                <span className="font-semibold mt-1 sm:mt-0">{String(data[key])}</span>
+                                            </p>
+                                        )
                                     )}
                                 </div>
                             </div>
@@ -80,7 +77,7 @@ const ShowHotelDetailsModal: React.FC<ShowHotelDetailsModalProps> = ({ open, onC
                         <div className="space-y-4">
                             <div className="bg-green-200 p-3 sm:p-4 rounded-lg">
                                 <div className="space-y-2 text-sm sm:text-base">
-                                    {['amenities', 'tags'].map((key) => {
+                                    {(['amenities', 'tags'] as (keyof IHotel)[]).map((key) => {
                                         if (!data[key]) return null;
 
                                         if (['amenities', 'tags'].includes(key)) {

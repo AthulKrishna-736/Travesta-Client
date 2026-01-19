@@ -7,35 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PricingPlan } from "./PlanCard";
 import { X } from "lucide-react";
 import { planFormSchema } from "@/utils/validations/commonValidation";
+import { PlanFormData, PlanFormModalProps, PlanSubmitData } from "@/types/plan.types";
 
-interface PlanFormModalProps {
-    open: boolean;
-    title: string;
-    onCancel: () => void;
-    onSubmit: (data: PlanSubmitData) => void;
-    loading?: boolean;
-    initialData?: PricingPlan | null;
-}
-
-type PlanFormData = {
-    name: string;
-    description: string;
-    price: number;
-    duration: number;
-    features: { value: string }[];
-};
-
-type PlanSubmitData = {
-    name: string;
-    description: string;
-    price: number;
-    duration: number;
-    type: 'basic' | 'medium' | 'vip';
-    features: string[];
-};
 
 const PlanFormModal: React.FC<PlanFormModalProps> = ({ open, title, onCancel, onSubmit, loading = false, initialData }) => {
     const [type, setType] = React.useState<"basic" | "medium" | "vip">("basic");

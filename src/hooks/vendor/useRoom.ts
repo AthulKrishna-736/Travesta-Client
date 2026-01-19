@@ -55,8 +55,9 @@ export const useGetAllRooms = (page: number, limit: number, search?: string, hot
         queryFn: async () => {
             try {
                 return await getAllRooms(page, limit, search, hotelId);
-            } catch (error: any) {
-                const msg = error?.response?.data?.message || 'Failed to fetch rooms';
+            } catch (error) {
+                const msg = 'Failed to fetch rooms';
+                console.log('error: ', error);
                 showError(msg);
                 return { data: [], meta: { currentPage: 1, totalPages: 1 } };
             }

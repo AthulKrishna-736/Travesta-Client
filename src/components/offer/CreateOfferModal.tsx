@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { formatDate, disablePastDates } from "@/utils/helperFunctions";
 import { offerSchema } from "@/utils/validations/commonValidation";
 import { useHotelsByVendor } from "@/hooks/vendor/useHotel";
+import { IHotel } from "@/types/hotel.types";
 
 type OfferFormValues = TCreateOffer;
 
@@ -106,7 +107,7 @@ const CreateOfferModal: React.FC<IOfferModalProps> = ({ open, onClose, onSubmit,
                             <option value="">None</option>
 
                             {/* Map hotels */}
-                            {hotels?.map((hotel: any) => (
+                            {hotels?.map((hotel: IHotel) => (
                                 <option key={hotel.id} value={hotel.id}>
                                     {hotel.name}
                                 </option>

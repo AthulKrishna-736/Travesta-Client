@@ -1,16 +1,8 @@
+import { AnalyticsLineChartProps } from "@/types/analytics.types";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-interface AnalyticsLineChartProps {
-    data: any[];
-    xKey: string;
-    yKey: string;
-    label?: string;
-    height?: number;
-    strokeColor?: string;
-    valueFormatter?: (value: number) => string;
-}
 
-const AnalyticsLineChart: React.FC<AnalyticsLineChartProps> = ({
+const AnalyticsLineChart = <T extends Record<string, any>>({
     data,
     xKey,
     yKey,
@@ -18,7 +10,7 @@ const AnalyticsLineChart: React.FC<AnalyticsLineChartProps> = ({
     height = 320,
     strokeColor = "#2563eb",
     valueFormatter = (value: number) => value.toLocaleString()
-}) => {
+}: AnalyticsLineChartProps<T>) => {
     return (
         <ResponsiveContainer width="100%" height={height}>
             <LineChart

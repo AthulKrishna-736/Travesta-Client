@@ -12,9 +12,10 @@ import RatingModal from "../hotel/RatingModal";
 import { useCancelBooking } from "@/hooks/user/useBooking";
 import { RootState } from "@/store/store";
 import { useCreateRating } from "@/hooks/vendor/useRating";
-import { IBooking, BookingTableProps } from "@/types/booking.types";
+import { IBooking, BookingTableProps, BookingRow } from "@/types/booking.types";
 import { showError } from "@/utils/customToast";
 import { TRatingForm } from "@/types/rating.types";
+import { Column } from "@/types/custom.types";
 
 const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     const user = useSelector((state: RootState) => state.user.user);
@@ -83,13 +84,19 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
         basePrice: typeof booking.room === "object" ? booking.room.basePrice : undefined,
     }));
 
-    const columns = [
-        { key: "roomName", label: "Room" },
-        { key: "checkIn", label: "Check-In" },
-        { key: "checkOut", label: "Check-Out" },
-        { key: "guests", label: "Guests" },
-        { key: "totalPrice", label: "Total Price" },
-        { key: "status", label: "Status" }
+    const columns: Column<BookingRow>[] = [
+        { key: "roomName", label: "Room", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
+        { key: "checkIn", label: "Check-In", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        { key: "checkOut", label: "Check-Out", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        { key: "guests", label: "Guests", render: (value) => typeof value === "number" ? value : null },
+        { key: "totalPrice", label: "Total Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
+        {
+            key: "status", label: "Status", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ) : null,
+        },
     ];
 
     const actions = [

@@ -1,20 +1,8 @@
-import React from "react";
+import { AnalyticsBarChartProps } from "@/types/analytics.types";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
-interface AnalyticsBarChartProps {
-    data: any[];
-    xKey: string;
-    yKey: string;
-    label?: string;
-    height?: number;
-    barColor?: string;
-    barSize?: number;
-    valueFormatter?: (value: number) => string;
-    xAxisAngle?: number;
-    yAxisFormatter?: (value: number) => string;
-}
 
-const AnalyticsBarChart: React.FC<AnalyticsBarChartProps> = ({
+const AnalyticsBarChart = <T extends Record<string, any>>({
     data,
     xKey,
     yKey,
@@ -25,7 +13,7 @@ const AnalyticsBarChart: React.FC<AnalyticsBarChartProps> = ({
     valueFormatter = (value: number) => value.toLocaleString(),
     xAxisAngle = -20,
     yAxisFormatter,
-}) => {
+}: AnalyticsBarChartProps<T>) => {
     return (
         <ResponsiveContainer width="100%" height={height}>
             <BarChart

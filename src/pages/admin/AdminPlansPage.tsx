@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import PlanHistoryList from "@/components/subscription/PlanHistoryList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PlanSubmitData } from "@/types/plan.types";
 
 const AdminPlansPage = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -14,7 +15,7 @@ const AdminPlansPage = () => {
 
     const { mutate: createPlan, isPending } = useCreatePlans();
 
-    const handleCreatePlan = (data: any) => {
+    const handleCreatePlan = (data: PlanSubmitData) => {
         createPlan(data, {
             onSuccess: () => {
                 setOpenModal(false);

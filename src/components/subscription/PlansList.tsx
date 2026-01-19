@@ -2,10 +2,11 @@ import { useState } from 'react';
 import DataTable from '../common/Table';
 import { PricingPlan } from './PlanCard';
 import { Edit, Eye } from 'lucide-react';
-import { Action } from '@/types/custom.types';
 import { useGetAllPlans, useUpdatePlans } from '@/hooks/admin/useSubscription';
 import PlanDetailModal from './PlanDetailModal';
 import PlanFormModal from './PlanFormModal';
+import { Column } from '@/types/custom.types';
+import { PlanSubmitData } from '@/types/plan.types';
 
 const PlansList = () => {
     const { data: plansResponseData, isLoading } = useGetAllPlans();
@@ -17,19 +18,38 @@ const PlansList = () => {
 
     const { mutate: updatePlan, isPending } = useUpdatePlans();
 
-    const columns = [
-        { key: "name", label: "Plan Name" },
-        { key: "type", label: "Type" },
-        { key: "price", label: "Price (₹)" },
-        { key: "duration", label: "Duration (days)" },
-        { key: "description", label: "Description" },
-        { key: "isActive", label: "Active" }
+
+    const columns: Column<PricingPlan>[] = [
+        { key: "name", label: "Plan Name", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
+        {
+            key: "type", label: "Type", render: (value) => typeof value === "string" ? (
+                <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium capitalize">
+                    {value}
+                </span>
+            ) : null,
+        },
+        { key: "price", label: "Price (₹)", render: (value) => typeof value === "number" ? `₹${value}` : null },
+        { key: "duration", label: "Duration (days)", render: (value) => typeof value === "number" ? `${value} days` : null },
+        { key: "description", label: "Description", render: (value) => typeof value === "string" ? value : null },
+        {
+            key: "isActive", label: "Active", render: (value) => typeof value === "boolean" ? (
+                value ? (
+                    <span className="px-3 py-1 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                        Active
+                    </span>
+                ) : (
+                    <span className="px-3 py-1 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                        Inactive
+                    </span>
+                )
+            ) : null,
+        },
     ];
 
-    const actions: Action[] = [
+    const actions = [
         {
             label: "Details",
-            variant: "ghost",
+            variant: "ghost" as const,
             icon: Eye,
             showLabel: false,
             tooltip: 'View details',
@@ -41,7 +61,7 @@ const PlansList = () => {
         },
         {
             label: "Edit",
-            variant: "ghost",
+            variant: "ghost" as const,
             icon: Edit,
             showLabel: false,
             tooltip: 'Edit plan',
@@ -53,12 +73,12 @@ const PlansList = () => {
         },
     ];
 
-    const handleEditSubmit = (data: any) => {
+    const handleEditSubmit = (data: PlanSubmitData) => {
         if (!selectedPlan) return;
 
         const formattedData = {
             ...data,
-            features: data.features.map((f: { value: string }) => f.value),
+            features: data.features,
             planId: selectedPlan.id,
         };
 

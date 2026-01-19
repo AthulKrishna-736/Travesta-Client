@@ -30,7 +30,7 @@ export interface IRoom {
     roomType: string;
     bedType: string;
     guest: number;
-    amenities: (Partial<IAmenity> & { _id: string })[];
+    amenities: (Pick<IAmenity, 'name' | 'type'> & { _id: string })[];
     images: string[];
     basePrice: number;
     gstPrice?: number;
@@ -55,6 +55,11 @@ export interface IRoomTableProps {
     rooms: IRoom[];
     loading: boolean;
 }
+
+export type RoomTableRow = IRoom & {
+    hotelName: string;
+};
+
 
 export interface TRoomDetailProps {
     open: boolean;

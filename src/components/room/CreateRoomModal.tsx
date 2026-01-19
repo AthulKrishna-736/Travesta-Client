@@ -60,7 +60,7 @@ const CreateRoomModal: React.FC<ICreateRoomProps & { hotels: IHotel[] }> = ({ op
 
             setSelectedHotelId(roomData.hotelId || (hotels.length > 0 ? hotels[0].id || '' : ''));
             setSelectedAmenities(
-                (roomData.amenities || []).map((a: any) => typeof a === "string" ? a : a._id)
+                (roomData.amenities || []).map((a) => typeof a === "string" ? a : a._id)
             );
             setImageCount(roomData.images.length);
         } else {

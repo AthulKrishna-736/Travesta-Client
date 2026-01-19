@@ -4,6 +4,7 @@ import { User, UserTableProps } from "@/types/user.types"
 import ConfirmationModal from "../common/ConfirmationModa"
 import { useBlockUser } from "@/hooks/user/useUser"
 import { Ban, Unlock } from "lucide-react"
+import { Column } from "@/types/custom.types"
 
 
 const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
@@ -28,12 +29,28 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
         setSelectedUser(null);
     };
 
-    const columns = [
-        { key: "firstName", label: "Name" },
+    const columns: Column<User>[] = [
+        { key: "firstName", label: "Name", render: (value) => (<span className="font-semibold">{value}</span>) },
         { key: "email", label: "Email" },
-        { key: "role", label: "Role" },
-        { key: "isBlocked", label: "Blocked" },
-    ]
+        {
+            key: "role", label: "Role", render: (value) => (
+                <span className="px-4 py-2 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
+                    {value}
+                </span>
+            ),
+        },
+        {
+            key: "isBlocked", label: "Blocked", render: (value) => value ? (
+                <span className="px-4 py-2 rounded-sm bg-red-100 text-red-700 text-xs font-medium">
+                    Yes
+                </span>
+            ) : (
+                <span className="px-4 py-2 rounded-sm bg-green-100 text-green-700 text-xs font-medium">
+                    No
+                </span>
+            ),
+        },
+    ];
 
     const actions = [
         {
@@ -53,7 +70,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
     return (
         <>
             <div className="rounded-lg border-1 overflow-hidden">
-                <DataTable
+                <DataTable<User>
                     columns={columns}
                     data={users}
                     actions={actions}
