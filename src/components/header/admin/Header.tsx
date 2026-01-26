@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
 const Header = () => {
-    const adminName = useSelector((state: RootState) => state.admin.admin?.firstName);
+    const userName = useSelector((state: RootState) => state.user.user?.firstName);
     const { mutate: logout } = useLogout('admin')
     return (
         <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b px-6 bg-gray-200">
@@ -27,7 +27,7 @@ const Header = () => {
                             <Button variant="ghost" size="icon" className="rounded-full">
                                 <Avatar className="h-8 w-8">
                                     <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
-                                    <AvatarFallback>{adminName!.charAt(0)}</AvatarFallback>
+                                    <AvatarFallback>{userName!.charAt(0)}</AvatarFallback>
                                 </Avatar>
                             </Button>
                         </DropdownMenuTrigger>

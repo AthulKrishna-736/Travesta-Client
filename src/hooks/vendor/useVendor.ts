@@ -1,12 +1,12 @@
 import { getAdminAnalytics, getVendors, updateVendorVerify } from "@/services/adminService"
 import { getVendor, updateVendor, uplodKyc } from "@/services/vendorService"
-import { setVendor } from "@/store/slices/vendorSlice"
 import { TUpdateVendorReqValues } from '../../types/authentication.types'
 import { ICustomError, TApiSuccessResponse, TSortOption } from "@/types/custom.types"
 import { IUser } from "@/types/user.types"
 import { showError, showSuccess } from "@/utils/customToast"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useDispatch } from "react-redux"
+import { setUser } from "@/store/slices/userSlice"
 
 
 export const useGetVendor = () => {
@@ -29,7 +29,7 @@ export const useUpdateVendor = () => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setVendor(res.data))
+                dispatch(setUser(res.data))
                 queryClient.invalidateQueries({ queryKey: ['vendor'] })
             } else {
                 showError(res.message || 'Something went wrong')
@@ -50,7 +50,7 @@ export const useKycUpload = () => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setVendor(res.data))
+                dispatch(setUser(res.data))
             } else {
                 showError(res.message || 'Something went wrong')
             }

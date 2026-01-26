@@ -1,6 +1,5 @@
 import { env, HttpStatusCode } from '@/config/config';
 import { logoutUser } from '@/store/slices/userSlice';
-import { logoutVendor } from '@/store/slices/vendorSlice';
 import store from '@/store/store';
 import { ICustomError } from '@/types/custom.types';
 import { showError } from '@/utils/customToast';
@@ -31,7 +30,7 @@ axiosInstance.interceptors.response.use(
                 window.location.href = '/user/login';
             }, 1000);
         } else if (errorMsg?.message == 'vendor is blocked' && isVendorRoute) {
-            store.dispatch(logoutVendor())
+            store.dispatch(logoutUser())
             setTimeout(() => {
                 window.location.href = '/vendor/login';
             }, 1000);
@@ -46,7 +45,7 @@ axiosInstance.interceptors.response.use(
                 }, 1000)
             } else if (isVendorRoute) {
                 showError(errorMsg.message)
-                store.dispatch(logoutVendor())
+                store.dispatch(logoutUser())
                 setTimeout(() => {
                     window.location.href = '/vendor/login'
                 }, 1000)

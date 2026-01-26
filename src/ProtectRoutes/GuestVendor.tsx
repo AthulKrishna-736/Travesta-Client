@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectGuestVendor: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const user = useSelector((state: RootState) => state.vendor.vendor?.id);
+    const user = useSelector((state: RootState) => state.user.user?.id);
 
     if (user) {
         return <Navigate to="/vendor/home" replace />;

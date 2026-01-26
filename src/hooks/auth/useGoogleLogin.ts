@@ -1,6 +1,5 @@
 import { googleLogin } from "@/services/authService";
 import { setUser } from "@/store/slices/userSlice";
-import { setVendor } from "@/store/slices/vendorSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import { TGoogleLoginValues } from '../../types/authentication.types';
 import { ICustomError } from "@/types/custom.types";
@@ -21,8 +20,8 @@ export const useGoogleLogin = (role: string) => {
         mutationFn: (values: TGoogleLoginValues) => googleLogin(values, role),
         onSuccess: (res) => {
             if (res.success) {
+                dispatch(setUser(res.data))
                 if (role === 'user') {
-                    dispatch(setUser(res.data))
                     if (lastVisitedPath) {
                         window.location.href = lastVisitedPath;
                         dispatch(clearLastVisitedPath());
@@ -30,7 +29,6 @@ export const useGoogleLogin = (role: string) => {
                         navigate("/user/home");
                     }
                 } else {
-                    dispatch(setVendor(res.data))
                     navigate('/vendor/home')
                 }
                 showSuccess(res.message)

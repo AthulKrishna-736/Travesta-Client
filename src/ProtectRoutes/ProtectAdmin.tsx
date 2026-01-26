@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedAdmin: React.FC<ProtectedRouteProps> = ({ children }) => {
-    const user = useSelector((state: RootState) => state.admin.admin?.id);  
+    const user = useSelector((state: RootState) => state.user.user?.id);  
 
     if (!user) {
         return <Navigate to="/admin/login" replace />;

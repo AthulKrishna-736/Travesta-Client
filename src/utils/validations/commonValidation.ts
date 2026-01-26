@@ -22,17 +22,17 @@ export const validationSchema = Yup.object().shape({
 export const hotelSchema = Yup.object().shape({
     name: Yup.string()
         .matches(nameRegex, 'Name must contain only letters and spaces')
-        .max(30, 'Hotel name must be at most 30 characters')
+        .max(100, 'Hotel name must be less than 100 characters')
         .required('Hotel name is required'),
 
     description: Yup.string()
         .min(10, 'Description must be at least 10 characters')
-        .max(3000, 'Description must be at most 1000 characters')
+        .max(3000, 'Description must be at most 3000 characters')
         .required('Description is required'),
 
     address: Yup.string()
         .min(5, 'Address must be at least 5 characters')
-        .max(50, 'Address must be at most 50 characters')
+        .max(100, 'Address must be at most 100 characters')
         .required('Address is required'),
 
     state: Yup.string()
@@ -69,7 +69,7 @@ export const hotelSchema = Yup.object().shape({
 
     specialNotes: Yup.string()
         .min(10, 'Special notes must be at least 10 characters')
-        .max(3000, 'Special notes must be at most 2000 characters')
+        .max(3000, 'Special notes must be at most 3000 characters')
         .required('Special notes is required'),
 });
 
@@ -85,7 +85,6 @@ export const createAmenitySchema = Yup.object({
         .min(5, "Description must be at least 5 characters")
         .max(100, "Description must be less than 100 characters"),
 });
-
 
 //plan create/edit 
 export const planFormSchema = Yup.object().shape({
