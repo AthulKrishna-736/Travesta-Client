@@ -16,7 +16,7 @@ export const KycDocuments = () => {
 
     const { mutate: uploadKyc, isPending } = useKycUpload();
 
-    const vendor = useSelector((state: RootState) => state.vendor.vendor);
+    const vendor = useSelector((state: RootState) => state.user.user);
     const [frontImage, backImage] = vendor?.kycDocuments as string[];
     const bothAlreadyUploaded = Boolean(frontImage && backImage);
 

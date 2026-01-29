@@ -7,7 +7,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 
 export function AdminSidebar() {
-    const admin = useSelector((state: RootState) => state.admin.admin);
+    const admin = useSelector((state: RootState) => state.user.user);
     const location = useLocation()
     const navigate = useNavigate();
     const pathname = location.pathname

@@ -12,7 +12,7 @@ type CouponFormValues = TCreateCoupon;
 
 const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isEdit = false, couponData, isLoading, }) => {
 
-    const { register, handleSubmit, reset, formState: { errors }, } = useForm<CouponFormValues>({
+    const { register, handleSubmit, reset, formState: { errors }, setError } = useForm<CouponFormValues>({
         resolver: yupResolver(couponSchema),
         defaultValues: {
             name: "",
@@ -56,17 +56,26 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
     }, [isEdit, couponData, reset]);
 
 
-    const submitHandler = (data: CouponFormValues) => {
+    const submitHandler = async (data: CouponFormValues) => {
         const sanitizedData = {
             ...data,
             name: data.name.trim(),
             code: data.code.trim(),
         };
 
-        if (isEdit && couponData?.id) {
-            onSubmit({ ...sanitizedData, id: couponData.id } as TUpdateCoupon, true);
-        } else {
-            onSubmit(sanitizedData, false);
+        try {
+            if (isEdit && couponData?.id) {
+                await onSubmit({ ...sanitizedData, id: couponData.id } as TUpdateCoupon, true);
+            } else {
+                await onSubmit(sanitizedData, false);
+            }
+
+        } catch (error) {
+            if (typeof error === 'object' && error !== null) {
+                for (let key of Object.entries(error)) {
+                    setError(key[0] as keyof CouponFormValues, { message: key[1][0] });
+                }
+            }
         }
     };
 

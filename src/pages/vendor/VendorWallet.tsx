@@ -26,8 +26,8 @@ const VendorWalletPage = () => {
     const [amount, setAmount] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const vendorName = useSelector((state: RootState) => state.vendor.vendor?.firstName);
-    const isAuthenticated = Boolean(useSelector((state: RootState) => state.vendor.vendor?.id));
+    const vendorName = useSelector((state: RootState) => state.user.user?.firstName);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     const TRANSACTION_LIMIT = 5;
 

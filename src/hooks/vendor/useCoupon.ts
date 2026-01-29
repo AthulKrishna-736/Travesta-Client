@@ -4,6 +4,7 @@ import { showError, showSuccess } from "@/utils/customToast";
 import { ICustomError, TApiSuccessResponse } from "@/types/custom.types";
 import { getUserCoupons } from "@/services/userService";
 import { ICoupon, TCreateCoupon, TUpdateCoupon } from "@/types/coupon.types";
+import { AxiosError } from "axios";
 
 export const useCreateCoupon = (cb: () => void) => {
     const queryClient = useQueryClient();
@@ -19,8 +20,10 @@ export const useCreateCoupon = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: ICustomError) => {
-            showError(err?.response?.data?.message || "Something went wrong");
+        onError: (err: AxiosError<{ message: string, success: boolean, error: Object }>) => {
+            showError(err.response?.data?.message || "Something went wrong");
+            console.log('error coupon creation: ', err)
+            throw err.response?.data?.error;
         },
     });
 };

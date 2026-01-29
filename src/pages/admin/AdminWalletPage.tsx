@@ -10,8 +10,8 @@ import { RootState } from '@/store/store';
 const AdminWalletPage = () => {
     const [page, setPage] = useState(1);
 
-    const adminName = useSelector((state: RootState) => state.admin.admin?.firstName);
-    const isAuthenticated = Boolean(useSelector((state: RootState) => state.admin.admin?.id));
+    const adminName = useSelector((state: RootState) => state.user.user?.firstName);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     const limit = 5;
 
