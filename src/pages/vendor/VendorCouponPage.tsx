@@ -65,11 +65,10 @@ const VendorCouponPage: React.FC = () => {
                         }}
                     />
 
-                    <Button
-                        onClick={() => {
-                            setEditCoupon(null);
-                            setIsModalOpen(true);
-                        }}
+                    <Button className="cursor-pointer" onClick={() => {
+                        setEditCoupon(null);
+                        setIsModalOpen(true);
+                    }}
                     >
                         Add Coupon
                     </Button>

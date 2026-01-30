@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createCoupon, updateCoupon, getVendorCoupon, toggleCouponStatus } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
-import { ICustomError, TApiSuccessResponse } from "@/types/custom.types";
+import { TApiSuccessResponse } from "@/types/custom.types";
 import { getUserCoupons } from "@/services/userService";
 import { ICoupon, TCreateCoupon, TUpdateCoupon } from "@/types/coupon.types";
 import { AxiosError } from "axios";
@@ -22,7 +22,6 @@ export const useCreateCoupon = (cb: () => void) => {
         },
         onError: (err: AxiosError<{ message: string, success: boolean, error: Object }>) => {
             showError(err.response?.data?.message || "Something went wrong");
-            console.log('error coupon creation: ', err)
             throw err.response?.data?.error;
         },
     });
@@ -42,8 +41,9 @@ export const useUpdateCoupon = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: ICustomError) => {
+        onError: (err: AxiosError<{ message: string, success: boolean, error: Object }>) => {
             showError(err?.response?.data?.message || "Something went wrong");
+            throw err.response?.data.error;
         },
     });
 };
@@ -55,28 +55,30 @@ export const useToggleCouponStatus = () => {
         mutationFn: (couponId: string) => toggleCouponStatus(couponId),
 
         onMutate: async (couponId: string) => {
-            await queryClient.cancelQueries({ queryKey: ["vendor-coupons"] });
+            await queryClient.cancelQueries({ queryKey: ["vendor-coupons"], exact: false });
 
-            const previousData = queryClient.getQueryData<TApiSuccessResponse<ICoupon[]>>(["vendor-coupons"]);
+            const previousData = queryClient.getQueriesData({ queryKey: ["vendor-coupons"] });
 
-            if (previousData) {
-                const updated = {
-                    ...previousData,
-                    data: previousData.data.map((c) => {
-                        return c.id === couponId ? { ...c, isBlocked: !c.isBlocked } : c
-                    }
+            queryClient.setQueriesData<TApiSuccessResponse<ICoupon[]>>({ queryKey: ["vendor-coupons"] }, (old) => {
+                if (!old) return old;
+
+                return {
+                    ...old,
+                    data: old.data.map((coupon) =>
+                        coupon.id === couponId ? { ...coupon, isBlocked: !coupon.isBlocked } : coupon
                     ),
                 };
-
-                queryClient.setQueryData(["vendor-coupons"], updated);
             }
+            );
 
             return { previousData };
         },
 
         onError: (_error, _variables, context) => {
             if (context?.previousData) {
-                queryClient.setQueryData(["vendor-coupons"], context.previousData);
+                context.previousData.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data);
+                });
             }
             showError("Failed to update coupon status");
         },

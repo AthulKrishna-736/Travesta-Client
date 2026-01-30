@@ -1,4 +1,3 @@
-import { TCouponTypes } from '@/types/coupon.types';
 import * as Yup from 'yup';
 
 const nameRegex = /^[A-Za-z\s]+$/;
@@ -140,37 +139,54 @@ export const ratingSchema = Yup.object({
 export const couponSchema = Yup.object({
     name: Yup.string()
         .trim()
-        .min(3)
-        .max(50)
+        .min(3, "Name must be at least 3 characters")
+        .max(50, "Name must be less than 50 characters")
         .required("Name is required"),
-    code: Yup
-        .string()
+
+    code: Yup.string()
         .trim()
         .min(3, "Coupon code must be at least 3 characters")
         .max(20, "Coupon code must be less than 20 characters")
-        .matches(/^[a-zA-Z0-9-]+$/, "Coupon code can only contain uppercase letters, numbers, and hyphens")
+        .matches(
+            /^[a-zA-Z0-9-]+$/,
+            "Coupon code can only contain letters, numbers, and hyphens"
+        )
         .required("Coupon code is required"),
-    type: Yup.mixed<TCouponTypes>()
+
+    type: Yup.mixed<"flat" | "percent">()
         .oneOf(["flat", "percent"], "Invalid type")
-        .required(),
+        .required("Type is required"),
+
     value: Yup.number()
-        .min(1)
+        .typeError("Value must be a number")
+        .min(1, "Value must be at least 1")
+        .max(100000, "Max value should not exceed 100,000")
         .required("Value is required"),
+
     count: Yup.number()
-        .min(1)
-        .required('Count is required'),
+        .typeError("Count must be a number")
+        .min(1, "Count must be at least 1")
+        .max(100, "Max coupon count limit is 100")
+        .required("Count is required"),
+
     minPrice: Yup.number()
-        .min(0).
-        required("Minimum price required"),
+        .typeError("Minimum price must be a number")
+        .min(0, "Min price must be 0 or greater")
+        .max(100000, "Min price should not exceed 100,000")
+        .required("Minimum price required"),
+
     maxPrice: Yup.number()
-        .min(Yup.ref("minPrice"), "Max price must be >= Min price")
+        .typeError("Maximum price must be a number")
+        .min(Yup.ref("minPrice"), "Max price must be greater than Min price")
+        .max(100000, "Max price should not exceed 100,000")
         .required("Maximum price required"),
+
     startDate: Yup.string()
         .required("Start date required"),
+
     endDate: Yup.string()
         .required("End date required"),
 });
-
 
 //offer
 export const offerSchema = Yup.object().shape({
