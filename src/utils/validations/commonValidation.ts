@@ -193,6 +193,7 @@ export const offerSchema = Yup.object().shape({
     name: Yup.string()
         .min(3, 'Minimum 3 character required')
         .max(50, 'Maximum of 50 characters are allowed')
+        .matches(/^[a-zA-Z0-9-]+$/, 'Offer name can only contain letters, numbers, and hyphen')
         .required(),
     hotelId: Yup.string().nullable().defined(),
     roomType: Yup
@@ -206,6 +207,7 @@ export const offerSchema = Yup.object().shape({
     discountValue: Yup
         .number()
         .min(1, "Discount must be at least 1")
+        .max(100000, "Max discount upto 100,000")
         .required("Discount value is required"),
     startDate: Yup.string().required("Start date is required"),
     expiryDate: Yup.string().required("End date is required"),

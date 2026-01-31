@@ -10,13 +10,12 @@ import { offerSchema } from "@/utils/validations/commonValidation";
 import { useHotelsByVendor } from "@/hooks/vendor/useHotel";
 import { IHotel } from "@/types/hotel.types";
 
-type OfferFormValues = TCreateOffer;
 
 const CreateOfferModal: React.FC<IOfferModalProps> = ({ open, onClose, onSubmit, isEdit = false, offerData, isLoading = false }) => {
     const { data: hotelsData } = useHotelsByVendor(1, 40);
     const hotels = hotelsData?.data;
 
-    const { register, handleSubmit, formState: { errors }, reset, } = useForm<OfferFormValues>({
+    const { register, handleSubmit, formState: { errors }, reset, setError } = useForm<TCreateOffer>({
         resolver: yupResolver(offerSchema),
         defaultValues: {
             name: '',
@@ -53,17 +52,25 @@ const CreateOfferModal: React.FC<IOfferModalProps> = ({ open, onClose, onSubmit,
         }
     }, [isEdit, offerData, reset]);
 
-    const submitHandler = (data: OfferFormValues) => {
+    const submitHandler = async (data: TCreateOffer) => {
         const sanitized = {
             ...data,
             name: data.name.trim(),
             hotelId: data.hotelId?.trim() || undefined,
         };
 
-        if (isEdit && offerData?.id) {
-            onSubmit({ ...sanitized, id: offerData.id, } as TUpdateOffer, true);
-        } else {
-            onSubmit(sanitized, false);
+        try {
+            if (isEdit && offerData?.id) {
+                await onSubmit({ ...sanitized, id: offerData.id, } as TUpdateOffer, true);
+            } else {
+                await onSubmit(sanitized, false);
+            }
+        } catch (error) {
+            if (typeof error === 'object' && error !== null) {
+                for (let key of Object.entries(error)) {
+                    setError(key[0] as keyof TCreateOffer, { message: key[1][0] })
+                }
+            }
         }
     };
 

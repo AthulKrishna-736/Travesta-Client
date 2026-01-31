@@ -1,8 +1,9 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createOffer, updateOffer, getVendorOffers, toggleOfferStatus } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
-import { ICustomError, TApiSuccessResponse } from "@/types/custom.types";
+import { TApiSuccessResponse } from "@/types/custom.types";
 import { IOffer, TCreateOffer, TUpdateOffer } from "@/types/offer.types";
+import { AxiosError } from "axios";
 
 
 export const useCreateOffer = (cb: () => void) => {
@@ -19,8 +20,9 @@ export const useCreateOffer = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: ICustomError) => {
-            showError(err?.response?.data?.message || "Something went wrong");
+        onError: (err: AxiosError<{ success: boolean, message: string, error: Object }>) => {
+            showError(err?.response?.data.message || "Something went wrong");
+            throw err.response?.data.error;
         },
     });
 };
@@ -40,8 +42,9 @@ export const useUpdateOffer = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: ICustomError) => {
-            showError(err?.response?.data?.message || "Something went wrong");
+        onError: (err: AxiosError<{ success: boolean, message: string, error: Object }>) => {
+            showError(err?.response?.data.message || "Something went wrong");
+            throw err.response?.data.error
         },
     });
 };
@@ -53,28 +56,28 @@ export const useToggleOfferStatus = () => {
     return useMutation({
         mutationFn: (offerId: string) => toggleOfferStatus(offerId),
         onMutate: async (offerId: string) => {
-            await queryClient.cancelQueries({ queryKey: ["vendor-offers"] });
+            await queryClient.cancelQueries({ queryKey: ["vendor-offers"], exact: false });
 
-            const previousData = queryClient.getQueryData<TApiSuccessResponse<IOffer[]>>(["vendor-offers"]);
+            const previousData = queryClient.getQueriesData({ queryKey: ["vendor-offers"] });
 
-            if (previousData) {
-                const updated = {
-                    ...previousData,
-                    data: previousData.data.map((offer) =>
-                        offer.id === offerId
-                            ? { ...offer, isBlocked: !offer.isBlocked }
-                            : offer
+            queryClient.setQueriesData<TApiSuccessResponse<IOffer[]>>({ queryKey: ["vendor-offers"] }, (old) => {
+                if (!old) return old;
+
+                return {
+                    ...old,
+                    data: old.data.map((offer) =>
+                        offer.id === offerId ? { ...offer, isBlocked: !offer.isBlocked } : offer
                     ),
                 };
-
-                queryClient.setQueryData(["vendor-offers"], updated);
-            }
+            })
 
             return { previousData };
         },
         onError: (_error, _variables, context) => {
             if (context?.previousData) {
-                queryClient.setQueryData(["vendor-offers"], context.previousData);
+                context.previousData.forEach(([queryKey, data]) => {
+                    queryClient.setQueryData(queryKey, data);
+                });
             }
             showError("Failed to update offer status");
         },
@@ -94,6 +97,6 @@ export const useVendorOffers = (page: number, limit: number, search?: string) =>
         queryFn: () => getVendorOffers(page, limit, search),
         staleTime: 5 * 60 * 1000,
         placeholderData: keepPreviousData,
-        retry: 2,
+        retry: 1,
     });
 };
