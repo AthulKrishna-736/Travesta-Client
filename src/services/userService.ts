@@ -7,7 +7,7 @@ import { TApiErrorResponse, TApiSuccessResponse } from "@/types/custom.types";
 import { IAmenity } from "@/types/amenities.types";
 import { IHotel, TUserHotelParams } from "@/types/hotel.types";
 import { IRoom } from "@/types/room.types";
-import { ITransaction, IWallet } from "@/types/wallet.types";
+import { ITransaction, IWallet, TPaymentIntent } from "@/types/wallet.types";
 import { IRating, TRatingForm } from "@/types/rating.types";
 import { ISubscription } from "@/types/plan.types";
 import { ICoupon } from "@/types/coupon.types";
@@ -161,7 +161,7 @@ export const createBooking = async (payload: BookingPayload): Promise<TApiSucces
 };
 
 //payment
-export const createPaymentIntent = async (data: { amount: number }) => {
+export const createPaymentIntent = async (data: TPaymentIntent): Promise<TApiSuccessResponse<{ clientSecret: string }>> => {
     const response = await axiosInstance.post(`${USER_APIS.payment}/online`, data);
     return response.data;
 };

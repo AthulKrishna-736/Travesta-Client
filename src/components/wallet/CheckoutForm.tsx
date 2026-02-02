@@ -30,7 +30,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ open, onClose, onPaymentSuc
         if (error) {
             setErrorMessage(error.message || "Payment failed");
             setIsSubmitting(false);
-        } else if (paymentIntent?.status === "succeeded") {
+        } else if (paymentIntent.status === "succeeded") {
             try {
                 await onPaymentSuccess();
                 onClose();
@@ -60,10 +60,8 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ open, onClose, onPaymentSuc
                         <div className="text-red-600 text-sm">{errorMessage}</div>
                     )}
 
-                    <button
-                        type="submit"
-                        disabled={!stripe || isSubmitting}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded disabled:opacity-50 transition"
+                    <button type="submit" disabled={!stripe || isSubmitting}
+                        className="w-full bg-green-600 hover:bg-green-700 cursor-pointer text-white font-medium py-2 px-4 rounded disabled:opacity-50 transition"
                     >
                         {isSubmitting ? "Processing..." : "Pay Now"}
                     </button>
