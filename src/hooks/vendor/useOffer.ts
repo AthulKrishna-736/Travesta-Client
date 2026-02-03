@@ -20,7 +20,7 @@ export const useCreateOffer = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: AxiosError<{ success: boolean, message: string, error: Object }>) => {
+        onError: (err: AxiosError<{ success: boolean, message: string, error: object }>) => {
             showError(err?.response?.data.message || "Something went wrong");
             throw err.response?.data.error;
         },
@@ -42,7 +42,7 @@ export const useUpdateOffer = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: AxiosError<{ success: boolean, message: string, error: Object }>) => {
+        onError: (err: AxiosError<{ success: boolean, message: string, error: object }>) => {
             showError(err?.response?.data.message || "Something went wrong");
             throw err.response?.data.error
         },

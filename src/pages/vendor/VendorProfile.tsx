@@ -64,7 +64,7 @@ const VendorProfile: React.FC = () => {
 
                     <TabsContent value="profile" className="space-y-6">
                         <div className="flex flex-col h-full gap-6 bg-white rounded-sm p-4">
-                            <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="vendor" />
+                            <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} />
                             <ProfileSection user={vendor!} onUpdate={handleProfileUpdate} />
                         </div>
                     </TabsContent>

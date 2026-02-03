@@ -100,7 +100,7 @@ export const useSubscribePlan = () => {
                 showError(res.message || "Something went wrong");
             }
         },
-        onError: (error: AxiosError<{ success: boolean, message: string, error: Object, statusCode: boolean }>) => {
+        onError: (error: AxiosError<{ success: boolean, message: string, error: object, statusCode: boolean }>) => {
             showError(error.response?.data.message || "Subscription failed");
             throw error.response?.data.error;
         },

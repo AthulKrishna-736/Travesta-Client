@@ -71,7 +71,7 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
 
         } catch (error) {
             if (typeof error === 'object' && error !== null) {
-                for (let key of Object.entries(error)) {
+                for (const key of Object.entries(error)) {
                     setError(key[0] as keyof TCreateCoupon, { message: key[1][0] });
                 }
             }

@@ -20,7 +20,7 @@ export const useCreateCoupon = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: AxiosError<{ message: string, success: boolean, error: Object }>) => {
+        onError: (err: AxiosError<{ message: string, success: boolean, error: object }>) => {
             showError(err.response?.data?.message || "Something went wrong");
             throw err.response?.data?.error;
         },
@@ -41,7 +41,7 @@ export const useUpdateCoupon = (cb: () => void) => {
                 showError(res.message);
             }
         },
-        onError: (err: AxiosError<{ message: string, success: boolean, error: Object }>) => {
+        onError: (err: AxiosError<{ message: string, success: boolean, error: object }>) => {
             showError(err?.response?.data?.message || "Something went wrong");
             throw err.response?.data.error;
         },

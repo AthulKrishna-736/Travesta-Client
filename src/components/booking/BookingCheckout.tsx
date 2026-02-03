@@ -51,7 +51,7 @@ const BookingCheckout: React.FC = () => {
     const room = roomResponse ? roomResponse.data : null;
 
     //get wallet details
-    const { data: walletResponse } = useGetWallet(isAuthenticated);
+    const { data: walletResponse } = useGetWallet();
     const wallet = walletResponse ? walletResponse.data : null;
 
     //get coupons for user
@@ -64,7 +64,7 @@ const BookingCheckout: React.FC = () => {
 
     //mutation functions
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
-    const { mutateAsync: confirmBooking, isPending } = useConfirmBooking(paymentMethod || 'wallet');
+    const { mutateAsync: confirmBooking, isPending } = useConfirmBooking();
 
     const checkInDate = new Date(checkIn as string);
     const checkOutDate = new Date(checkOut as string);
@@ -128,9 +128,9 @@ const BookingCheckout: React.FC = () => {
             checkOut: checkOutDate.toISOString(),
             guests: Number(adults + children),
             roomsCount: rooms,
-            totalPrice: discountedPrice,
             couponId: selectedCoupon?.id || null,
-        };
+            method: 'online',
+        } as const;
 
         await confirmBooking(payload);
         navigate('/user/booking');
@@ -151,9 +151,9 @@ const BookingCheckout: React.FC = () => {
                 checkOut: checkOutDate.toISOString(),
                 guests: Number(adults + children),
                 roomsCount: rooms,
-                totalPrice: discountedPrice,
                 couponId: selectedCoupon?.id || null,
-            };
+                method: 'wallet',
+            } as const;
 
             if (paymentMethod === 'wallet') {
                 await confirmBooking(payload);
@@ -162,7 +162,7 @@ const BookingCheckout: React.FC = () => {
             }
 
             if (paymentMethod === 'online') {
-                const paymentRes = await createPaymentIntent(discountedPrice * 100);
+                const paymentRes = await createPaymentIntent({ amount: discountedPrice, purpose: 'booking' });
                 if (paymentRes?.data?.clientSecret) {
                     setClientSecret(paymentRes.data.clientSecret);
                 }

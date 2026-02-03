@@ -6,15 +6,13 @@ import { ImageUploadProps } from "@/types/custom.types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-export const ProfileImage: React.FC<ImageUploadProps> = ({ onImageSelected, updateProfileImage, role }) => {
+export const ProfileImage: React.FC<ImageUploadProps> = ({ onImageSelected, updateProfileImage }) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [originalImage, setOriginalImage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const data = useSelector((state: RootState) =>
-        role === "user" ? state?.user?.user : state?.vendor?.vendor
-    );
+    const data = useSelector((state: RootState) => state.user.user);
 
     useEffect(() => {
         if (data?.profileImage) {

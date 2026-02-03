@@ -67,7 +67,7 @@ const CreateOfferModal: React.FC<IOfferModalProps> = ({ open, onClose, onSubmit,
             }
         } catch (error) {
             if (typeof error === 'object' && error !== null) {
-                for (let key of Object.entries(error)) {
+                for (const key of Object.entries(error)) {
                     setError(key[0] as keyof TCreateOffer, { message: key[1][0] })
                 }
             }

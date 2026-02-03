@@ -196,11 +196,10 @@ export const confirmBooking = async (
         checkIn: string;
         checkOut: string;
         guests: number;
-        totalPrice: number;
+        method: 'wallet' | 'online'
     },
-    method: 'wallet' | 'online'
 ): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/${data.vendorId}/booking?method=${method}`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payment}/booking`, data);
     return response.data;
 };
 

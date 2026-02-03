@@ -49,7 +49,7 @@ const UserDashboard: React.FC = () => {
         <UserLayout>
             <>
                 <div className="flex flex-col h-full gap-6 bg-white rounded-sm p-4">
-                    <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="user" />
+                    <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} />
                     <ProfileSection user={user!} onUpdate={handleProfileUpdate} />
                 </div>
             </>
