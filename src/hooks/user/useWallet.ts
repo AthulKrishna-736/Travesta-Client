@@ -61,7 +61,7 @@ export const useCreateWallet = () => {
 // Create Stripe Payment Intent
 export const useCreatePaymentIntent = () => {
     return useMutation({
-        mutationFn: ({ amount, purpose }: TPaymentIntent) => createPaymentIntent({ amount, purpose }),
+        mutationFn: ({ amount, purpose, refId }: TPaymentIntent) => createPaymentIntent({ amount, purpose, refId }),
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)

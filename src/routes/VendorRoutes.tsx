@@ -11,8 +11,8 @@ import VendorOfferPage from '@/pages/vendor/VendorOfferPage'
 import VendorProfile from '@/pages/vendor/VendorProfile'
 import VendorSignupPage from '@/pages/vendor/VendorSignupPage'
 import VendorWalletPage from '@/pages/vendor/VendorWallet'
-import ProtectGuestVendor from '@/ProtectRoutes/GuestVendor'
-import ProtectVendor from '@/ProtectRoutes/ProtectVendor'
+import ProtectGuest from '@/ProtectRoutes/ProtectGuest'
+import ProtectedUser from '@/ProtectRoutes/ProtectUser'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
@@ -21,84 +21,83 @@ const VendorRoutes: React.FC = () => {
         <Routes>
             <Route path='*' element={<NotFound />} />
 
-
             <Route path='login' element={
-                <ProtectGuestVendor>
+                <ProtectGuest>
                     <VendorLoginPage />
-                </ProtectGuestVendor>
+                </ProtectGuest>
             } />
 
             <Route path='signup' element={
-                <ProtectGuestVendor>
+                <ProtectGuest>
                     <VendorSignupPage />
-                </ProtectGuestVendor>
+                </ProtectGuest>
             } />
 
             <Route path='forgot-password' element={
-                <ProtectGuestVendor>
+                <ProtectGuest>
                     <VendorForgotPassPage />
-                </ProtectGuestVendor>
+                </ProtectGuest>
             } />
 
             <Route path='home' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorDashboard />
-                </ProtectVendor>
+                </ProtectedUser>
             } />
 
             <Route path='profile' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorProfile />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='hotels' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorHotelsPage />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='messages' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorChatPage />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='bookings' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorBookingListPage />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='wallet' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorWalletPage />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='hotel-dashboard/:hotelId' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorHotelDashboard />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='coupons' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorCouponPage />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 
             <Route path='offers' element={
-                <ProtectVendor>
+                <ProtectedUser allowedRoles={['vendor']}>
                     <VendorOfferPage />
-                </ProtectVendor>
+                </ProtectedUser>
             }
             />
 

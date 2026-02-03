@@ -41,13 +41,13 @@ const UserRoutes: React.FC = () => {
       } />
 
       <Route path='home' element={
-        <ProtectedUser>
+        <ProtectedUser allowedRoles={['user']}>
           <UserHomePage />
         </ProtectedUser>
       } />
 
       <Route path='profile' element={
-        <ProtectedUser>
+        <ProtectedUser allowedRoles={['user']}>
           <UserDashboard />
         </ProtectedUser>
       } />
@@ -57,19 +57,19 @@ const UserRoutes: React.FC = () => {
       <Route path="hotels/:hotelSlug/:roomSlug" element={<UserHotelDetailPage />} />
 
       <Route path='chat' element={
-        <ProtectedUser>
+        <ProtectedUser allowedRoles={['user']}>
           <UserChatPage />
         </ProtectedUser>
       } />
 
       <Route path='booking' element={
-        <ProtectedUser>
+        <ProtectedUser allowedRoles={['user']}>
           <UserBookingListPage />
         </ProtectedUser>
       } />
 
       <Route path='wallet' element={
-        <ProtectedUser>
+        <ProtectedUser allowedRoles={['user']}>
           <UserWallet />
         </ProtectedUser>
       } />
@@ -77,7 +77,7 @@ const UserRoutes: React.FC = () => {
       <Route path='checkout/:hotelSlug/:roomSlug' element={<UserCheckoutPage />} />
 
       <Route path='subscription' element={
-        <ProtectedUser>
+        <ProtectedUser allowedRoles={['user']}>
           <SubscriptionPage />
         </ProtectedUser>
       } />

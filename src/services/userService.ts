@@ -210,8 +210,8 @@ export const getUserSubscriptions = async (): Promise<TApiSuccessResponse<ISubsc
     return response.data;
 }
 
-export const subscribePlan = async (planId: string, method: 'wallet' | 'online') => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/${planId}/subscribe?method=${method}`);
+export const subscribePlan = async (planId: string, method: 'wallet') => {
+    const response = await axiosInstance.post(`${USER_APIS.payment}/subscribe`, { planId, method });
     return response.data;
 };
 

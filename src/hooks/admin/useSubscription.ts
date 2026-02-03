@@ -4,6 +4,7 @@ import { ICustomError } from "@/types/custom.types"
 import { TCreatePlan, TUpdatePlan } from "@/types/plan.types"
 import { showError, showSuccess } from "@/utils/customToast"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
 export const useGetSubscriptionPlans = () => {
     return useQuery({
@@ -89,11 +90,9 @@ export const useUpdatePlans = () => {
 export const useSubscribePlan = () => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: ({ planId, method }: { planId: string; method: 'wallet' | 'online' }) => subscribePlan(planId, method),
+        mutationFn: ({ planId, method }: { planId: string; method: 'wallet' }) => subscribePlan(planId, method),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
-            queryClient.invalidateQueries({ queryKey: ['wallet'] })
-            queryClient.invalidateQueries({ queryKey: ['transactions'] })
 
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
@@ -101,9 +100,9 @@ export const useSubscribePlan = () => {
                 showError(res.message || "Something went wrong");
             }
         },
-        onError: (error: ICustomError) => {
-            console.error("Subscription error:", error);
-            showError(error.response?.data?.message || "Subscription failed");
+        onError: (error: AxiosError<{ success: boolean, message: string, error: Object, statusCode: boolean }>) => {
+            showError(error.response?.data.message || "Subscription failed");
+            throw error.response?.data.error;
         },
     });
 };
@@ -114,8 +113,6 @@ export const useCancelSubscription = () => {
         mutationFn: cancelSubscription,
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
-            queryClient.invalidateQueries({ queryKey: ['wallet'] })
-            queryClient.invalidateQueries({ queryKey: ['transactions'] })
 
             if (res.success) {
                 showSuccess(res.message || "Subscription successful!");
