@@ -17,24 +17,28 @@ const VendorCouponPage: React.FC = () => {
     const debouncedSearchTerm = useDebounce(search, 500);
     const COUPON_LIMIT = 6
 
-    const { mutate: toggleStatus } = useToggleCouponStatus();
+    const { mutateAsync: toggleStatus } = useToggleCouponStatus();
     const { data: couponResponse, isLoading } = useVendorCoupons(page, COUPON_LIMIT, debouncedSearchTerm);
     const coupons = couponResponse?.data || [];
     const meta = couponResponse?.meta;
 
-    const { mutate: createCouponFn, isPending: isCreating } = useCreateCoupon(() => {
+    const { mutateAsync: createCouponFn, isPending: isCreating } = useCreateCoupon(() => {
         setIsModalOpen(false);
     });
 
-    const { mutate: updateCouponFn, isPending: isUpdating } = useUpdateCoupon(() => {
+    const { mutateAsync: updateCouponFn, isPending: isUpdating } = useUpdateCoupon(() => {
         setIsModalOpen(false);
     });
 
-    const handleSubmit = (values: TCreateCoupon | TUpdateCoupon, isEdit: boolean) => {
-        if (isEdit && editCoupon) {
-            updateCouponFn({ id: editCoupon.id, data: values });
-        } else {
-            createCouponFn(values as TCreateCoupon);
+    const handleSubmit = async (values: TCreateCoupon | TUpdateCoupon, isEdit: boolean) => {
+        try {
+            if (isEdit && editCoupon) {
+                await updateCouponFn({ id: editCoupon.id, data: values });
+            } else {
+                await createCouponFn(values as TCreateCoupon);
+            }
+        } catch (error) {
+            throw error;
         }
     };
 
@@ -61,11 +65,10 @@ const VendorCouponPage: React.FC = () => {
                         }}
                     />
 
-                    <Button
-                        onClick={() => {
-                            setEditCoupon(null);
-                            setIsModalOpen(true);
-                        }}
+                    <Button className="cursor-pointer" onClick={() => {
+                        setEditCoupon(null);
+                        setIsModalOpen(true);
+                    }}
                     >
                         Add Coupon
                     </Button>

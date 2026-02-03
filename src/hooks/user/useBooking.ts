@@ -3,6 +3,7 @@ import { cancelBooking, confirmBooking, createBooking, getUserBookings } from '@
 import { showError, showSuccess } from '@/utils/customToast';
 import { getBookingsToVendor, getVendorAnalytics } from '@/services/vendorService';
 import { ICustomError } from '@/types/custom.types';
+import { AxiosError } from 'axios';
 
 export const useGetUserBookings = (page: number, limit: number, search?: string, sort?: string) => {
     return useQuery({
@@ -65,20 +66,29 @@ export const useCreateBooking = () => {
     });
 };
 
-export const useConfirmBooking = (method: 'wallet' | 'online') => {
+export const useConfirmBooking = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: { vendorId: string, hotelId: string, roomId: string, checkIn: string, checkOut: string, guests: number, totalPrice: number }) => confirmBooking(data, method),
+        mutationFn: (data: {
+            vendorId: string,
+            hotelId: string,
+            roomId: string,
+            checkIn: string,
+            checkOut: string,
+            guests: number,
+            method: 'online' | 'wallet'
+        }) => confirmBooking(data),
         onSuccess: (res) => {
             showSuccess(res?.message || 'Booking confirmed!');
             queryClient.invalidateQueries({ queryKey: ['wallet'] })
             queryClient.invalidateQueries({ queryKey: ['transactions'] })
             queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
-        onError: (error: ICustomError) => {
-            const msg = error.response.data.message || 'Booking failed. Try again.';
+        onError: (error: AxiosError<{ success: boolean, message: string, statusCode: number, error: object }>) => {
+            const msg = error.response?.data.message || 'Booking failed. Try again.';
             showError(msg);
+            throw error.response?.data.error;
         },
     });
 }

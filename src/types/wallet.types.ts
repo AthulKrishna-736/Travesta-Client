@@ -1,5 +1,12 @@
 export type TTransactionType = 'credit' | 'debit';
 export type TRelatedType = 'Booking' | 'Subscription';
+export type TPaymentPurpose = "wallet" | "booking" | "subscription";
+
+export type TPaymentIntent = {
+    amount: number,
+    purpose: TPaymentPurpose,
+    refId?: string,
+}
 
 export interface IWallet {
     id: string;

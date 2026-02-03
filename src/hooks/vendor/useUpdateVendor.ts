@@ -1,5 +1,5 @@
 import { updateVendor } from "@/services/vendorService";
-import { setVendor } from "@/store/slices/vendorSlice";
+import { setUser } from "@/store/slices/userSlice";
 import { ICustomError } from "@/types/custom.types";
 import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ export const useUpdateVendor = () => {
         onSuccess: (res) => {
             if (res.success) {
                 showSuccess(res.message)
-                dispatch(setVendor(res.data))
+                dispatch(setUser(res.data))
             } else {
                 showError(res.message || 'Something went wrong')
             }

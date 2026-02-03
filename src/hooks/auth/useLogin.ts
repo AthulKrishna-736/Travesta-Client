@@ -6,8 +6,6 @@ import { AppDispatch, RootState } from '@/store/store';
 import { setUser } from '@/store/slices/userSlice';
 import { TLoginFormValues } from '../../types/authentication.types';
 import { useNavigate } from 'react-router-dom';
-import { setAdmin } from '@/store/slices/adminSlice';
-import { setVendor } from '@/store/slices/vendorSlice';
 import { ICustomError } from '@/types/custom.types';
 import { useSelector } from 'react-redux';
 import { clearLastVisitedPath } from '@/store/slices/navigationSlice';
@@ -24,24 +22,19 @@ export const useLogin = (role: string) => {
             return login(payload, role);
         },
         onSuccess: (res) => {
-            if (role === 'admin') {
-                dispatch(setAdmin(res.data))
-                navigate(`/${role}/dashboard`)
-            } else if (role === 'vendor') {
-                dispatch(setVendor(res.data))
-                navigate(`/${role}/home`)
-            } else {
-                dispatch(setUser(res.data))
+            dispatch(setUser(res.data))
+            if (role === 'user') {
                 console.log(lastVisitedPath)
                 if (lastVisitedPath) {
-                    console.log('Redirecting to saved path:', lastVisitedPath);
                     window.location.href = lastVisitedPath;
                     dispatch(clearLastVisitedPath());
                 } else {
                     navigate(`/${role}/home`)
                 }
+            } else {
+                navigate(`/${role}/home`);
             }
-            showSuccess(res.message || 'Login successful')
+            showSuccess(res.message || 'Login successful');
         },
         onError: (error: ICustomError) => {
             console.log('error logging: ', error)

@@ -10,33 +10,34 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { showError } from "@/utils/customToast";
 import { useNavigate } from "react-router-dom";
 import CheckoutForm from "@/components/wallet/CheckoutForm";
-import { useAddWalletCredit, useCreatePaymentIntent, useCreateWallet, useGetVendorTransactions, useGetWallet } from "@/hooks/user/useWallet";
+import { useCreatePaymentIntent, useCreateWallet, useGetVendorTransactions, useGetWallet } from "@/hooks/user/useWallet";
 import WalletSection from "@/components/wallet/Wallet";
 import VendorLayout from "@/components/layouts/VendorLayout";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { useQueryClient } from "@tanstack/react-query";
+import { TApiSuccessResponse } from "@/types/custom.types";
+import { IWallet } from "@/types/wallet.types";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const VendorWalletPage = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [page, setPage] = useState(1);
     const [showPayment, setShowPayment] = useState(false);
     const [clientSecret, setClientSecret] = useState('');
     const [amount, setAmount] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const vendorName = useSelector((state: RootState) => state.vendor.vendor?.firstName);
-    const isAuthenticated = Boolean(useSelector((state: RootState) => state.vendor.vendor?.id));
-
+    const vendorName = useSelector((state: RootState) => state.user.user?.firstName);
     const TRANSACTION_LIMIT = 5;
 
     //queries
-    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet(isAuthenticated);
+    const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
     const { data: transactionDataResponse, isLoading: transactionLoading } = useGetVendorTransactions(page, TRANSACTION_LIMIT)
 
     //mutation functions
-    const { mutateAsync: addWalletCredit } = useAddWalletCredit();
     const { mutateAsync: createWallet } = useCreateWallet();
     const { mutateAsync: createPaymentIntent } = useCreatePaymentIntent();
 
@@ -51,9 +52,14 @@ const VendorWalletPage = () => {
     }, [walletDataResponse, createWallet]);
 
     const handleAddMoney = async () => {
-        const numericAmount = parseFloat(amount);
+        const numericAmount = Number(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
             showError("Please enter a valid amount.");
+            return;
+        }
+
+        if (numericAmount < 50) {
+            showError('Amount must be at least 50');
             return;
         }
 
@@ -63,8 +69,8 @@ const VendorWalletPage = () => {
         }
 
         try {
-            const res = await createPaymentIntent(numericAmount * 100);
-            const secret = res?.data?.clientSecret;
+            const res = await createPaymentIntent({ amount: numericAmount, purpose: 'wallet' });
+            const secret = res.data.clientSecret;
             if (secret) {
                 setClientSecret(secret);
                 setDialogOpen(false);
@@ -76,20 +82,47 @@ const VendorWalletPage = () => {
     };
 
     const handlePaymentSuccess = async () => {
-        await addWalletCredit(Number(amount));
+        queryClient.setQueryData(['wallet'], (old: TApiSuccessResponse<IWallet>) => {
+            if (!old?.data) return old;
+
+            return {
+                ...old,
+                data: {
+                    ...old.data,
+                    balance: old.data.balance + Number(amount),
+                },
+            };
+        });
+        await queryClient.refetchQueries({ queryKey: ['transactions'] });
         navigate("/vendor/wallet");
     };
 
     const stripeOptions: StripeElementsOptions = {
         clientSecret,
-        appearance: { theme: "stripe" },
+        appearance: { theme: 'flat' },
+        loader: 'always',
     };
 
     return (
         <VendorLayout>
             <>
                 {/* Wallet Section */}
-                {!walletLoading && walletData && (
+                {walletLoading ? (
+                    <div className="mt-10 mx-auto max-w-xl px-6 py-8 bg-gray-50 border border-gray-300 text-gray-700 rounded-xl text-center shadow-sm animate-pulse">
+                        <h2 className="text-lg font-semibold mb-2">
+                            Loading Wallet...
+                        </h2>
+                        <p className="text-sm">
+                            Fetching your balance and transactions.
+                        </p>
+
+                        <div className="mt-4 space-y-3">
+                            <div className="h-5 bg-gray-300 rounded w-1/2 mx-auto" />
+                            <div className="h-4 bg-gray-300 rounded w-3/4 mx-auto" />
+                            <div className="h-4 bg-gray-300 rounded w-2/3 mx-auto" />
+                        </div>
+                    </div>
+                ) : walletData ? (
                     <WalletSection
                         balance={walletData.balance}
                         transactions={transactionData || []}
@@ -97,7 +130,7 @@ const VendorWalletPage = () => {
                         loading={transactionLoading}
                         addMoney={() => setDialogOpen(true)}
                     />
-                )}
+                ) : null}
 
                 {/* Dialog for Add Money */}
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -118,7 +151,7 @@ const VendorWalletPage = () => {
                             />
                         </div>
                         <DialogFooter className="mt-4">
-                            <Button onClick={handleAddMoney} disabled={!amount}>
+                            <Button onClick={handleAddMoney} disabled={!amount} className="cursor-pointer">
                                 Add to Wallet
                             </Button>
                         </DialogFooter>

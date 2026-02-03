@@ -7,7 +7,7 @@ import { TApiErrorResponse, TApiSuccessResponse } from "@/types/custom.types";
 import { IAmenity } from "@/types/amenities.types";
 import { IHotel, TUserHotelParams } from "@/types/hotel.types";
 import { IRoom } from "@/types/room.types";
-import { ITransaction, IWallet } from "@/types/wallet.types";
+import { ITransaction, IWallet, TPaymentIntent } from "@/types/wallet.types";
 import { IRating, TRatingForm } from "@/types/rating.types";
 import { ISubscription } from "@/types/plan.types";
 import { ICoupon } from "@/types/coupon.types";
@@ -161,7 +161,7 @@ export const createBooking = async (payload: BookingPayload): Promise<TApiSucces
 };
 
 //payment
-export const createPaymentIntent = async (data: { amount: number }) => {
+export const createPaymentIntent = async (data: TPaymentIntent): Promise<TApiSuccessResponse<{ clientSecret: string }>> => {
     const response = await axiosInstance.post(`${USER_APIS.payment}/online`, data);
     return response.data;
 };
@@ -196,11 +196,10 @@ export const confirmBooking = async (
         checkIn: string;
         checkOut: string;
         guests: number;
-        totalPrice: number;
+        method: 'wallet' | 'online'
     },
-    method: 'wallet' | 'online'
 ): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/${data.vendorId}/booking?method=${method}`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payment}/booking`, data);
     return response.data;
 };
 
@@ -210,8 +209,8 @@ export const getUserSubscriptions = async (): Promise<TApiSuccessResponse<ISubsc
     return response.data;
 }
 
-export const subscribePlan = async (planId: string, method: 'wallet' | 'online') => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/${planId}/subscribe?method=${method}`);
+export const subscribePlan = async (planId: string, method: 'wallet') => {
+    const response = await axiosInstance.post(`${USER_APIS.payment}/subscribe`, { planId, method });
     return response.data;
 };
 

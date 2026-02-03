@@ -1,8 +1,6 @@
-import { env, HttpStatusCode } from '@/config/config';
+import { env } from '@/config/config';
 import { logoutUser } from '@/store/slices/userSlice';
-import { logoutVendor } from '@/store/slices/vendorSlice';
 import store from '@/store/store';
-import { ICustomError } from '@/types/custom.types';
 import { showError } from '@/utils/customToast';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
@@ -19,38 +17,26 @@ axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
         return response
     },
-    (error: AxiosError) => {
+    (error: AxiosError<{ success: boolean, message: string, statusCode: number }>) => {
         const pathname = window.location.pathname;
         const isUserRoute = pathname.startsWith('/user');
-        const isVendorRoute = pathname.startsWith('/vendor');
-        const errorMsg = error.response?.data as ICustomError | undefined;
+        const errorRes = error.response?.data;
 
-        if (errorMsg?.message == 'user is blocked' && isUserRoute) {
-            store.dispatch(logoutUser())
-            setTimeout(() => {
-                window.location.href = '/user/login';
-            }, 1000);
-        } else if (errorMsg?.message == 'vendor is blocked' && isVendorRoute) {
-            store.dispatch(logoutVendor())
-            setTimeout(() => {
-                window.location.href = '/vendor/login';
-            }, 1000);
+        if (!errorRes) {
+            return Promise.reject(error);
         }
 
-        if (errorMsg?.message == 'Unauthorized access' && error.response?.status == HttpStatusCode.UNAUTHORIZED) {
-            if (isUserRoute) {
-                showError(errorMsg.message)
-                store.dispatch(logoutUser());
-                setTimeout(() => {
-                    window.location.href = '/user/login'
-                }, 1000)
-            } else if (isVendorRoute) {
-                showError(errorMsg.message)
-                store.dispatch(logoutVendor())
-                setTimeout(() => {
-                    window.location.href = '/vendor/login'
-                }, 1000)
-            }
+        switch (errorRes.statusCode) {
+            case 401:
+            case 403:
+                if (errorRes.message === "User is blocked" || errorRes.message === "Your session has expired. Please sign in again.") {
+                    showError(errorRes.message);
+                    store.dispatch(logoutUser());
+                    setTimeout(() => {
+                        window.location.href = isUserRoute ? '/user/login' : '/vendor/login';
+                    }, 1000);
+                }
+                break;
         }
 
         return Promise.reject(error)

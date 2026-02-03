@@ -90,7 +90,7 @@ const VendorAnalyticsDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
                 {/* Total Revenue */}
-                <div className="bg-green-50 border border-green-100 rounded-lg p-6">
+                <div className="bg-green-100 border border-green-300 rounded-lg p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-green-700">Total Revenue</p>
@@ -106,7 +106,7 @@ const VendorAnalyticsDashboard = () => {
                 </div>
 
                 {/* Total Bookings */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
+                <div className="bg-blue-100 border border-blue-300 rounded-lg p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-blue-700">Total Bookings</p>
@@ -122,7 +122,7 @@ const VendorAnalyticsDashboard = () => {
                 </div>
 
                 {/* Avg Booking Value */}
-                <div className="bg-purple-50 border border-purple-100 rounded-lg p-6">
+                <div className="bg-purple-100 border border-purple-300 rounded-lg p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-purple-700">Avg Booking Value</p>
@@ -138,7 +138,7 @@ const VendorAnalyticsDashboard = () => {
                 </div>
 
                 {/* Active Hotels */}
-                <div className="bg-orange-50 border border-orange-100 rounded-lg p-6">
+                <div className="bg-orange-100 border border-orange-300 rounded-lg p-6">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm font-medium text-orange-700">Active Hotels</p>
@@ -155,7 +155,7 @@ const VendorAnalyticsDashboard = () => {
             </div>
 
             {/* Top 5 Hotels Table */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+            <div className="bg-white border border-gray-300 rounded-lg p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-semibold text-gray-800">
                         Top 5 Performing Hotels
@@ -163,9 +163,9 @@ const VendorAnalyticsDashboard = () => {
                 </div>
 
                 {analyticsData.topHotels.length > 0 ? (
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto rounded-md">
                         <table className="min-w-full text-sm">
-                            <thead className="bg-gray-50 sticky top-0 z-10">
+                            <thead className="bg-gray-200 sticky top-0 z-10">
                                 <tr className="border-b border-gray-200">
                                     <th className="py-3 px-4 text-left font-semibold text-gray-600">
                                         Rank
@@ -183,7 +183,7 @@ const VendorAnalyticsDashboard = () => {
                             </thead>
 
                             <tbody>
-                                {analyticsData.topHotels.map((hotel, index: number) => (
+                                {analyticsData.topHotels.map((hotel, index) => (
                                     <tr key={hotel.hotelId} className="border-b border-gray-100 hover:bg-gray-50 transition"                                    >
                                         <td className="py-3 px-4">
                                             <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-blue-50 text-blue-700 font-semibold">
@@ -217,7 +217,7 @@ const VendorAnalyticsDashboard = () => {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 {/* Revenue Trend Line Chart */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-300 rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-800">
                             Revenue Trend
@@ -243,7 +243,7 @@ const VendorAnalyticsDashboard = () => {
                 </div>
 
                 {/* Booking Status Pie Chart */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-300 rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-800">
                             Booking Status Distribution
@@ -269,7 +269,7 @@ const VendorAnalyticsDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
                 {/* Top Hotels by Revenue */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-300 rounded-lg p-6">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">
                         Top Hotels by Revenue
                     </h2>
@@ -294,7 +294,7 @@ const VendorAnalyticsDashboard = () => {
                 </div>
 
                 {/* Monthly Bookings */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-300 rounded-lg p-6">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4">
                         Monthly Bookings
                     </h2>

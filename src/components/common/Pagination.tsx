@@ -15,7 +15,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         <div className='flex items-center justify-center gap-4 py-4'>
             <Button
                 variant='ghost'
-                className='h-8 w-8 rounded-full border border-blue-500 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                className='h-8 w-8 rounded-full border border-blue-500 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
                 size='sm'
                 onClick={handlePrev}
                 disabled={currentPage == 1}>
@@ -26,7 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             </span>
             <Button
                 variant='ghost'
-                className="h-8 w-8 rounded-full border border-blue-500 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-8 w-8 rounded-full border border-blue-500 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700  cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 size='sm'
                 onClick={handleNext}
                 disabled={currentPage == totalPages}>

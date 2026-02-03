@@ -46,7 +46,7 @@ export type TUpdateCoupon = {
 export interface ICouponModalProps {
     open: boolean;
     onClose: () => void;
-    onSubmit: (data: TCreateCoupon | TUpdateCoupon, isEdit: boolean) => void;
+    onSubmit: (data: TCreateCoupon | TUpdateCoupon, isEdit: boolean) => Promise<void>;
     isEdit?: boolean;
     couponData?: TUpdateCoupon & { id?: string };
     isLoading?: boolean;

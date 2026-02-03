@@ -7,8 +7,8 @@ import AdminPlansPage from '@/pages/admin/AdminPlansPage'
 import AdminUsers from '@/pages/admin/AdminUsers'
 import AdminWalletPage from '@/pages/admin/AdminWalletPage'
 import VendorRequestPage from '@/pages/admin/VendorRequestPage'
-import ProtectAdminGuest from '@/ProtectRoutes/GuestAdmin'
-import ProtectedAdmin from '@/ProtectRoutes/ProtectAdmin'
+import ProtectGuest from '@/ProtectRoutes/ProtectGuest'
+import ProtectedUser from '@/ProtectRoutes/ProtectUser'
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
@@ -18,56 +18,56 @@ const AdminRoutes: React.FC = () => {
       <Route path='*' element={<NotFound />} />
 
       <Route path='login' element={
-        <ProtectAdminGuest>
+        <ProtectGuest>
           <AdminLoginPage />
-        </ProtectAdminGuest>
+        </ProtectGuest>
       } />
 
-      <Route path='dashboard' element={
-        <ProtectedAdmin>
+      <Route path='home' element={
+        <ProtectedUser allowedRoles={['admin']}>
           <AdminDash />
-        </ProtectedAdmin>
+        </ProtectedUser>
       } />
 
       <Route path="users" element={
-        <ProtectedAdmin>
+        <ProtectedUser allowedRoles={['admin']}>
           <AdminUsers />
-        </ProtectedAdmin>
+        </ProtectedUser>
       }
       />
 
       <Route path='vendor-requests' element={
-        <ProtectedAdmin>
+        <ProtectedUser allowedRoles={['admin']}>
           <VendorRequestPage />
-        </ProtectedAdmin>
+        </ProtectedUser>
       }
       />
 
       <Route path='amenities' element={
-        <ProtectedAdmin>
+        <ProtectedUser allowedRoles={['admin']}>
           <AdminAmenities />
-        </ProtectedAdmin>
+        </ProtectedUser>
       }
       />
 
       <Route path='chat' element={
-        <ProtectedAdmin>
+        <ProtectedUser allowedRoles={['admin']}>
           <AdminChatPage />
-        </ProtectedAdmin>
+        </ProtectedUser>
       }
       />
 
       <Route path='subscription' element={
-        <ProtectedAdmin>
+        <ProtectedUser allowedRoles={['admin']}>
           <AdminPlansPage />
-        </ProtectedAdmin>
+        </ProtectedUser>
       }
       />
 
       <Route path='wallet' element={
-        <ProtectedAdmin>
+        <ProtectedUser allowedRoles={['admin']}>
           <AdminWalletPage />
-        </ProtectedAdmin>
+        </ProtectedUser>
       }
       />
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IOffer, OfferTableProps } from "@/types/offer.types";
 import DataTable from "../common/Table";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import { Eye, Edit, Ban, Unlock } from "lucide-react";
 import ShowOfferDetailsModal from "./ShowOfferDetails";
 import { Column } from "@/types/custom.types";
@@ -22,15 +22,15 @@ const OfferTable: React.FC<OfferTableProps> = ({ offers, loading, onToggleBlock,
             ) : null,
         },
         {
-            key: "discountType", label: "Discount Type", render: (value) => typeof value === "string" ? (
+            key: "discountType", label: "Type", render: (value) => typeof value === "string" ? (
                 <span className="px-3 py-1 rounded-sm bg-purple-100 text-purple-700 text-xs font-medium">
                     {value}
                 </span>
             ) : null,
         },
-        { key: "discountValue", label: "Value", render: (value) => typeof value === "number" ? `${value}%` : null },
-        { key: "startDate", label: "Start Date", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
-        { key: "expiryDate", label: "End Date", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        { key: "discountValue", label: "Value", render: (value) => typeof value === "number" ? value : 'N/A' },
+        { key: "startDate", label: "Start Date", render: (value) => typeof value === 'string' ? value : 'N/A' },
+        { key: "expiryDate", label: "End Date", render: (value) => typeof value === 'string' ? value : 'N/A' },
         {
             key: "isBlocked", label: "Blocked", render: (value) => typeof value === "boolean" ? (
                 value ? (

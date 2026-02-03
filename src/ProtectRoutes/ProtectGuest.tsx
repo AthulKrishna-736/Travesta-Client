@@ -4,17 +4,17 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 
 interface GuestRouteProps {
-    children: JSX.Element;  
+    children: JSX.Element;
 }
 
 const ProtectGuest: React.FC<GuestRouteProps> = ({ children }) => {
-    const user = useSelector((state: RootState) => state.user.user?.id);  
+    const auth = useSelector((s: RootState) => s.user.user)
 
-    if (user) {
-        return <Navigate to="/user/home" replace />;
+    if (auth) {
+        return <Navigate to={`/${auth.role}/home`} replace />
     }
 
-    return children;  
+    return children;
 };
 
 export default ProtectGuest;

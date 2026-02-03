@@ -1,7 +1,7 @@
 import React from "react"
 import DataTable from "../common/Table"
 import { User, UserTableProps } from "@/types/user.types"
-import ConfirmationModal from "../common/ConfirmationModa"
+import ConfirmationModal from "../common/ConfirmationModal"
 import { useBlockUser } from "@/hooks/user/useUser"
 import { Ban, Unlock } from "lucide-react"
 import { Column } from "@/types/custom.types"

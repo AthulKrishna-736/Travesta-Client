@@ -40,7 +40,7 @@ export type TUpdateOffer = {
 export interface IOfferModalProps {
     open: boolean;
     onClose: () => void;
-    onSubmit: (data: TCreateOffer | TUpdateOffer, isEdit: boolean) => void;
+    onSubmit: (data: TCreateOffer | TUpdateOffer, isEdit: boolean) => Promise<void>;
     isEdit?: boolean;
     offerData?: IOffer | null;
     isLoading?: boolean;

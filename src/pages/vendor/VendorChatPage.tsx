@@ -13,9 +13,9 @@ const VendorChatPage: React.FC = () => {
     const [selectedUser, setSelectedUser] = useState<ChatItem | null>(null);
     const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
 
-    const vendorId = useSelector((state: RootState) => state.vendor.vendor?.id);
-    const vendorRole = useSelector((state: RootState) => state.vendor.vendor?.role);
-    const isAuthenticated = Boolean(useSelector((state: RootState) => state.vendor.vendor?.id));
+    const vendorId = useSelector((state: RootState) => state.user.user?.id);
+    const vendorRole = useSelector((state: RootState) => state.user.user?.role);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearch(searchText), 400);

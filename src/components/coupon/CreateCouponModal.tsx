@@ -8,11 +8,10 @@ import { Input } from "@/components/ui/input";
 import { couponSchema } from "@/utils/validations/commonValidation";
 import { disablePastDates, formatDate } from "@/utils/helperFunctions";
 
-type CouponFormValues = TCreateCoupon;
 
 const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isEdit = false, couponData, isLoading, }) => {
 
-    const { register, handleSubmit, reset, formState: { errors }, } = useForm<CouponFormValues>({
+    const { register, handleSubmit, reset, formState: { errors }, setError } = useForm<TCreateCoupon>({
         resolver: yupResolver(couponSchema),
         defaultValues: {
             name: "",
@@ -56,17 +55,26 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
     }, [isEdit, couponData, reset]);
 
 
-    const submitHandler = (data: CouponFormValues) => {
+    const submitHandler = async (data: TCreateCoupon) => {
         const sanitizedData = {
             ...data,
             name: data.name.trim(),
             code: data.code.trim(),
         };
 
-        if (isEdit && couponData?.id) {
-            onSubmit({ ...sanitizedData, id: couponData.id } as TUpdateCoupon, true);
-        } else {
-            onSubmit(sanitizedData, false);
+        try {
+            if (isEdit && couponData?.id) {
+                await onSubmit({ ...sanitizedData, id: couponData.id } as TUpdateCoupon, true);
+            } else {
+                await onSubmit(sanitizedData, false);
+            }
+
+        } catch (error) {
+            if (typeof error === 'object' && error !== null) {
+                for (const key of Object.entries(error)) {
+                    setError(key[0] as keyof TCreateCoupon, { message: key[1][0] });
+                }
+            }
         }
     };
 
@@ -74,8 +82,8 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
     const endMinDate = disablePastDates(new Date(), 1);
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
-            <DialogContent className="max-w-md w-full p-6 rounded-xl shadow-lg bg-white h-140 overflow-auto">
+        <Dialog open={open} onOpenChange={onClose} >
+            <DialogContent aria-describedby='Coupon Modal' className="max-w-md w-full p-6 rounded-xl shadow-lg bg-white h-140 overflow-auto">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-semibold">
                         {isEdit ? "Edit Coupon" : "Create Coupon"}
@@ -119,7 +127,7 @@ const CouponModal: React.FC<ICouponModalProps> = ({ open, onClose, onSubmit, isE
                     <div>
                         <label className="text-sm font-medium">Count</label>
                         <Input type="number" {...register("count")} placeholder="e.g. 10" />
-                        {errors.value && <p className="text-red-500 text-xs">{errors.value.message}</p>}
+                        {errors.count && <p className="text-red-500 text-xs">{errors.count.message}</p>}
                     </div>
 
                     {/* Price Range */}

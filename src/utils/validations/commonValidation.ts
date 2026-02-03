@@ -1,4 +1,3 @@
-import { TCouponTypes } from '@/types/coupon.types';
 import * as Yup from 'yup';
 
 const nameRegex = /^[A-Za-z\s]+$/;
@@ -22,17 +21,17 @@ export const validationSchema = Yup.object().shape({
 export const hotelSchema = Yup.object().shape({
     name: Yup.string()
         .matches(nameRegex, 'Name must contain only letters and spaces')
-        .max(30, 'Hotel name must be at most 30 characters')
+        .max(100, 'Hotel name must be less than 100 characters')
         .required('Hotel name is required'),
 
     description: Yup.string()
         .min(10, 'Description must be at least 10 characters')
-        .max(3000, 'Description must be at most 1000 characters')
+        .max(3000, 'Description must be at most 3000 characters')
         .required('Description is required'),
 
     address: Yup.string()
         .min(5, 'Address must be at least 5 characters')
-        .max(50, 'Address must be at most 50 characters')
+        .max(100, 'Address must be at most 100 characters')
         .required('Address is required'),
 
     state: Yup.string()
@@ -69,7 +68,7 @@ export const hotelSchema = Yup.object().shape({
 
     specialNotes: Yup.string()
         .min(10, 'Special notes must be at least 10 characters')
-        .max(3000, 'Special notes must be at most 2000 characters')
+        .max(3000, 'Special notes must be at most 3000 characters')
         .required('Special notes is required'),
 });
 
@@ -85,7 +84,6 @@ export const createAmenitySchema = Yup.object({
         .min(5, "Description must be at least 5 characters")
         .max(100, "Description must be less than 100 characters"),
 });
-
 
 //plan create/edit 
 export const planFormSchema = Yup.object().shape({
@@ -141,43 +139,61 @@ export const ratingSchema = Yup.object({
 export const couponSchema = Yup.object({
     name: Yup.string()
         .trim()
-        .min(3)
-        .max(50)
+        .min(3, "Name must be at least 3 characters")
+        .max(50, "Name must be less than 50 characters")
         .required("Name is required"),
-    code: Yup
-        .string()
+
+    code: Yup.string()
         .trim()
         .min(3, "Coupon code must be at least 3 characters")
         .max(20, "Coupon code must be less than 20 characters")
-        .matches(/^[A-Z0-9-]+$/, "Coupon code can only contain uppercase letters, numbers, and hyphens")
+        .matches(
+            /^[a-zA-Z0-9-]+$/,
+            "Coupon code can only contain letters, numbers, and hyphens"
+        )
         .required("Coupon code is required"),
-    type: Yup.mixed<TCouponTypes>()
+
+    type: Yup.mixed<"flat" | "percent">()
         .oneOf(["flat", "percent"], "Invalid type")
-        .required(),
+        .required("Type is required"),
+
     value: Yup.number()
-        .min(1)
+        .typeError("Value must be a number")
+        .min(1, "Value must be at least 1")
+        .max(100000, "Max value should not exceed 100,000")
         .required("Value is required"),
+
     count: Yup.number()
-        .min(1)
-        .required('Count is required'),
+        .typeError("Count must be a number")
+        .min(1, "Count must be at least 1")
+        .max(100, "Max coupon count limit is 100")
+        .required("Count is required"),
+
     minPrice: Yup.number()
-        .min(0).
-        required("Minimum price required"),
+        .typeError("Minimum price must be a number")
+        .min(0, "Min price must be 0 or greater")
+        .max(100000, "Min price should not exceed 100,000")
+        .required("Minimum price required"),
+
     maxPrice: Yup.number()
-        .min(Yup.ref("minPrice"), "Max price must be >= Min price")
+        .typeError("Maximum price must be a number")
+        .min(Yup.ref("minPrice"), "Max price must be greater than Min price")
+        .max(100000, "Max price should not exceed 100,000")
         .required("Maximum price required"),
+
     startDate: Yup.string()
         .required("Start date required"),
+
     endDate: Yup.string()
         .required("End date required"),
 });
-
 
 //offer
 export const offerSchema = Yup.object().shape({
     name: Yup.string()
         .min(3, 'Minimum 3 character required')
         .max(50, 'Maximum of 50 characters are allowed')
+        .matches(/^[a-zA-Z0-9-]+$/, 'Offer name can only contain letters, numbers, and hyphen')
         .required(),
     hotelId: Yup.string().nullable().defined(),
     roomType: Yup
@@ -191,6 +207,7 @@ export const offerSchema = Yup.object().shape({
     discountValue: Yup
         .number()
         .min(1, "Discount must be at least 1")
+        .max(100000, "Max discount upto 100,000")
         .required("Discount value is required"),
     startDate: Yup.string().required("Start date is required"),
     expiryDate: Yup.string().required("End date is required"),

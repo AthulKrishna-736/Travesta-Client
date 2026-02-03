@@ -7,9 +7,11 @@ import PaymentSelectionModal from "./PlanPaymentOption";
 import SubscriptionCheckoutForm from "./PlanCheckout";
 import { useCancelSubscription, useGetUserActivePlan, useSubscribePlan } from "@/hooks/admin/useSubscription";
 import { useCreatePaymentIntent, useGetWallet } from "@/hooks/user/useWallet";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { useQueryClient } from "@tanstack/react-query";
+import { showError } from "@/utils/customToast";
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
@@ -31,6 +33,7 @@ interface PricingCardProps {
 }
 
 const PlanCard = ({ plan }: PricingCardProps) => {
+    const queryClient = useQueryClient();
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [showCancelModal, setShowCancelModal] = useState(false);
@@ -39,7 +42,7 @@ const PlanCard = ({ plan }: PricingCardProps) => {
     const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     const { data: activePlanRes } = useGetUserActivePlan(isAuthenticated);
-    const { data: walletResponse } = useGetWallet(isAuthenticated);
+    const { data: walletResponse } = useGetWallet();
 
     const activePlan = activePlanRes?.data;
     const wallet = walletResponse ? walletResponse.data : null;
@@ -64,21 +67,28 @@ const PlanCard = ({ plan }: PricingCardProps) => {
     const handlePaymentSelect = async (method: "wallet" | "online") => {
         setShowPaymentModal(false);
 
-        if (method === "wallet") {
-            await subscribePlan({ planId: plan.id, method: "wallet" });
-            return;
-        }
+        try {
+            if (method === "wallet") {
+                await subscribePlan({ planId: plan.id, method: "wallet" });
+                return;
+            }
 
-        if (method === "online") {
-            const paymentRes = await createPaymentIntent(plan.price * 100);
-            if (paymentRes?.data?.clientSecret) {
-                setClientSecret(paymentRes.data.clientSecret);
+            if (method === "online") {
+                const paymentRes = await createPaymentIntent({ amount: plan.price, purpose: "subscription", refId: plan.id });
+                if (paymentRes?.data?.clientSecret) {
+                    setClientSecret(paymentRes.data.clientSecret);
+                }
+            }
+        } catch (error) {
+            if (typeof error === 'object' && error !== null && Object.keys(error).length > 0) {
+                const [errMsg] = Object.entries(error);
+                showError(errMsg[1])
             }
         }
     };
 
     const handlePaymentSuccess = async () => {
-        await subscribePlan({ planId: plan.id, method: "online" });
+        await queryClient.refetchQueries({ queryKey: ['user-plan'] })
     };
 
     const stripeOptions: StripeElementsOptions = {

@@ -24,21 +24,25 @@ const VendorOfferPage: React.FC = () => {
     const meta = offerResponse?.meta;
 
     // Mutations
-    const { mutate: toggleStatus } = useToggleOfferStatus();
+    const { mutateAsync: toggleStatus } = useToggleOfferStatus();
 
-    const { mutate: createOfferFn, isPending: isCreating } = useCreateOffer(() => {
+    const { mutateAsync: createOfferFn, isPending: isCreating } = useCreateOffer(() => {
         setIsModalOpen(false);
     });
 
-    const { mutate: updateOfferFn, isPending: isUpdating } = useUpdateOffer(() => {
+    const { mutateAsync: updateOfferFn, isPending: isUpdating } = useUpdateOffer(() => {
         setIsModalOpen(false);
     });
 
-    const handleSubmit = (values: TCreateOffer | TUpdateOffer, isEdit: boolean) => {
-        if (isEdit && editOffer) {
-            updateOfferFn({ id: editOffer.id, data: values });
-        } else {
-            createOfferFn(values as TCreateOffer);
+    const handleSubmit = async (values: TCreateOffer | TUpdateOffer, isEdit: boolean) => {
+        try {
+            if (isEdit && editOffer) {
+                await updateOfferFn({ id: editOffer.id, data: values });
+            } else {
+                await createOfferFn(values as TCreateOffer);
+            }
+        } catch (error) {
+            throw error;
         }
     };
 

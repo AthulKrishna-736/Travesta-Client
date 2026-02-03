@@ -4,7 +4,7 @@ import { Label } from "../ui/label";
 
 const LocationPicker = ({ onSelect }: { onSelect: (coords: [number, number]) => void }) => {
     useMapEvents({
-        click(e: any) {
+        click(e: { latlng: { lng: number, lat: number } }) {
             onSelect([e.latlng.lng, e.latlng.lat]);
         },
     });

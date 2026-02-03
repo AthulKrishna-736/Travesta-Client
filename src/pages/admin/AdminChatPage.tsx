@@ -13,9 +13,9 @@ const AdminChatPage: React.FC = () => {
     const [debouncedSearch, setDebouncedSearch] = useState(searchText);
     const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
 
-    const adminId = useSelector((state: RootState) => state.admin.admin?.id);
-    const adminRole = useSelector((state: RootState) => state.admin.admin?.role);
-    const isAuthenticated = Boolean(useSelector((state: RootState) => state.admin.admin?.id));
+    const adminId = useSelector((state: RootState) => state.user.user?.id);
+    const adminRole = useSelector((state: RootState) => state.user.user?.role);
+    const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearch(searchText), 400);

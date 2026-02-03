@@ -9,12 +9,12 @@ import { KycDocuments } from "@/components/profile/KycDocument";
 import { useGetVendor, useUpdateVendor } from "@/hooks/vendor/useVendor";
 import { showError } from "@/utils/customToast";
 import { useDispatch } from "react-redux";
-import { setVendor } from "@/store/slices/vendorSlice";
 import VendorLayout from "@/components/layouts/VendorLayout";
+import { setUser } from "@/store/slices/userSlice";
 
 const VendorProfile: React.FC = () => {
     const dispatch = useDispatch();
-    const vendor = useSelector((state: RootState) => state.vendor.vendor);
+    const vendor = useSelector((state: RootState) => state.user.user);
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
     const { data: vendorProfileResponse } = useGetVendor();
@@ -22,7 +22,7 @@ const VendorProfile: React.FC = () => {
 
     useEffect(() => {
         if (vendorProfileResponse) {
-            dispatch(setVendor(vendorProfileResponse.data))
+            dispatch(setUser(vendorProfileResponse.data))
         }
     }, [vendorProfileResponse, dispatch]);
 
@@ -64,7 +64,7 @@ const VendorProfile: React.FC = () => {
 
                     <TabsContent value="profile" className="space-y-6">
                         <div className="flex flex-col h-full gap-6 bg-white rounded-sm p-4">
-                            <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} role="vendor" />
+                            <ImageUpload onImageSelected={setSelectedImageFile} updateProfileImage={handleProfileImageUpdate} />
                             <ProfileSection user={vendor!} onUpdate={handleProfileUpdate} />
                         </div>
                     </TabsContent>

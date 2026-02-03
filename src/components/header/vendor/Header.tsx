@@ -14,7 +14,7 @@ interface HeaderProps {
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
     const navigate = useNavigate();
-    const vendor = useSelector((state: RootState) => state.vendor.vendor);
+    const user = useSelector((state: RootState) => state.user.user);
     const { mutate: logoutVendor } = useLogout('vendor');
 
     const handleLogout = () => {
@@ -38,13 +38,13 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                                <AvatarImage src={vendor?.profileImage} />
-                                <AvatarFallback>{vendor?.firstName?.charAt(0) || 'VH'}</AvatarFallback>
+                                <AvatarImage src={user?.profileImage} />
+                                <AvatarFallback>{user?.firstName?.charAt(0) || 'User'}</AvatarFallback>
                             </Avatar>
 
                             {/* Show name and role only on sm and above */}
                             <div className="hidden sm:flex flex-col items-start text-sm">
-                                <span className="font-medium">Hello, {vendor?.firstName}</span>
+                                <span className="font-medium">Hello, {user?.firstName}</span>
                                 <span className="text-xs text-muted-foreground">Hotel Manager</span>
                             </div>
 

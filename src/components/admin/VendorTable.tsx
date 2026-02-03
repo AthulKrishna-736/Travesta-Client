@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DataTable from '../common/Table'
 import { Vendor, VendorRequestTableProps } from '@/types/user.types'
-import ConfirmationModal from '../common/ConfirmationModa'
+import ConfirmationModal from '../common/ConfirmationModal'
 import ShowDetailsModal from '../common/ShowDetailsModal'
 import { useVendorVerify } from '@/hooks/vendor/useVendor'
 import { BadgeInfo, CheckCircle2, XCircle } from 'lucide-react'

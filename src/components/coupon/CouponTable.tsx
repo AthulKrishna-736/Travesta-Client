@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { CouponTableProps, ICoupon } from "@/types/coupon.types";
 import DataTable from "../common/Table";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import { Eye, Edit, Ban, Unlock } from "lucide-react";
-import CouponModal from "./CreateCouponModal";
 import ShowCouponDetailsModal from "./ShowCouponDetails";
 import { Column } from "@/types/custom.types";
 
@@ -29,7 +28,7 @@ const CouponTable: React.FC<CouponTableProps> = ({ coupons, loading, onToggleBlo
                 </span>
             ) : null,
         },
-        { key: "value", label: "Value", render: (value) => typeof value === "number" ? `${value}%` : null },
+        { key: "value", label: "Value", render: (value) => typeof value === "number" ? `${value}` : null },
         { key: "minPrice", label: "Min Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
         { key: "maxPrice", label: "Max Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
         {
@@ -122,17 +121,6 @@ const CouponTable: React.FC<CouponTableProps> = ({ coupons, loading, onToggleBlo
                 showInput={false}
                 isLoading={false}
             />
-
-            {viewCoupon && (
-                <CouponModal
-                    open={!!viewCoupon}
-                    isEdit={false}
-                    couponData={viewCoupon}
-                    onClose={() => setViewCoupon(null)}
-                    onSubmit={() => { }}
-                    isLoading={false}
-                />
-            )}
 
             <ShowCouponDetailsModal
                 open={!!viewCoupon}

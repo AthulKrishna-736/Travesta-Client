@@ -104,7 +104,6 @@ export interface ConfirmationModalProps {
 export type ImageUploadProps = {
     onImageSelected: (file: File | null) => void;
     updateProfileImage?: () => void;
-    role: 'vendor' | 'user'
 };
 
 export interface IMutilImageUploadProps {
