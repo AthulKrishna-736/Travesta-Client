@@ -5,7 +5,7 @@ import fileDownload from "js-file-download";
 import { pdf } from "@react-pdf/renderer";
 import { FileText, Info, Star, XCircle } from "lucide-react";
 import DataTable from "../common/Table";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import InvoiceDoc from "../common/InvoiceDoc";
 import BookingDetailDialog from "./BookingDetailsModal";
 import RatingModal from "../hotel/RatingModal";
@@ -86,8 +86,8 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
 
     const columns: Column<BookingRow>[] = [
         { key: "roomName", label: "Room", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
-        { key: "checkIn", label: "Check-In", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
-        { key: "checkOut", label: "Check-Out", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        { key: "checkIn", label: "Check-In", render: (value) => value ? `${value}` : 'N/A' },
+        { key: "checkOut", label: "Check-Out", render: (value) => value ? `${value}` : 'N/A' },
         { key: "guests", label: "Guests", render: (value) => typeof value === "number" ? value : null },
         { key: "totalPrice", label: "Total Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
         {
@@ -165,12 +165,17 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     return (
         <>
             <div className="rounded-lg border-1 overflow-hidden">
-                <DataTable
+                {flattenedBookings && flattenedBookings.length < 0 ? (<DataTable
                     columns={columns}
                     data={flattenedBookings}
                     actions={actions}
                     loading={loading}
                 />
+                ) : (
+                    <div className="flex justify-center items-center">
+                        <p className="font-semibold text-2xl text-blue-400 bg-blue-50 w-full text-center py-5">No Bookings found!</p>
+                    </div>
+                )}
             </div>
 
             <ConfirmationModal

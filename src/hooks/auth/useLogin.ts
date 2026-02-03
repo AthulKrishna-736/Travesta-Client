@@ -26,7 +26,6 @@ export const useLogin = (role: string) => {
             if (role === 'user') {
                 console.log(lastVisitedPath)
                 if (lastVisitedPath) {
-                    console.log('Redirecting to saved path:', lastVisitedPath);
                     window.location.href = lastVisitedPath;
                     dispatch(clearLastVisitedPath());
                 } else {

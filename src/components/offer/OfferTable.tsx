@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IOffer, OfferTableProps } from "@/types/offer.types";
 import DataTable from "../common/Table";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import { Eye, Edit, Ban, Unlock } from "lucide-react";
 import ShowOfferDetailsModal from "./ShowOfferDetails";
 import { Column } from "@/types/custom.types";

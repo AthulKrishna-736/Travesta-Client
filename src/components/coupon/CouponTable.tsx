@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CouponTableProps, ICoupon } from "@/types/coupon.types";
 import DataTable from "../common/Table";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import { Eye, Edit, Ban, Unlock } from "lucide-react";
 import ShowCouponDetailsModal from "./ShowCouponDetails";
 import { Column } from "@/types/custom.types";

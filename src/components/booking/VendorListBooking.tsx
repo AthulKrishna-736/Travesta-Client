@@ -20,8 +20,8 @@ const VendorBookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) 
     const columns: Column<VendorBookingRow>[] = [
         { key: "roomName", label: "Room", render: (value) => typeof value === "string" ? (<span className="font-semibold">{value}</span>) : null },
         { key: "basePrice", label: "Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
-        { key: "checkIn", label: "Check-In", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
-        { key: "checkOut", label: "Check-Out", render: (value) => value instanceof Date ? value.toLocaleDateString() : null },
+        { key: "checkIn", label: "Check-In", render: (value) => value ? `${value}` : 'N/A' },
+        { key: "checkOut", label: "Check-Out", render: (value) => value ? `${value}` : 'N/A' },
         { key: "guests", label: "Guests", render: (value) => typeof value === "number" ? value : null },
         { key: "totalPrice", label: "Total Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
         {

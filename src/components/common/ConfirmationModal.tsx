@@ -42,13 +42,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 <DialogFooter className="mt-6 flex justify-end gap-2">
                     <Button
                         variant="outline"
-                        className="border-black text-black bg-white hover:bg-gray-100"
+                        className="border-black text-black bg-white hover:bg-gray-100 cursor-pointer"
                         onClick={onCancel}
                     >
                         Cancel
                     </Button>
                     <Button
-                        className="bg-black text-white hover:bg-gray-900"
+                        className="bg-black text-white hover:bg-gray-900 cursor-pointer"
                         onClick={onConfirm}
                         disabled={isLoading}
                     >

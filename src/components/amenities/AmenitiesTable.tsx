@@ -3,7 +3,7 @@ import DataTable from "../common/Table";
 import { AmenityTableProps, IAmenity } from "@/types/amenities.types";
 import { useBlockAmenity, useUpdateAmenity } from "@/hooks/admin/useAmenities";
 import AmenitiesModal from "./AmenitiesModal";
-import ConfirmationModal from "../common/ConfirmationModa";
+import ConfirmationModal from "../common/ConfirmationModal";
 import { Ban, Edit, Unlock } from "lucide-react";
 import { Column } from "@/types/custom.types";
 
