@@ -22,7 +22,7 @@ import { RootState } from '@/store/store';
 
 
 const HotelDetail: React.FC = () => {
-    const { hotelSlug, roomSlug } = useParams();
+    const { hotelId, roomId } = useParams();
     const [params] = useSearchParams();
     const navigate = useNavigate();
 
@@ -48,8 +48,8 @@ const HotelDetail: React.FC = () => {
     const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
     const RATING_LIMT = 5;
 
-    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError, error } = useGetHotelDetailsWithRoom(hotelSlug!, roomSlug!, checkIn, checkOut, roomsCount, guests, children);
-    const { data: ratingResponse } = useGetHotelRatings(hotelSlug!, page, RATING_LIMT);
+    const { data: apiResponse, isLoading: hotelLoading, isError: hotelError, error } = useGetHotelDetailsWithRoom(hotelId!, roomId!, checkIn, checkOut, roomsCount, guests, children);
+    const { data: ratingResponse } = useGetHotelRatings(hotelId!, page, RATING_LIMT);
 
     const hotel = apiResponse?.data.hotel;
     const room = apiResponse?.data.room as IRoom & { discountedPrice: number, appliedOffer: any };
@@ -86,7 +86,7 @@ const HotelDetail: React.FC = () => {
         { label: 'Home', path: '/user/home' },
         { label: 'Hotels', path: '/user/hotels' },
         { label: `${location}` },
-        { label: `${hotel.name}`, path: `/user/hotels/${hotelSlug}` }
+        { label: `${hotel.name}`, path: `/user/hotels/${hotelId}` }
     ]
 
     const handleBookingSubmit = async (room: IRoom & { discountedPrice: number, appliedOffer: any }) => {
@@ -137,7 +137,7 @@ const HotelDetail: React.FC = () => {
             totalPrice: totalPrice.toString(),
             days: days.toString(),
         });
-        navigate(`/user/checkout/${hotel.slug}/${room.slug}?${queryParams.toString()}`);
+        navigate(`/user/checkout/${hotel.id}/${room.id}?${queryParams.toString()}`);
     };
 
     const handleSearch = () => {

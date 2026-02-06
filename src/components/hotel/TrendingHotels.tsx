@@ -37,7 +37,7 @@ const TrendingHotels: React.FC<TrendingHotelsProps> = ({ hotel }) => {
             children: '0'
         });
 
-        navigate(`/user/hotels/${hotel.slug}/${hotel.room.slug}?${queryParams.toString()}`);
+        navigate(`/user/hotels/${hotel._id}/${hotel.room._id}?${queryParams.toString()}`);
     };
 
     return (
