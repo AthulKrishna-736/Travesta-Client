@@ -89,7 +89,7 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
         { key: "checkIn", label: "Check-In", render: (value) => value ? `${value}` : 'N/A' },
         { key: "checkOut", label: "Check-Out", render: (value) => value ? `${value}` : 'N/A' },
         { key: "guests", label: "Guests", render: (value) => typeof value === "number" ? value : null },
-        { key: "totalPrice", label: "Total Price", render: (value) => typeof value === "number" ? `₹${value}` : null },
+        { key: "totalPrice", label: "Total Price", render: (value) => typeof value === "number" ? `₹${value.toFixed(2)}` : null },
         {
             key: "status", label: "Status", render: (value) => typeof value === "string" ? (
                 <span className="px-3 py-1 rounded-sm bg-blue-100 text-blue-700 text-xs font-medium">
@@ -165,12 +165,13 @@ const BookingTable: React.FC<BookingTableProps> = ({ bookings, loading }) => {
     return (
         <>
             <div className="rounded-lg border-1 overflow-hidden">
-                {flattenedBookings && flattenedBookings.length < 0 ? (<DataTable
-                    columns={columns}
-                    data={flattenedBookings}
-                    actions={actions}
-                    loading={loading}
-                />
+                {flattenedBookings && flattenedBookings.length > 0 ? (
+                    <DataTable
+                        columns={columns}
+                        data={flattenedBookings}
+                        actions={actions}
+                        loading={loading}
+                    />
                 ) : (
                     <div className="flex justify-center items-center">
                         <p className="font-semibold text-2xl text-blue-400 bg-blue-50 w-full text-center py-5">No Bookings found!</p>

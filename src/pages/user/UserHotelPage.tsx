@@ -17,7 +17,7 @@ import { IRoom } from '@/types/room.types';
 
 
 const UserHotelPage: React.FC = () => {
-    const [params] = useSearchParams();
+    const [params, setSearchParams] = useSearchParams();
     const queryClient = useQueryClient()
 
     //Query Parmas
@@ -112,6 +112,20 @@ const UserHotelPage: React.FC = () => {
 
     const handleSearch = () => {
         setPage(1);
+
+        setSearchParams({
+            searchTerm: geoSearch,
+            lat: String(lat),
+            long: String(long),
+            checkIn,
+            checkOut,
+            rooms: String(roomsCount),
+            adults: String(guests),
+            children: '0',
+            minPrice: String(priceRange[0] || 0),
+            maxPrice: String(priceRange[1] || 1500),
+        });
+
         queryClient.invalidateQueries({ queryKey: ['user-hotels'] });
     };
 

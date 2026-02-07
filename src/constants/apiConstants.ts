@@ -42,7 +42,7 @@ export const VENDOR_APIS = {
 }
 
 export const ADMIN_APIS = {
-    customers: '/admin/customers',
+    users: '/admin/users',
     vendors: '/admin/vendors',
     amenities: '/admin/amenities',
     chat: '/admin/chat',

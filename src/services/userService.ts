@@ -215,7 +215,7 @@ export const subscribePlan = async (planId: string, method: 'wallet') => {
 };
 
 export const getActivePlan = async () => {
-    const response = await axiosInstance.get(`${USER_APIS.plans}`);
+    const response = await axiosInstance.get(`${USER_APIS.plans}/active`);
     return response.data;
 }
 

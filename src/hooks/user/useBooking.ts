@@ -32,7 +32,7 @@ export const useCancelBooking = () => {
         mutationFn: (bookingId: string) => cancelBooking(bookingId),
         onSuccess: (res) => {
             if (res.success) {
-                showSuccess(res.message)
+                showSuccess(res.message ?? "Booking cancelled successfully")
             } else {
                 showError(res.message || 'Something went wrong');
             }

@@ -18,12 +18,12 @@ export const getAllUsers = async (page: number, limit: number, role: string, sea
         params.sortOrder = order;
     }
 
-    const response = await axiosInstance.get(`${ADMIN_APIS.customers}`, { params });
+    const response = await axiosInstance.get(`${ADMIN_APIS.users}`, { params });
     return response.data;
 };
 
 export const toggleBlockUser = async (userId: string): Promise<TApiSuccessResponse<IUser>> => {
-    const response = await axiosInstance.patch(`${ADMIN_APIS.customers}/${userId}/status`);
+    const response = await axiosInstance.patch(`${ADMIN_APIS.users}/${userId}`);
     return response.data;
 };
 
@@ -35,12 +35,12 @@ export const getVendors = async (page: number, limit: number, search?: string, s
         params.sortOrder = order;
     }
 
-    const response = await axiosInstance.get(`${ADMIN_APIS.vendors}/requests`, { params })
+    const response = await axiosInstance.get(`${ADMIN_APIS.vendors}`, { params })
     return response.data
 }
 
 export const updateVendorVerify = async (data: TUpdateVendorReqValues): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.patch(`${ADMIN_APIS.vendors}/${data.vendorId}/verify`, data);
+    const response = await axiosInstance.patch(`${ADMIN_APIS.vendors}/${data.vendorId}`, data);
     return response.data;
 };
 
@@ -87,7 +87,7 @@ export const getAdminChatMessages = async (userId: string): Promise<IChat[]> => 
 }
 
 export const getAdminUnreadMsg = async (): Promise<TApiSuccessResponse<{ id: string, count: number }[]>> => {
-    const response = await axiosInstance.get(`${ADMIN_APIS.chat}/unread`);
+    const response = await axiosInstance.get(`${ADMIN_APIS.chat}/unreads`);
     return response.data;
 }
 
