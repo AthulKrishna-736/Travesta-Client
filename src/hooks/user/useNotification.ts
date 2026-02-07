@@ -37,7 +37,7 @@ export const useMarkNotification = () => {
     return useMutation({
         mutationFn: (notificationId: string) => markNotificationRead(notificationId),
         onSuccess: (res) => {
-            showSuccess(res.message)
+            showSuccess(res.message ?? 'Notification marked as read')
             queryClient.invalidateQueries({ queryKey: ['notification'] })
         },
         onError: (err) => {
@@ -52,7 +52,7 @@ export const useGetLiveNotifications = (isAuthenticated: boolean, setNotificatio
     useEffect(() => {
         if (!isAuthenticated || eventSourceRef.current) return;
 
-        const eventSource = new EventSource(`${env.SERVER_URL}${USER_APIS.notification}/events`, { withCredentials: true });
+        const eventSource = new EventSource(`${env.SERVER_URL}${USER_APIS.notifications}/events`, { withCredentials: true });
         eventSourceRef.current = eventSource;
 
         const onNotification = (e: MessageEvent) => {

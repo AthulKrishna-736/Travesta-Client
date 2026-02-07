@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createHotel, getHotelAnalytics, getHotelByVendor, getHotelsByVendor, getTrendingHotels, updateHotel } from "@/services/vendorService";
 import { showError, showSuccess } from "@/utils/customToast";
-import { getAllUserHotels, getHotelDetailsWithRoom, getUserHotelBySlug } from '@/services/userService';
+import { getAllUserHotels, getHotelDetailsWithRoom, getUserHotelById } from '@/services/userService';
 import { ICustomError } from '@/types/custom.types';
 
 export const UseCreateHotel = (cbFn: () => void) => {
@@ -102,11 +102,11 @@ export const useGetAllUserHotels = (
     });
 };
 
-export const useGetHotelBySlug = (hotelSlug: string) => {
+export const useGetHotelById = (hotelId: string) => {
     return useQuery({
-        queryKey: ['hotel', hotelSlug],
-        queryFn: () => getUserHotelBySlug(hotelSlug),
-        enabled: !!hotelSlug,
+        queryKey: ['hotel', hotelId],
+        queryFn: () => getUserHotelById(hotelId),
+        enabled: !!hotelId,
         placeholderData: (prev) => prev,
         refetchOnWindowFocus: false,
         retry: 1,

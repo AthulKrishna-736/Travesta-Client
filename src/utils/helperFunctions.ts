@@ -42,3 +42,14 @@ export const formatDayLabel = (iso: string) => {
 };
 
 
+const GUEST_USER_ROUTES = [
+    '/user/hotels',
+    '/user/about-us',
+    '/user/checkout',
+];
+
+export const isGuestAllowedUserRoute = (pathname: string) => {
+    return GUEST_USER_ROUTES.some(route =>
+        pathname === route || pathname.startsWith(route + '/')
+    );
+};

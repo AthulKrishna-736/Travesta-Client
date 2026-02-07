@@ -49,7 +49,7 @@ export const createHotel = async (formData: FormData): Promise<TApiSuccessRespon
 }
 
 export const getHotelByVendor = async (hotelId: string): Promise<TApiSuccessResponse<IHotel>> => {
-    const response = await axiosInstance.get(`${VENDOR_APIS.hotel}/${hotelId}`);
+    const response = await axiosInstance.get(`${VENDOR_APIS.hotels}/${hotelId}`);
     return response.data;
 };
 
@@ -68,7 +68,7 @@ export const updateHotel = async (id: string, formData: FormData): Promise<TApiS
 };
 
 export const getHotelAnalytics = async (hotelId: string, period: 'week' | 'month' | 'year') => {
-    const response = await axiosInstance.get(`${VENDOR_APIS.hotel}/${hotelId}/analytics`, {
+    const response = await axiosInstance.get(`${VENDOR_APIS.hotels}/${hotelId}/analytics`, {
         params: { period: period }
     });
     return response.data;
@@ -149,7 +149,7 @@ export const getVendorAnalytics = async (startDate?: string, endDate?: string): 
 
 //ratings
 export const getHotelRatings = async (hotelId: string, page: number, limit: number): Promise<TApiSuccessResponse<IRating[]>> => {
-    const response = await axiosInstance.get(`${VENDOR_APIS.rating}/${hotelId}`, {
+    const response = await axiosInstance.get(`${VENDOR_APIS.ratings}/${hotelId}`, {
         params: { page, limit }
     });
     return response.data;

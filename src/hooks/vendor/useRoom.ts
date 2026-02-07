@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createRoom, updateRoom, getRoomById, getAllRooms } from '@/services/vendorService';
 import { showError, showSuccess } from '@/utils/customToast';
 import { ICustomError } from '@/types/custom.types';
-import { getUserRoomBySlug } from '@/services/userService';
+import { getUserRoomById } from '@/services/userService';
 
 export const useCreateRoom = (cbFn: () => void) => {
     const queryClient = useQueryClient();
@@ -79,10 +79,10 @@ export const useGetRoomById = (roomId: string) => {
 };
 
 
-export const useGetRoomBySlug = (hotelSlug: string, roomSlug: string, enabled: boolean) => {
+export const useGetUserRoomById = (roomId: string, enabled: boolean) => {
     return useQuery({
-        queryKey: ['room-slug', hotelSlug, roomSlug],
-        queryFn: () => getUserRoomBySlug(hotelSlug, roomSlug),
+        queryKey: ['user-room', roomId],
+        queryFn: () => getUserRoomById(roomId),
         enabled,
         placeholderData: (prev) => prev,
         refetchOnWindowFocus: false,

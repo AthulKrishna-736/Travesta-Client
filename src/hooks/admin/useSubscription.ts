@@ -95,7 +95,7 @@ export const useSubscribePlan = () => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
 
             if (res.success) {
-                showSuccess(res.message || "Subscription successful!");
+                showSuccess(res.message ?? "Subscription successful!");
             } else {
                 showError(res.message || "Something went wrong");
             }
@@ -115,7 +115,7 @@ export const useCancelSubscription = () => {
             queryClient.invalidateQueries({ queryKey: ['user-plan'] })
 
             if (res.success) {
-                showSuccess(res.message || "Subscription successful!");
+                showSuccess(res.message ?? "Subscription cancelled successful!");
             } else {
                 showError(res.message || "Something went wrong");
             }

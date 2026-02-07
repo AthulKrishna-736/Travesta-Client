@@ -63,7 +63,7 @@ export const useUpdateAmenity = () => {
         mutationFn: (data: Partial<TCreateAmenityData> & { id: string }) => updateAmenity(data),
         onSuccess: (res) => {
             if (res.success) {
-                showSuccess(res.message);
+                showSuccess(res.message ?? 'Amenity updated successfully');
                 queryClient.invalidateQueries({ queryKey: ['amenities'], exact: false });
             } else {
                 showError(res.message || 'Something went wrong')

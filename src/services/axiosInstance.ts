@@ -2,6 +2,7 @@ import { env } from '@/config/config';
 import { logoutUser } from '@/store/slices/userSlice';
 import store from '@/store/store';
 import { showError } from '@/utils/customToast';
+import { isGuestAllowedUserRoute } from '@/utils/helperFunctions';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export const axiosInstance = axios.create({
@@ -20,9 +21,14 @@ axiosInstance.interceptors.response.use(
     (error: AxiosError<{ success: boolean, message: string, statusCode: number }>) => {
         const pathname = window.location.pathname;
         const isUserRoute = pathname.startsWith('/user');
+        const isGuestRoute = isGuestAllowedUserRoute(pathname);
         const errorRes = error.response?.data;
 
         if (!errorRes) {
+            return Promise.reject(error);
+        }
+
+        if (isGuestRoute) {
             return Promise.reject(error);
         }
 

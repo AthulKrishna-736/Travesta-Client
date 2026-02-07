@@ -26,7 +26,7 @@ export const useUpdateUser = () => {
         mutationFn: (values: { data: FormData }) => updateUser(values.data),
         onSuccess: (res) => {
             if (res.success) {
-                showSuccess(res.message)
+                showSuccess(res.message ?? 'Updated user successfully')
                 dispatch(setUser(res.data))
                 queryClient.invalidateQueries({ queryKey: ['user'] });
             } else {

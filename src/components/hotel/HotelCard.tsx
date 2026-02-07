@@ -17,7 +17,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
     const adults = Number(params.get('adults')) || 1;
     const children = Number(params.get('children')) || 0;
 
-    const { name, slug, description, images, amenities, state, rating, city, room } = hotel;
+    const { id, name, description, images, amenities, state, rating, city, room } = hotel;
 
     const ratingMetrics = [
         { label: "Hospitality", value: rating.averages.hospitality },
@@ -54,7 +54,7 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel, roomsCount, guests, geoSea
             adults: guests ? guests.toString() : adults.toString(),
             children: children.toString(),
         });
-        navigate(`/user/hotels/${slug}/${room.slug}?${queryParams.toString()}`);
+        navigate(`/user/hotels/${id}/${room.id}?${queryParams.toString()}`);
     }
 
     return (

@@ -77,8 +77,8 @@ export const getAllUserHotels = async (
 };
 
 
-export const getUserHotelBySlug = async (hotelSlug: string): Promise<TApiSuccessResponse<IHotel>> => {
-    const response = await axiosInstance.get(`${USER_APIS.hotels}/${hotelSlug}`);
+export const getUserHotelById = async (hotelId: string): Promise<TApiSuccessResponse<IHotel>> => {
+    const response = await axiosInstance.get(`${USER_APIS.hotels}/${hotelId}`);
     return response.data;
 };
 
@@ -92,7 +92,7 @@ export const getHotelDetailsWithRoom = async (
     children: number
 ): Promise<TApiSuccessResponse<{ hotel: IHotel, room: IRoom, otherRooms: IRoom[] }>> => {
     try {
-        const response = await axiosInstance.get(`${USER_APIS.hotel}/${hotelId}/details/${roomId}`, {
+        const response = await axiosInstance.get(`${USER_APIS.hotels}/${hotelId}/rooms/${roomId}`, {
             params: { checkIn, checkOut, rooms, adults, children }
         });
         return response.data;
@@ -103,8 +103,8 @@ export const getHotelDetailsWithRoom = async (
 }
 
 //room
-export const getUserRoomBySlug = async (hotelSlug: string, roomSlug: string): Promise<TApiSuccessResponse<IRoom>> => {
-    const response = await axiosInstance.get(`${USER_APIS.room}/${hotelSlug}/${roomSlug}`);
+export const getUserRoomById = async (roomId: string): Promise<TApiSuccessResponse<IRoom>> => {
+    const response = await axiosInstance.get(`${USER_APIS.rooms}/${roomId}`);
     return response.data;
 }
 
@@ -133,7 +133,7 @@ export const getUserUnreadChats = async (): Promise<TApiSuccessResponse<{ id: st
 };
 
 export const MarkMsgRead = async (receiverId: string): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.chat}/${receiverId}/read`)
+    const response = await axiosInstance.patch(`${USER_APIS.chat}/messages/${receiverId}`)
     return response.data;
 }
 
@@ -144,40 +144,40 @@ export const getUserChatAccess = async () => {
 
 //booking
 export const getUserBookings = async (page: number, limit: number, search?: string, sort?: string): Promise<TApiSuccessResponse<IBooking[]>> => {
-    const response = await axiosInstance.get(`${USER_APIS.booking}`, {
+    const response = await axiosInstance.get(`${USER_APIS.bookings}`, {
         params: { page, limit, search, sort },
     });
     return response.data;
 };
 
 export const cancelBooking = async (bookingId: string): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.delete(`${USER_APIS.cancelBooking}/${bookingId}`);
+    const response = await axiosInstance.delete(`${USER_APIS.bookings}/${bookingId}`);
     return response.data;
 };
 
 export const createBooking = async (payload: BookingPayload): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.booking}`, payload);
+    const response = await axiosInstance.post(`${USER_APIS.bookings}`, payload);
     return response.data;
 };
 
 //payment
 export const createPaymentIntent = async (data: TPaymentIntent): Promise<TApiSuccessResponse<{ clientSecret: string }>> => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/online`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payments}/intent`, data);
     return response.data;
 };
 
 export const addWalletCredit = async (amount: number) => {
-    const response = await axiosInstance.put(`${USER_APIS.wallet}`, { amount });
+    const response = await axiosInstance.put(`${USER_APIS.wallets}`, { amount });
     return response.data;
 };
 
 export const createWallet = async (): Promise<TApiSuccessResponse<IWallet>> => {
-    const response = await axiosInstance.post(`${USER_APIS.wallet}`);
+    const response = await axiosInstance.post(`${USER_APIS.wallets}`);
     return response.data;
 };
 
 export const getWallet = async (): Promise<TApiSuccessResponse<IWallet>> => {
-    const response = await axiosInstance.get(`${USER_APIS.wallet}`);
+    const response = await axiosInstance.get(`${USER_APIS.wallets}`);
     return response.data;
 };
 
@@ -199,7 +199,7 @@ export const confirmBooking = async (
         method: 'wallet' | 'online'
     },
 ): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/booking`, data);
+    const response = await axiosInstance.post(`${USER_APIS.payments}/bookings`, data);
     return response.data;
 };
 
@@ -210,30 +210,30 @@ export const getUserSubscriptions = async (): Promise<TApiSuccessResponse<ISubsc
 }
 
 export const subscribePlan = async (planId: string, method: 'wallet') => {
-    const response = await axiosInstance.post(`${USER_APIS.payment}/subscribe`, { planId, method });
+    const response = await axiosInstance.post(`${USER_APIS.payments}/subscriptions`, { planId, method });
     return response.data;
 };
 
 export const getActivePlan = async () => {
-    const response = await axiosInstance.get(`${USER_APIS.activePlan}`);
+    const response = await axiosInstance.get(`${USER_APIS.plans}/active`);
     return response.data;
 }
 
 export const cancelSubscription = async (): Promise<TApiSuccessResponse<null>> => {
-    const response = await axiosInstance.post(`${USER_APIS.cancelPlan}`);
+    const response = await axiosInstance.patch(`${USER_APIS.plans}`);
     return response.data;
 }
 
 //ratings
 export const createRating = async (data: FormData): Promise<TApiSuccessResponse<IRating>> => {
-    const response = await axiosInstance.post(`${USER_APIS.rating}`, data, {
+    const response = await axiosInstance.post(`${USER_APIS.ratings}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
 };
 
 export const updateRating = async (data: TRatingForm & { ratingId: string }): Promise<TApiSuccessResponse<IRating>> => {
-    const response = await axiosInstance.put(`${USER_APIS.rating}`, data);
+    const response = await axiosInstance.put(`${USER_APIS.ratings}`, data);
     return response.data;
 };
 
@@ -247,16 +247,16 @@ export const getUserCoupons = async (vendorId: string, price: number): Promise<T
 
 //notification
 export const getNotification = async (): Promise<INotification[]> => {
-    const response = await axiosInstance.get(`${USER_APIS.notification}`);
+    const response = await axiosInstance.get(`${USER_APIS.notifications}`);
     return response.data.data;
 }
 
 export const markNotificationRead = async (notificaionId: string) => {
-    const response = await axiosInstance.patch(`${USER_APIS.notification}/${notificaionId}`);
+    const response = await axiosInstance.patch(`${USER_APIS.notifications}/${notificaionId}`);
     return response.data;
 }
 
 export const markAllNotifications = async () => {
-    const response = await axiosInstance.put(`${USER_APIS.notification}`);
+    const response = await axiosInstance.put(`${USER_APIS.notifications}`);
     return response.data;
 }

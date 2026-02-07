@@ -10,18 +10,18 @@ import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import CheckoutForm from '@/components/wallet/CheckoutForm';
 import { env } from '@/config/config';
 import { showError } from '@/utils/customToast';
-import { useGetRoomBySlug } from '@/hooks/vendor/useRoom';
+import { useGetUserRoomById } from '@/hooks/vendor/useRoom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
 import { saveLastVisitedPath } from '@/store/slices/navigationSlice';
 import { useUserCoupons } from '@/hooks/vendor/useCoupon';
 import { ICoupon } from '@/types/coupon.types';
-import { useGetHotelBySlug } from '@/hooks/vendor/useHotel';
+import { useGetHotelById } from '@/hooks/vendor/useHotel';
 
 const stripePromise = loadStripe(env.STRIPE_SECRET);
 
 const BookingCheckout: React.FC = () => {
-    const { hotelSlug, roomSlug } = useParams();
+    const { hotelId, roomId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [params] = useSearchParams();
@@ -43,11 +43,11 @@ const BookingCheckout: React.FC = () => {
     const isAuthenticated = Boolean(useSelector((state: RootState) => state.user.user?.id));
 
     //get hotel details
-    const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelBySlug(hotelSlug!);
+    const { data: hotelResponse, isLoading: isHotelLoading } = useGetHotelById(hotelId!);
     const hotel = hotelResponse ? hotelResponse.data : null;
 
     //get room details
-    const { data: roomResponse, isLoading: isRoomLoading } = useGetRoomBySlug(hotelSlug!, roomSlug!, true);
+    const { data: roomResponse, isLoading: isRoomLoading } = useGetUserRoomById(roomId!, true);
     const room = roomResponse ? roomResponse.data : null;
 
     //get wallet details
