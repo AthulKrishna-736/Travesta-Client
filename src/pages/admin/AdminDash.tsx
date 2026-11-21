@@ -4,6 +4,7 @@ import { useGetAdminAnalytics } from "@/hooks/vendor/useVendor";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { IndianRupee, CalendarCheck, Hotel, BedDouble } from "lucide-react";
 import ChartLoader from "@/components/common/ChartLoader";
+import EmptyChart from "@/components/common/EmptyChart";
 
 const AnalyticsBarChart = lazy(() => import("@/components/analytics/AnalyticsBarChart"));
 const AnalyticsLineChart = lazy(() => import("@/components/analytics/AnalyticsLineChart"));
@@ -108,14 +109,18 @@ const AdminDash = () => {
                                     </h2>
 
                                     <Suspense fallback={<ChartLoader />}>
-                                        <AnalyticsLineChart
-                                            data={bookingsData}
-                                            xKey="month"
-                                            yKey="bookings"
-                                            label="Bookings"
-                                            strokeColor="#2563eb"
-                                            valueFormatter={(value) => value.toLocaleString()}
-                                        />
+                                        {bookingsData.length > 0 ? (
+                                            <AnalyticsLineChart
+                                                data={bookingsData}
+                                                xKey="month"
+                                                yKey="bookings"
+                                                label="Bookings"
+                                                strokeColor="#2563eb"
+                                                valueFormatter={(value) => value.toLocaleString()}
+                                            />
+                                        ) : (
+                                            <EmptyChart />
+                                        )}
                                     </Suspense>
                                 </div>
 
@@ -126,15 +131,19 @@ const AdminDash = () => {
                                     </h2>
 
                                     <Suspense fallback={<ChartLoader />}>
-                                        <AnalyticsBarChart
-                                            data={revenueData}
-                                            xKey="date"
-                                            yKey="revenue"
-                                            label="Revenue"
-                                            barColor="#16a34a"
-                                            barSize={28}
-                                            valueFormatter={(value) => `₹${value.toLocaleString()}`}
-                                        />
+                                        {revenueData.length > 0 ? (
+                                            <AnalyticsBarChart
+                                                data={revenueData}
+                                                xKey="date"
+                                                yKey="revenue"
+                                                label="Revenue"
+                                                barColor="#16a34a"
+                                                barSize={28}
+                                                valueFormatter={(value) => `₹${value.toLocaleString()}`}
+                                            />
+                                        ) : (
+                                            <EmptyChart />
+                                        )}
                                     </Suspense>
                                 </div>
                             </div>
@@ -147,42 +156,63 @@ const AdminDash = () => {
                                         Average Ratings
                                     </h2>
 
-                                    <ResponsiveContainer width="100%" height={260}>
-                                        <BarChart data={ratingData} layout="vertical">
-                                            <CartesianGrid stroke="#e5e7eb" strokeDasharray="2 2" />
+                                    {ratingData && ratingData.length > 0 ? (
+                                        <ResponsiveContainer width="100%" height={260}>
+                                            <BarChart data={ratingData} layout="vertical">
+                                                <CartesianGrid
+                                                    stroke="#e5e7eb"
+                                                    strokeDasharray="2 2"
+                                                />
 
-                                            <XAxis
-                                                type="number"
-                                                domain={[0, 5]}
-                                                tick={{ fill: "#6b7280", fontSize: 12 }}
-                                                axisLine={false}
-                                                tickLine={false}
-                                            />
+                                                <XAxis
+                                                    type="number"
+                                                    domain={[0, 5]}
+                                                    tick={{ fill: "#6b7280", fontSize: 12 }}
+                                                    axisLine={false}
+                                                    tickLine={false}
+                                                />
 
-                                            <YAxis
-                                                type="category"
-                                                dataKey="category"
-                                                tick={{ fill: "#6b7280", fontSize: 12 }}
-                                                axisLine={false}
-                                                tickLine={false}
-                                                width={90}
-                                            />
+                                                <YAxis
+                                                    type="category"
+                                                    dataKey="category"
+                                                    tick={{ fill: "#6b7280", fontSize: 12 }}
+                                                    axisLine={false}
+                                                    tickLine={false}
+                                                    width={90}
+                                                />
 
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e5e7eb", borderRadius: "8px", fontSize: "12px" }}
-                                                labelStyle={{ color: "#111827", fontWeight: 500 }}
-                                            />
+                                                <Tooltip
+                                                    contentStyle={{
+                                                        backgroundColor: "#ffffff",
+                                                        border: "1px solid #e5e7eb",
+                                                        borderRadius: "8px",
+                                                        fontSize: "12px",
+                                                    }}
+                                                    labelStyle={{
+                                                        color: "#111827",
+                                                        fontWeight: 500,
+                                                    }}
+                                                />
 
-                                            <Bar dataKey="rating" radius={[0, 6, 6, 0]} barSize={18}>
-                                                {ratingData.map((_, index) => (
-                                                    <Cell
-                                                        key={`cell-${index}`}
-                                                        fill={colors[index % colors.length]}
-                                                    />
-                                                ))}
-                                            </Bar>
-                                        </BarChart>
-                                    </ResponsiveContainer>
+                                                <Bar
+                                                    dataKey="rating"
+                                                    radius={[0, 6, 6, 0]}
+                                                    barSize={18}
+                                                >
+                                                    {ratingData.map((_, index) => (
+                                                        <Cell
+                                                            key={`cell-${index}`}
+                                                            fill={colors[index % colors.length]}
+                                                        />
+                                                    ))}
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    ) : (
+                                        <div className="h-[260px]">
+                                            <EmptyChart message="No ratings available" />
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Top Hotels */}
@@ -192,50 +222,87 @@ const AdminDash = () => {
                                     </h2>
 
                                     <div className="divide-y divide-gray-100">
-                                        {analytics.topHotels.map((hotel, idx: number) => (
-                                            <div
-                                                key={idx}
-                                                className="flex items-center justify-between py-4 hover:bg-gray-50 transition rounded-md px-2"
-                                            >
-                                                {/* Hotel Info */}
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-900 truncate">
-                                                        {hotel.hotel.name}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 mt-1">
-                                                        {hotel.hotel.city}
-                                                    </p>
+                                        {analytics.topHotels && analytics.topHotels.length > 0 ? (
+                                            analytics.topHotels.map((hotel, idx: number) => (
+                                                <div
+                                                    key={idx}
+                                                    className="flex items-center justify-between py-4 hover:bg-gray-50 transition rounded-md px-2"
+                                                >
+                                                    {/* Hotel Info */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-sm font-medium text-gray-900 truncate">
+                                                            {hotel.hotel.name}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            {hotel.hotel.city}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Metrics */}
+                                                    <div className="flex items-center gap-6 text-sm">
+                                                        <div className="text-right">
+                                                            <p className="font-semibold text-gray-900">
+                                                                {hotel.totalBookings}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500">
+                                                                Bookings
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="text-right">
+                                                            <p className="font-semibold text-green-600">
+                                                                ₹{hotel.revenue.toLocaleString()}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500">
+                                                                Revenue
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="flex items-center gap-1 bg-yellow-50 border border-yellow-100 rounded-md px-2 py-1">
+                                                            <span className="text-yellow-500 text-sm">★</span>
+                                                            <span className="text-sm font-medium text-gray-900">
+                                                                {(hotel.avgRating ?? 0).toFixed(1)}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center py-12">
+                                                {/* Abstract empty illustration */}
+                                                <div className="relative w-32 h-24 mb-5">
+
+                                                    <div className="absolute inset-0 rounded-full bg-gray-50" />
+
+                                                    {/* Hotel card illustration */}
+                                                    <div className="absolute left-3 top-3 w-24 h-16 rounded-lg border border-gray-200 bg-white shadow-sm p-3">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <div className="w-5 h-5 rounded-md bg-gray-200" />
+                                                            <div className="space-y-1">
+                                                                <div className="w-10 h-1.5 rounded-full bg-gray-200" />
+                                                                <div className="w-7 h-1 rounded-full bg-gray-100" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex gap-1">
+                                                            <div className="h-3 w-3 rounded-sm bg-gray-100" />
+                                                            <div className="h-3 w-3 rounded-sm bg-gray-200" />
+                                                            <div className="h-3 w-3 rounded-sm bg-gray-100" />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Floating decoration */}
+                                                    <div className="absolute right-1 top-1 w-7 h-7 rounded-full bg-gray-100 border-4 border-white" />
+                                                    <div className="absolute left-0 bottom-1 w-4 h-4 rounded-full bg-gray-200 border-2 border-white" />
                                                 </div>
 
-                                                {/* Metrics */}
-                                                <div className="flex items-center gap-6 text-sm">
-                                                    <div className="text-right">
-                                                        <p className="font-semibold text-gray-900">
-                                                            {hotel.totalBookings}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500">
-                                                            Bookings
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="text-right">
-                                                        <p className="font-semibold text-green-600">
-                                                            ₹{hotel.revenue.toLocaleString()}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500">
-                                                            Revenue
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex items-center gap-1 bg-yellow-50 border border-yellow-100 rounded-md px-2 py-1">
-                                                        <span className="text-yellow-500 text-sm">★</span>
-                                                        <span className="text-sm font-medium text-gray-900">
-                                                            {(hotel.avgRating ?? 0).toFixed(1)}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                <p className="text-sm font-medium text-gray-600">
+                                                    No hotels to display
+                                                </p>
+                                                <p className="text-xs text-gray-400 mt-1 text-center">
+                                                    Hotel performance data will appear here once bookings are available.
+                                                </p>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 </div>
 
