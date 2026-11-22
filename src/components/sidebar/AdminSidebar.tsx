@@ -117,19 +117,14 @@ export function AdminSidebar() {
                                             asChild
                                             isActive={isActive}
                                             tooltip={item.title}
-                                            className={`
-                                                group relative h-11 rounded-xl px-3
-                                                transition-all duration-200 cursor-pointer
+                                            className={`group relative h-11 rounded-xl px-3 transition-all duration-200 cursor-pointer
                                                 ${isActive
                                                     ? "!bg-indigo-50 !text-indigo-700 font-semibold shadow-sm"
                                                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                                                 }
                                             `}
                                         >
-                                            <button
-                                                onClick={() => navigate(item.href)}
-                                                className="flex w-full items-center gap-3"
-                                            >
+                                            <button onClick={() => navigate(item.href)} className="flex w-full items-center gap-3">
                                                 <item.icon
                                                     className={`h-[18px] w-[18px] shrink-0 transition-colors ${isActive
                                                         ? "text-indigo-600"
@@ -155,49 +150,48 @@ export function AdminSidebar() {
             </SidebarContent>
 
             {/* Admin Profile */}
-<SidebarFooter className="mt-auto w-full border-t border-slate-100 p-3">
+            <SidebarFooter className="mt-auto w-full border-t border-slate-100 p-3">
+                {/* Profile Card */}
+                <div className="group relative w-full overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-3 transition-all duration-200 hover:border-indigo-200 hover:shadow-sm">
 
-    {/* Profile Card */}
-    <div className="group relative w-full overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-3 transition-all duration-200 hover:border-indigo-200 hover:shadow-sm">
+                    <div className="flex w-full items-center gap-3">
 
-        <div className="flex w-full items-center gap-3">
+                        <div className="relative shrink-0">
+                            <Avatar className="h-10 w-10 rounded-xl border border-indigo-100">
+                                <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
+                                <AvatarFallback className="rounded-xl bg-indigo-600 text-sm font-bold text-white">
+                                    {admin?.firstName?.charAt(0)?.toUpperCase() ?? "A"}
+                                </AvatarFallback>
+                            </Avatar>
 
-            <div className="relative shrink-0">
-                <Avatar className="h-10 w-10 rounded-xl border border-indigo-100">
-                    <AvatarImage src="/placeholder-user.jpg" alt="Admin" />
-                    <AvatarFallback className="rounded-xl bg-indigo-600 text-sm font-bold text-white">
-                        {admin?.firstName?.charAt(0)?.toUpperCase() ?? "A"}
-                    </AvatarFallback>
-                </Avatar>
+                            <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
+                        </div>
 
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
-            </div>
+                        <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-slate-800">
+                                {admin?.firstName ?? "Administrator"}
+                            </p>
+                            <p className="truncate text-[11px] text-slate-400">
+                                {admin?.email ?? "Admin account"}
+                            </p>
+                        </div>
 
-            <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-slate-800">
-                    {admin?.firstName ?? "Administrator"}
-                </p>
-                <p className="truncate text-[11px] text-slate-400">
-                    {admin?.email ?? "Admin account"}
-                </p>
-            </div>
+                        <ChevronRight className="h-4 w-4 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-indigo-600" />
+                    </div>
+                </div>
 
-            <ChevronRight className="h-4 w-4 shrink-0 text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:text-indigo-600" />
-        </div>
-    </div>
+                {/* Footer Info */}
+                <div className="flex w-full items-center justify-between px-1 pt-3">
+                    <span className="text-[10px] font-medium text-slate-400">
+                        © {new Date().getFullYear()} Travesta
+                    </span>
 
-    {/* Footer Info */}
-    <div className="flex w-full items-center justify-between px-1 pt-3">
-        <span className="text-[10px] font-medium text-slate-400">
-            © {new Date().getFullYear()} Travesta
-        </span>
+                    <span className="text-[10px] font-medium text-slate-400">
+                        Admin Portal
+                    </span>
+                </div>
 
-        <span className="text-[10px] font-medium text-slate-400">
-            Admin Portal
-        </span>
-    </div>
-
-</SidebarFooter>
+            </SidebarFooter>
 
             <SidebarRail />
         </Sidebar>
