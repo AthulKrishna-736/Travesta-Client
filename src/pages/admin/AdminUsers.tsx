@@ -20,7 +20,7 @@ const AdminUsers = () => {
 
     const sortOptions = [
         {
-            name: "Name (A → Z)",
+            name: "A to Z",
             tooltip: "Sort alphabetically ascending",
             onClickHandler: () => {
                 setPage(1);
@@ -29,7 +29,7 @@ const AdminUsers = () => {
             icon: ArrowUpAZ,
         },
         {
-            name: "Name (Z → A)",
+            name: "Z to A",
             tooltip: "Sort alphabetically descending",
             onClickHandler: () => {
                 setPage(1);
@@ -70,44 +70,59 @@ const AdminUsers = () => {
 
     return (
         <AdminLayout>
-            <div className="space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Platform Members</h1>
-                    <p className="text-muted-foreground">
-                        Here is the list of all users and vendors registered on the platform.
-                    </p>
-                </div>
+            <div className="min-h-screen bg-slate-50/80 p-6">
+                <div className="flex flex-col gap-5">
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Platform Members</h1>
+                        <p className="text-muted-foreground">
+                            Here is the list of all users and vendors registered on the platform.
+                        </p>
+                    </div>
+                    <div className="flex justify-between">
 
-                <ToggleGroup type="single" value={role} onValueChange={handleRoleChange}
-                    className="w-fit"
-                >
-                    <ToggleGroupItem value="user" className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white">Users</ToggleGroupItem>
-                    <ToggleGroupItem value="vendor" className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white">Vendors</ToggleGroupItem>
-                </ToggleGroup>
+                        <ToggleGroup
+                            type="single"
+                            value={role}
+                            onValueChange={handleRoleChange}
+                            className="w-fit gap-1 rounded-lg bg-gray-100 p-1"
+                        >
+                            <ToggleGroupItem
+                                value="user"
+                                className="rounded-md border-0 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 data-[state=on]:bg-black data-[state=on]:text-white data-[state=on]:shadow-sm"
+                            >
+                                Users
+                            </ToggleGroupItem>
 
-                <div className="overflow-x-auto space-y-4">
-                    <div className="relative w-full">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-800" />
+                            <ToggleGroupItem
+                                value="vendor"
+                                className="rounded-md border-0 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 data-[state=on]:bg-black data-[state=on]:text-white data-[state=on]:shadow-sm"
+                            >
+                                Vendors
+                            </ToggleGroupItem>
+                        </ToggleGroup>
+
                         <Input
                             type="text"
                             placeholder={`Search ${role}s...`}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             value={searchTerm}
-                            className="pl-10 text-gray-800 placeholder:text-gray-800 placeholder:italic"
+                            className="w-fit rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-0"
                         />
+
                     </div>
+
                     <CustomSort data={sortOptions} />
 
                     <UserTable users={users} loading={isLoading} />
-                </div>
 
-                {meta && meta.totalPages > 0 && (
-                    <Pagination
-                        currentPage={meta.currentPage}
-                        totalPages={meta.totalPages}
-                        onPageChange={setPage}
-                    />
-                )}
+                    {meta && meta.totalPages > 0 && (
+                        <Pagination
+                            currentPage={meta.currentPage}
+                            totalPages={meta.totalPages}
+                            onPageChange={setPage}
+                        />
+                    )}
+                </div>
             </div>
         </AdminLayout>
     )
