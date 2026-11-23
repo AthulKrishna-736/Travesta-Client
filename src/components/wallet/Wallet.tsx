@@ -1,6 +1,7 @@
 import { WalletSectionProps } from '@/types/wallet.types';
 import { Plus } from 'lucide-react';
 import React from 'react';
+import EmptyState from '../common/EmptyState';
 
 const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, addMoney, loading }) => {
     return (
@@ -31,7 +32,11 @@ const WalletSection: React.FC<WalletSectionProps> = ({ balance, transactions, ad
                 {loading ? (
                     <p className="text-gray-500">Loading transactions...</p>
                 ) : transactions.length === 0 ? (
-                    <p className="text-gray-500">No transactions yet.</p>
+                    <div className='flex justify-center'>
+                        <EmptyState
+                            title="No transactions yet."
+                            description="There are no transactions available at the moment. Transactions will appear here once users make payments."
+                        />                    </div>
                 ) : (
                     <ul className="space-y-3">
                         {transactions.map((tx, index) => (

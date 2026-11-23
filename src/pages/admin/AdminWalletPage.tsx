@@ -8,13 +8,11 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 
 const AdminWalletPage = () => {
+    const LIMIT = 5;
+    const ADMIN_NAME = useSelector((state: RootState) => state.user.user?.firstName);
     const [page, setPage] = useState(1);
-
-    const adminName = useSelector((state: RootState) => state.user.user?.firstName);
-    const limit = 5;
-
     const { data: walletDataResponse, isLoading: walletLoading } = useGetWallet();
-    const { data: transactionDataResponse, isLoading: transactionLoading } = useGetUserTransactions(page, limit);
+    const { data: transactionDataResponse, isLoading: transactionLoading } = useGetUserTransactions(page, LIMIT);
 
     const walletData = walletDataResponse?.data ?? null;
     const transactionData = transactionDataResponse?.data ?? null;
@@ -22,7 +20,7 @@ const AdminWalletPage = () => {
 
     return (
         <AdminLayout>
-            <div>
+            <div className="min-h-screen bg-slate-100 p-6">
                 {walletLoading ? (
                     <div className="mt-10 mx-auto max-w-xl px-6 py-8 bg-gray-50 border border-gray-300 text-gray-700 rounded-xl text-center shadow-sm animate-pulse">
                         <h2 className="text-lg font-semibold mb-2">
@@ -42,7 +40,7 @@ const AdminWalletPage = () => {
                     <WalletSection
                         balance={walletData.balance}
                         transactions={transactionData || []}
-                        userName={adminName || "User"}
+                        userName={ADMIN_NAME || "User"}
                         loading={transactionLoading}
                     />
                 ) : null}
