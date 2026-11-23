@@ -136,7 +136,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
     ]
 
     return (
-        <>
+        <div className='w-full'>
             <div className="rounded-lg border-1 overflow-hidden">
                 <DataTable
                     columns={columns}
@@ -177,7 +177,7 @@ const VendorTable: React.FC<VendorRequestTableProps> = ({ vendors, loading, page
                 isLoading={isPending}
             />
 
-        </>
+        </div>
     )
 }
 

@@ -68,7 +68,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
     ]
 
     return (
-        <>
+        <div className="w-full">
             <div className="rounded-lg border-1 overflow-hidden">
                 <DataTable<User>
                     columns={columns}
@@ -77,6 +77,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
                     loading={loading || isPending}
                 />
             </div>
+
             <ConfirmationModal
                 open={isModalOpen}
                 title={`${selectedUser?.isBlocked ? "Unblock" : "Block"} User`}
@@ -86,7 +87,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, loading }) => {
                 onCancel={handleCancel}
                 isLoading={isPending}
             />
-        </>
+        </div>
     )
 }
 

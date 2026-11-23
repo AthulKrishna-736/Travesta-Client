@@ -113,7 +113,7 @@ const AdminUsers = () => {
 
                     <CustomSort data={sortOptions} />
 
-                    <div className="min-h-[70vh] flex items-center justify-center bg-white rounded-sm">
+                    <div className={`min-h-[70vh] flex ${users.length > 0 ? '' : 'items-center bg-white'} justify-center rounded-sm`}>
                         {users.length > 0 ? (
                             <UserTable users={users} loading={isLoading} />
                         ) : (

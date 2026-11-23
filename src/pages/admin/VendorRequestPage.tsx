@@ -94,7 +94,7 @@ const VendorRequestPage: React.FC = () => {
 
                     <CustomSort data={sortOptions} />
 
-                    <div className="min-h-[70vh] flex items-center justify-center bg-white rounded-sm">
+                    <div className={`min-h-[70vh] flex ${vendors.length > 0 ? '' : 'items-center bg-white'} justify-center rounded-sm`}>
                         {vendors && vendors.length > 0 ? (
                             <VendorTable
                                 vendors={vendors}
