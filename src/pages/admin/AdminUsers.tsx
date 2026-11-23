@@ -19,6 +19,14 @@ const AdminUsers = () => {
     const [debouncedValue, SetDebouncedValue] = useState<string>('');
     const { data, isLoading } = useGetAllUsers(page, LIMIT, role, debouncedValue, sortOption);
 
+    useEffect(() => {
+        const searchInput = setTimeout(() => {
+            SetDebouncedValue(searchTerm)
+        }, 1500)
+
+        return () => clearTimeout(searchInput)
+    }, [searchTerm])
+
     const sortOptions = [
         {
             name: "A to Z",
@@ -57,14 +65,6 @@ const AdminUsers = () => {
             SetDebouncedValue('')
         }
     }
-
-    useEffect(() => {
-        const searchInput = setTimeout(() => {
-            SetDebouncedValue(searchTerm)
-        }, 1500)
-
-        return () => clearTimeout(searchInput)
-    }, [searchTerm])
 
     const users = data?.data ?? [];
     const meta = data?.meta;
