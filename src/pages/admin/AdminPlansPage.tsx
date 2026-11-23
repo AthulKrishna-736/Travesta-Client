@@ -1,12 +1,12 @@
+
 import { useState } from "react";
 import { AdminLayout } from "@/components/layouts/AdminLayout";
 import PlansList from "@/components/subscription/PlansList";
 import PlanFormModal from "@/components/subscription/PlanFormModal";
+import PlanHistoryList from "@/components/subscription/PlanHistoryList";
 import { useCreatePlans } from "@/hooks/admin/useSubscription";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import PlanHistoryList from "@/components/subscription/PlanHistoryList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { PlanSubmitData } from "@/types/plan.types";
 
 const AdminPlansPage = () => {
@@ -25,66 +25,78 @@ const AdminPlansPage = () => {
 
     return (
         <AdminLayout>
-            <div className="space-y-6">
-                {/* Header Section */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Subscriptions</h1>
-                        <p className="text-muted-foreground">
-                            Manage and view subscription plans and history.
-                        </p>
+            <div className="min-h-screen bg-slate-100 p-6">
+                <div className="flex flex-col gap-5">
+
+                    {/* Header Section */}
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight">
+                                Subscriptions
+                            </h1>
+                            <p className="text-muted-foreground">
+                                Manage and view subscription plans and history.
+                            </p>
+                        </div>
+
+                        {activeTab === "plans" && (
+                            <Button
+                                className="bg-black text-white hover:bg-gray-600 rounded-md shadow-sm cursor-pointer"
+                                onClick={() => setOpenModal(true)}
+                            >
+                                Add New Plan
+                            </Button>
+                        )}
                     </div>
 
-                    {activeTab === "plans" && (
-                        <Button
-                            variant="ghost"
-                            className="bg-gray-600 text-white hover:border hover:border-black"
-                            onClick={() => setOpenModal(true)}
+                    {/* Information Note */}
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm mt-3">
+                        <span className="text-yellow-800 font-semibold mb-1">
+                            Note:{" "}
+                        </span>
+                        <span className="text-yellow-700 text-sm leading-relaxed">
+                            Subscription plans help manage the pricing and features
+                            available to your customers. Make sure to maintain
+                            <span className="font-medium"> clear pricing and plan details</span>
+                            so customers can easily understand their available options.
+                        </span>
+                    </div>
+
+                    {/* Tab Selection */}
+                    <div className="flex justify-between">
+                        <ToggleGroup
+                            type="single"
+                            value={activeTab}
+                            onValueChange={(value) => {
+                                if (value) setActiveTab(value);
+                            }}
+                            className="w-fit gap-1 rounded-lg bg-white p-1"
                         >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add New Plan
-                        </Button>
-                    )}
+                            <ToggleGroupItem
+                                value="plans"
+                                className="rounded-md border-0 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 data-[state=on]:bg-black data-[state=on]:text-white data-[state=on]:shadow-sm"
+                            >
+                                Plans
+                            </ToggleGroupItem>
+
+                            <ToggleGroupItem
+                                value="history"
+                                className="rounded-md border-0 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 data-[state=on]:bg-black data-[state=on]:text-white data-[state=on]:shadow-sm"
+                            >
+                                Plan History
+                            </ToggleGroupItem>
+                        </ToggleGroup>
+                    </div>
+
+                    {/* Tab Content */}
+                    <div className="min-h-[70vh] flex justify-center">
+                        {activeTab === "plans" ? (
+                            <PlansList />
+                        ) : (
+                            <PlanHistoryList />
+                        )}
+                    </div>
                 </div>
-
-                {/* Tabs Section */}
-                <Tabs
-                    defaultValue="plans"
-                    value={activeTab}
-                    onValueChange={setActiveTab}
-                    className="space-y-6"
-                >
-                    <TabsList className="flex w-fit bg-gray-100 p-1 rounded-lg">
-                        <TabsTrigger
-                            value="plans"
-                            className={`px-4 py-2 text-sm font-medium rounded-md transition ${activeTab === "plans"
-                                ? "bg-white shadow text-black"
-                                : "text-gray-500 hover:text-black"
-                                }`}
-                        >
-                            Plans
-                        </TabsTrigger>
-                        <TabsTrigger
-                            value="history"
-                            className={`px-4 py-2 text-sm font-medium rounded-md transition ${activeTab === "history"
-                                ? "bg-white shadow text-black"
-                                : "text-gray-500 hover:text-black"
-                                }`}
-                        >
-                            Plan History
-                        </TabsTrigger>
-                    </TabsList>
-
-                    {/* PLANS TAB */}
-                    <TabsContent value="plans">
-                        <PlansList />
-                    </TabsContent>
-
-                    {/* HISTORY TAB */}
-                    <TabsContent value="history">
-                        <PlanHistoryList />
-                    </TabsContent>
-                </Tabs>
 
                 {/* Create Plan Modal */}
                 <PlanFormModal

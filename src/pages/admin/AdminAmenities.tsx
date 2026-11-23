@@ -111,7 +111,6 @@ const AdminAmenities = () => {
                     </div>
 
                     <div className="flex justify-between">
-
                         <ToggleGroup
                             type="single"
                             value={role}
