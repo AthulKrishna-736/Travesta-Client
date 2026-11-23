@@ -5,18 +5,19 @@ import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useGetAllUsers } from "@/hooks/user/useUser"
 import { useEffect, useState } from "react"
-import { ArrowDownAZ, ArrowUpAZ, Clock, Search } from "lucide-react"
+import { ArrowDownAZ, ArrowUpAZ, Clock } from "lucide-react"
 import CustomSort from "@/components/common/CustomSort"
 import { TSortOption } from "@/types/custom.types"
+import EmptyState from "@/components/common/EmptyState"
 
 const AdminUsers = () => {
+    const LIMIT = 10
     const [page, setPage] = useState(1)
     const [role, setRole] = useState<'user' | 'vendor'>('user')
     const [sortOption, setSortOption] = useState<TSortOption>({ firstName: 'ascending' })
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [debouncedValue, SetDebouncedValue] = useState<string>('');
-    const limit = 10
-    const { data, isLoading } = useGetAllUsers(page, limit, role, debouncedValue, sortOption);
+    const { data, isLoading } = useGetAllUsers(page, LIMIT, role, debouncedValue, sortOption);
 
     const sortOptions = [
         {
@@ -70,7 +71,7 @@ const AdminUsers = () => {
 
     return (
         <AdminLayout>
-            <div className="min-h-screen bg-slate-50/80 p-6">
+            <div className="min-h-screen bg-slate-100 p-6">
                 <div className="flex flex-col gap-5">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Platform Members</h1>
@@ -78,13 +79,13 @@ const AdminUsers = () => {
                             Here is the list of all users and vendors registered on the platform.
                         </p>
                     </div>
-                    <div className="flex justify-between">
 
+                    <div className="flex justify-between">
                         <ToggleGroup
                             type="single"
                             value={role}
                             onValueChange={handleRoleChange}
-                            className="w-fit gap-1 rounded-lg bg-gray-100 p-1"
+                            className="w-fit gap-1 rounded-lg bg-white p-1"
                         >
                             <ToggleGroupItem
                                 value="user"
@@ -108,12 +109,20 @@ const AdminUsers = () => {
                             value={searchTerm}
                             className="w-fit rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-0"
                         />
-
                     </div>
 
                     <CustomSort data={sortOptions} />
 
-                    <UserTable users={users} loading={isLoading} />
+                    <div className="min-h-[70vh] flex items-center justify-center bg-white rounded-sm">
+                        {users.length > 0 ? (
+                            <UserTable users={users} loading={isLoading} />
+                        ) : (
+                            <EmptyState
+                                title={`No ${role}s found`}
+                                description={`There are no ${role}s to display at the moment. Users will appear here once they are added.`}
+                            />
+                        )}
+                    </div>
 
                     {meta && meta.totalPages > 0 && (
                         <Pagination
