@@ -79,7 +79,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
     };
 
     return (
-        <>
+        <div className="w-full">
             <div className="rounded-lg border-1 overflow-hidden">
                 <DataTable<IAmenity>
                     columns={columns}
@@ -88,6 +88,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
                     loading={loading || isPending}
                 />
             </div>
+
             <AmenitiesModal
                 open={!!editAmenity}
                 title="Edit Amenity"
@@ -118,7 +119,7 @@ const AmenityTable: React.FC<AmenityTableProps> = ({ amenities, loading }) => {
                 onCancel={handleToggleCancel}
                 isLoading={isPending}
             />
-        </>
+        </div>
     );
 };
 

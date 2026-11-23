@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
-import AmenityTable from "@/components/amenities/AmenitiesTable";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
-import { useCreateAmentiy, useGetAllAmenities } from "@/hooks/admin/useAmenities";
-import Pagination from "@/components/common/Pagination";
 import { AdminLayout } from "@/components/layouts/AdminLayout";
 import AmenitiesModal from "@/components/amenities/AmenitiesModal";
-import { TCreateAmenityData } from "@/types/amenities.types";
+import AmenityTable from "@/components/amenities/AmenitiesTable";
 import CustomSort from "@/components/common/CustomSort";
+import EmptyState from "@/components/common/EmptyState";
+import Pagination from "@/components/common/Pagination";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCreateAmentiy, useGetAllAmenities } from "@/hooks/admin/useAmenities";
+import { TCreateAmenityData } from "@/types/amenities.types";
 import { ArrowUpAZ, ArrowDownAZ, Clock } from "lucide-react";
 import { TSortOption } from "@/types/custom.types";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const AdminAmenities = () => {
+    const LIMIT = 8;
     const [role, setRole] = useState<'hotel' | 'room'>('hotel');
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedValue, setDebouncedValue] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [sortOption, setSortOption] = useState<TSortOption>({ 'name': 'ascending' });
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const limit = 8;
-
+    const { data, isLoading } = useGetAllAmenities(page, LIMIT, role, debouncedValue, sortOption);
+    const { mutate: createAmenityfn, isPending } = useCreateAmentiy();
 
     useEffect(() => {
         const searchInput = setTimeout(() => {
@@ -31,9 +32,6 @@ const AdminAmenities = () => {
 
         return () => clearTimeout(searchInput);
     }, [searchTerm]);
-
-    const { data, isLoading } = useGetAllAmenities(page, limit, role, debouncedValue, sortOption);
-    const { mutate: createAmenityfn, isPending } = useCreateAmentiy();
 
     const amenities = data?.data || [];
     const meta = data?.meta;
@@ -52,10 +50,9 @@ const AdminAmenities = () => {
         }
     };
 
-
     const sortOptions = [
         {
-            name: "Name (A → Z)",
+            name: "A to Z",
             tooltip: "Sort alphabetically ascending",
             onClickHandler: () => {
                 setPage(1);
@@ -64,7 +61,7 @@ const AdminAmenities = () => {
             icon: ArrowUpAZ,
         },
         {
-            name: "Name (Z → A)",
+            name: "Z to A",
             tooltip: "Sort alphabetically descending",
             onClickHandler: () => {
                 setPage(1);
@@ -85,72 +82,75 @@ const AdminAmenities = () => {
 
     return (
         <AdminLayout>
-            <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Amenities</h1>
-                        <p className="text-muted-foreground">
-                            Manage all amenities available in the platform.
-                        </p>
+            <div className="min-h-screen bg-slate-100 p-6">
+                <div className='flex flex-col gap-5'>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight">Amenities</h1>
+                            <p className="text-muted-foreground">
+                                Manage all amenities available in the platform.
+                            </p>
+                        </div>
+
+                        <Button
+                            className="bg-black text-white hover:bg-gray-600 rounded-md shadow-sm cursor-pointer"
+                            onClick={() => setOpenModal(true)}
+                        >
+                            Add Amenity
+                        </Button>
                     </div>
 
-                    <Button variant="ghost" className="bg-gray-600 text-white hover:border hover:border-black" onClick={() => setOpenModal(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add New Amenity
-                    </Button>
-                </div>
+                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm mt-3">
+                        <span className="text-yellow-800 font-semibold mb-1">Note: </span>
+                        <span className="text-yellow-700 text-sm leading-relaxed">
+                            Amenities help describe the features available in your hotels. Make sure to{" "}
+                            <span className="font-medium">add clear and relevant amenities</span> so guests
+                            can easily understand what your property offers.
+                        </span>
+                    </div>
 
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm mt-3">
-                    <span className="text-yellow-800 font-semibold mb-1">Note: </span>
-                    <span className="text-yellow-700 text-sm leading-relaxed">
-                        Amenities help describe the features available in your hotels. Make sure to{" "}
-                        <span className="font-medium">add clear and relevant amenities</span> so guests
-                        can easily understand what your property offers.
-                    </span>
-                </div>
+                    <div className="flex justify-between">
 
-                <ToggleGroup
-                    type="single"
-                    value={role}
-                    onValueChange={handleRoleChange}
-                    className="w-fit"
-                >
-                    <ToggleGroupItem
-                        value="hotel"
-                        className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
-                    >
-                        Hotels
-                    </ToggleGroupItem>
-                    <ToggleGroupItem
-                        value="room"
-                        className="px-4 py-2 rounded-lg border text-sm font-medium hover:bg-blue-100 data-[state=on]:bg-blue-600 data-[state=on]:text-white"
-                    >
-                        Rooms
-                    </ToggleGroupItem>
-                </ToggleGroup>
+                        <ToggleGroup
+                            type="single"
+                            value={role}
+                            onValueChange={handleRoleChange}
+                            className="w-fit gap-1 rounded-lg bg-white p-1"
+                        >
+                            <ToggleGroupItem
+                                value="hotel"
+                                className="rounded-md border-0 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 data-[state=on]:bg-black data-[state=on]:text-white data-[state=on]:shadow-sm"
+                            >
+                                Hotels
+                            </ToggleGroupItem>
 
-                <div className="space-y-4 overflow-x-auto">
+                            <ToggleGroupItem
+                                value="room"
+                                className="rounded-md border-0 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 data-[state=on]:bg-black data-[state=on]:text-white data-[state=on]:shadow-sm"
+                            >
+                                Rooms
+                            </ToggleGroupItem>
+                        </ToggleGroup>
 
-                    <div className="relative w-full">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-800" />
                         <Input
+                            type="text"
                             placeholder="Search amenities..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 text-gray-800 placeholder:text-gray-800 placeholder:italic"
+                            className="w-fit rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-0"
                         />
                     </div>
 
                     <CustomSort data={sortOptions} />
 
-                    {amenities && amenities.length > 0 ? (
-                        <AmenityTable amenities={amenities} loading={isLoading} />
-                    ) : (
-                        <div className="flex flex-col items-center justify-center py-10 text-center text-gray-500">
-                            <p className="mb-2 text-lg font-medium">No amenities found</p>
-                            <p className="mb-4">You can add a new amenity to get started.</p>
-                        </div>
-                    )}
+                    <div className={`min-h-[70vh] flex ${amenities.length > 0 ? '' : 'items-center bg-white'} justify-center rounded-sm`}>
+                        {amenities && amenities.length > 0 ? (
+                            <AmenityTable amenities={amenities} loading={isLoading} />
+                        ) : (
+                            <EmptyState title="No amenities found" description="There are no amenities available yet. Add a new amenity to get started." />
+                        )}
+                    </div>
                 </div>
 
                 {meta && meta.totalPages > 0 && (
