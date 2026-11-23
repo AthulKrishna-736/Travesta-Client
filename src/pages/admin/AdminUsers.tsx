@@ -72,7 +72,7 @@ const AdminUsers = () => {
     return (
         <AdminLayout>
             <div className="min-h-screen bg-slate-100 p-6">
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-5 max-w-7xl mx-auto">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Platform Members</h1>
                         <p className="text-muted-foreground">

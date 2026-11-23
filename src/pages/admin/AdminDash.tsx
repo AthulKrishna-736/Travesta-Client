@@ -45,8 +45,7 @@ const AdminDash = () => {
     return (
         <AdminLayout>
             <div className="min-h-screen bg-slate-100 p-6">
-                <div className="mx-auto max-w-7xl space-y-6">
-
+                <div className="mx-auto max-w-7xl flex flex-col gap-5">
                     {/* Dashboard Header */}
                     <h1 className="text-3xl font-bold tracking-tight">
                         Dashboard

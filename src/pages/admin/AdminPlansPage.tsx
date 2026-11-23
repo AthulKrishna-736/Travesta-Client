@@ -26,8 +26,7 @@ const AdminPlansPage = () => {
     return (
         <AdminLayout>
             <div className="min-h-screen bg-slate-100 p-6">
-                <div className="flex flex-col gap-5">
-
+                <div className="flex flex-col gap-5 max-w-7xl mx-auto">
                     {/* Header Section */}
                     <div className="flex items-center justify-between">
                         <div>

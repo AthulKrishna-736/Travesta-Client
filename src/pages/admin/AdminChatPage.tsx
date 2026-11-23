@@ -111,27 +111,29 @@ const AdminChatPage: React.FC = () => {
 
     return (
         <AdminLayout>
-            <div className="space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Chat</h1>
-                </div>
+            <div className="min-h-screen bg-slate-100 p-6">
+                <div className='max-w-7xl mx-auto'>
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Chat</h1>
+                    </div>
 
-                <ChatPage
-                    isLoading={isLoading}
-                    users={sortedChats}
-                    selectedUser={selectedVendor!}
-                    handleSelectUser={handleSelectUser}
-                    msg={msg}
-                    setMsg={setMsg}
-                    unreadCounts={unreadMap}
-                    handleSend={handleSend}
-                    handleTyping={handleTyping}
-                    typingStatus={typingStatus}
-                    currentUserId={adminId as string}
-                    combinedMessages={combinedMessages}
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                />
+                    <ChatPage
+                        isLoading={isLoading}
+                        users={sortedChats}
+                        selectedUser={selectedVendor!}
+                        handleSelectUser={handleSelectUser}
+                        msg={msg}
+                        setMsg={setMsg}
+                        unreadCounts={unreadMap}
+                        handleSend={handleSend}
+                        handleTyping={handleTyping}
+                        typingStatus={typingStatus}
+                        currentUserId={adminId as string}
+                        combinedMessages={combinedMessages}
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                    />
+                </div>
             </div>
         </AdminLayout>
     );

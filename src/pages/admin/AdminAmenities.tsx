@@ -83,8 +83,7 @@ const AdminAmenities = () => {
     return (
         <AdminLayout>
             <div className="min-h-screen bg-slate-100 p-6">
-                <div className='flex flex-col gap-5'>
-
+                <div className='flex flex-col gap-5 max-w-7xl mx-auto'>
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-3xl font-bold tracking-tight">Amenities</h1>
@@ -150,15 +149,15 @@ const AdminAmenities = () => {
                             <EmptyState title="No amenities found" description="There are no amenities available yet. Add a new amenity to get started." />
                         )}
                     </div>
-                </div>
 
-                {meta && meta.totalPages > 0 && (
-                    <Pagination
-                        currentPage={meta.currentPage}
-                        totalPages={meta.totalPages}
-                        onPageChange={setPage}
-                    />
-                )}
+                    {meta && meta.totalPages > 0 && (
+                        <Pagination
+                            currentPage={meta.currentPage}
+                            totalPages={meta.totalPages}
+                            onPageChange={setPage}
+                        />
+                    )}
+                </div>
 
                 <AmenitiesModal
                     open={openModal}
