@@ -8,7 +8,7 @@ const Loader = ({ title = "Loading details", description = "Please wait while we
         <div
             role="status"
             aria-live="polite"
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center px-4 bg-white"
+            className="w-fit h-fit flex flex-col items-center justify-center px-4 bg-white m-10"
         >
             {/* Scoped animations (no tailwind.config changes needed) */}
             <style>{`

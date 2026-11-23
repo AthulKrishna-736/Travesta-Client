@@ -16,7 +16,13 @@ const AdminDash = () => {
     const { data: analyticsRes } = useGetAdminAnalytics()
     const analytics = analyticsRes?.data ?? null;
 
-    if (!analytics) return <Loader />
+    if (!analytics) return (
+        <AdminLayout>
+            <div className="min-h-[90vh] flex items-center justify-center">
+                <Loader />
+            </div>
+        </AdminLayout>
+    )
 
     const bookingsData = analytics.bookingsChart.map((item) => ({
         month: item._id,
@@ -38,7 +44,7 @@ const AdminDash = () => {
 
     return (
         <AdminLayout>
-            <div className="min-h-screen bg-slate-50/80 p-6">
+            <div className="min-h-screen bg-slate-100 p-6">
                 <div className="mx-auto max-w-7xl space-y-6">
 
                     {/* Dashboard Header */}

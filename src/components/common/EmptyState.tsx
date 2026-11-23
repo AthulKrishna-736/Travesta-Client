@@ -5,7 +5,7 @@ interface EmptyStateProps {
 
 const EmptyState = ({ title, description }: EmptyStateProps) => {
     return (
-        <div className="flex w-full min-w-0 flex-col items-center justify-center px-4 py-8 text-center">
+        <div className="flex w-fit min-w-0 flex-col items-center justify-center px-4 py-8 text-center h-fit">
 
             {/* Compact Hotel Illustration */}
             <div className="relative mb-4 h-28 w-36 shrink-0">
