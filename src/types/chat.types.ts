@@ -18,6 +18,15 @@ export interface IChat {
 export type TResponseChat = IChat;
 
 //component props and types
+export interface IChatUserList {
+    isLoading: boolean;
+    users: ChatItem[];
+    selectedUser: ChatItem | null;
+    handleSelectUser: (data: ChatItem) => void;
+    searchText: string;
+    setSearchText: (data: string) => void;
+}
+
 export interface IChatPageProps {
     isLoading: boolean;
     users: ChatItem[];

@@ -161,7 +161,7 @@ const AdminDash = () => {
                                 Top Hotels
                             </h2>
 
-                            <div className="h-[320px] overflow-y-auto divide-y divide-gray-100">
+                            <div className="h-[320px] overflow-y-auto divide-y divide-gray-100 flex flex-col justify-center items-center">
                                 {analytics.topHotels && analytics.topHotels.length > 0 ? (
                                     analytics.topHotels.map((hotel, idx: number) => (
                                         <div

@@ -22,9 +22,9 @@ const ChatPage: React.FC<IChatPageProps> = ({
     setSearchText }) => {
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-100 md:h-100 lg:h-130">
+        <div className="flex flex-col md:grid md:grid-cols-12 gap-6 h-100 md:h-100 lg:h-130 w-full">
             {/* Left Sidebar: User List */}
-            <div className="col-span-4 flex flex-col bg-[#402e57] text-white h-full overflow-hidden rounded-md">
+            {/* <div className="col-span-4 flex flex-col bg-[#402e57] text-white h-full overflow-hidden rounded-md">
                 <div className="p-4 border-b">
                     <Input
                         placeholder="Search users..."
@@ -90,7 +90,7 @@ const ChatPage: React.FC<IChatPageProps> = ({
                         )
                     })
                 )}
-            </div>
+            </div> */}
 
             {/* Chat Panel */}
             <div className="col-span-8 flex flex-col border border-gray-200 rounded-md overflow-hidden h-full p-0 gap-0">
