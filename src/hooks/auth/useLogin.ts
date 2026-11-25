@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { ICustomError } from '@/types/custom.types';
 import { useSelector } from 'react-redux';
 import { clearLastVisitedPath } from '@/store/slices/navigationSlice';
+import { connectChatSocket } from '@/utils/socket';
 
 
 export const useLogin = (role: string) => {
@@ -23,6 +24,7 @@ export const useLogin = (role: string) => {
         },
         onSuccess: (res) => {
             dispatch(setUser(res.data))
+            connectChatSocket()
             if (role === 'user') {
                 console.log(lastVisitedPath)
                 if (lastVisitedPath) {
@@ -32,7 +34,7 @@ export const useLogin = (role: string) => {
                     navigate(`/${role}/home`)
                 }
             } else {
-                navigate(`/${role}/home`);
+                navigate(`/${role}/dashboard`);
             }
             showSuccess(res.message || 'Login successful');
         },
