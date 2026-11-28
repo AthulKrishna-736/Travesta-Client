@@ -14,7 +14,17 @@ export const connectChatSocket = () => {
         reconnectionAttempts: 5,
     });
 
-    return socket;
+    socket.on("connect", () => {
+        console.log("Socket Connected:", socket?.id);
+    });
+
+    socket.on("connect_error", (error) => {
+        console.log("Socket Connection error:", error.message);
+    });
+
+    socket.on("disconnect", (reason) => {
+        console.log("Socket Disconnected:", reason);
+    });
 };
 
 export const getChatSocket = (): Socket | null => socket;

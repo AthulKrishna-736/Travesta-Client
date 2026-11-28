@@ -7,6 +7,7 @@ import { showError, showSuccess } from "@/utils/customToast";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { disconnectChatSocket } from "@/utils/socket";
 
 
 export const useLogout = (role: TRoles) => {
@@ -16,6 +17,7 @@ export const useLogout = (role: TRoles) => {
     return useMutation({
         mutationFn: () => logout(role),
         onSuccess: (res) => {
+            disconnectChatSocket()
             if (res.success) {
                 dispatch(logoutUser())
                 showSuccess(res.message)

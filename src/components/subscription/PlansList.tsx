@@ -90,21 +90,23 @@ const PlansList = () => {
     };
 
     return (
-        <>
-            {plans && plans.length > 0 ? (
-                <DataTable
-                    columns={columns}
-                    data={plans}
-                    actions={actions}
-                    loading={isLoading}
-                />
-            ) : (
-                <div className="flex justify-center items-center py-10">
-                    <p className="font-semibold text-lg text-red-500">
-                        No hotels found. Please create one.
-                    </p>
-                </div>
-            )}
+        <div>
+            <div className='rounded-2xl bg-white p-2'>
+                {plans && plans.length > 0 ? (
+                    <DataTable
+                        columns={columns}
+                        data={plans}
+                        actions={actions}
+                        loading={isLoading}
+                    />
+                ) : (
+                    <div className="flex justify-center items-center py-10">
+                        <p className="font-semibold text-lg text-red-500">
+                            No Plans found. Please create one.
+                        </p>
+                    </div>
+                )}
+            </div>
 
             <PlanDetailModal
                 open={isDetailModalOpen}
@@ -120,7 +122,7 @@ const PlansList = () => {
                 initialData={selectedPlan}
                 loading={isPending}
             />
-        </>
+        </div>
     );
 };
 

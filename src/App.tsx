@@ -11,6 +11,7 @@ import { env } from './config/config';
 import LandingPage from './pages/user/LandingPage';
 import 'leaflet/dist/leaflet.css';
 import ScrollToTop from './utils/ScrollToTop';
+import SocketProvider from './components/common/SocketProvider';
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
       <GoogleOAuthProvider clientId={env.GOOGLE_ID}>
         <Router>
           <ScrollToTop />
+          <SocketProvider />
           <ErrorBoundary>
             <Routes>
               <Route path="/" element={<LandingPage />} />

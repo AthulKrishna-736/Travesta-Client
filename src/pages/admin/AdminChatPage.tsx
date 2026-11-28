@@ -5,6 +5,8 @@ import { useGetAdminChatMessages, useGetAdminUnreadChats, useGetVendorsChatAdmin
 import ChatPage from '@/components/chat/ChatPage';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { ChatItem } from '@/types/chat.types';
+import ChatUserList from '@/components/chat/ChatUserList';
+
 
 const AdminChatPage: React.FC = () => {
     const [msg, setMsg] = useState('');
@@ -111,29 +113,44 @@ const AdminChatPage: React.FC = () => {
 
     return (
         <AdminLayout>
-            <div className="space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Chat</h1>
-                </div>
+            <div className="min-h-screen bg-slate-100 p-6">
+                <div className='max-w-7xl mx-auto flex flex-col gap-5'>
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight">Chat</h1>
+                    </div>
 
-                <ChatPage
-                    isLoading={isLoading}
-                    users={sortedChats}
-                    selectedUser={selectedVendor!}
-                    handleSelectUser={handleSelectUser}
-                    msg={msg}
-                    setMsg={setMsg}
-                    unreadCounts={unreadMap}
-                    handleSend={handleSend}
-                    handleTyping={handleTyping}
-                    typingStatus={typingStatus}
-                    currentUserId={adminId as string}
-                    combinedMessages={combinedMessages}
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                />
+                    <div className='flex p-1 gap-4 rounded-sm'>
+                        <ChatUserList
+                            isLoading={isLoading}
+                            users={sortedChats}
+                            selectedUser={selectedVendor}
+                            handleSelectUser={handleSelectUser}
+                            searchText={searchText}
+                            setSearchText={setSearchText}
+                        />
+
+                        {/* this image need to be the design https://imgs.search.brave.com/HFl3TqrPCAqfwmWCwGzC63_JFcIsYRn5MR1lITAb994/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2UwLzcx/L2UwL2UwNzFlMGNl/NjYwZWVlYjIzODBm/MWQ3ZWM5ZDViYWZl/LmpwZw */}
+
+                        <ChatPage
+                            isLoading={isLoading}
+                            users={sortedChats}
+                            selectedUser={selectedVendor!}
+                            handleSelectUser={handleSelectUser}
+                            msg={msg}
+                            setMsg={setMsg}
+                            unreadCounts={unreadMap}
+                            handleSend={handleSend}
+                            handleTyping={handleTyping}
+                            typingStatus={typingStatus}
+                            currentUserId={adminId as string}
+                            combinedMessages={combinedMessages}
+                            searchText={searchText}
+                            setSearchText={setSearchText}
+                        />
+                    </div>
+                </div>
             </div>
-        </AdminLayout>
+        </AdminLayout >
     );
 };
 

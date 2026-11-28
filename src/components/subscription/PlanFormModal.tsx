@@ -4,7 +4,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X } from "lucide-react";
@@ -75,13 +74,13 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ open, title, onCancel, on
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label htmlFor="name">Plan Name</Label>
+                            <Label htmlFor="name" className="mb-2">Plan Name</Label>
                             <Input id="name" placeholder="Enter plan name" {...register("name")} disabled={loading} />
                             {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
                         </div>
 
                         <div>
-                            <Label htmlFor="type">Plan Type</Label>
+                            <Label htmlFor="type" className="mb-2">Plan Type</Label>
                             <Select value={type} onValueChange={(val) => setType(val as "basic" | "medium" | "vip")} disabled={loading}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select type" />
@@ -89,27 +88,27 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ open, title, onCancel, on
                                 <SelectContent>
                                     <SelectItem value="basic">Basic</SelectItem>
                                     <SelectItem value="medium">Medium</SelectItem>
-                                    <SelectItem value="vip">VIP</SelectItem>
+                                    <SelectItem value="vip">Vip</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
 
                     <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" placeholder="Enter plan description" {...register("description")} disabled={loading} />
+                        <Label htmlFor="description" className="mb-2">Description</Label>
+                        <Input id="description" type="text" placeholder="Enter plan description" {...register("description")} disabled={loading} />
                         {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label htmlFor="price">Price (₹)</Label>
+                            <Label htmlFor="price" className="mb-2">Price (₹)</Label>
                             <Input id="price" type="number" placeholder="Enter price" {...register("price")} min={1} disabled={loading} />
                             {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price.message}</p>}
                         </div>
 
                         <div>
-                            <Label htmlFor="duration">Duration (days)</Label>
+                            <Label htmlFor="duration" className="mb-2">Duration (days)</Label>
                             <Input id="duration" type="number" placeholder="Enter duration" {...register("duration")} min={1} disabled={loading} />
                             {errors.duration && <p className="text-sm text-red-500 mt-1">{errors.duration.message}</p>}
                         </div>
@@ -146,7 +145,7 @@ const PlanFormModal: React.FC<PlanFormModalProps> = ({ open, title, onCancel, on
                             size="sm"
                             onClick={() => append({ value: "" })}
                             disabled={loading}
-                            className="mt-2"
+                            className="my-2 text-white bg-black pb-0.5 cursor-pointer"
                         >
                             Add Feature
                         </Button>

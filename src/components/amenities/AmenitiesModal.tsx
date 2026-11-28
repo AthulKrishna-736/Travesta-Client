@@ -4,7 +4,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createAmenitySchema } from "@/utils/validations/commonValidation";
@@ -42,19 +41,19 @@ const AmenitiesModal: React.FC<IAmenitiesModalProps> = ({ open, title, onCancel,
 
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
                     <div>
-                        <Label htmlFor="name">Name</Label>
+                        <Label htmlFor="name" className="mb-2">Name</Label>
                         <Input id="name" placeholder="Enter amenity name" {...register("name")} disabled={loading} />
                         {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
                     </div>
 
                     <div>
-                        <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" placeholder="Enter amenity description" {...register("description")} disabled={loading} />
+                        <Label htmlFor="description" className="mb-2">Description</Label>
+                        <Input id="description" placeholder="Enter amenity description" {...register("description")} disabled={loading} />
                         {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description.message}</p>}
                     </div>
 
                     <div>
-                        <Label htmlFor="type">Type</Label>
+                        <Label htmlFor="type" className="mb-2">Type</Label>
                         <Select
                             value={type}
                             onValueChange={(val) => setType(val as "hotel" | "room")}

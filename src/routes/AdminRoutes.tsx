@@ -23,7 +23,7 @@ const AdminRoutes: React.FC = () => {
         </ProtectGuest>
       } />
 
-      <Route path='home' element={
+      <Route path='dashboard' element={
         <ProtectedUser allowedRoles={['admin']}>
           <AdminDash />
         </ProtectedUser>
